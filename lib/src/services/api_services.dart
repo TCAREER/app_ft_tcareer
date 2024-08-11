@@ -1,7 +1,7 @@
 import 'package:app_tcareer/src/shared/configs/app_constants.dart';
-import 'package:app_tcareer/src/features/authentication/data/models/login_request.dart';
-import 'package:app_tcareer/src/features/authentication/data/models/login_response.dart';
-import 'package:app_tcareer/src/features/authentication/data/models/register_request.dart';
+import 'package:app_tcareer/src/modules/authentication/data/models/login_request.dart';
+import 'package:app_tcareer/src/modules/authentication/data/models/login_response.dart';
+import 'package:app_tcareer/src/modules/authentication/data/models/register_request.dart';
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

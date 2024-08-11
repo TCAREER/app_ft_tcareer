@@ -1,5 +1,5 @@
-import 'package:app_tcareer/src/features/authentication/data/models/register_request.dart';
-import 'package:app_tcareer/src/features/authentication/data/repositories/auth_repository.dart';
+import 'package:app_tcareer/src/modules/authentication/data/models/register_request.dart';
+import 'package:app_tcareer/src/modules/authentication/data/repositories/auth_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RegisterUseCase {

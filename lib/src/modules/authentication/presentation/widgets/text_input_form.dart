@@ -94,7 +94,9 @@ class TextInputFormState extends State<TextInputForm> {
               fillColor: Colors.white,
               filled: true,
               hintStyle: TextStyle(
-                  color: Colors.grey, fontWeight: FontWeight.normal),
+                  color: Colors.grey,
+                  fontWeight: FontWeight.normal,
+                  fontSize: 14),
               prefixIcon: widget.prefixIcon,
               hintText: widget.hintText,
               suffixIcon: Visibility(
@@ -116,7 +118,7 @@ class TextInputFormState extends State<TextInputForm> {
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide.none),
               contentPadding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                  const EdgeInsets.symmetric(vertical: 15, horizontal: 12.0),
               labelStyle:
                   const TextStyle(fontSize: 14.0, color: Color(0xFF2C2C2C)),
             ),

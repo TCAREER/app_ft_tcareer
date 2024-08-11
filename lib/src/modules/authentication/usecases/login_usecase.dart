@@ -1,6 +1,6 @@
-import 'package:app_tcareer/src/features/authentication/data/models/login_request.dart';
-import 'package:app_tcareer/src/features/authentication/data/models/login_response.dart';
-import 'package:app_tcareer/src/features/authentication/data/repositories/auth_repository.dart';
+import 'package:app_tcareer/src/modules/authentication/data/models/login_request.dart';
+import 'package:app_tcareer/src/modules/authentication/data/models/login_response.dart';
+import 'package:app_tcareer/src/modules/authentication/data/repositories/auth_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LoginUseCase {

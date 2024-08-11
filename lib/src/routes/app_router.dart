@@ -1,16 +1,18 @@
-import 'package:app_tcareer/src/features/authentication/presentation/pages/login/login_page.dart';
-import 'package:app_tcareer/src/features/authentication/presentation/pages/register/register_page.dart';
-import 'package:app_tcareer/src/features/authentication/presentation/providers.dart';
-import 'package:app_tcareer/src/features/home/home_page.dart';
-import 'package:app_tcareer/src/features/splash/intro_page.dart';
-import 'package:app_tcareer/src/features/splash/splash_page.dart';
+import 'package:app_tcareer/src/modules/authentication/data/repositories/auth_repository.dart';
+import 'package:app_tcareer/src/modules/authentication/presentation/pages/login/login_page.dart';
+import 'package:app_tcareer/src/modules/authentication/presentation/pages/register/register_page.dart';
+import 'package:app_tcareer/src/modules/authentication/presentation/providers.dart';
+import 'package:app_tcareer/src/modules/home/presentation/pages/home_page.dart';
+import 'package:app_tcareer/src/modules/splash/intro_page.dart';
+import 'package:app_tcareer/src/modules/splash/splash_page.dart';
+import 'package:app_tcareer/src/routes/index_route.dart';
 import 'package:app_tcareer/src/routes/transition_builder.dart';
 import 'package:app_tcareer/src/shared/utils/user_utils.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-enum RouteNames { splash, intro, register, login, home }
+enum RouteNames { splash, intro, register, login }
 
 class AppRouter {
   static final navigatorKey = GlobalKey<NavigatorState>();
@@ -18,19 +20,27 @@ class AppRouter {
   static GoRouter router(WidgetRef ref) {
     return GoRouter(
         navigatorKey: navigatorKey,
-        initialLocation: "/${RouteNames.splash.name}",
-        redirect: (context, state) async {
-          // final userUtils = ref.watch(userUtilsProvider);
-          // print(">>>>>>>>>>>${await userUtils.isAuthenticated()}");
-          final isAuthenticated = ref.watch(isAuthenticatedProvider);
-          print(">>>>>>>>>$isAuthenticated");
-          if (isAuthenticated) {
-            return "/${RouteNames.home.name}";
-          }
+        initialLocation: "/splash",
+        // redirect: (context, state) async {
+        //   final userUtils = ref.watch(userUtilsProvider);
+        //   print(">>>>>>>>>>>${await userUtils.isAuthenticated()}");
+        //   final isAuthenticated = ref.watch(isAuthenticatedProvider);
+        //   print(">>>>>>>>>>>>>>>>>>$isAuthenticated");
+        //   if (isAuthenticated != true ||
+        //       await userUtils.isAuthenticated() != true) {
+        //     if (state.fullPath?.contains("/intro") == true) {
+        //       return "/intro";
+        //     }
+        //     if (state.fullPath?.contains("/login") == true) {
+        //       return "/login";
+        //     }
+        //     return "/splash";
+        //   }
 
-          return null;
-        },
+        //   return null;
+        // },
         routes: [
+          Index.router,
           GoRoute(
             path: "/${RouteNames.splash.name}",
             name: RouteNames.splash.name,
@@ -63,14 +73,14 @@ class AppRouter {
                 child: const RegisterPage(),
                 transitionsBuilder: fadeTransitionBuilder),
           ),
-          GoRoute(
-            path: "/${RouteNames.home.name}",
-            name: RouteNames.home.name,
-            pageBuilder: (context, state) => CustomTransitionPage(
-                key: state.pageKey,
-                child: const HomePage(),
-                transitionsBuilder: fadeTransitionBuilder),
-          )
-        ]);
+        ],
+        refreshListenable: GoRouterRefreshStream());
+  }
+}
+
+class GoRouterRefreshStream extends ChangeNotifier {
+  @override
+  void notifyListeners() {
+    super.notifyListeners();
   }
 }

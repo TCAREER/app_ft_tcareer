@@ -1,5 +1,5 @@
-import 'package:app_tcareer/src/features/authentication/presentation/pages/login/login_page.dart';
 import 'package:app_tcareer/src/routes/app_router.dart';
+import 'package:app_tcareer/src/shared/configs/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,6 +18,19 @@ class App extends StatelessWidget {
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
+            bottomNavigationBarTheme: BottomNavigationBarThemeData(
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: Colors.white,
+              selectedLabelStyle:
+                  const TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+              unselectedLabelStyle:
+                  const TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+              selectedItemColor: AppColors.primary,
+              unselectedItemColor: Colors.grey.shade500,
+              // showUnselectedLabels: true,
+            ),
+            textSelectionTheme:
+                const TextSelectionThemeData(cursorColor: AppColors.primary),
           ),
         );
       },
