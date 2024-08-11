@@ -1,84 +1,48 @@
 {
   "project_info": {
-    "project_number": "487337375301",
-    "project_id": "tcareer-4fa50",
-    "storage_bucket": "tcareer-4fa50.appspot.com"
+    "project_number": "119121456339",
+    "project_id": "tcareer-b1f66",
+    "storage_bucket": "tcareer-b1f66.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:487337375301:android:d4ebad02522bd5dac2152c",
+        "mobilesdk_app_id": "1:119121456339:android:7c93ab3e0c1676fae4b826",
         "android_client_info": {
-          "package_name": "com.tcareer"
+          "package_name": "com.tdev.tcareer"
         }
       },
       "oauth_client": [
         {
-          "client_id": "487337375301-hub0s7fa6764p5k403air0g58i9dloei.apps.googleusercontent.com",
+          "client_id": "119121456339-m5rg9lbkfmh16pplcdraias29j8pm54v.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.tcareer",
-            "certificate_hash": "fab604d6dad55f07e0c9a13289befde993bea5bf"
+            "package_name": "com.tdev.tcareer",
+            "certificate_hash": "5c96bd692240cbc0b6925fa88ca9cda80d3d093b"
           }
         },
         {
-          "client_id": "487337375301-4aohhpp1heqra0ucghom8lb1r04u5qqd.apps.googleusercontent.com",
+          "client_id": "119121456339-h1j2c85f7gsskcfphgptm8btf3qqlu9s.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDB-k2Ll3-2N7eEFNRsjnd6XRTLZTSUkZs"
+          "current_key": "AIzaSyANOtEUdszC45C8LJQFPTlyzLHHUWPORyY"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "487337375301-4aohhpp1heqra0ucghom8lb1r04u5qqd.apps.googleusercontent.com",
+              "client_id": "119121456339-h1j2c85f7gsskcfphgptm8btf3qqlu9s.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "487337375301-kq5l94nmk6rg7o8jus1prep9gtclbsk4.apps.googleusercontent.com",
+              "client_id": "119121456339-ie933n1vactbs39a5p258amd1j3lmqnm.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.appFtTcareer"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:487337375301:android:7d0d8b745397f37fc2152c",
-        "android_client_info": {
-          "package_name": "com.tdev.care"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "487337375301-4aohhpp1heqra0ucghom8lb1r04u5qqd.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDB-k2Ll3-2N7eEFNRsjnd6XRTLZTSUkZs"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "487337375301-4aohhpp1heqra0ucghom8lb1r04u5qqd.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "487337375301-kq5l94nmk6rg7o8jus1prep9gtclbsk4.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.appFtTcareer"
+                "bundle_id": "com.example.appTcareer"
               }
             }
           ]
