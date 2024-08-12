@@ -15,7 +15,9 @@ class LoginPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.watch(loginControllerProvider.notifier);
+    final controller = ref.watch(loginControllerProvider);
+    controller.phoneController.text = "0771234567";
+    controller.passController.text = "123345678aA@";
 
     return Scaffold(
       backgroundColor: Colors.grey.shade100,

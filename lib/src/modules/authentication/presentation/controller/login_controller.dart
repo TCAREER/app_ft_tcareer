@@ -10,30 +10,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-enum AuthState { unauthenticated, authenticating, success }
-
-class LoginController extends StateNotifier<AuthState> {
+class LoginController extends StateNotifier<void> {
   final LoginUseCase loginUseCaseProvider;
-  LoginController(this.loginUseCaseProvider) : super(AuthState.unauthenticated);
+  LoginController(this.loginUseCaseProvider) : super(null);
   TextEditingController phoneController = TextEditingController();
   TextEditingController passController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
   Future<void> login(BuildContext context) async {
-    state = AuthState.authenticating;
-
-    try {
-      AppUtils.showLoading(context);
-
+    AppUtils.loadingApi(() async {
       final body = LoginRequest(
           phone: phoneController.text, password: passController.text);
       await loginUseCaseProvider.login(body);
-      state = AuthState.success;
+
       context.pop();
       context.go("/home");
-    } catch (e) {
-      state = AuthState.unauthenticated;
-    }
+    }, context);
   }
 
   Future<void> onLogin(BuildContext context) async {
@@ -54,8 +45,14 @@ class LoginController extends StateNotifier<AuthState> {
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken,
     );
-    await auth.signInWithCredential(credential).then((val) {
-      print(">>>>>>>>>>>>>${val.user}");
+    await auth.signInWithCredential(credential).then((val) async {
+      // Map<String, dynamic> data = {
+      //   "user": val.user,
+      //   "idToken": val.credential?.token,
+      //   "token": await val.user?.getIdToken()
+      // };
+
+      print("${await val.user?.getIdToken()}");
     });
   }
 }

@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class App extends StatelessWidget {
-  const App({super.key});
-
+  const App({super.key, required this.navigatorKey});
+  final GlobalKey<NavigatorState> navigatorKey;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -13,6 +13,7 @@ class App extends StatelessWidget {
       builder: (context, ref, child) {
         final router = AppRouter.router(ref);
         return MaterialApp.router(
+          key: navigatorKey,
           routerConfig: router,
           title: 'TCareer',
           theme: ThemeData(

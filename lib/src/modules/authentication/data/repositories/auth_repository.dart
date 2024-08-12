@@ -5,6 +5,7 @@ import 'package:app_tcareer/src/modules/authentication/presentation/controller/l
 import 'package:app_tcareer/src/modules/authentication/presentation/providers.dart';
 import 'package:app_tcareer/src/services/api_services.dart';
 import 'package:app_tcareer/src/shared/utils/user_utils.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AuthRepository {
@@ -24,8 +25,8 @@ class AuthRepository {
       userUtil.saveAuthToken(authToken: response.accessToken ?? "");
 
       // ref.read(isAuthenticatedProvider.notifier).update((state) => true);
-    } catch (e) {
-      throw Exception(e);
+    } on DioException catch (e) {
+      rethrow;
     }
   }
 }

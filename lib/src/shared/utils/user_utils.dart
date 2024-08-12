@@ -29,6 +29,11 @@ class UserUtils {
     // ref.read(isAuthenticatedProvider.notifier).update((state) => false);
     context.go("/login");
   }
+
+  Future<String> getAuthToken() async {
+    final sharedRef = await ref.read(sharedPreferencesProvider.future);
+    return sharedRef.getString(AppConstants.authToken) ?? "";
+  }
 }
 
 final userUtilsProvider = Provider((ref) => UserUtils(ref));
