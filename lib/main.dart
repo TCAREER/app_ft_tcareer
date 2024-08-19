@@ -1,7 +1,7 @@
 import 'package:app_tcareer/app.dart';
 import 'package:app_tcareer/firebase_options.dart';
 import 'package:app_tcareer/src/routes/app_router.dart';
-import 'package:app_tcareer/src/services/api_services.dart';
+import 'package:app_tcareer/src/services/apis/api_services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -1,6 +1,6 @@
 import 'package:app_tcareer/firebase_options.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/login_request.dart';
-import 'package:app_tcareer/src/modules/authentication/usecases/login_usecase.dart';
+import 'package:app_tcareer/src/modules/authentication/usecases/login_use_case.dart';
 import 'package:app_tcareer/src/shared/configs/app_constants.dart';
 import 'package:app_tcareer/src/shared/utils/app_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -35,24 +35,11 @@ class LoginController extends StateNotifier<void> {
 
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-  Future<void> signInWithGoogle() async {
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  Future<void> signInWithGoogle(BuildContext context) async {
+    await loginUseCaseProvider.loginWithGoogle();
 
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
+    context.go("/home");
 
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-    await auth.signInWithCredential(credential).then((val) async {
-      // Map<String, dynamic> data = {
-      //   "user": val.user,
-      //   "idToken": val.credential?.token,
-      //   "token": await val.user?.getIdToken()
-      // };
-
-      print("${await val.user?.getIdToken()}");
-    });
+    // sss
   }
 }

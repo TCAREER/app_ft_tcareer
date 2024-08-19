@@ -1,4 +1,4 @@
-import 'package:app_tcareer/src/modules/authentication/presentation/controller/login_controller.dart';
+import 'package:app_tcareer/src/modules/authentication/presentation/controllers/login_controller.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/providers.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/widgets/text_input_form.dart';
 import 'package:app_tcareer/src/shared/configs/app_colors.dart';
@@ -16,8 +16,8 @@ class LoginPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.watch(loginControllerProvider);
-    controller.phoneController.text = "0771234567";
-    controller.passController.text = "123345678aA@";
+    controller.phoneController.text = "0776506112";
+    controller.passController.text = "12345678aA@";
 
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
@@ -107,7 +107,10 @@ class LoginPage extends ConsumerWidget {
                           width: MediaQuery.of(context).size.width,
                           height: 50,
                           child: SignInButton(Buttons.google,
-                              onPressed: controller.signInWithGoogle),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(6)),
+                              onPressed: () =>
+                                  controller.signInWithGoogle(context)),
                         ),
                         const SizedBox(
                           height: 20,

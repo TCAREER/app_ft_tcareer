@@ -1,12 +1,13 @@
+import 'package:app_tcareer/src/modules/authentication/data/models/login_google_request.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/login_request.dart';
-import 'package:app_tcareer/src/modules/authentication/data/models/login_response.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/register_request.dart';
-import 'package:app_tcareer/src/modules/authentication/presentation/controller/login_controller.dart';
-import 'package:app_tcareer/src/modules/authentication/presentation/providers.dart';
-import 'package:app_tcareer/src/services/api_services.dart';
 import 'package:app_tcareer/src/shared/utils/user_utils.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+import '../../../../services/services.dart';
 
 class AuthRepository {
   final Ref ref;
@@ -17,7 +18,7 @@ class AuthRepository {
     await apiServices.postRegister(body: body);
   }
 
-  Future login(LoginRequest body) async {
+  Future<void> login(LoginRequest body) async {
     try {
       final apiServices = ref.watch(apiServiceProvider);
       final response = await apiServices.postLogin(body: body);
@@ -25,6 +26,21 @@ class AuthRepository {
       userUtil.saveAuthToken(authToken: response.accessToken ?? "");
 
       // ref.read(isAuthenticatedProvider.notifier).update((state) => true);
+    } on DioException catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> loginWithGoogle() async {
+    final firebaseAuthService = ref.watch(firebaseAuthServiceProvider);
+    final user = await firebaseAuthService.signInWithGoogle();
+    final accessToken = user?.credential?.accessToken;
+    try {
+      final apiServices = ref.watch(apiServiceProvider);
+      final response = await apiServices.postLoginWithGoogle(
+          body: LoginGoogleRequest(accessToken: accessToken));
+      final userUtil = ref.watch(userUtilsProvider);
+      userUtil.saveAuthToken(authToken: response.accessToken ?? "");
     } on DioException catch (e) {
       rethrow;
     }

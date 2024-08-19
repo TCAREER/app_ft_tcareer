@@ -24,6 +24,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
       if (!mounted)
         return; // Kiểm tra xem widget có còn trong cây widget hay không
       final isAuthenticated = await userUtils.isAuthenticated();
+      // context.go("/home");
       if (isAuthenticated != true) {
         context.go("/intro");
       } else {

@@ -15,35 +15,40 @@ class IndexPage extends StatelessWidget {
       {
         'icon': PhosphorIconsThin.house,
         'activeIcon': PhosphorIconsFill.house,
-        'route': "/${RouteNames.home.name}"
+        'route': "/${RouteNames.home.name}",
+        "label": "Trang chủ"
       },
       {
-        'icon': PhosphorIconsThin.network,
-        'activeIcon': PhosphorIconsFill.network,
-        'route': "/${RouteNames.posting.name}"
+        'icon': PhosphorIconsThin.bagSimple,
+        'activeIcon': PhosphorIconsFill.bagSimple,
+        'route': "/${RouteNames.posting.name}",
+        "label": "Công việc"
       },
       {
         'icon': PhosphorIconsThin.plus,
         'activeIcon': PhosphorIconsFill.plus,
-        'route': "/${RouteNames.create.name}"
+        'route': "/${RouteNames.create.name}",
+        "label": "Tạo mới"
       },
       {
-        'icon': PhosphorIconsThin.chatCentered,
-        'activeIcon': PhosphorIconsFill.chatCentered,
-        'route': "/${RouteNames.message.name}"
+        'icon': PhosphorIconsThin.bell,
+        'activeIcon': PhosphorIconsFill.bell,
+        'route': "/${RouteNames.message.name}",
+        "label": "Thông báo"
       },
       {
         'icon': PhosphorIconsThin.userCircle,
         'activeIcon': PhosphorIconsFill.userCircle,
-        'route': "/${RouteNames.profile.name}"
+        'route': "/${RouteNames.profile.name}",
+        "label": "Tài khoản"
       },
     ];
     return Scaffold(
       body: shell,
       bottomNavigationBar: BottomNavigationBar(
-          selectedItemColor: AppColors.primary,
+          selectedItemColor: Colors.black,
           unselectedItemColor: Colors.grey,
-          unselectedLabelStyle: TextStyle(fontSize: 0),
+          // unselectedLabelStyle: TextStyle(fontSize: 0),
           onTap: (index) {
             shell.goBranch(index);
           },
@@ -52,7 +57,7 @@ class IndexPage extends StatelessWidget {
             return BottomNavigationBarItem(
                 icon: PhosphorIcon(item['icon']),
                 activeIcon: PhosphorIcon(item['activeIcon']),
-                label: "");
+                label: item['label']);
           }).toList()),
     );
   }

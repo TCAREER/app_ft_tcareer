@@ -13,6 +13,7 @@ class App extends StatelessWidget {
       builder: (context, ref, child) {
         final router = AppRouter.router(ref);
         return MaterialApp.router(
+          debugShowCheckedModeBanner: false,
           key: navigatorKey,
           routerConfig: router,
           title: 'TCareer',
