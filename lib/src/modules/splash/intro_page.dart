@@ -13,18 +13,18 @@ class IntroPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.introColor,
-      appBar: AppBar(backgroundColor: AppColors.introColor, actions: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 40),
-          child: Text(
-            "TCareer",
-            style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w700, fontSize: 18),
-            textAlign: TextAlign.end,
-          ),
-        ),
-      ]),
+      backgroundColor: Colors.white,
+      // appBar: AppBar(backgroundColor: AppColors.introColor, actions: [
+      //   const Padding(
+      //     padding: EdgeInsets.symmetric(horizontal: 40),
+      //     child: Text(
+      //       "TCareer",
+      //       style: TextStyle(
+      //           color: Colors.black, fontWeight: FontWeight.w700, fontSize: 18),
+      //       textAlign: TextAlign.end,
+      //     ),
+      //   ),
+      // ]),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -37,7 +37,7 @@ class IntroPage extends StatelessWidget {
               child: SvgPicture.asset("assets/images/splash/intro.svg"),
             ),
             const SizedBox(
-              height: 60,
+              height: 20,
             ),
             introduction(),
             const SizedBox(
@@ -68,7 +68,7 @@ class IntroPage extends StatelessWidget {
             children: [
           TextSpan(text: "Find Your\n"),
           TextSpan(
-              text: "Dream Job\n", style: TextStyle(color: Color(0xffFCA34D))),
+              text: "Dream Job\n", style: TextStyle(color: AppColors.primary)),
           TextSpan(text: "Here!")
         ]));
   }

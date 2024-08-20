@@ -38,12 +38,12 @@ class HomePage extends StatelessWidget {
           separatorBuilder: (context, index) => const SizedBox(
             height: 10,
           ),
-          padding: EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           itemCount: 5,
           itemBuilder: (context, index) {
             return Container(
               color: Colors.white,
-              padding: EdgeInsets.all(4),
+              padding: const EdgeInsets.all(4),
               width: MediaQuery.of(context).size.width,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -86,7 +86,7 @@ class HomePage extends StatelessWidget {
                       const SizedBox(
                         height: 10,
                       ),
-                      Text(
+                      const Text(
                           "Chi tiết về chip Tensor G4 trên Pixel 9: Hiệu năng vẫn kém, nhưng khắc phục được 1 thứ rất quan trọng của dòng Pixel😎"),
                       const SizedBox(
                         height: 10,
@@ -107,22 +107,22 @@ class HomePage extends StatelessWidget {
                                 text: TextSpan(children: [
                               WidgetSpan(
                                   child: Container(
-                                padding: EdgeInsets.all(3),
-                                decoration: BoxDecoration(
+                                padding: const EdgeInsets.all(3),
+                                decoration: const BoxDecoration(
                                     shape: BoxShape.circle, color: Colors.blue),
-                                child: Icon(
+                                child: const Icon(
                                   Icons.thumb_up,
                                   color: Colors.white,
                                   size: 10,
                                 ),
                               )),
-                              TextSpan(
+                              const TextSpan(
                                   text: " 116",
                                   style: TextStyle(
                                       color: Colors.black54, fontSize: 12))
                             ])),
                             RichText(
-                                text: TextSpan(
+                                text: const TextSpan(
                                     text: "12 bình luận",
                                     style: TextStyle(
                                         color: Colors.black54, fontSize: 12),
@@ -151,7 +151,7 @@ class HomePage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             RichText(
-                                text: TextSpan(children: [
+                                text: const TextSpan(children: [
                               WidgetSpan(
                                   alignment: PlaceholderAlignment.middle,
                                   child: PhosphorIcon(
@@ -167,7 +167,7 @@ class HomePage extends StatelessWidget {
                                       fontSize: 12))
                             ])),
                             RichText(
-                                text: TextSpan(children: [
+                                text: const TextSpan(children: [
                               WidgetSpan(
                                   alignment: PlaceholderAlignment.middle,
                                   child: PhosphorIcon(
@@ -183,7 +183,7 @@ class HomePage extends StatelessWidget {
                                       fontSize: 12))
                             ])),
                             RichText(
-                                text: TextSpan(children: [
+                                text: const TextSpan(children: [
                               WidgetSpan(
                                   alignment: PlaceholderAlignment.middle,
                                   child: PhosphorIcon(
@@ -199,7 +199,7 @@ class HomePage extends StatelessWidget {
                                       fontSize: 12))
                             ])),
                             RichText(
-                                text: TextSpan(children: [
+                                text: const TextSpan(children: [
                               WidgetSpan(
                                   alignment: PlaceholderAlignment.middle,
                                   child: PhosphorIcon(

@@ -8,6 +8,7 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart' as firebase_ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
 class LoginPage extends ConsumerWidget {
@@ -16,8 +17,6 @@ class LoginPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.watch(loginControllerProvider);
-    controller.phoneController.text = "0776506112";
-    controller.passController.text = "12345678aA@";
 
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
@@ -30,114 +29,100 @@ class LoginPage extends ConsumerWidget {
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Center(
-                  child: Text(
-                    "Welcome Back",
-                    style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.titleLogin),
-                  ),
+                Text(
+                  "Sign in to your\nAccount",
+                  style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
                 ),
                 const SizedBox(
-                  height: 80,
+                  height: 20,
                 ),
-                Form(
-                    key: controller.formKey,
-                    child: Column(
-                      children: [
-                        TextInputForm(
-                          controller: controller.phoneController,
-                          // isRequired: true,
-                          title: "Phone",
-                          hintText: "Fill number phone",
-                          validator: Validator.phone,
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        TextInputForm(
-                          validator: Validator.password,
-                          controller: controller.passController,
-                          // isRequired: true,
-                          isSecurity: true,
-                          title: "Password",
-                          hintText: "Fill password",
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                              onPressed: () {},
-                              child: const Text(
-                                "Forgot Password ?",
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                    color: AppColors.titleLogin),
-                              )),
-                        ),
-                        const SizedBox(
-                          height: 40,
-                        ),
-                        SizedBox(
-                          height: 50,
-                          width: MediaQuery.of(context).size.width,
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(6)),
-                                  backgroundColor: AppColors.primary),
-                              onPressed: () async =>
-                                  controller.onLogin(context),
-                              child: const Text(
-                                "LOGIN",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: 0.84),
-                              )),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          height: 50,
-                          child: SignInButton(Buttons.google,
+                const Text(
+                  "Enter your email and password to log in ",
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Column(
+                  children: [
+                    TextInputForm(
+                      controller: controller.phoneController,
+                      // isRequired: true,
+                      title: "Phone",
+                      hintText: "Fill number phone",
+                      validator: Validator.phone,
+                    ),
+                    TextInputForm(
+                      validator: Validator.password,
+                      controller: controller.passController,
+                      // isRequired: true,
+                      isSecurity: true,
+                      title: "Password",
+                      hintText: "Fill password",
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            "Forgot Password ?",
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.titleLogin),
+                          )),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      height: 50,
+                      width: MediaQuery.of(context).size.width,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(6)),
-                              onPressed: () =>
-                                  controller.signInWithGoogle(context)),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        RichText(
-                          text: TextSpan(
-                              style: TextStyle(
-                                  color: Colors.black45,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400),
-                              text: "You don't have an account yet?",
-                              children: [
-                                WidgetSpan(
-                                    alignment: PlaceholderAlignment.middle,
-                                    child: TextButton(
-                                        onPressed: () {},
-                                        child: Text(
-                                          "Signup",
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w400,
-                                              color: Color(0xffFF9228)),
-                                        )))
-                              ]),
-                        )
-                      ],
-                    ))
+                              backgroundColor: AppColors.primary),
+                          onPressed: () async => controller.onLogin(context),
+                          child: const Text(
+                            "LOGIN",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.84),
+                          )),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: 50,
+                      child: SignInButton(Buttons.google,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6)),
+                          onPressed: () =>
+                              controller.signInWithGoogle(context)),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    TextButton(
+                        onPressed: () => context.push('/register'),
+                        child: const Text("Create new account",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Color(
+                                  0xff494949,
+                                ))))
+                  ],
+                )
               ],
             ),
           ),

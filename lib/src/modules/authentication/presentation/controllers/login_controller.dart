@@ -16,10 +16,12 @@ class LoginController extends StateNotifier<void> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController passController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  Future<void> login(BuildContext context) async {
+  Future<void> login(BuildContext context,
+      {String? phone, String? password}) async {
     AppUtils.loadingApi(() async {
       final body = LoginRequest(
-          phone: phoneController.text, password: passController.text);
+          phone: phone ?? phoneController.text,
+          password: password ?? passController.text);
       await loginUseCaseProvider.login(body);
 
       context.pop();
@@ -33,13 +35,8 @@ class LoginController extends StateNotifier<void> {
     }
   }
 
-  final FirebaseAuth auth = FirebaseAuth.instance;
-
   Future<void> signInWithGoogle(BuildContext context) async {
     await loginUseCaseProvider.loginWithGoogle();
-
     context.go("/home");
-
-    // sss
   }
 }

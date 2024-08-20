@@ -64,7 +64,7 @@ class TextInputFormState extends State<TextInputForm> {
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: Colors.black,
+                  color: Colors.black54,
                 ),
               ),
               WidgetSpan(
@@ -105,8 +105,16 @@ class TextInputFormState extends State<TextInputForm> {
                 child: IconButton(
                     onPressed: () => handleShowPass(),
                     icon: isShowPassword
-                        ? const Icon(Icons.visibility_off_outlined)
-                        : const Icon(Icons.visibility_outlined)),
+                        ? const Icon(
+                            Icons.visibility_off_outlined,
+                            size: 20,
+                            color: Colors.grey,
+                          )
+                        : const Icon(
+                            Icons.visibility_outlined,
+                            size: 20,
+                            color: Colors.grey,
+                          )),
               ),
               enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
