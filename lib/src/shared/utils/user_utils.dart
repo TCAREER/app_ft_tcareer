@@ -8,9 +8,11 @@ class UserUtils {
   final Ref ref;
   UserUtils(this.ref);
 
-  Future<void> saveAuthToken({required String authToken}) async {
+  Future<void> saveAuthToken(
+      {required String authToken, required String refreshToken}) async {
     final sharedRef = await ref.read(sharedPreferencesProvider.future);
     sharedRef.setString(AppConstants.authToken, authToken);
+    sharedRef.setString(AppConstants.refreshToken, refreshToken);
     // ref.read(isAuthenticatedProvider.notifier).update((state) => true);
   }
 

@@ -6,6 +6,7 @@ class AppConstants {
   static const clientId =
       "119121456339-h1j2c85f7gsskcfphgptm8btf3qqlu9s.apps.googleusercontent.com";
   static const authToken = "authToken";
+  static const refreshToken = "refreshToken";
   static const resetPasswordKey =
       "iuV0MFNGDdAqwi5o5GRoauKoDMHR5qXsi0W2cMk7Zc2SjqTCGxfMbVDSyBZEUStuPEG53P4";
 }

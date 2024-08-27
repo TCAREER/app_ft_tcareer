@@ -27,7 +27,9 @@ class AuthRepository {
       final apiServices = ref.watch(apiServiceProvider);
       final response = await apiServices.postLogin(body: body);
       final userUtil = ref.watch(userUtilsProvider);
-      userUtil.saveAuthToken(authToken: response.accessToken ?? "");
+      userUtil.saveAuthToken(
+          authToken: response.accessToken ?? "",
+          refreshToken: response.refreshToken ?? "");
 
       // ref.read(isAuthenticatedProvider.notifier).update((state) => true);
     } on DioException catch (e) {
@@ -44,7 +46,9 @@ class AuthRepository {
       final response = await apiServices.postLoginWithGoogle(
           body: LoginGoogleRequest(accessToken: accessToken));
       final userUtil = ref.watch(userUtilsProvider);
-      userUtil.saveAuthToken(authToken: response.accessToken ?? "");
+      userUtil.saveAuthToken(
+          authToken: response.accessToken ?? "",
+          refreshToken: response.refreshToken ?? "");
     } on DioException catch (e) {
       rethrow;
     }
