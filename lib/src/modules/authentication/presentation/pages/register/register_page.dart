@@ -1,4 +1,4 @@
-import 'package:app_tcareer/src/modules/authentication/presentation/providers.dart';
+import 'package:app_tcareer/src/modules/authentication/presentation/auth_providers.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/widgets/text_input_form.dart';
 import 'package:app_tcareer/src/shared/configs/app_colors.dart';
 import 'package:app_tcareer/src/shared/utils/validator.dart';

@@ -1,3 +1,5 @@
+import 'package:app_tcareer/src/modules/authentication/data/models/forgot_password_request.dart';
+import 'package:app_tcareer/src/modules/authentication/data/models/forgot_password_verify_request.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/login_google_request.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/login_request.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/register_request.dart';
@@ -44,6 +46,16 @@ class AuthRepository {
     } on DioException catch (e) {
       rethrow;
     }
+  }
+
+  Future<void> forgotPassword(ForgotPasswordRequest body) async {
+    final apiServices = ref.watch(apiServiceProvider);
+    await apiServices.postForgotPassword(body: body);
+  }
+
+  Future<void> forgotPasswordVerify(ForgotPasswordVerifyRequest body) async {
+    final apiServices = ref.watch(apiServiceProvider);
+    await apiServices.postForgotPasswordVerify(body: body);
   }
 }
 

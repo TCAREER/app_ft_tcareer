@@ -1,23 +1,17 @@
-import 'package:app_tcareer/src/modules/authentication/presentation/controllers/login_controller.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/auth_providers.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/widgets/text_input_form.dart';
 import 'package:app_tcareer/src/shared/configs/app_colors.dart';
 import 'package:app_tcareer/src/shared/utils/validator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart' as firebase_ui;
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sign_in_button/sign_in_button.dart';
 
-class LoginPage extends ConsumerWidget {
-  const LoginPage({super.key});
+class ForgotPasswordPage extends ConsumerWidget {
+  const ForgotPasswordPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.watch(loginControllerProvider);
-
+    final controller = ref.watch(forgotPasswordControllerProvider);
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
@@ -31,8 +25,8 @@ class LoginPage extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Sign in to your\nAccount",
+                const Text(
+                  "Forgot Password",
                   style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -42,7 +36,7 @@ class LoginPage extends ConsumerWidget {
                   height: 20,
                 ),
                 const Text(
-                  "Enter your email and password to log in ",
+                  "Please enter your email to reset the password ",
                   style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
                 const SizedBox(
@@ -53,31 +47,11 @@ class LoginPage extends ConsumerWidget {
                   child: Column(
                     children: [
                       TextInputForm(
-                        controller: controller.phoneController,
+                        controller: controller.textInputController,
                         // isRequired: true,
-                        title: "Phone",
-                        hintText: "Fill number phone",
-                        validator: Validator.phone,
-                      ),
-                      TextInputForm(
-                        validator: Validator.password,
-                        controller: controller.passController,
-                        // isRequired: true,
-                        isSecurity: true,
-                        title: "Password",
-                        hintText: "Fill password",
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                            onPressed: () => context.push('/forgotPassword'),
-                            child: const Text(
-                              "Forgot Password ?",
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                  color: AppColors.titleLogin),
-                            )),
+                        title: "Email or phone",
+                        hintText: "Fill email or phone",
+                        validator: Validator.email,
                       ),
                       const SizedBox(
                         height: 20,
@@ -90,9 +64,10 @@ class LoginPage extends ConsumerWidget {
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(6)),
                                 backgroundColor: AppColors.primary),
-                            onPressed: () async => controller.onLogin(context),
+                            onPressed: () async =>
+                                controller.forgotPassword(context),
                             child: const Text(
-                              "Continue",
+                              "Send verification",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -103,26 +78,9 @@ class LoginPage extends ConsumerWidget {
                       const SizedBox(
                         height: 20,
                       ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        height: 50,
-                        child: SignInButton(Buttons.google,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(6)),
-                            onPressed: () =>
-                                controller.signInWithGoogle(context)),
-                      ),
                       const SizedBox(
                         height: 20,
                       ),
-                      TextButton(
-                          onPressed: () => context.push('/register'),
-                          child: const Text("Create new account",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Color(
-                                    0xff494949,
-                                  ))))
                     ],
                   ),
                 )

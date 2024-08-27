@@ -1,7 +1,8 @@
 import 'package:app_tcareer/src/modules/authentication/data/repositories/auth_repository.dart';
+import 'package:app_tcareer/src/modules/authentication/presentation/pages/forgot_password/forgot_password_page.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/pages/login/login_page.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/pages/register/register_page.dart';
-import 'package:app_tcareer/src/modules/authentication/presentation/providers.dart';
+import 'package:app_tcareer/src/modules/authentication/presentation/pages/verify/verify_page.dart';
 import 'package:app_tcareer/src/modules/home/presentation/pages/home_page.dart';
 import 'package:app_tcareer/src/modules/splash/intro_page.dart';
 import 'package:app_tcareer/src/modules/splash/splash_page.dart';
@@ -12,13 +13,22 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-enum RouteNames { splash, intro, register, login }
+enum RouteNames {
+  splash,
+  intro,
+  register,
+  login,
+  forgotPassword,
+  verify,
+  resetPassword
+}
 
 class AppRouter {
   static final navigatorKey = GlobalKey<NavigatorState>();
 
   static GoRouter router(WidgetRef ref) {
     return GoRouter(
+        debugLogDiagnostics: true,
         navigatorKey: navigatorKey,
         initialLocation: "/splash",
         // redirect: (context, state) async {
@@ -73,6 +83,23 @@ class AppRouter {
                 child: const RegisterPage(),
                 transitionsBuilder: fadeTransitionBuilder),
           ),
+          GoRoute(
+              path: "/${RouteNames.forgotPassword.name}",
+              name: RouteNames.forgotPassword.name,
+              pageBuilder: (context, state) => CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const ForgotPasswordPage(),
+                  transitionsBuilder: fadeTransitionBuilder),
+              routes: [
+                GoRoute(
+                    path: RouteNames.verify.name,
+                    name: RouteNames.verify.name,
+                    pageBuilder: (context, state) => CustomTransitionPage(
+                        key: state.pageKey,
+                        child: const VerifyPage(),
+                        transitionsBuilder: fadeTransitionBuilder),
+                    routes: []),
+              ]),
         ],
         refreshListenable: GoRouterRefreshStream());
   }
