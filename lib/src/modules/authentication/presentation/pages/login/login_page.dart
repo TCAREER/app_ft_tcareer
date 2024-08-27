@@ -1,5 +1,6 @@
 import 'package:app_tcareer/src/modules/authentication/presentation/controllers/login_controller.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/auth_providers.dart';
+import 'package:app_tcareer/src/modules/authentication/presentation/widgets/auth_button_widget.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/widgets/text_input_form.dart';
 import 'package:app_tcareer/src/shared/configs/app_colors.dart';
 import 'package:app_tcareer/src/shared/utils/validator.dart';
@@ -56,7 +57,7 @@ class LoginPage extends ConsumerWidget {
                         controller: controller.phoneController,
                         // isRequired: true,
                         title: "Phone",
-                        hintText: "Fill number phone",
+                        hintText: "Enter phone number",
                         validator: Validator.phone,
                       ),
                       TextInputForm(
@@ -65,7 +66,7 @@ class LoginPage extends ConsumerWidget {
                         // isRequired: true,
                         isSecurity: true,
                         title: "Password",
-                        hintText: "Fill password",
+                        hintText: "Enter password",
                       ),
                       Align(
                         alignment: Alignment.centerRight,
@@ -82,24 +83,10 @@ class LoginPage extends ConsumerWidget {
                       const SizedBox(
                         height: 20,
                       ),
-                      SizedBox(
-                        height: 50,
-                        width: MediaQuery.of(context).size.width,
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(6)),
-                                backgroundColor: AppColors.primary),
-                            onPressed: () async => controller.onLogin(context),
-                            child: const Text(
-                              "Continue",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 0.84),
-                            )),
-                      ),
+                      authButtonWidget(
+                          context: context,
+                          onPressed: () async => controller.onLogin(context),
+                          title: "Continue"),
                       const SizedBox(
                         height: 20,
                       ),

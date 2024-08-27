@@ -1,5 +1,6 @@
 import 'package:app_tcareer/src/modules/authentication/data/repositories/auth_repository.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/pages/forgot_password/forgot_password_page.dart';
+import 'package:app_tcareer/src/modules/authentication/presentation/pages/forgot_password/reset_password_page.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/pages/login/login_page.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/pages/register/register_page.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/pages/verify/verify_page.dart';
@@ -97,6 +98,14 @@ class AppRouter {
                     pageBuilder: (context, state) => CustomTransitionPage(
                         key: state.pageKey,
                         child: const VerifyPage(),
+                        transitionsBuilder: fadeTransitionBuilder),
+                    routes: []),
+                GoRoute(
+                    path: RouteNames.resetPassword.name,
+                    name: RouteNames.resetPassword.name,
+                    pageBuilder: (context, state) => CustomTransitionPage(
+                        key: state.pageKey,
+                        child: const ResetPasswordPage(),
                         transitionsBuilder: fadeTransitionBuilder),
                     routes: []),
               ]),

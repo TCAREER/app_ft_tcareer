@@ -3,6 +3,8 @@ import 'package:app_tcareer/src/modules/authentication/data/models/forgot_passwo
 import 'package:app_tcareer/src/modules/authentication/data/models/login_google_request.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/login_request.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/register_request.dart';
+import 'package:app_tcareer/src/modules/authentication/data/models/reset_password_request.dart';
+import 'package:app_tcareer/src/shared/configs/app_constants.dart';
 import 'package:app_tcareer/src/shared/utils/user_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -56,6 +58,16 @@ class AuthRepository {
   Future<void> forgotPasswordVerify(ForgotPasswordVerifyRequest body) async {
     final apiServices = ref.watch(apiServiceProvider);
     await apiServices.postForgotPasswordVerify(body: body);
+  }
+
+  Future<void> resetPassword(
+      {required String email, required String password}) async {
+    final apiServices = ref.watch(apiServiceProvider);
+    await apiServices.postResetPassword(
+        body: ResetPasswordRequest(
+            email: email,
+            password: password,
+            key: AppConstants.resetPasswordKey));
   }
 }
 

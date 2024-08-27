@@ -5,10 +5,9 @@ import 'package:app_tcareer/src/shared/configs/app_colors.dart';
 import 'package:app_tcareer/src/shared/utils/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
-class ForgotPasswordPage extends ConsumerWidget {
-  const ForgotPasswordPage({super.key});
+class ResetPasswordPage extends ConsumerWidget {
+  const ResetPasswordPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,7 +26,7 @@ class ForgotPasswordPage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "Forgot Password",
+                  "Set a new password",
                   style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -37,22 +36,34 @@ class ForgotPasswordPage extends ConsumerWidget {
                   height: 20,
                 ),
                 const Text(
-                  "Please enter your email to reset the password ",
+                  "Create a new password. Ensure it differs from previous ones for security",
                   style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
                 Form(
-                  key: controller.formKey,
+                  key: controller.keyResetPassword,
                   child: Column(
                     children: [
                       TextInputForm(
-                        controller: controller.textInputController,
+                        isSecurity: true,
+                        controller: controller.passwordController,
                         // isRequired: true,
-                        title: "Email or phone",
-                        hintText: "Enter email or phone",
-                        validator: Validator.email,
+                        title: "Password",
+                        hintText: "Enter password",
+                        validator: Validator.password,
+                      ),
+                      TextInputForm(
+                        isSecurity: true,
+                        controller: controller.confirmPasswordController,
+                        // isRequired: true,
+                        title: "Confirm Password",
+                        hintText: "Re-enter password",
+                        validator: (val) {
+                          return Validator.rePassword(
+                              val, controller.passwordController.text);
+                        },
                       ),
                       const SizedBox(
                         height: 20,
@@ -60,8 +71,8 @@ class ForgotPasswordPage extends ConsumerWidget {
                       authButtonWidget(
                           context: context,
                           onPressed: () async =>
-                              controller.forgotPassword(context),
-                          title: "Send Verification"),
+                              await controller.resetPassword(context),
+                          title: "Update password"),
                       const SizedBox(
                         height: 20,
                       ),

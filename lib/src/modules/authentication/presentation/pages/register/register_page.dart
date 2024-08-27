@@ -1,4 +1,5 @@
 import 'package:app_tcareer/src/modules/authentication/presentation/auth_providers.dart';
+import 'package:app_tcareer/src/modules/authentication/presentation/widgets/auth_button_widget.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/widgets/text_input_form.dart';
 import 'package:app_tcareer/src/shared/configs/app_colors.dart';
 import 'package:app_tcareer/src/shared/utils/validator.dart';
@@ -58,21 +59,21 @@ class RegisterPage extends ConsumerWidget {
                           controller: controller.fullNameController,
                           // isRequired: true,
                           title: "Full Name",
-                          hintText: "Fill full name",
+                          hintText: "Enter full name",
                           validator: Validator.fullname,
                         ),
                         TextInputForm(
                           controller: controller.emailController,
                           // isRequired: true,
                           title: "Email",
-                          hintText: "Fill email",
+                          hintText: "Enter email",
                           validator: Validator.emailCanEmpty,
                         ),
                         TextInputForm(
                           controller: controller.phoneController,
                           // isRequired: true,
                           title: "Phone",
-                          hintText: "Fill phone",
+                          hintText: "Enter phone number",
                           validator: Validator.phone,
                         ),
                         TextInputForm(
@@ -81,42 +82,17 @@ class RegisterPage extends ConsumerWidget {
                           // isRequired: true,
                           isSecurity: true,
                           title: "Password",
-                          hintText: "Fill password",
+                          hintText: "Enter password",
                         ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                              onPressed: () {},
-                              child: const Text(
-                                "Forgot Password ?",
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                    color: AppColors.titleLogin),
-                              )),
-                        ),
+
                         const SizedBox(
                           height: 20,
                         ),
-                        SizedBox(
-                          height: 50,
-                          width: MediaQuery.of(context).size.width,
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(6)),
-                                  backgroundColor: AppColors.primary),
-                              onPressed: () async =>
-                                  controller.onCreate(context),
-                              child: const Text(
-                                "Register",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: 0.84),
-                              )),
-                        ),
+                        authButtonWidget(
+                            context: context,
+                            onPressed: () async => controller.onCreate(context),
+                            title: "Register"),
+
                         const SizedBox(
                           height: 20,
                         ),

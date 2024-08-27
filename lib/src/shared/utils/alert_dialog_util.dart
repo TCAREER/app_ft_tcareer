@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class AlertDialogUtil {
-  AlertDialog alertDialog(
+  static AlertDialog alertDialog(
       {required BuildContext context,
       required String title,
       required String content}) {
@@ -29,7 +29,7 @@ class AlertDialogUtil {
     );
   }
 
-  void showAlert(
+  static void showAlert(
       {required BuildContext context,
       required String title,
       required String content}) {
