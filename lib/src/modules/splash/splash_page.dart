@@ -1,5 +1,4 @@
-import 'package:app_tcareer/src/routes/app_router.dart';
-import 'package:app_tcareer/src/shared/configs/app_colors.dart';
+import 'package:app_tcareer/src/configs/app_colors.dart';
 import 'package:app_tcareer/src/shared/utils/user_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -1,10 +1,10 @@
+import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/forgot_password_request.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/forgot_password_verify_request.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/login_google_request.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/login_request.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/register_request.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/reset_password_request.dart';
-import 'package:app_tcareer/src/shared/configs/app_constants.dart';
 import 'package:app_tcareer/src/shared/utils/user_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';

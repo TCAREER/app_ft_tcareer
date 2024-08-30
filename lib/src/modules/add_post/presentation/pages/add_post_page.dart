@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class PostPage extends StatelessWidget {
-  const PostPage({super.key});
+class AddPostPage extends StatelessWidget {
+  const AddPostPage({super.key});
 
   @override
   Widget build(BuildContext context) {

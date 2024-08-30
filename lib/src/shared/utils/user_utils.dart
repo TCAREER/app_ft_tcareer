@@ -1,5 +1,5 @@
-import 'package:app_tcareer/src/shared/configs/app_constants.dart';
-import 'package:app_tcareer/src/shared/configs/shared_preferences_provider.dart';
+import 'package:app_tcareer/src/configs/app_constants.dart';
+import 'package:app_tcareer/src/configs/shared_preferences_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

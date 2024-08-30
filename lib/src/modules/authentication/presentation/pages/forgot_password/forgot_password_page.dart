@@ -1,7 +1,7 @@
 import 'package:app_tcareer/src/modules/authentication/presentation/auth_providers.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/widgets/auth_button_widget.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/widgets/text_input_form.dart';
-import 'package:app_tcareer/src/shared/configs/app_colors.dart';
+
 import 'package:app_tcareer/src/shared/utils/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

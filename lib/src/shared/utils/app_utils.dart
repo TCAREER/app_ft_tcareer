@@ -1,5 +1,4 @@
-import 'package:app_tcareer/src/shared/configs/exceptions/api_exception.dart';
-
+import 'package:app_tcareer/src/configs/exceptions/api_exception.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

@@ -1,7 +1,7 @@
 import 'package:app_tcareer/firebase_options.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/login_request.dart';
 import 'package:app_tcareer/src/modules/authentication/usecases/login_use_case.dart';
-import 'package:app_tcareer/src/shared/configs/app_constants.dart';
+import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/shared/utils/app_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

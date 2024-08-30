@@ -1,6 +1,6 @@
+import 'package:app_tcareer/src/configs/app_colors.dart';
+import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/routes/app_router.dart';
-import 'package:app_tcareer/src/shared/configs/app_colors.dart';
-import 'package:app_tcareer/src/shared/configs/app_constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

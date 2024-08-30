@@ -1,8 +1,8 @@
+import 'package:app_tcareer/src/configs/app_colors.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/controllers/login_controller.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/auth_providers.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/widgets/auth_button_widget.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/widgets/text_input_form.dart';
-import 'package:app_tcareer/src/shared/configs/app_colors.dart';
 import 'package:app_tcareer/src/shared/utils/validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart' as firebase_ui;
