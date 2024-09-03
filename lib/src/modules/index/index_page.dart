@@ -23,7 +23,7 @@ class IndexPage extends StatelessWidget {
         "label": "Công việc"
       },
       {
-        'icon': PhosphorIconsThin.plus,
+        'icon': PhosphorIconsFill.plus,
         'activeIcon': PhosphorIconsFill.plus,
         'route': "/${RouteNames.create.name}",
         "label": "Tạo mới"

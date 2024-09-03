@@ -22,8 +22,12 @@ class PostRepository {
 
     PostResponse? data;
 
-    final response = await dio.get(
-        "https://newsapi.org/v2/everything?q=technology&from=2024-07-30&sortBy=publishedAt&apiKey=${AppConstants.apiPostKey}");
+    final response = await dio.get("https://newsapi.org/v2/everything",
+        queryParameters: {
+          "q": "tech",
+          "sortBy": "publishedAt",
+          "apiKey": AppConstants.apiPostKey
+        });
     data = PostResponse.fromJson(response.data);
     return data;
   }

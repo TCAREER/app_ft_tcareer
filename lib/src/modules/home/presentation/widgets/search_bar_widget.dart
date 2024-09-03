@@ -9,11 +9,14 @@ Widget searchBarWidget() {
           contentPadding:
               const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
           hintText: "Tìm kiếm",
-          prefixIcon: Icon(Icons.search),
-          fillColor: Color(0xffEEF3F8),
+          prefixIcon: Icon(
+            Icons.search,
+            color: Colors.black45,
+          ),
+          fillColor: Color(0xffEBF2FA),
           filled: true,
           border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(20),
               borderSide: BorderSide.none)),
     ),
   );

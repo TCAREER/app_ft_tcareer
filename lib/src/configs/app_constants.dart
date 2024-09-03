@@ -9,5 +9,5 @@ class AppConstants {
   static const refreshToken = "refreshToken";
   static const resetPasswordKey =
       "iuV0MFNGDdAqwi5o5GRoauKoDMHR5qXsi0W2cMk7Zc2SjqTCGxfMbVDSyBZEUStuPEG53P4";
-  static const apiPostKey = "dd382257ae6b4dd9a287a59462eb050a";
+  static const apiPostKey = "2e5574eee202493cab156cc3ef6b352d";
 }
