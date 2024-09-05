@@ -84,7 +84,7 @@ Widget postWidget({
                                         borderRadius:
                                             BorderRadius.circular(20)),
                                     backgroundColor: Colors.blueGrey.shade50),
-                                child: Text(
+                                child: const Text(
                                   "Theo dõi",
                                   style: TextStyle(
                                       color: Colors.black, fontSize: 12),
@@ -93,7 +93,7 @@ Widget postWidget({
                           const SizedBox(
                             width: 10,
                           ),
-                          PhosphorIcon(PhosphorIconsBold.dotsThree),
+                          const PhosphorIcon(PhosphorIconsBold.dotsThree),
                         ],
                       )
                     ],
