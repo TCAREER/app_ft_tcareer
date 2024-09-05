@@ -14,8 +14,8 @@ Widget cachedImageWidget(
     replacement: Container(
       // width: width,
       // height: height,
-      color: Colors.grey.shade200,
-      child: Icon(
+      color: Colors.white,
+      child: const Icon(
         Icons.image,
         size: 100,
       ),
@@ -31,7 +31,7 @@ Widget cachedImageWidget(
           return Container(
             width: width,
             height: height,
-            color: Colors.grey.shade200,
+            color: Colors.white,
             child: const Icon(
               Icons.image,
               size: 100,

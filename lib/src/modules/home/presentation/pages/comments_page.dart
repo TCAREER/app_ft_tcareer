@@ -22,6 +22,7 @@ class CommentsPage extends StatelessWidget {
             Expanded(child: items())
           ],
         ),
+        bottomNavigationBar: bottomAppBar(),
       ),
     );
   }
@@ -72,6 +73,62 @@ class CommentsPage extends StatelessWidget {
       },
       separatorBuilder: (context, index) => const SizedBox(
         height: 10,
+      ),
+    );
+  }
+
+  Widget commentInput() {
+    return SizedBox(
+      height: 45,
+      child: TextField(
+        decoration: InputDecoration(
+          hintText: "Bình luận cho Quang Thiện",
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: BorderSide(color: Colors.grey.shade200)),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: BorderSide(color: Colors.grey.shade200)),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: BorderSide(color: Colors.grey.shade200)),
+        ),
+      ),
+    );
+  }
+
+  Widget bottomAppBar() {
+    return BottomAppBar(
+      color: Colors.white,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            flex: 1,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(
+                      "https://mighty.tools/mockmind-api/content/human/39.jpg"),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            flex: 6,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                commentInput(),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
