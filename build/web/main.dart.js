@@ -57165,32 +57165,36 @@ return q},
 $S:413}
 A.aNN.prototype={
 $2(a,b){return this.a6R(a,b)},
-a6R(a,b){var s=0,r=A.y(t.H),q=this,p,o,n,m,l,k
+a6R(a,b){var s=0,r=A.y(t.H),q=this,p,o,n,m,l
 var $async$$2=A.u(function(c,d){if(c===1)return A.v(d,r)
 while(true)switch(s){case 0:s=2
 return A.F($.aPO().b.rs(0,a.gcO().j(0),!1),$async$$2)
-case 2:o=d
-n=o!=null&&o.b.y8()
-m=t.z
-s=n?3:5
+case 2:p=d
+o=p!=null&&p.b.y8()
+n=t.z
+s=o?3:5
 break
-case 3:l=b
-k=A
+case 3:m=b
+l=A
 s=6
-return A.F(o.b.FW(),$async$$2)
-case 6:l.ab(k.avU(d,null,null,!1,B.q6,a,200,null,m))
+return A.F(p.b.FW(),$async$$2)
+case 6:m.ab(l.avU(d,null,null,!1,B.q6,a,200,null,n))
 s=4
 break
-case 5:s=7
+case 5:o=A.l(t.N,n)
+m=o
+l="Authorization"
+s=7
 return A.F(q.a.hZ(0,$.Pp(),t.tF).A_(),$async$$2)
-case 7:p=d
-n=A.l(t.N,m)
-n.n(0,"Access-Control-Allow-Origin","*")
-n.n(0,"Authorization","Bearer "+p)
-m=a.b
-m===$&&A.a()
-n.F(0,m)
-a.sa2P(0,n)
+case 7:m.n(0,l,"Bearer "+d)
+o.n(0,"origin",null)
+o.n(0,"accept","*/*")
+o.n(0,"sec-fetch-mode","cors")
+o.n(0,"accept-language","vi,en-US;q=0.9,en;q=0.8")
+n=a.b
+n===$&&A.a()
+o.F(0,n)
+a.sa2P(0,o)
 b.eq(0,a)
 case 4:return A.w(null,r)}})
 return A.x($async$$2,r)},
