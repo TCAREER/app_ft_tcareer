@@ -31,8 +31,12 @@ final apiServiceProvider = Provider<ApiServices>((ref) {
       final userUtils = ref.read(userUtilsProvider);
       final authToken = await userUtils.getAuthToken();
       options.headers = {
-        "Access-Control-Allow-Origin": "*",
+        // "Access-Control-Allow-Origin": "*",
         "Authorization": "Bearer $authToken",
+        "origin": null,
+        "accept": "*/*",
+        "sec-fetch-mode": "cors",
+        "accept-language": "vi,en-US;q=0.9,en;q=0.8",
         ...options.headers,
       };
       handler.next(options);
