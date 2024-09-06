@@ -10,15 +10,6 @@ jobs:
     steps:
       - name: Get the latest code
         uses: actions/checkout@v3
-      # - name: Install Flutter
-      #   uses: subosito/flutter-action@v2
-      #   with:
-      #     flutter-version: 'stable'
-      # - name: Clean build foder
-      #   run: sudo rm -rf build
-
-      # - name: Build web release
-      #   run:
 
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@v4.0.0
