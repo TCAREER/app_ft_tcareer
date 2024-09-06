@@ -3,6 +3,7 @@ import 'package:app_tcareer/src/modules/home/presentation/pages/home_page.dart';
 import 'package:app_tcareer/src/modules/index/index_page.dart';
 import 'package:app_tcareer/src/modules/messages/presentation/pages/message_page.dart';
 import 'package:app_tcareer/src/modules/profile/presentation/pages/profile_page.dart';
+import 'package:app_tcareer/src/routes/home_route.dart';
 import 'package:app_tcareer/src/routes/transition_builder.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
@@ -17,13 +18,13 @@ class Index {
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: "/${RouteNames.home.name}",
-              name: RouteNames.home.name,
-              pageBuilder: (context, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: const HomePage(),
-                  transitionsBuilder: fadeTransitionBuilder),
-            ),
+                path: "/${RouteNames.home.name}",
+                name: RouteNames.home.name,
+                pageBuilder: (context, state) => CustomTransitionPage(
+                    key: state.pageKey,
+                    child: const HomePage(),
+                    transitionsBuilder: fadeTransitionBuilder),
+                routes: HomeRoute.routes),
           ],
         ),
         StatefulShellBranch(routes: [

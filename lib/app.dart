@@ -25,7 +25,7 @@ class App extends StatelessWidget {
               routerConfig: router,
               title: 'TCareer',
               theme: ThemeData(
-                inputDecorationTheme: InputDecorationTheme(
+                inputDecorationTheme: const InputDecorationTheme(
                     hintStyle: TextStyle(color: Colors.black45, fontSize: 14)),
                 colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
                 useMaterial3: true,

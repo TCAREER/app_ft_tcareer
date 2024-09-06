@@ -1,6 +1,7 @@
 import 'package:app_tcareer/src/modules/home/data/models/post_response.dart';
 import 'package:app_tcareer/src/modules/home/usecases/post_use_case.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 
 class PostState {
   final bool isLoading;
@@ -38,6 +39,10 @@ class PostController extends StateNotifier<PostState> {
     state = state.copyWith(isLoading: true);
     final data = await postUseCase.getPost();
     state = state.copyWith(isLoading: false, postData: data);
+  }
+
+  Future<void> sharePost({required String url, required String title}) async {
+    await Share.share(url, subject: title);
   }
 }
 

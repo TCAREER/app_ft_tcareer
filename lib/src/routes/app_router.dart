@@ -32,24 +32,24 @@ class AppRouter {
         debugLogDiagnostics: true,
         navigatorKey: navigatorKey,
         initialLocation: "/splash",
-        // redirect: (context, state) async {
-        //   final userUtils = ref.watch(userUtilsProvider);
-        //   print(">>>>>>>>>>>${await userUtils.isAuthenticated()}");
-        //   final isAuthenticated = ref.watch(isAuthenticatedProvider);
-        //   print(">>>>>>>>>>>>>>>>>>$isAuthenticated");
-        //   if (isAuthenticated != true ||
-        //       await userUtils.isAuthenticated() != true) {
-        //     if (state.fullPath?.contains("/intro") == true) {
-        //       return "/intro";
-        //     }
-        //     if (state.fullPath?.contains("/login") == true) {
-        //       return "/login";
-        //     }
-        //     return "/splash";
-        //   }
+        redirect: (context, state) async {
+          // final userUtils = ref.watch(userUtilsProvider);
+          // print(">>>>>>>>>>>${await userUtils.isAuthenticated()}");
+          // // final isAuthenticated = ref.watch(isAuthenticatedProvider);
+          // print(">>>>>>>>>>>>>>>>>>$isAuthenticated");
+          // if (isAuthenticated != true ||
+          //     await userUtils.isAuthenticated() != true) {
+          //   if (state.fullPath?.contains("/intro") == true) {
+          //     return "/intro";
+          //   }
+          //   if (state.fullPath?.contains("/login") == true) {
+          //     return "/login";
+          //   }
+          //   return "/splash";
+          // }
 
-        //   return null;
-        // },
+          return null;
+        },
         routes: [
           Index.router,
           GoRoute(

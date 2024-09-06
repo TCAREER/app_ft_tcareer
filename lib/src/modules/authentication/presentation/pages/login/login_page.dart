@@ -86,6 +86,7 @@ class LoginPage extends ConsumerWidget {
                       authButtonWidget(
                           context: context,
                           onPressed: () async => controller.onLogin(context),
+                          // onPressed:()=>context.goNamed('home'),
                           title: "Continue"),
                       const SizedBox(
                         height: 20,

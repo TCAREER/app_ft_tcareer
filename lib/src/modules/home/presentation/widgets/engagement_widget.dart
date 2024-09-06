@@ -21,24 +21,26 @@ Widget engagementWidget(WidgetRef ref, String postId, BuildContext context) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 5),
     child: Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         RichText(
+            textAlign: TextAlign.center,
             text: const TextSpan(children: [
-          WidgetSpan(
-              alignment: PlaceholderAlignment.middle,
-              child: PhosphorIcon(
-                PhosphorIconsBold.heart,
-                color: Colors.black,
-                size: 20,
-              )),
-          TextSpan(
-              text: " 10k",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 12))
-        ])),
+              WidgetSpan(
+                  alignment: PlaceholderAlignment.middle,
+                  child: PhosphorIcon(
+                    PhosphorIconsBold.heart,
+                    color: Colors.black,
+                    size: 20,
+                  )),
+              TextSpan(
+                  text: " 10k",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 12))
+            ])),
         GestureDetector(
           onTap: () => index.showBottomSheet(
               context: context,
