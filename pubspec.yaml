@@ -63,6 +63,11 @@ dependencies:
     git:
       url: https://github.com/devlow03/flutter_animated_reaction.git
       ref: main
+  shimmer: ^3.0.0
+  skeletonizer: ^1.4.2
+  carousel_slider: ^5.0.0
+  smooth_page_indicator: ^1.2.0+3
+  share_plus: ^10.0.0
 
 dev_dependencies:
   flutter_test:

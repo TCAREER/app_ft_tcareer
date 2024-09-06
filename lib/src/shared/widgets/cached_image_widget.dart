@@ -1,6 +1,8 @@
+import 'package:app_tcareer/src/shared/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Widget cachedImageWidget(
     {String? imageUrl,
@@ -12,12 +14,12 @@ Widget cachedImageWidget(
   return Visibility(
     visible: imageUrl != "" && imageUrl != null,
     replacement: Container(
-      // width: width,
-      // height: height,
+      width: width,
+      height: ScreenUtil().screenHeight * .4,
       color: Colors.white,
       child: const Icon(
         Icons.image,
-        size: 100,
+        size: 30,
       ),
     ),
     child: CachedNetworkImage(
@@ -28,20 +30,22 @@ Widget cachedImageWidget(
         color: color, // Màu tối lại
         colorBlendMode: colorBlendMode,
         placeholder: (context, url) {
+          return shimmerLoadingWidget(
+              child: Container(
+            width: width,
+            height: ScreenUtil().screenHeight * .2,
+            color: Colors.white,
+          ));
+        },
+        errorWidget: (context, url, error) {
           return Container(
             width: width,
-            height: height,
+            height: ScreenUtil().screenHeight * .4,
             color: Colors.white,
             child: const Icon(
               Icons.image,
-              size: 100,
+              size: 30,
             ),
-          );
-        },
-        errorWidget: (context, url, error) {
-          return const Icon(
-            Icons.image,
-            size: 100,
           );
         }),
   );

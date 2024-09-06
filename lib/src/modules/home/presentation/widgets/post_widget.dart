@@ -5,6 +5,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+
+import 'post_image_widget.dart';
 
 Widget postWidget({
   required BuildContext context,
@@ -23,7 +26,7 @@ Widget postWidget({
   return Container(
     color: Colors.white,
     // padding: const EdgeInsets.all(4),
-    width: MediaQuery.of(context).size.width,
+    width: ScreenUtil().screenWidth,
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,11 +111,7 @@ Widget postWidget({
             const SizedBox(
               height: 10,
             ),
-            cachedImageWidget(
-                imageUrl: imageUrl,
-                // height: ScreenUtil().screenHeight * .6,
-                width: ScreenUtil().screenWidth,
-                fit: BoxFit.cover),
+            postImageWidget(imageUrl: imageUrl),
             const SizedBox(
               height: 10,
             ),
