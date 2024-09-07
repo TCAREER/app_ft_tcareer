@@ -56983,12 +56983,12 @@ l=m.NB$
 l.C(l,new A.xI(!0))
 l.C(l,A.aZC(!0,!0,90,!0,!0,!0,!1))
 l=t.z
-o=A.aK(["q","tech","sortBy","publishedAt","apiKey","2e5574eee202493cab156cc3ef6b352d"],t.N,l)
+o=A.aK(["q","tech"],t.N,l)
 n=A.yP(null,null,null)
 n.a="GET"
 k=A
 s=3
-return A.E(m.PD(0,"https://newsapi.org/v2/everything",null,null,null,n,o,l),$async$A7)
+return A.E(m.PD(0,"https://posts.thiendev.shop/posts",null,null,null,n,o,l),$async$A7)
 case 3:q=k.bep(b.a)
 s=1
 break
