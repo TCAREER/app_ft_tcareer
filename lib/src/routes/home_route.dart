@@ -1,4 +1,4 @@
-import 'package:app_tcareer/src/modules/home/presentation/pages/post_detail_page.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/pages/post_detail_page.dart';
 import 'package:app_tcareer/src/routes/transition_builder.dart';
 import 'package:go_router/go_router.dart';
 

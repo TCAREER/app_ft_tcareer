@@ -1,5 +1,5 @@
 import 'package:app_tcareer/src/configs/app_constants.dart';
-import 'package:app_tcareer/src/modules/home/data/models/post_response.dart';
+import 'package:app_tcareer/src/modules/posts/data/models/post_response.dart';
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

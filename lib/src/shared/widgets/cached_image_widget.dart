@@ -11,42 +11,29 @@ Widget cachedImageWidget(
     Color? color,
     BoxFit? fit,
     BlendMode? colorBlendMode}) {
-  return Visibility(
-    visible: imageUrl != "" && imageUrl != null,
-    replacement: Container(
+  return CachedNetworkImage(
+      imageUrl: imageUrl ?? "",
+      height: height,
       width: width,
-      height: ScreenUtil().screenHeight * .4,
-      color: Colors.white,
-      child: const Icon(
-        Icons.image,
-        size: 30,
-      ),
-    ),
-    child: CachedNetworkImage(
-        imageUrl: imageUrl ?? "",
-        height: height,
-        width: width,
-        fit: fit,
-        color: color, // Màu tối lại
-        colorBlendMode: colorBlendMode,
-        placeholder: (context, url) {
-          return shimmerLoadingWidget(
-              child: Container(
-            width: width,
-            height: ScreenUtil().screenHeight * .2,
-            color: Colors.white,
-          ));
-        },
-        errorWidget: (context, url, error) {
-          return Container(
-            width: width,
-            height: ScreenUtil().screenHeight * .4,
-            color: Colors.white,
-            child: const Icon(
-              Icons.image,
-              size: 30,
-            ),
-          );
-        }),
+      fit: fit,
+      color: color, // Màu tối lại
+      colorBlendMode: colorBlendMode,
+      placeholder: (context, url) {
+        return shimmerLoadingWidget(
+            child: Container(
+          width: width,
+          height: ScreenUtil().screenHeight * .2,
+          color: Colors.white,
+        ));
+      },
+      errorWidget: (context, url, error) => imagePlaceholder());
+}
+
+Widget imagePlaceholder() {
+  return Image.asset(
+    "assets/images/posts/no_image.jpg",
+    width: ScreenUtil().screenWidth,
+    height: ScreenUtil().screenHeight * .2,
+    fit: BoxFit.cover,
   );
 }

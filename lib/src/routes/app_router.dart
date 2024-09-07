@@ -4,7 +4,6 @@ import 'package:app_tcareer/src/modules/authentication/presentation/pages/forgot
 import 'package:app_tcareer/src/modules/authentication/presentation/pages/login/login_page.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/pages/register/register_page.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/pages/verify/verify_page.dart';
-import 'package:app_tcareer/src/modules/home/presentation/pages/home_page.dart';
 import 'package:app_tcareer/src/modules/splash/intro_page.dart';
 import 'package:app_tcareer/src/modules/splash/splash_page.dart';
 import 'package:app_tcareer/src/routes/index_route.dart';

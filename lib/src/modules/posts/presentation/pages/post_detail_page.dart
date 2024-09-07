@@ -1,4 +1,4 @@
-import 'package:app_tcareer/src/modules/home/presentation/widgets/post_widget.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/widgets/post_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

@@ -1,4 +1,3 @@
-import 'package:app_tcareer/src/modules/home/presentation/pages/comments_page.dart';
 import 'package:app_tcareer/src/modules/index/index_controller.dart';
 import 'package:app_tcareer/src/routes/index_route.dart';
 import 'package:flutter/material.dart';
@@ -16,31 +15,31 @@ class IndexPage extends ConsumerWidget {
       {
         'icon': PhosphorIconsThin.house,
         'activeIcon': PhosphorIconsFill.house,
-        'route': "/${RouteNames.home.name}",
+        'route': "/home",
         "label": "Trang chủ"
       },
       {
         'icon': PhosphorIconsThin.bagSimple,
         'activeIcon': PhosphorIconsFill.bagSimple,
-        'route': "/${RouteNames.posting.name}",
+        'route': "/jobs",
         "label": "Công việc"
       },
       {
         'icon': PhosphorIconsFill.plus,
         'activeIcon': PhosphorIconsFill.plus,
-        'route': "/${RouteNames.create.name}",
+        'route': "/posting",
         "label": "Tạo mới"
       },
       {
         'icon': PhosphorIconsThin.bell,
         'activeIcon': PhosphorIconsFill.bell,
-        'route': "/${RouteNames.message.name}",
+        'route': "/messages",
         "label": "Thông báo"
       },
       {
         'icon': PhosphorIconsThin.userCircle,
         'activeIcon': PhosphorIconsFill.userCircle,
-        'route': "/${RouteNames.profile.name}",
+        'route': "/profile",
         "label": "Tài khoản"
       },
     ];

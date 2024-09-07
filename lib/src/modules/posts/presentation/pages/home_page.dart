@@ -1,8 +1,8 @@
 import 'package:app_tcareer/src/configs/app_colors.dart';
-import 'package:app_tcareer/src/modules/home/presentation/controllers/post_controller.dart';
-import 'package:app_tcareer/src/modules/home/presentation/widgets/post_loading_widget.dart';
-import 'package:app_tcareer/src/modules/home/presentation/widgets/post_widget.dart';
-import 'package:app_tcareer/src/modules/home/presentation/widgets/search_bar_widget.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/controllers/post_controller.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/widgets/post_loading_widget.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/widgets/post_widget.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/widgets/search_bar_widget.dart';
 import 'package:app_tcareer/src/shared/widgets/circular_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -78,8 +78,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             subName: post?.source?.name ?? "",
             createdAt: post?.publishedAt ?? "",
             content: post?.title ?? "",
-            imageUrl: post?.urlToImage ??
-                "https://vatvostudio.vn/wp-content/uploads/2024/08/Gooogle-Tensor-G4.jpg",
+            imageUrl: post?.urlToImage ?? "",
             likes: " 99",
             comments: "12",
             shares: "18");

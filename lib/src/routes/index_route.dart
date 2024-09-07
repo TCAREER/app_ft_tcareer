@@ -1,14 +1,14 @@
-import 'package:app_tcareer/src/modules/add_post/presentation/pages/add_post_page.dart';
-import 'package:app_tcareer/src/modules/home/presentation/pages/home_page.dart';
 import 'package:app_tcareer/src/modules/index/index_page.dart';
 import 'package:app_tcareer/src/modules/messages/presentation/pages/message_page.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/pages/home_page.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/pages/posting_page.dart';
 import 'package:app_tcareer/src/modules/profile/presentation/pages/profile_page.dart';
 import 'package:app_tcareer/src/routes/home_route.dart';
 import 'package:app_tcareer/src/routes/transition_builder.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
-enum RouteNames { home, posting, create, message, profile }
+enum RouteNames { home, jobs, posting, messages, profile }
 
 class Index {
   static final StatefulShellRoute router = StatefulShellRoute.indexedStack(
@@ -29,28 +29,28 @@ class Index {
         ),
         StatefulShellBranch(routes: [
           GoRoute(
-            path: "/${RouteNames.posting}",
+            path: "/${RouteNames.jobs.name}",
+            name: RouteNames.jobs.name,
+            pageBuilder: (context, state) => CustomTransitionPage(
+                key: state.pageKey,
+                child: const Text("Jobs"),
+                transitionsBuilder: fadeTransitionBuilder),
+          ),
+        ]),
+        StatefulShellBranch(routes: [
+          GoRoute(
+            path: "/${RouteNames.posting.name}",
             name: RouteNames.posting.name,
             pageBuilder: (context, state) => CustomTransitionPage(
                 key: state.pageKey,
-                child: const AddPostPage(),
+                child: const PostingPage(),
                 transitionsBuilder: fadeTransitionBuilder),
           ),
         ]),
         StatefulShellBranch(routes: [
           GoRoute(
-            path: "/${RouteNames.create.name}",
-            name: RouteNames.create.name,
-            pageBuilder: (context, state) => CustomTransitionPage(
-                key: state.pageKey,
-                child: Text("create"),
-                transitionsBuilder: fadeTransitionBuilder),
-          ),
-        ]),
-        StatefulShellBranch(routes: [
-          GoRoute(
-            path: "/${RouteNames.message.name}",
-            name: RouteNames.message.name,
+            path: "/${RouteNames.messages.name}",
+            name: RouteNames.messages.name,
             pageBuilder: (context, state) => CustomTransitionPage(
                 key: state.pageKey,
                 child: const MessagePage(),

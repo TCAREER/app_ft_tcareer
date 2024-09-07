@@ -1,4 +1,4 @@
-import 'package:app_tcareer/src/modules/home/presentation/widgets/comment_item_widget.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/widgets/comment_item_widget.dart';
 import 'package:flutter/material.dart';
 
 class CommentsPage extends StatelessWidget {

@@ -1,7 +1,9 @@
-import 'package:app_tcareer/src/modules/home/data/models/post_response.dart';
-import 'package:app_tcareer/src/modules/home/usecases/post_use_case.dart';
+import 'package:app_tcareer/src/modules/posts/data/models/post_response.dart';
+import 'package:app_tcareer/src/modules/posts/usecases/post_use_case.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
+
+import '../../data/models/post_response.dart';
 
 class PostState {
   final bool isLoading;
