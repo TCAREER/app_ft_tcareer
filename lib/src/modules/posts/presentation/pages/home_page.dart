@@ -30,26 +30,42 @@ class _HomePageState extends ConsumerState<HomePage> {
     return Scaffold(
         backgroundColor: Colors.grey.shade200,
         appBar: AppBar(
+          backgroundColor: AppColors.primary,
           // elevation: 2,
-          leading: const Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: CircleAvatar(
-              radius: 40,
-              backgroundImage: NetworkImage(
-                  "https://mighty.tools/mockmind-api/content/human/7.jpg"),
-            ),
+          // leading: const ,
+          centerTitle: false,
+          title: const Text(
+            "Bảng tin",
+            style: TextStyle(
+                fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
           ),
-          centerTitle: true,
-          title: searchBarWidget(),
           actions: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: GestureDetector(
                 child: const PhosphorIcon(
-                  PhosphorIconsBold.chatCircle,
-                  color: AppColors.primary,
-                  size: 28,
+                  PhosphorIconsBold.magnifyingGlass,
+                  color: Colors.white,
+                  size: 25,
                 ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: GestureDetector(
+                child: const PhosphorIcon(
+                  PhosphorIconsBold.chat,
+                  color: Colors.white,
+                  size: 25,
+                ),
+              ),
+            ),
+            const Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: CircleAvatar(
+                radius: 18,
+                backgroundImage: NetworkImage(
+                    "https://mighty.tools/mockmind-api/content/human/7.jpg"),
               ),
             )
           ],

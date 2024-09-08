@@ -36,15 +36,16 @@ class App extends StatelessWidget {
                     titleTextStyle: const TextStyle(
                       color: Colors.black,
                     )),
-                bottomNavigationBarTheme: BottomNavigationBarThemeData(
+                bottomNavigationBarTheme: const BottomNavigationBarThemeData(
                   type: BottomNavigationBarType.fixed,
                   backgroundColor: Colors.white,
                   selectedLabelStyle: const TextStyle(
                       fontSize: 12, fontWeight: FontWeight.w400),
                   unselectedLabelStyle: const TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.w400),
+                    fontSize: 12,
+                  ),
                   selectedItemColor: AppColors.primary,
-                  unselectedItemColor: Colors.grey.shade500,
+                  unselectedItemColor: Colors.grey,
                   // showUnselectedLabels: true,
                 ),
                 textSelectionTheme: const TextSelectionThemeData(

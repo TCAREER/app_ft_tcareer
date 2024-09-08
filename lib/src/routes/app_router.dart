@@ -4,6 +4,7 @@ import 'package:app_tcareer/src/modules/authentication/presentation/pages/forgot
 import 'package:app_tcareer/src/modules/authentication/presentation/pages/login/login_page.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/pages/register/register_page.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/pages/verify/verify_page.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/pages/posting_page.dart';
 import 'package:app_tcareer/src/modules/splash/intro_page.dart';
 import 'package:app_tcareer/src/modules/splash/splash_page.dart';
 import 'package:app_tcareer/src/routes/index_route.dart';
@@ -20,7 +21,8 @@ enum RouteNames {
   login,
   forgotPassword,
   verify,
-  resetPassword
+  resetPassword,
+  posting
 }
 
 class AppRouter {
@@ -108,6 +110,14 @@ class AppRouter {
                         transitionsBuilder: fadeTransitionBuilder),
                     routes: []),
               ]),
+          GoRoute(
+            path: "/${RouteNames.posting.name}",
+            name: RouteNames.posting.name,
+            pageBuilder: (context, state) => CustomTransitionPage(
+                key: state.pageKey,
+                child: const PostingPage(),
+                transitionsBuilder: slideUpTransitionBuilder),
+          ),
         ],
         refreshListenable: GoRouterRefreshStream());
   }

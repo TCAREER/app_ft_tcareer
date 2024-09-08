@@ -8,7 +8,7 @@ import 'package:app_tcareer/src/routes/transition_builder.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
-enum RouteNames { home, jobs, posting, messages, profile }
+enum RouteNames { home, jobs, temp, messages, profile }
 
 class Index {
   static final StatefulShellRoute router = StatefulShellRoute.indexedStack(
@@ -39,11 +39,11 @@ class Index {
         ]),
         StatefulShellBranch(routes: [
           GoRoute(
-            path: "/${RouteNames.posting.name}",
-            name: RouteNames.posting.name,
+            path: "/${RouteNames.temp.name}",
+            name: RouteNames.temp.name,
             pageBuilder: (context, state) => CustomTransitionPage(
                 key: state.pageKey,
-                child: const PostingPage(),
+                child: const Text("Temp"),
                 transitionsBuilder: fadeTransitionBuilder),
           ),
         ]),

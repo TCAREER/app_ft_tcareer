@@ -1,3 +1,4 @@
+import 'package:app_tcareer/src/configs/app_colors.dart';
 import 'package:app_tcareer/src/modules/index/index_controller.dart';
 import 'package:app_tcareer/src/routes/index_route.dart';
 import 'package:flutter/material.dart';
@@ -27,8 +28,8 @@ class IndexPage extends ConsumerWidget {
       {
         'icon': PhosphorIconsFill.plus,
         'activeIcon': PhosphorIconsFill.plus,
-        'route': "/posting",
-        "label": "Tạo mới"
+        'route': "/",
+        "label": ""
       },
       {
         'icon': PhosphorIconsThin.bell,
@@ -47,11 +48,31 @@ class IndexPage extends ConsumerWidget {
 
     return Scaffold(
       body: shell,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Visibility(
+        visible: state == true,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 30, right: 20, left: 20),
+          child: Padding(
+            padding: const EdgeInsets.all(5),
+            child: FloatingActionButton(
+                shape: const CircleBorder(),
+                backgroundColor: AppColors.primary,
+                isExtended: true,
+                onPressed: () => context.pushNamed("posting"),
+                child: const Icon(
+                  Icons.add,
+                  color: Colors.white,
+                  size: 35,
+                )),
+          ),
+        ),
+      ),
       bottomNavigationBar: Visibility(
         visible: state == true,
         child: BottomNavigationBar(
-            selectedItemColor: Colors.black,
-            unselectedItemColor: Colors.grey,
+            // selectedItemColor: Colors.black,
+            // unselectedItemColor: Colors.grey,
             // unselectedLabelStyle: TextStyle(fontSize: 0),
             onTap: (index) {
               shell.goBranch(index);

@@ -6,4 +6,5 @@ class AppColors {
   static const titleLogin = Color(0xff0D0140);
   static const authButton = Color(0xff648DDB);
   static Color? emojiColor = Colors.orange[400];
+  static const executeButton = Color(0xff1877F2);
 }

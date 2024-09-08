@@ -81,6 +81,7 @@ class CommentsPage extends StatelessWidget {
     return SizedBox(
       height: 45,
       child: TextField(
+        keyboardType: TextInputType.multiline,
         decoration: InputDecoration(
           hintText: "Bình luận cho Quang Thiện",
           contentPadding:
