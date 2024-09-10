@@ -4,12 +4,14 @@ import 'package:app_tcareer/src/modules/authentication/presentation/pages/forgot
 import 'package:app_tcareer/src/modules/authentication/presentation/pages/login/login_page.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/pages/register/register_page.dart';
 import 'package:app_tcareer/src/modules/authentication/presentation/pages/verify/verify_page.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/pages/media_page.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/pages/posting_page.dart';
 import 'package:app_tcareer/src/modules/splash/intro_page.dart';
 import 'package:app_tcareer/src/modules/splash/splash_page.dart';
 import 'package:app_tcareer/src/routes/index_route.dart';
 import 'package:app_tcareer/src/routes/transition_builder.dart';
 import 'package:app_tcareer/src/shared/utils/user_utils.dart';
+import 'package:app_tcareer/src/shared/widgets/photo_manager_page.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -22,7 +24,8 @@ enum RouteNames {
   forgotPassword,
   verify,
   resetPassword,
-  posting
+  posting,
+  photoManager
 }
 
 class AppRouter {
@@ -116,6 +119,14 @@ class AppRouter {
             pageBuilder: (context, state) => CustomTransitionPage(
                 key: state.pageKey,
                 child: const PostingPage(),
+                transitionsBuilder: slideUpTransitionBuilder),
+          ),
+          GoRoute(
+            path: "/${RouteNames.photoManager.name}",
+            name: RouteNames.photoManager.name,
+            pageBuilder: (context, state) => CustomTransitionPage(
+                key: state.pageKey,
+                child: const MediaPage(),
                 transitionsBuilder: slideUpTransitionBuilder),
           ),
         ],

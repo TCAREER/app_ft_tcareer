@@ -15,12 +15,12 @@ class PostingPage extends ConsumerWidget {
       backgroundColor: Colors.white,
       appBar: appBar(context),
       body: ListView(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 30,
                 backgroundImage: NetworkImage(
                     "https://mighty.tools/mockmind-api/content/human/7.jpg"),
@@ -31,10 +31,9 @@ class PostingPage extends ConsumerWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     "Quang Thiện",
-                    style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                   ),
                   objectWidget()
                 ],
@@ -53,7 +52,7 @@ class PostingPage extends ConsumerWidget {
 
   PreferredSizeWidget appBar(BuildContext context) {
     return AppBar(
-      bottom: PreferredSize(
+      bottom: const PreferredSize(
         child: Divider(),
         preferredSize: Size.fromHeight(5),
       ),
@@ -126,8 +125,8 @@ class PostingPage extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               IconButton(
-                  onPressed: () {},
-                  icon: PhosphorIcon(
+                  onPressed: () => context.pushNamed("photoManager"),
+                  icon: const PhosphorIcon(
                     PhosphorIconsBold.image,
                     color: Colors.grey,
                     size: 30,
@@ -137,7 +136,7 @@ class PostingPage extends ConsumerWidget {
               ),
               IconButton(
                   onPressed: () {},
-                  icon: PhosphorIcon(
+                  icon: const PhosphorIcon(
                     PhosphorIconsBold.link,
                     color: Colors.grey,
                     size: 30,
@@ -147,7 +146,7 @@ class PostingPage extends ConsumerWidget {
               ),
               IconButton(
                   onPressed: () {},
-                  icon: PhosphorIcon(
+                  icon: const PhosphorIcon(
                     PhosphorIconsBold.smiley,
                     color: Colors.grey,
                     size: 30,

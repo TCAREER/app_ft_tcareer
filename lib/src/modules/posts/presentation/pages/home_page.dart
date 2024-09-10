@@ -1,5 +1,6 @@
 import 'package:app_tcareer/src/configs/app_colors.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/post_controller.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/widgets/post_loading_widget.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/widgets/post_widget.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/widgets/search_bar_widget.dart';

@@ -4,7 +4,7 @@ Widget commentItemWidget() {
   return Row(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Expanded(
+      const Expanded(
         flex: 1,
         child: Column(
           children: [
@@ -16,7 +16,7 @@ Widget commentItemWidget() {
           ],
         ),
       ),
-      Expanded(
+      const Expanded(
         flex: 5,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,11 +31,11 @@ Widget commentItemWidget() {
                         style: TextStyle(fontSize: 12, color: Colors.black54))
                   ]),
             ),
-            const Text(
+            Text(
               "Tokio I have filmed a small vlog of north Dhaka🤭",
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
             ),
-            const SizedBox(
+            SizedBox(
               height: 5,
             ),
             Text(
