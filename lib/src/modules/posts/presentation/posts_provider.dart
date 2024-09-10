@@ -7,13 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'controllers/post_controller.dart';
 
-final postControllerProvider =
-    StateNotifierProvider<PostController, PostState>((ref) {
+final postControllerProvider = ChangeNotifierProvider((ref) {
   final postUseCase = ref.read(postUseCaseProvider);
-  return PostController(postUseCase);
+  return PostController(postUseCase, ref);
 });
 
 final mediaControllerProvider = ChangeNotifierProvider((ref) {
   final mediaUseCase = ref.read(mediaUseCaseProvider);
-  return MediaController(mediaUseCase);
+  return MediaController(mediaUseCase, ref);
 });

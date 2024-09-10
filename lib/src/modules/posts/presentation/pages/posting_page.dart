@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:app_tcareer/src/configs/app_colors.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/media_controller.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_fb_photo_view/flutter_fb_photo_view.dart';
@@ -8,63 +11,86 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class PostingPage extends ConsumerWidget {
+class PostingPage extends ConsumerStatefulWidget {
   const PostingPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PostingPage> createState() => _PostingPageState();
+}
+
+class _PostingPageState extends ConsumerState<PostingPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.microtask(() => ref.watch(postControllerProvider).loadCacheImage());
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final mediaController = ref.watch(mediaControllerProvider);
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      backgroundColor: Colors.white,
-      appBar: appBar(context),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const CircleAvatar(
-                radius: 30,
-                backgroundImage: NetworkImage(
-                    "https://mighty.tools/mockmind-api/content/human/7.jpg"),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Quang Thiện",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                  ),
-                  objectWidget()
-                ],
-              )
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          postInput(),
-          const SizedBox(
-            height: 10,
-          ),
-          Visibility(
-            visible: mediaController.imagePaths.isNotEmpty,
-            child: FBPhotoView(
-              dataSource: mediaController.imagePaths,
-              displayType: FBPhotoViewType.grid5,
+    final controller = ref.watch(postControllerProvider);
+    return PopScope(
+      onPopInvoked: (didPop) {
+        if (didPop) {
+          controller.showDialog(context);
+        }
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: Colors.white,
+        appBar: appBar(
+            context: context, onPop: () => controller.showDialog(context)),
+        body: ListView(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const CircleAvatar(
+                  radius: 30,
+                  backgroundImage: NetworkImage(
+                      "https://mighty.tools/mockmind-api/content/human/7.jpg"),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Quang Thiện",
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                    objectWidget()
+                  ],
+                )
+              ],
             ),
-          )
-        ],
+            const SizedBox(
+              height: 10,
+            ),
+            postInput(),
+            const SizedBox(
+              height: 10,
+            ),
+            Visibility(
+              visible: mediaController.imagePaths.isNotEmpty,
+              child: FBPhotoView(
+                dataSource: mediaController.imagePaths,
+                displayType: FBPhotoViewType.grid5,
+              ),
+            )
+          ],
+        ),
+        bottomNavigationBar: bottomAppBar(context, ref),
       ),
-      bottomNavigationBar: bottomAppBar(context, ref),
     );
   }
 
-  PreferredSizeWidget appBar(BuildContext context) {
+  PreferredSizeWidget appBar(
+      {required BuildContext context, required void Function()? onPop}) {
     return AppBar(
       bottom: const PreferredSize(
         child: Divider(),
@@ -72,7 +98,7 @@ class PostingPage extends ConsumerWidget {
       ),
       backgroundColor: Colors.white,
       leading: IconButton(
-        onPressed: () => context.pop(),
+        onPressed: onPop,
         icon: const Icon(
           Icons.close,
           color: Colors.black,

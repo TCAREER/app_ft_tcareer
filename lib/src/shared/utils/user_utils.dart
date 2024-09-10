@@ -36,6 +36,22 @@ class UserUtils {
     final sharedRef = await ref.read(sharedPreferencesProvider.future);
     return sharedRef.getString(AppConstants.authToken) ?? "";
   }
+
+  Future<bool> saveCacheList(
+      {required String key, required List<String> value}) async {
+    final shareRef = await ref.read(sharedPreferencesProvider.future);
+    return shareRef.setStringList(key, value);
+  }
+
+  Future<List<String>?> loadCacheList(String key) async {
+    final shareRef = await ref.read(sharedPreferencesProvider.future);
+    return shareRef.getStringList(key);
+  }
+
+  Future<bool> removeCache(String key) async {
+    final shareRef = await ref.read(sharedPreferencesProvider.future);
+    return shareRef.remove(key);
+  }
 }
 
 final userUtilsProvider = Provider((ref) => UserUtils(ref));

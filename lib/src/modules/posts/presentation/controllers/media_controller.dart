@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:app_tcareer/src/modules/posts/data/models/media_state.dart';
 import 'package:app_tcareer/src/modules/posts/usecases/media_use_case.dart';
 import 'package:app_tcareer/src/shared/utils/snackbar_utils.dart';
+import 'package:app_tcareer/src/shared/utils/user_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,8 +13,8 @@ import 'package:photo_manager/photo_manager.dart';
 
 class MediaController extends ChangeNotifier {
   final MediaUseCase mediaUseCase;
-  MediaController(this.mediaUseCase);
-
+  MediaController(this.mediaUseCase, this.ref);
+  final ChangeNotifierProviderRef<Object?> ref;
   bool permissionGranted = false;
   List<AssetPathEntity> albums = [];
   List<AssetEntity> media = [];
@@ -96,6 +97,13 @@ class MediaController extends ChangeNotifier {
         notifyListeners();
       }
     }
+    setCacheImage();
+
     context.pop();
+  }
+
+  Future<void> setCacheImage() async {
+    final userUtils = ref.watch(userUtilsProvider);
+    await userUtils.saveCacheList(key: "imageCache", value: imagePaths);
   }
 }

@@ -27,7 +27,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final postState = ref.watch(postControllerProvider);
+    final controller = ref.watch(postControllerProvider);
     return Scaffold(
         backgroundColor: Colors.grey.shade200,
         appBar: AppBar(
@@ -71,20 +71,20 @@ class _HomePageState extends ConsumerState<HomePage> {
             )
           ],
         ),
-        body: postState.isLoading ? postLoadingWidget() : postList(ref));
+        body: controller.isLoading ? postLoadingWidget() : postList(ref));
   }
 
   Widget postList(WidgetRef ref) {
-    final postState = ref.watch(postControllerProvider);
+    final controller = ref.watch(postControllerProvider);
     return ListView.separated(
       separatorBuilder: (context, index) => const SizedBox(
         height: 10,
       ),
       padding: const EdgeInsets.symmetric(vertical: 10),
       itemCount:
-          postState.isLoading ? 5 : postState.postData?.articles?.length ?? 0,
+          controller.isLoading ? 5 : controller.postData.articles?.length ?? 0,
       itemBuilder: (context, index) {
-        final post = postState.postData?.articles?[index];
+        final post = controller.postData.articles?[index];
         return postWidget(
             postId: post?.title ?? "",
             ref: ref,

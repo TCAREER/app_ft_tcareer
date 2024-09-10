@@ -59,10 +59,7 @@ dependencies:
   font_awesome_flutter: ^10.7.0
 
   like_button: ^2.0.5
-  flutter_animated_reaction:
-    git:
-      url: https://github.com/devlow03/flutter_animated_reaction.git
-      ref: main
+
   flutter_fb_photo_view:
     git:
       url: https://github.com/devlow03/flutter_fb_photo_view.git
