@@ -1,6 +1,9 @@
 import 'package:app_tcareer/src/configs/app_colors.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/controllers/media_controller.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_fb_photo_view/flutter_fb_photo_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -10,6 +13,7 @@ class PostingPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final mediaController = ref.watch(mediaControllerProvider);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
@@ -43,10 +47,20 @@ class PostingPage extends ConsumerWidget {
           const SizedBox(
             height: 10,
           ),
-          postInput()
+          postInput(),
+          const SizedBox(
+            height: 10,
+          ),
+          Visibility(
+            visible: mediaController.imagePaths.isNotEmpty,
+            child: FBPhotoView(
+              dataSource: mediaController.imagePaths,
+              displayType: FBPhotoViewType.grid5,
+            ),
+          )
         ],
       ),
-      bottomNavigationBar: bottomAppBar(context),
+      bottomNavigationBar: bottomAppBar(context, ref),
     );
   }
 
@@ -110,7 +124,9 @@ class PostingPage extends ConsumerWidget {
     );
   }
 
-  Widget bottomAppBar(BuildContext context) {
+  Widget bottomAppBar(BuildContext context, WidgetRef ref) {
+    final mediaController = ref.watch(mediaControllerProvider);
+
     return MediaQuery(
       data: MediaQuery.of(context), // Get the MediaQuery data
       child: AnimatedContainer(
@@ -125,7 +141,11 @@ class PostingPage extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               IconButton(
-                  onPressed: () => context.pushNamed("photoManager"),
+                  onPressed: () async {
+                    await mediaController.getAlbums();
+
+                    context.pushNamed("photoManager");
+                  },
                   icon: const PhosphorIcon(
                     PhosphorIconsBold.image,
                     color: Colors.grey,

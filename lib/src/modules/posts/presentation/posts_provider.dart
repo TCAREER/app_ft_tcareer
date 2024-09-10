@@ -13,8 +13,7 @@ final postControllerProvider =
   return PostController(postUseCase);
 });
 
-final mediaControllerProvider =
-    StateNotifierProvider<MediaController, MediaState>((ref) {
+final mediaControllerProvider = ChangeNotifierProvider((ref) {
   final mediaUseCase = ref.read(mediaUseCaseProvider);
   return MediaController(mediaUseCase);
 });

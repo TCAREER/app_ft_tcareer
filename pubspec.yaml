@@ -63,9 +63,14 @@ dependencies:
     git:
       url: https://github.com/devlow03/flutter_animated_reaction.git
       ref: main
+  flutter_fb_photo_view:
+    git:
+      url: https://github.com/devlow03/flutter_fb_photo_view.git
+      ref: master
+
   shimmer: ^3.0.0
   skeletonizer: ^1.4.2
-  carousel_slider: ^5.0.0
+  carousel_slider: ^4.2.1
   smooth_page_indicator: ^1.2.0+3
   share_plus: ^10.0.0
   url_strategy: ^0.3.0

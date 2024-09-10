@@ -1,13 +1,13 @@
 import 'package:photo_manager/photo_manager.dart';
 
 class MediaState {
-  final List<AssetPathEntity>? albums;
-  final List<AssetEntity>? media;
+  final List<AssetPathEntity> albums;
+  final List<AssetEntity> media;
   final bool isLoading;
   final bool permissionGranted;
   MediaState({
-    this.albums,
-    this.media,
+    required this.albums,
+    required this.media,
     this.isLoading = false,
     this.permissionGranted = false,
   });

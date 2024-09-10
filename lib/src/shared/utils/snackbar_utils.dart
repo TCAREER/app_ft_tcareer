@@ -9,3 +9,15 @@ void showSnackBar({required BuildContext context, required String message}) {
     ),
   );
 }
+
+void showSnackBarError(
+    {required BuildContext context, required String message}) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      showCloseIcon: true,
+      backgroundColor: Colors.redAccent,
+      content: Text(message),
+      duration: const Duration(seconds: 3),
+    ),
+  );
+}

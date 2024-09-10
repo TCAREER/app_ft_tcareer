@@ -12,7 +12,7 @@ class MediaUseCase {
   Future<List<AssetPathEntity>> getAlbums() async =>
       await mediaRepository.getAlbums();
 
-  Future<List<AssetEntity>?> getMediaFromAlbum(
+  Future<List<AssetEntity>> getMediaFromAlbum(
           {required AssetPathEntity album, int page = 0, int? size}) async =>
       await mediaRepository.getMediaFromAlbum(
           album: album, page: page, size: size);
