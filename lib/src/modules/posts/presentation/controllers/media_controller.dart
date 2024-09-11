@@ -7,6 +7,7 @@ import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/modules/posts/usecases/media_use_case.dart';
 import 'package:app_tcareer/src/shared/utils/snackbar_utils.dart';
 import 'package:app_tcareer/src/shared/utils/user_utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -58,8 +59,17 @@ class MediaController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void clearData() {
-    selectedAsset.clear();
+  void clearData(BuildContext context) {
+    if (selectedAsset.isEmpty) {
+      context.pop();
+    } else {
+      showModalPopup(
+          context: context,
+          onPop: () {
+            selectedAsset.clear();
+            context.pop();
+          });
+    }
   }
 
   List<String> imagePaths = [];
@@ -112,5 +122,37 @@ class MediaController extends ChangeNotifier {
     final data = await userUtils.loadCacheList("assetIndicies");
     assetIndices = data!.map((index) => int.parse(index)).toList();
     notifyListeners();
+  }
+
+  void showModalPopup({
+    required BuildContext context,
+    required void Function() onPop,
+  }) {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoActionSheet(
+          title: const Text(
+            'Bỏ thay đổi?',
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+          message: const Text('Nếu quay lại sẽ bỏ những thay đổi đã thực hiện'),
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+                isDestructiveAction: true,
+                onPressed: onPop,
+                child: const Text(
+                  'Quay lại',
+                )),
+            CupertinoActionSheetAction(
+                child: const Text(
+                  'Tiếp tục chỉnh sửa',
+                  style: TextStyle(color: Colors.blue),
+                ),
+                onPressed: () => context.pop()),
+          ],
+        );
+      },
+    );
   }
 }
