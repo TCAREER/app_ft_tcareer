@@ -39,7 +39,7 @@ class ForgotPasswordController extends StateNotifier<void> {
       AppUtils.loadingApi(() async {
         await forgotPasswordUseCaseProvider.forgotPasswordVerify(body);
         context.pushNamed('resetPassword');
-        showSnackBar(context: context, message: "Xác  thực thành công");
+        showSnackBar("Xác  thực thành công");
       }, context);
     }
   }
@@ -50,7 +50,7 @@ class ForgotPasswordController extends StateNotifier<void> {
         await forgotPasswordUseCaseProvider.resetPassword(
             email: textInputController.text, password: passwordController.text);
         context.goNamed('login');
-        showSnackBar(context: context, message: "Cập nhật mật khẩu thành công");
+        showSnackBar("Cập nhật mật khẩu thành công");
       }, context);
     }
   }

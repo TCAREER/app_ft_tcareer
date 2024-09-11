@@ -18,10 +18,11 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   @override
-  void initState() {
-    super.initState();
-    Future.microtask(() {
-      ref.read(postControllerProvider.notifier).getPost();
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    Future.delayed(Duration.zero, () {
+      ref.read(postControllerProvider).getPost();
     });
   }
 
@@ -76,30 +77,34 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   Widget postList(WidgetRef ref) {
     final controller = ref.watch(postControllerProvider);
-    return ListView.separated(
-      separatorBuilder: (context, index) => const SizedBox(
-        height: 10,
+    return RefreshIndicator(
+      onRefresh: () async => await controller.getPost(),
+      child: ListView.separated(
+        separatorBuilder: (context, index) => const SizedBox(
+          height: 10,
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        itemCount: controller.isLoading
+            ? 5
+            : controller.postData.articles?.length ?? 0,
+        itemBuilder: (context, index) {
+          final post = controller.postData.articles?[index];
+          return postWidget(
+              postId: post?.title ?? "",
+              ref: ref,
+              context: context,
+              avatarUrl:
+                  "https://ui-avatars.com/api/?name=${post?.author}&background=random",
+              userName: post?.author ?? "",
+              subName: post?.source?.name ?? "",
+              createdAt: post?.publishedAt ?? "",
+              content: post?.title ?? "",
+              imageUrl: post?.urlToImage ?? "",
+              likes: " 99",
+              comments: "12",
+              shares: "18");
+        },
       ),
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      itemCount:
-          controller.isLoading ? 5 : controller.postData.articles?.length ?? 0,
-      itemBuilder: (context, index) {
-        final post = controller.postData.articles?[index];
-        return postWidget(
-            postId: post?.title ?? "",
-            ref: ref,
-            context: context,
-            avatarUrl:
-                "https://ui-avatars.com/api/?name=${post?.author}&background=random",
-            userName: post?.author ?? "",
-            subName: post?.source?.name ?? "",
-            createdAt: post?.publishedAt ?? "",
-            content: post?.title ?? "",
-            imageUrl: post?.urlToImage ?? "",
-            likes: " 99",
-            comments: "12",
-            shares: "18");
-      },
     );
   }
 }

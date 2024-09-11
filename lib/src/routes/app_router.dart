@@ -114,21 +114,22 @@ class AppRouter {
                     routes: []),
               ]),
           GoRoute(
-            path: "/${RouteNames.posting.name}",
-            name: RouteNames.posting.name,
-            pageBuilder: (context, state) => CustomTransitionPage(
-                key: state.pageKey,
-                child: const PostingPage(),
-                transitionsBuilder: slideUpTransitionBuilder),
-          ),
-          GoRoute(
-            path: "/${RouteNames.photoManager.name}",
-            name: RouteNames.photoManager.name,
-            pageBuilder: (context, state) => CustomTransitionPage(
-                key: state.pageKey,
-                child: const MediaPage(),
-                transitionsBuilder: slideUpTransitionBuilder),
-          ),
+              path: "/${RouteNames.posting.name}",
+              name: RouteNames.posting.name,
+              pageBuilder: (context, state) => CustomTransitionPage(
+                  key: state.pageKey,
+                  child: const PostingPage(),
+                  transitionsBuilder: slideUpTransitionBuilder),
+              routes: [
+                GoRoute(
+                  path: "${RouteNames.photoManager.name}",
+                  name: RouteNames.photoManager.name,
+                  pageBuilder: (context, state) => CustomTransitionPage(
+                      key: state.pageKey,
+                      child: const MediaPage(),
+                      transitionsBuilder: slideUpTransitionBuilder),
+                ),
+              ]),
         ],
         refreshListenable: GoRouterRefreshStream());
   }

@@ -1,23 +1,11 @@
+import 'package:app_tcareer/src/configs/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:overlay_support/overlay_support.dart';
 
-void showSnackBar({required BuildContext context, required String message}) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      backgroundColor: Colors.green,
-      content: Text(message),
-      duration: const Duration(seconds: 3),
-    ),
-  );
+void showSnackBar(String message) {
+  showSimpleNotification(Text(message), background: AppColors.primary);
 }
 
-void showSnackBarError(
-    {required BuildContext context, required String message}) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      showCloseIcon: true,
-      backgroundColor: Colors.redAccent,
-      content: Text(message),
-      duration: const Duration(seconds: 3),
-    ),
-  );
+void showSnackBarError(String message) {
+  showSimpleNotification(Text(message), background: Colors.grey.shade300);
 }

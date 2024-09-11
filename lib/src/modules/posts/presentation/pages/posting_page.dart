@@ -23,7 +23,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.microtask(() => ref.watch(postControllerProvider).loadCacheImage());
+    Future.microtask(() => ref.read(postControllerProvider).loadCacheImage());
   }
 
   @override
@@ -170,7 +170,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
                   onPressed: () async {
                     await mediaController.getAlbums();
 
-                    context.pushNamed("photoManager");
+                    context.goNamed("photoManager");
                   },
                   icon: const PhosphorIcon(
                     PhosphorIconsBold.image,
