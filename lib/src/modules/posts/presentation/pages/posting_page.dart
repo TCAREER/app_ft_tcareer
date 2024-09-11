@@ -23,13 +23,14 @@ class _PostingPageState extends ConsumerState<PostingPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.microtask(() => ref.read(postControllerProvider).loadCacheImage());
+    Future.microtask(
+        () => ref.read(postingControllerProvider).loadCacheImage());
   }
 
   @override
   Widget build(BuildContext context) {
     final mediaController = ref.watch(mediaControllerProvider);
-    final controller = ref.watch(postControllerProvider);
+    final controller = ref.watch(postingControllerProvider);
     return PopScope(
       onPopInvoked: (didPop) {
         if (didPop) {
@@ -40,7 +41,9 @@ class _PostingPageState extends ConsumerState<PostingPage> {
         resizeToAvoidBottomInset: true,
         backgroundColor: Colors.white,
         appBar: appBar(
-            context: context, onPop: () => controller.showDialog(context)),
+            context: context,
+            onPop: () => controller.showDialog(context),
+            onPosting: () => controller.createPost()),
         body: ListView(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           children: [
@@ -71,7 +74,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
             const SizedBox(
               height: 10,
             ),
-            postInput(),
+            postInput(controller.contentController),
             const SizedBox(
               height: 10,
             ),
@@ -81,7 +84,8 @@ class _PostingPageState extends ConsumerState<PostingPage> {
                 dataSource: mediaController.imagePaths,
                 displayType: FBPhotoViewType.grid5,
               ),
-            )
+            ),
+            Text(controller.contentController.text)
           ],
         ),
         bottomNavigationBar: bottomAppBar(context, ref),
@@ -90,10 +94,12 @@ class _PostingPageState extends ConsumerState<PostingPage> {
   }
 
   PreferredSizeWidget appBar(
-      {required BuildContext context, required void Function()? onPop}) {
+      {required BuildContext context,
+      required void Function()? onPop,
+      required void Function()? onPosting}) {
     return AppBar(
       bottom: const PreferredSize(
-        child: Divider(),
+        child: const Divider(),
         preferredSize: Size.fromHeight(5),
       ),
       backgroundColor: Colors.white,
@@ -119,7 +125,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20)),
                   backgroundColor: AppColors.executeButton),
-              onPressed: () {},
+              onPressed: onPosting,
               child: const Text(
                 "Đăng",
                 style: TextStyle(color: Colors.white),
@@ -135,12 +141,13 @@ class _PostingPageState extends ConsumerState<PostingPage> {
     );
   }
 
-  Widget postInput() {
-    return const TextField(
+  Widget postInput(TextEditingController controller) {
+    return TextField(
       autofocus: true,
       maxLines: null,
+      controller: controller,
       keyboardType: TextInputType.multiline,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
           contentPadding: EdgeInsets.symmetric(horizontal: 10),
           hintText: "Hôm nay bạn muốn chia sẻ điều gì?",
           border: InputBorder.none,
