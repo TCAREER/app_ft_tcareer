@@ -40,7 +40,7 @@ class PostController extends ChangeNotifier {
     List<String>? imageCache = await userUtils.loadCacheList("imageCache");
     if (imageCache?.isNotEmpty == true) {
       mediaController.imagePaths = imageCache!;
-      await userUtils.removeCache("imageCache");
+
       notifyListeners();
     }
   }
@@ -53,7 +53,7 @@ class PostController extends ChangeNotifier {
     } else {
       showModalPopup(
           context: context,
-          onSave: () async => await setCacheImagePath(context),
+          onSave: () async => await setPostCache(context),
           onDiscard: () async => await clearPostCache(context));
     }
   }
@@ -62,6 +62,7 @@ class PostController extends ChangeNotifier {
     final mediaController = ref.watch(mediaControllerProvider);
     final userUtils = ref.watch(userUtilsProvider);
     await userUtils.removeCache("imageCache");
+    await userUtils.removeCache("selectedAsset");
     mediaController.selectedAsset.clear();
     mediaController.imagePaths.clear();
 
@@ -69,11 +70,17 @@ class PostController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setCacheImagePath(BuildContext context) async {
+  Future<void> setCacheImagePath() async {
     final userUtils = ref.watch(userUtilsProvider);
     final mediaController = ref.read(mediaControllerProvider);
     await userUtils.saveCacheList(
         key: "imageCache", value: mediaController.imagePaths);
+  }
+
+  Future<void> setPostCache(BuildContext context) async {
+    final mediaController = ref.read(mediaControllerProvider);
+    await setCacheImagePath();
+    await mediaController.setCache();
     showSnackBar("Bài viết đã được lưu làm bản nháp");
     context.goNamed("home");
   }

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:app_tcareer/src/modules/posts/data/models/media_state.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/post_controller.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/pages/posting_page.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/modules/posts/usecases/media_use_case.dart';
 import 'package:app_tcareer/src/shared/utils/snackbar_utils.dart';
@@ -59,21 +60,28 @@ class MediaController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void clearData(BuildContext context) {
-    if (selectedAsset.isEmpty) {
+  Future<void> clearData(BuildContext context) async {
+    final userUtils = ref.watch(userUtilsProvider);
+
+    List<String>? imageCache = await userUtils.loadCacheList("imageCache");
+    bool hasChanged = await hasChangedSelectedAssets();
+    if (selectedAsset.isEmpty || !hasChanged) {
       context.pop();
     } else {
       showModalPopup(
           context: context,
-          onPop: () {
+          onPop: () async {
             selectedAsset.clear();
-            context.pop();
+            assetIndices.clear();
+            context.goNamed("posting");
           });
     }
   }
 
   List<String> imagePaths = [];
   Future<void> getImagePaths(BuildContext context) async {
+    final userUtils = ref.watch(userUtilsProvider);
+    await userUtils.removeCache("imageCache");
     imagePaths.clear();
     for (AssetEntity asset in selectedAsset) {
       File? file = await asset.file;
@@ -83,7 +91,7 @@ class MediaController extends ChangeNotifier {
       }
     }
 
-    context.goNamed("posting");
+    context.replaceNamed("posting");
   }
 
   List<AssetEntity> selectedAsset = [];
@@ -92,35 +100,53 @@ class MediaController extends ChangeNotifier {
     required AssetEntity asset,
     required BuildContext context,
   }) async {
-    if (selectedAsset.length > 9 && !selectedAsset.contains(asset)) {
+    if (selectedAsset.length == 10 && !selectedAsset.contains(asset)) {
       showSnackBarError(
         "Bạn chỉ có thể chọn tối đa là 10 ảnh hoặc video",
       );
-      return; // Không tiếp tục xử lý nếu số lượng đã vượt quá giới hạn
+    } else {
+      selectedAsset.contains(asset)
+          ? selectedAsset.remove(asset)
+          : selectedAsset.add(asset);
+      assetIndices =
+          selectedAsset.map((asset) => selectedAsset.indexOf(asset)).toList();
     }
-
-    // Thêm hoặc loại bỏ asset
-    selectedAsset.contains(asset)
-        ? selectedAsset.remove(asset)
-        : selectedAsset.add(asset);
-    assetIndices =
-        selectedAsset.map((asset) => selectedAsset.indexOf(asset)).toList();
     notifyListeners();
   }
 
-  Future<void> setCacheAssetIndices() async {
+  Future<void> setCacheSelectedAssets() async {
     final userUtils = ref.watch(userUtilsProvider);
-    List<String> assetIndicesString =
-        assetIndices.map((indicies) => indicies.toString()).toList();
-    await userUtils.saveCacheList(
-        key: "assetIndicies", value: assetIndicesString);
+    List<String> assetIds = selectedAsset.map((asset) => asset.id).toList();
+    await userUtils.saveCacheList(key: "selectedAsset", value: assetIds);
   }
 
-  List<String> indicieString = [];
-  Future<void> loadAssetIndices() async {
+  Future<void> loadSelectedAsset() async {
+    selectedAsset.clear();
     final userUtils = ref.watch(userUtilsProvider);
-    final data = await userUtils.loadCacheList("assetIndicies");
-    assetIndices = data!.map((index) => int.parse(index)).toList();
+    List<String>? assetIds = await userUtils.loadCacheList("selectedAsset");
+    if (assetIds != null) {
+      for (String id in assetIds) {
+        AssetEntity? asset = await AssetEntity.fromId(id);
+        if (asset != null) {
+          selectedAsset.add(asset);
+        }
+      }
+      notifyListeners();
+    }
+  }
+
+  Future<void> setCache() async {
+    await setCacheSelectedAssets();
+  }
+
+  Future<void> loadCache() async {
+    await loadSelectedAsset();
+    await loadAssetIndices();
+  }
+
+  Future<void> loadAssetIndices() async {
+    assetIndices =
+        selectedAsset.map((asset) => selectedAsset.indexOf(asset)).toList();
     notifyListeners();
   }
 
@@ -154,5 +180,15 @@ class MediaController extends ChangeNotifier {
         );
       },
     );
+  }
+
+  Future<void> removeAssets() async {
+    selectedAsset.clear();
+  }
+
+  Future<bool> hasChangedSelectedAssets() async {
+    final userUtils = ref.watch(userUtilsProvider);
+    List<String>? assetIds = await userUtils.loadCacheList("selectedAsset");
+    return assetIds?.length != selectedAsset.length;
   }
 }

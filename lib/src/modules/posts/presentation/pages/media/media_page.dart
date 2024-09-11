@@ -9,18 +9,32 @@ import 'package:photo_manager/photo_manager.dart';
 
 import 'show_album_pop_up.dart';
 
-class MediaPage extends ConsumerWidget {
+class MediaPage extends ConsumerStatefulWidget {
   const MediaPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MediaPage> createState() => _MediaPageState();
+}
+
+class _MediaPageState extends ConsumerState<MediaPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.microtask(() {
+      ref.read(mediaControllerProvider).loadCache();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final controller = ref.watch(mediaControllerProvider);
 
     return PopScope(
       onPopInvoked: (didPop) {
-        // if (didPop) {
-        //   controller.clearData(context);
-        // }
+        if (didPop) {
+          Future.delayed(Duration.zero, () => controller.clearData(context));
+        }
       },
       child: Scaffold(
           appBar: AppBar(
