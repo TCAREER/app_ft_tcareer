@@ -27,11 +27,6 @@ void main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
   }
-  await FirebaseAppCheck.instance.activate(
-    webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'), // For web
-    androidProvider: AndroidProvider.debug, // For Android
-    appleProvider: AppleProvider.debug, // For iOS
-  );
 
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   runApp(ProviderScope(
