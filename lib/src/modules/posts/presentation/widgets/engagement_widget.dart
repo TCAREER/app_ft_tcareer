@@ -14,7 +14,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-Widget engagementWidget(WidgetRef ref, String postId, BuildContext context) {
+Widget engagementWidget(
+    {required WidgetRef ref,
+    required String postId,
+    required BuildContext context,
+    required String likeCount,
+    required String commentCount,
+    required String shareCount}) {
   final index = ref.watch(indexControllerProvider.notifier);
   final controller = ref.watch(postControllerProvider.notifier);
   return Padding(
@@ -25,8 +31,8 @@ Widget engagementWidget(WidgetRef ref, String postId, BuildContext context) {
       children: [
         RichText(
             textAlign: TextAlign.center,
-            text: const TextSpan(children: [
-              WidgetSpan(
+            text: TextSpan(children: [
+              const WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
                   child: PhosphorIcon(
                     PhosphorIconsBold.heart,
@@ -34,8 +40,8 @@ Widget engagementWidget(WidgetRef ref, String postId, BuildContext context) {
                     size: 20,
                   )),
               TextSpan(
-                  text: " 10k",
-                  style: TextStyle(
+                  text: " $likeCount",
+                  style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w500,
                       fontSize: 12))
@@ -48,8 +54,8 @@ Widget engagementWidget(WidgetRef ref, String postId, BuildContext context) {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: RichText(
-                text: const TextSpan(children: [
-              WidgetSpan(
+                text: TextSpan(children: [
+              const WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
                   child: PhosphorIcon(
                     PhosphorIconsBold.chatCircle,
@@ -57,8 +63,8 @@ Widget engagementWidget(WidgetRef ref, String postId, BuildContext context) {
                     size: 20,
                   )),
               TextSpan(
-                  text: " 2k",
-                  style: TextStyle(
+                  text: " $commentCount",
+                  style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w500,
                       fontSize: 12))
@@ -70,8 +76,8 @@ Widget engagementWidget(WidgetRef ref, String postId, BuildContext context) {
               title: "Bài viết",
               url: "https://tcareer.thiendev.shop/home/detail/quang%20thien"),
           child: RichText(
-              text: const TextSpan(children: [
-            WidgetSpan(
+              text: TextSpan(children: [
+            const WidgetSpan(
                 alignment: PlaceholderAlignment.middle,
                 child: PhosphorIcon(
                   PhosphorIconsBold.paperPlaneTilt,
@@ -79,8 +85,8 @@ Widget engagementWidget(WidgetRef ref, String postId, BuildContext context) {
                   size: 20,
                 )),
             TextSpan(
-                text: " 200",
-                style: TextStyle(
+                text: " $shareCount",
+                style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w500,
                     fontSize: 12))

@@ -30,8 +30,9 @@ class PostDetailPage extends ConsumerWidget {
               createdAt: "1 giờ",
               content:
                   "Hôm trước thấy có bạn hỏi về việc làm sao để có thể play video nhanh được như tiktok. Mình cũng có bình luận trong đó thì thấy có một vài ae cũng hỏi một số vấn đề.",
-              imageUrl:
-                  "https://images.unsplash.com/photo-1719937206220-f7c76cc23d78?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+              images: [
+                "https://images.unsplash.com/photo-1719937206220-f7c76cc23d78?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              ],
               likes: "1",
               comments: "",
               shares: "",

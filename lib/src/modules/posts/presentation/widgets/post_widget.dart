@@ -1,6 +1,7 @@
 import 'package:app_tcareer/src/shared/widgets/cached_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_fb_photo_view/flutter_fb_photo_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -14,10 +15,10 @@ Widget postWidget({
   required WidgetRef ref,
   required String avatarUrl,
   required String userName,
-  required String subName,
+  String? subName,
   required String createdAt,
   required String content,
-  required String imageUrl,
+  required List<String> images,
   required String likes,
   required String comments,
   required String shares,
@@ -61,9 +62,12 @@ Widget postWidget({
                                 style: const TextStyle(
                                     fontSize: 15, fontWeight: FontWeight.bold),
                               ),
-                              Text(
-                                subName,
-                                style: const TextStyle(color: Colors.black54),
+                              Visibility(
+                                visible: subName != null,
+                                child: Text(
+                                  subName ?? "",
+                                  style: const TextStyle(color: Colors.black54),
+                                ),
                               ),
                               Text(
                                 createdAt,
@@ -111,11 +115,23 @@ Widget postWidget({
             const SizedBox(
               height: 10,
             ),
-            postImageWidget(imageUrl: imageUrl),
+            Visibility(
+              visible: images.isNotEmpty,
+              child: FBPhotoView(
+                dataSource: images,
+                displayType: FBPhotoViewType.grid5,
+              ),
+            ),
             const SizedBox(
               height: 10,
             ),
-            engagementWidget(ref, postId, context),
+            engagementWidget(
+                ref: ref,
+                postId: postId,
+                context: context,
+                likeCount: likes,
+                commentCount: comments,
+                shareCount: shares),
             const SizedBox(
               height: 10,
             ),

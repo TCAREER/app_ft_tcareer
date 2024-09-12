@@ -1,5 +1,6 @@
 import 'package:app_tcareer/src/modules/posts/data/models/post_response.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/post_state.dart';
+import 'package:app_tcareer/src/modules/posts/data/models/posts_response.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/media_controller.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/modules/posts/usecases/post_use_case.dart';
@@ -17,11 +18,11 @@ class PostController extends ChangeNotifier {
   final PostUseCase postUseCase;
   final ChangeNotifierProviderRef<Object?> ref;
   PostController(this.postUseCase, this.ref);
-  PostResponse postData = PostResponse();
+  PostsResponse postData = PostsResponse();
   bool isLoading = false;
   Future<void> getPost() async {
     setIsLoading(true);
-    postData = await postUseCase.getPost();
+    postData = await postUseCase.getPost(personal: "p");
     setIsLoading(false);
   }
 

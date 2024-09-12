@@ -33,17 +33,14 @@ class GoogleDriveService {
       io.File file, String topic, String folderName) async {
     final driveApi = await _driveApi;
 
-    // Folder ID của thư mục cha (thư mục đã có sẵn)
     const parentFolderId = "18KYXb729bytijEE6dqDIJf2NWOAoruzE";
 
-    // Tạo thư mục con 'topic' hoặc lấy ID của thư mục con nếu đã tồn tại
     final topicFolderId =
         await getOrCreateFolderId(driveApi, topic, parentFolderId);
     if (topicFolderId == null) {
       throw Exception("Could not create or find the topic folder.");
     }
 
-    // Tạo thư mục con 'folderName' trong thư mục 'topic'
     final folderId =
         await getOrCreateFolderId(driveApi, folderName, topicFolderId);
     if (folderId == null) {
@@ -53,7 +50,6 @@ class GoogleDriveService {
     final uuid = Uuid();
     final fileName = uuid.v4();
 
-    // Đọc nội dung tập tin
     final fileContent = await file.readAsBytes();
     final media = Media(Stream.fromIterable([fileContent]), fileContent.length);
 

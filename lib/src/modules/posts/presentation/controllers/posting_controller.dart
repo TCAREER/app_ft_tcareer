@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:app_tcareer/src/modules/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/post_response.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/post_state.dart';
+import 'package:app_tcareer/src/modules/posts/data/models/posts_response.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/media_controller.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/modules/posts/usecases/post_use_case.dart';
@@ -21,18 +23,6 @@ class PostingController extends ChangeNotifier {
   final PostUseCase postUseCase;
   final ChangeNotifierProviderRef<Object?> ref;
   PostingController(this.postUseCase, this.ref);
-  PostResponse postData = PostResponse();
-  bool isLoading = false;
-  Future<void> getPost() async {
-    setIsLoading(true);
-    postData = await postUseCase.getPost();
-    setIsLoading(false);
-  }
-
-  void setIsLoading(bool value) {
-    isLoading = value;
-    notifyListeners();
-  }
 
   Future<void> sharePost({required String url, required String title}) async {
     await Share.share(url, subject: title);
@@ -49,17 +39,19 @@ class PostingController extends ChangeNotifier {
     }
   }
 
-  Future<void> showDialog(BuildContext context) async {
-    final mediaController = ref.watch(mediaControllerProvider);
-
-    if (mediaController.imagePaths.isEmpty) {
-      context.pop();
-    } else {
-      showModalPopup(
-          context: context,
-          onSave: () async => await setPostCache(context),
-          onDiscard: () async => await clearPostCache(context));
+  Future<void> loadContentCache() async {
+    final userUtils = ref.watch(userUtilsProvider);
+    String? contentCache = await userUtils.loadCache("postContent");
+    if (contentCache != null) {
+      contentController.text = contentCache;
+      userUtils.removeCache("postContent");
+      notifyListeners();
     }
+  }
+
+  Future<void> loadPostCache() async {
+    await loadContentCache();
+    await loadCacheImage();
   }
 
   Future<void> clearPostCache(BuildContext context) async {
@@ -81,8 +73,15 @@ class PostingController extends ChangeNotifier {
         key: "imageCache", value: mediaController.imagePaths);
   }
 
+  Future<void> setCacheContent() async {
+    final userUtils = ref.watch(userUtilsProvider);
+    await userUtils.saveCache(
+        key: "postContent", value: contentController.text);
+  }
+
   Future<void> setPostCache(BuildContext context) async {
     final mediaController = ref.read(mediaControllerProvider);
+    await setCacheContent();
     await setCacheImagePath();
     await mediaController.setCache();
     showSnackBar("Bài viết đã được lưu làm bản nháp");
@@ -126,9 +125,41 @@ class PostingController extends ChangeNotifier {
   }
 
   TextEditingController contentController = TextEditingController();
+  Future<void> showDialog(BuildContext context) async {
+    final mediaController = ref.watch(mediaControllerProvider);
 
-  Future<void> createPost() async {
-    List<String> imageUrl = [];
+    if (mediaController.imagePaths.isEmpty) {
+      context.pop();
+    } else {
+      showModalPopup(
+          context: context,
+          onSave: () async => await setPostCache(context),
+          onDiscard: () async => await clearPostCache(context));
+    }
+  }
+
+  Future<void> createPost(BuildContext context) async {
+    final mediaController = ref.watch(mediaControllerProvider);
+    AppUtils.loadingApi(() async {
+      if (mediaController.imagePaths.isNotEmpty) {
+        await uploadImage();
+      }
+
+      await postUseCase.createPost(
+          body: CreatePostRequest(
+              body: contentController.text,
+              privacy: "public",
+              mediaUrl: mediaUrl));
+      showSnackBar("Tạo bài viết thành công");
+      context.pop();
+      context.goNamed("home");
+    }, context);
+  }
+
+  List<String> mediaUrl = [];
+  Future<void> uploadImage() async {
+    mediaUrl.clear();
+
     final mediaController = ref.watch(mediaControllerProvider);
     final uuid = Uuid();
     final id = uuid.v4();
@@ -139,8 +170,8 @@ class PostingController extends ChangeNotifier {
       //     file: File(assetPath ?? ""), folderPath: path);
       String url = await postUseCase.uploadFile(
           file: File(assetPath ?? ""), topic: "Posts", folderName: id);
-      imageUrl.add(url);
+      mediaUrl.add(url);
     }
-    print(">>>>>>>>>>>$imageUrl");
+    notifyListeners();
   }
 }

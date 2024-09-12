@@ -61,19 +61,19 @@ class MediaController extends ChangeNotifier {
   }
 
   Future<void> clearData(BuildContext context) async {
-    final userUtils = ref.watch(userUtilsProvider);
-
-    List<String>? imageCache = await userUtils.loadCacheList("imageCache");
     bool hasChanged = await hasChangedSelectedAssets();
-    if (selectedAsset.isEmpty || !hasChanged) {
+    if (selectedAsset.isEmpty ||
+        !hasChanged ||
+        imagePaths.length == selectedAsset.length) {
       context.pop();
     } else {
       showModalPopup(
           context: context,
           onPop: () async {
-            selectedAsset.clear();
-            assetIndices.clear();
-            context.goNamed("posting");
+            // selectedAsset.clear();
+            // assetIndices.clear();
+            context.pop();
+            context.pop();
           });
     }
   }
@@ -81,16 +81,19 @@ class MediaController extends ChangeNotifier {
   List<String> imagePaths = [];
   Future<void> getImagePaths(BuildContext context) async {
     final userUtils = ref.watch(userUtilsProvider);
+    await userUtils.removeCache("selectedAsset");
     await userUtils.removeCache("imageCache");
+
     imagePaths.clear();
     for (AssetEntity asset in selectedAsset) {
       File? file = await asset.file;
       if (file != null) {
         imagePaths.add(file.path);
-        notifyListeners();
       }
     }
 
+    notifyListeners();
+    print(">>>>>>>>$selectedAsset");
     context.replaceNamed("posting");
   }
 
@@ -121,10 +124,10 @@ class MediaController extends ChangeNotifier {
   }
 
   Future<void> loadSelectedAsset() async {
-    selectedAsset.clear();
     final userUtils = ref.watch(userUtilsProvider);
     List<String>? assetIds = await userUtils.loadCacheList("selectedAsset");
     if (assetIds != null) {
+      selectedAsset.clear();
       for (String id in assetIds) {
         AssetEntity? asset = await AssetEntity.fromId(id);
         if (asset != null) {

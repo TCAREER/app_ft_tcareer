@@ -3,10 +3,13 @@ import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/forgot_password_request.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/forgot_password_verify_request.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/login_google_request.dart';
+import 'package:app_tcareer/src/modules/authentication/data/models/refresh_token_request.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/reset_password_request.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/login_request.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/login_response.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/register_request.dart';
+import 'package:app_tcareer/src/modules/posts/data/models/create_post_request.dart';
+import 'package:app_tcareer/src/modules/posts/data/models/posts_response.dart';
 import 'package:app_tcareer/src/shared/utils/app_utils.dart';
 import 'package:app_tcareer/src/shared/utils/user_utils.dart';
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
@@ -34,6 +37,9 @@ abstract class ApiServices {
   Future<LoginResponse> postLoginWithGoogle(
       {@Body() required LoginGoogleRequest body});
 
+  @POST("auth/refresh")
+  Future<LoginResponse> postRefreshToken(
+      {@Body() required RefreshTokenRequest body});
   @POST('auth/forgot_password')
   Future postForgotPassword({@Body() required ForgotPasswordRequest body});
 
@@ -43,4 +49,10 @@ abstract class ApiServices {
 
   @POST('auth/forgot_password_change')
   Future postResetPassword({@Body() required ResetPasswordRequest body});
+
+  @POST('api/auth/create_post')
+  Future postCreatePost({@Body() required CreatePostRequest body});
+
+  @GET('api/auth/get_post')
+  Future<PostsResponse> getPosts({@Query('personal') required String personal});
 }

@@ -23,8 +23,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.microtask(
-        () => ref.read(postingControllerProvider).loadCacheImage());
+    Future.microtask(() => ref.read(postingControllerProvider).loadPostCache());
   }
 
   @override
@@ -43,7 +42,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
         appBar: appBar(
             context: context,
             onPop: () => controller.showDialog(context),
-            onPosting: () async => await controller.createPost()),
+            onPosting: () async => await controller.createPost(context)),
         body: ListView(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           children: [
@@ -85,7 +84,6 @@ class _PostingPageState extends ConsumerState<PostingPage> {
                 displayType: FBPhotoViewType.grid5,
               ),
             ),
-            Text(controller.contentController.text)
           ],
         ),
         bottomNavigationBar: bottomAppBar(context, ref),
@@ -159,7 +157,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
 
   Widget bottomAppBar(BuildContext context, WidgetRef ref) {
     final mediaController = ref.watch(mediaControllerProvider);
-
+    final controller = ref.watch(postingControllerProvider);
     return MediaQuery(
       data: MediaQuery.of(context), // Get the MediaQuery data
       child: AnimatedContainer(
@@ -175,6 +173,8 @@ class _PostingPageState extends ConsumerState<PostingPage> {
             children: [
               IconButton(
                   onPressed: () async {
+                    // await controller.setCacheContent();
+                    // await controller.loadContentCache();
                     await mediaController.getAlbums();
 
                     context.goNamed("photoManager");

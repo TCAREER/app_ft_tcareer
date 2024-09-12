@@ -84,25 +84,24 @@ class _HomePageState extends ConsumerState<HomePage> {
           height: 10,
         ),
         padding: const EdgeInsets.symmetric(vertical: 10),
-        itemCount: controller.isLoading
-            ? 5
-            : controller.postData.articles?.length ?? 0,
+        itemCount:
+            controller.isLoading ? 5 : controller.postData.data?.length ?? 0,
         itemBuilder: (context, index) {
-          final post = controller.postData.articles?[index];
+          final post = controller.postData.data?[index];
           return postWidget(
               postId: post?.title ?? "",
               ref: ref,
               context: context,
-              avatarUrl:
-                  "https://ui-avatars.com/api/?name=${post?.author}&background=random",
-              userName: post?.author ?? "",
-              subName: post?.source?.name ?? "",
-              createdAt: post?.publishedAt ?? "",
-              content: post?.title ?? "",
-              imageUrl: post?.urlToImage ?? "",
-              likes: " 99",
-              comments: "12",
-              shares: "18");
+              avatarUrl: post?.avatar != null
+                  ? "${post?.avatar}"
+                  : "https://ui-avatars.com/api/?name=${post?.fullName}&background=random",
+              userName: post?.fullName ?? "",
+              createdAt: post?.createdAt ?? "",
+              content: post?.body ?? "",
+              images: post?.mediaUrl ?? [],
+              likes: post?.likeCount.toString() ?? "",
+              comments: post?.commentCount.toString() ?? "",
+              shares: post?.shareCount.toString() ?? "");
         },
       ),
     );

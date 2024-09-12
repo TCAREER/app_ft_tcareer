@@ -1,9 +1,13 @@
 import 'dart:io';
 
 import 'package:app_tcareer/src/configs/app_constants.dart';
+import 'package:app_tcareer/src/modules/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/post_response.dart';
+import 'package:app_tcareer/src/modules/posts/data/models/posts_response.dart';
+import 'package:app_tcareer/src/services/apis/api_service_provider.dart';
 import 'package:app_tcareer/src/services/drive/google_drive_service.dart';
 import 'package:app_tcareer/src/services/firebase/firebase_storage_service.dart';
+import 'package:app_tcareer/src/shared/utils/user_utils.dart';
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,7 +17,7 @@ class PostRepository {
   final Ref ref;
   final dio = Dio();
   PostRepository(this.ref);
-  Future<PostResponse> getPosts() async {
+  Future<PostResponse> getPost() async {
     dio.interceptors.add(CurlLoggerDioInterceptor(printOnSuccess: true));
     dio.interceptors.add(PrettyDioLogger(
         requestHeader: true,
@@ -48,6 +52,18 @@ class PostRepository {
       required String folderName}) async {
     final googleDrive = ref.watch(googleDriveServiceProvider);
     return googleDrive.uploadFile(file, topic, folderName);
+  }
+
+  Future<void> createPost({required CreatePostRequest body}) async {
+    final api = ref.watch(apiServiceProvider);
+    await api.postCreatePost(body: body);
+  }
+
+  Future<PostsResponse> getPosts({required String personal}) async {
+    final api = ref.watch(apiServiceProvider);
+    final userUtils = ref.watch(userUtilsProvider);
+    print(">>>>>>refreshToken: ${await userUtils.getRefreshToken()}");
+    return await api.getPosts(personal: personal);
   }
 }
 

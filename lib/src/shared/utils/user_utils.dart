@@ -32,9 +32,14 @@ class UserUtils {
     context.go("/login");
   }
 
-  Future<String> getAuthToken() async {
+  Future<String?> getAuthToken() async {
     final sharedRef = await ref.read(sharedPreferencesProvider.future);
-    return sharedRef.getString(AppConstants.authToken) ?? "";
+    return sharedRef.getString(AppConstants.authToken);
+  }
+
+  Future<String> getRefreshToken() async {
+    final sharedRef = await ref.read(sharedPreferencesProvider.future);
+    return sharedRef.getString(AppConstants.refreshToken) ?? "";
   }
 
   Future<bool> saveCacheList(
@@ -51,6 +56,16 @@ class UserUtils {
   Future<bool> removeCache(String key) async {
     final shareRef = await ref.read(sharedPreferencesProvider.future);
     return shareRef.remove(key);
+  }
+
+  Future<bool> saveCache({required String key, required String value}) async {
+    final shareRef = await ref.read(sharedPreferencesProvider.future);
+    return shareRef.setString(key, value);
+  }
+
+  Future<String?> loadCache(String key) async {
+    final shareRef = await ref.read(sharedPreferencesProvider.future);
+    return shareRef.getString(key);
   }
 }
 
