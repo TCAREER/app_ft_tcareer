@@ -62845,33 +62845,32 @@ adE(a,b){var s=0,r=A.v(t.H),q=this,p,o,n,m,l,k
 var $async$$2=A.p(function(c,d){if(c===1)return A.r(d,r)
 while(true)switch(s){case 0:s=2
 return A.q($.b0F().b.vc(a.gem().j(0),!1),$async$$2)
-case 2:p=d
-o=p!=null&&p.b.Bu()
-n=t.z
-s=o?3:5
+case 2:o=d
+n=o!=null&&o.b.Bu()
+m=t.z
+s=n?3:5
 break
-case 3:m=b
-l=A
+case 3:l=b
+k=A
 s=6
-return A.q(p.b.rp(),$async$$2)
-case 6:m.aj(l.aF1(d,null,null,!1,B.u4,a,200,null,n))
+return A.q(o.b.rp(),$async$$2)
+case 6:l.aj(k.aF1(d,null,null,!1,B.u4,a,200,null,m))
 s=4
 break
-case 5:o=A.i(t.N,n)
-m=o
-l="Authorization"
-k=A
-s=7
+case 5:s=7
 return A.q(q.a.ec($.hV(),t.d).yE(),$async$$2)
-case 7:m.k(0,l,"Bearer "+k.h(d))
-o.k(0,"origin",null)
-o.k(0,"accept","*/*")
-o.k(0,"sec-fetch-mode","cors")
-o.k(0,"accept-language","vi,en-US;q=0.9,en;q=0.8")
-n=a.b
-n===$&&A.b()
-o.I(0,n)
-a.sa9m(o)
+case 7:p=d
+n=A.i(t.N,m)
+n.k(0,"Access-Control-Allow-Origin","*")
+n.k(0,"Authorization","Bearer "+A.h(p))
+n.k(0,"origin",null)
+n.k(0,"accept","*/*")
+n.k(0,"sec-fetch-mode","cors")
+n.k(0,"accept-language","vi,en-US;q=0.9,en;q=0.8")
+m=a.b
+m===$&&A.b()
+n.I(0,m)
+a.sa9m(n)
 b.fm(a)
 case 4:return A.t(null,r)}})
 return A.u($async$$2,r)},
