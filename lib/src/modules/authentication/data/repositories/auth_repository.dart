@@ -38,8 +38,8 @@ class AuthRepository {
   }
 
   Future<void> loginWithGoogle() async {
-    final firebaseAuthService = ref.watch(firebaseAuthServiceProvider);
-    final user = await firebaseAuthService.signInWithGoogle();
+    final fireBaseAuth = ref.watch(firebaseAuthServiceProvider);
+    final user = await fireBaseAuth.signInWithGoogle();
     final accessToken = user?.credential?.accessToken;
     try {
       final apiServices = ref.watch(apiServiceProvider);

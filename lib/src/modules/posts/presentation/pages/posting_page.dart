@@ -43,7 +43,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
         appBar: appBar(
             context: context,
             onPop: () => controller.showDialog(context),
-            onPosting: () => controller.createPost()),
+            onPosting: () async => await controller.createPost()),
         body: ListView(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           children: [

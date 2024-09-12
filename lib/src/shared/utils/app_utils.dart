@@ -1,8 +1,12 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:app_tcareer/src/configs/exceptions/api_exception.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:heif_converter/heif_converter.dart';
+import 'package:image/image.dart' as img;
 import 'alert_dialog_util.dart';
 
 class AppUtils {
@@ -80,5 +84,51 @@ class AppUtils {
         }
       }
     }
+  }
+
+  static Future<String?> compressImage(String filePath) async {
+    String? path;
+    if (await isHeif(filePath) == true) {
+      filePath = await HeifConverter.convert(filePath, output: filePath) ?? "";
+    }
+    File file = File(filePath);
+    print(">>>>>>filePath: $filePath");
+    List<int> imageBytes = await file.readAsBytes();
+    print(">>>>>>>imageBytes: $imageBytes");
+    img.Image? image = img.decodeImage(Uint8List.fromList(imageBytes));
+    print(">>>>>>>>>>image: $image");
+    if (image != null) {
+      Uint8List jpgBytes =
+          Uint8List.fromList(img.encodeJpg(image, quality: 70));
+      String fileNameWithoutExtension =
+          filePath.substring(0, filePath.lastIndexOf('.'));
+      File newFile = File('$fileNameWithoutExtension.jpg');
+      newFile = await newFile.writeAsBytes(jpgBytes);
+      path = newFile.path;
+      print(">>>>>>>>>>path: $path");
+    }
+    return path;
+  }
+
+  static Future<bool> isHeif(String filePath) async {
+    File file = File(filePath);
+    Uint8List bytes = await file.readAsBytes();
+
+    // HEIF files start with 'ftyp' at byte 4-7.
+    if (bytes.length >= 12 &&
+        bytes[4] == 0x66 &&
+        bytes[5] == 0x74 &&
+        bytes[6] == 0x79 &&
+        bytes[7] == 0x70) {
+      // Check for specific HEIF major brand identifiers
+      String majorBrand = String.fromCharCodes(bytes.sublist(8, 12));
+      if (majorBrand == 'heic' ||
+          majorBrand == 'heix' ||
+          majorBrand == 'hevc') {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

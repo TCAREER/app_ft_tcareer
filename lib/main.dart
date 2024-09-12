@@ -2,6 +2,7 @@ import 'package:app_tcareer/app.dart';
 import 'package:app_tcareer/firebase_options.dart';
 import 'package:app_tcareer/src/routes/app_router.dart';
 import 'package:app_tcareer/src/services/apis/api_services.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,6 +27,11 @@ void main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
   }
+  await FirebaseAppCheck.instance.activate(
+    webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'), // For web
+    androidProvider: AndroidProvider.debug, // For Android
+    appleProvider: AppleProvider.debug, // For iOS
+  );
 
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   runApp(ProviderScope(

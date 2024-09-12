@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:app_tcareer/src/modules/posts/data/models/post_response.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/post_state.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/media_controller.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/modules/posts/usecases/post_use_case.dart';
 import 'package:app_tcareer/src/shared/utils/alert_dialog_util.dart';
+import 'package:app_tcareer/src/shared/utils/app_utils.dart';
 import 'package:app_tcareer/src/shared/utils/snackbar_utils.dart';
 import 'package:app_tcareer/src/shared/utils/user_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +15,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:uuid/uuid.dart';
 
 class PostingController extends ChangeNotifier {
   final PostUseCase postUseCase;
@@ -124,6 +128,19 @@ class PostingController extends ChangeNotifier {
   TextEditingController contentController = TextEditingController();
 
   Future<void> createPost() async {
-    print(">>>>>>>>content: ${contentController.text}");
+    List<String> imageUrl = [];
+    final mediaController = ref.watch(mediaControllerProvider);
+    final uuid = Uuid();
+    final id = uuid.v4();
+    for (String asset in mediaController.imagePaths) {
+      String path = "posts/$id";
+      String? assetPath = await AppUtils.compressImage(asset);
+      // String url = await postUseCase.uploadImage(
+      //     file: File(assetPath ?? ""), folderPath: path);
+      String url = await postUseCase.uploadFile(
+          file: File(assetPath ?? ""), topic: "Posts", folderName: id);
+      imageUrl.add(url);
+    }
+    print(">>>>>>>>>>>$imageUrl");
   }
 }

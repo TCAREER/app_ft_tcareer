@@ -1,0 +1,103 @@
+import 'dart:convert';
+import 'dart:io' as io;
+
+import 'package:app_tcareer/src/configs/app_constants.dart';
+import 'package:flutter/services.dart';
+import 'package:googleapis/drive/v3.dart';
+import 'package:googleapis_auth/auth_io.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
+
+const _scopes = [DriveApi.driveScope];
+
+class GoogleDriveService {
+  final _driveApi = _createDriveApi();
+
+  GoogleDriveService();
+
+  static Future<DriveApi> _createDriveApi() async {
+    final credentials = await loadCredentials();
+    final client = await clientViaServiceAccount(credentials, _scopes);
+    return DriveApi(client);
+  }
+
+  static Future<ServiceAccountCredentials> loadCredentials() async {
+    final jsonString =
+        await rootBundle.loadString('assets/json/credentials.json');
+    final jsonMap = json.decode(jsonString) as Map<String, dynamic>;
+    return ServiceAccountCredentials.fromJson(jsonMap);
+  }
+
+  Future<String> uploadFile(
+      io.File file, String topic, String folderName) async {
+    final driveApi = await _driveApi;
+
+    // Folder ID của thư mục cha (thư mục đã có sẵn)
+    const parentFolderId = "18KYXb729bytijEE6dqDIJf2NWOAoruzE";
+
+    // Tạo thư mục con 'topic' hoặc lấy ID của thư mục con nếu đã tồn tại
+    final topicFolderId =
+        await getOrCreateFolderId(driveApi, topic, parentFolderId);
+    if (topicFolderId == null) {
+      throw Exception("Could not create or find the topic folder.");
+    }
+
+    // Tạo thư mục con 'folderName' trong thư mục 'topic'
+    final folderId =
+        await getOrCreateFolderId(driveApi, folderName, topicFolderId);
+    if (folderId == null) {
+      throw Exception("Could not create the folderName folder.");
+    }
+
+    final uuid = Uuid();
+    final fileName = uuid.v4();
+
+    // Đọc nội dung tập tin
+    final fileContent = await file.readAsBytes();
+    final media = Media(Stream.fromIterable([fileContent]), fileContent.length);
+
+    final driveFile = File()
+      ..name = fileName
+      ..mimeType = 'application/octet-stream'
+      ..parents = [folderId];
+
+    try {
+      final response =
+          await driveApi.files.create(driveFile, uploadMedia: media);
+      final fileId = response.id;
+      final fileUrl = 'https://drive.google.com/uc?id=$fileId';
+      return fileUrl;
+    } catch (e) {
+      throw Exception("Error uploading file: $e");
+    }
+  }
+
+  Future<String?> getOrCreateFolderId(
+      DriveApi driveApi, String folderName, String? parentId) async {
+    final query = parentId == null
+        ? "mimeType='application/vnd.google-apps.folder' and name='$folderName' and trashed=false"
+        : "mimeType='application/vnd.google-apps.folder' and name='$folderName' and '$parentId' in parents and trashed=false";
+
+    final results = await driveApi.files.list(
+      q: query,
+      spaces: 'drive',
+    );
+
+    if (results.files?.isNotEmpty == true) {
+      return results.files?.first.id!;
+    }
+
+    final folderMetadata = File()
+      ..name = folderName
+      ..mimeType = 'application/vnd.google-apps.folder'
+      ..parents = parentId != null ? [parentId] : [];
+
+    final folder = await driveApi.files.create(folderMetadata);
+    return folder.id!;
+  }
+}
+
+final googleDriveServiceProvider = Provider<GoogleDriveService>((ref) {
+  return GoogleDriveService();
+});
