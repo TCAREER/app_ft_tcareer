@@ -1,9 +1,17 @@
+import 'dart:convert';
+
+import 'package:app_tcareer/app.dart';
+import 'package:app_tcareer/src/configs/app_constants.dart';
+import 'package:app_tcareer/src/modules/authentication/data/models/login_response.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/refresh_token_request.dart';
+import 'package:app_tcareer/src/shared/utils/snackbar_utils.dart';
 import 'package:app_tcareer/src/shared/utils/user_utils.dart';
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../services.dart';
@@ -39,11 +47,20 @@ final apiServiceProvider = Provider<ApiServices>((ref) {
       handler.next(options);
     }
   }, onError: (error, handler) async {
-    final userUtils = ref.read(userUtilsProvider);
-    final authToken = await userUtils.getAuthToken();
-    print(">>>>>>>>>>>isNull ${authToken != null}");
-    if (error.response?.statusCode == 401 && authToken != null) {
-      handleRefreshToken(ref, error, handler, dio);
+     final userUtils = ref.read(userUtilsProvider);
+    if (error.response?.statusCode == 401 && await userUtils.getAuthToken()!=null) {
+     
+      final refreshToken = await userUtils.getRefreshToken();
+
+      final response = await refreshAccessToken(
+          dio: dio, refreshToken: refreshToken, ref: ref);
+      await userUtils.saveAuthToken(
+          authToken: response?.accessToken ?? "", refreshToken: refreshToken);
+      final authToken = await userUtils.getAuthToken();
+      final options = error.requestOptions;
+      options.headers["Authorization"] = "Bearer $authToken";
+
+      return handler.resolve(await dio.fetch(options));
     } else {
       handler.reject(error);
     }
@@ -58,32 +75,42 @@ final apiServiceProvider = Provider<ApiServices>((ref) {
   return ApiServices(dio);
 });
 
-Future<void> handleRefreshToken(ProviderRef ref, DioException error,
-    ErrorInterceptorHandler handler, Dio dio) async {
-  final userUtils = ref.read(userUtilsProvider);
-  final refreshToken = await userUtils.getRefreshToken();
-  final Dio dioNew = Dio();
-  final api = ApiServices(dioNew);
-  try {
-    final response = await api.postRefreshToken(
-        body: RefreshTokenRequest(refreshToken: refreshToken));
-    String newAuthToken = response.accessToken ?? "";
-    await userUtils.saveAuthToken(
-        authToken: newAuthToken, refreshToken: refreshToken);
-    final newOptions = error.requestOptions;
-    newOptions.headers["Authorization"] = "Bearer $newAuthToken";
-    final responseRetry = await dio.request(
-      newOptions.path,
-      options: Options(
-        method: newOptions.method,
-        headers: newOptions.headers,
-      ),
-      data: newOptions.data,
-      queryParameters: newOptions.queryParameters,
-    );
+Future<LoginResponse?> refreshAccessToken(
+    {required Dio dio,
+    required String refreshToken,
+    required ProviderRef ref}) async {
+  final LoginResponse? data;
 
-    handler.resolve(responseRetry);
-  } on DioException catch (e) {
-    handler.reject(e);
+  final refreshTokenNotifier = ref.watch(refreshTokenStateProvider.notifier);
+  try {
+    dio.options.baseUrl = AppConstants.baseUrl;
+
+    final response = await dio.post('auth/refresh',
+        data: RefreshTokenRequest(refreshToken: refreshToken).toJson(),
+        options: Options(headers: {
+          'Content-Type': 'application/json',
+        }));
+    data = LoginResponse.fromJson(response.data);
+    return data;
+  } on DioException catch (err) {
+    final userUtils = ref.read(userUtilsProvider);
+    if (err.response?.statusCode == 400) {
+      userUtils.clearToken();
+      refreshTokenNotifier.setTokenExpired(true);
+    }
+  }
+  return null;
+}
+
+class RefreshTokenStateNotifier extends ChangeNotifier {
+  bool isRefreshTokenExpired = false; // Mặc định là false
+
+  void setTokenExpired(bool expired) {
+    isRefreshTokenExpired = expired;
+    notifyListeners();
   }
 }
+
+final refreshTokenStateProvider = ChangeNotifierProvider(
+  (ref) => RefreshTokenStateNotifier(),
+);

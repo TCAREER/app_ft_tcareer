@@ -30,6 +30,8 @@ class _PostingPageState extends ConsumerState<PostingPage> {
   Widget build(BuildContext context) {
     final mediaController = ref.watch(mediaControllerProvider);
     final controller = ref.watch(postingControllerProvider);
+    bool isActive = controller.contentController.text != "" ||
+        mediaController.imagePaths.isNotEmpty;
     return PopScope(
       onPopInvoked: (didPop) {
         if (didPop) {
@@ -40,6 +42,8 @@ class _PostingPageState extends ConsumerState<PostingPage> {
         resizeToAvoidBottomInset: true,
         backgroundColor: Colors.white,
         appBar: appBar(
+            isActive: isActive,
+            isLoading: controller.isLoading,
             context: context,
             onPop: () => controller.showDialog(context),
             onPosting: () async => await controller.createPost(context)),
@@ -81,7 +85,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
               visible: mediaController.imagePaths.isNotEmpty,
               child: FBPhotoView(
                 dataSource: mediaController.imagePaths,
-                displayType: FBPhotoViewType.grid5,
+                displayType: FBPhotoViewType.grid3,
               ),
             ),
           ],
@@ -92,13 +96,22 @@ class _PostingPageState extends ConsumerState<PostingPage> {
   }
 
   PreferredSizeWidget appBar(
-      {required BuildContext context,
+      {required bool isActive,
+      required BuildContext context,
       required void Function()? onPop,
-      required void Function()? onPosting}) {
+      required void Function()? onPosting,
+      required bool isLoading}) {
     return AppBar(
-      bottom: const PreferredSize(
-        child: const Divider(),
+      bottom: PreferredSize(
         preferredSize: Size.fromHeight(5),
+        child: Visibility(
+          visible: isLoading,
+          replacement: const Divider(),
+          child: const LinearProgressIndicator(
+            backgroundColor: Colors.white,
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+          ),
+        ),
       ),
       backgroundColor: Colors.white,
       leading: IconButton(
@@ -123,7 +136,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20)),
                   backgroundColor: AppColors.executeButton),
-              onPressed: onPosting,
+              onPressed: isActive ? onPosting : null,
               child: const Text(
                 "Đăng",
                 style: TextStyle(color: Colors.white),

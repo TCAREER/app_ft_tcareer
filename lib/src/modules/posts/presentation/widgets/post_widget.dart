@@ -119,7 +119,7 @@ Widget postWidget({
               visible: images.isNotEmpty,
               child: FBPhotoView(
                 dataSource: images,
-                displayType: FBPhotoViewType.grid5,
+                displayType: FBPhotoViewType.grid3,
               ),
             ),
             const SizedBox(

@@ -22,7 +22,7 @@ class PostController extends ChangeNotifier {
   bool isLoading = false;
   Future<void> getPost() async {
     setIsLoading(true);
-    postData = await postUseCase.getPost(personal: "p");
+    postData = await postUseCase.getPost(personal: "n");
     setIsLoading(false);
   }
 

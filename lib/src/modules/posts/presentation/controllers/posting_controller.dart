@@ -138,18 +138,25 @@ class PostingController extends ChangeNotifier {
     }
   }
 
+  bool isLoading = false;
+  void setIsLoading(bool value) {
+    isLoading = value;
+    notifyListeners();
+  }
+
   Future<void> createPost(BuildContext context) async {
     final mediaController = ref.watch(mediaControllerProvider);
-    AppUtils.loadingApi(() async {
+    AppUtils.futureApi(() async {
+      setIsLoading(true);
       if (mediaController.imagePaths.isNotEmpty) {
         await uploadImage();
       }
-
       await postUseCase.createPost(
           body: CreatePostRequest(
               body: contentController.text,
               privacy: "public",
               mediaUrl: mediaUrl));
+      setIsLoading(false);
       showSnackBar("Tạo bài viết thành công");
       context.pop();
       context.goNamed("home");

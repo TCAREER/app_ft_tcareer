@@ -24,8 +24,7 @@ class LoginController extends StateNotifier<void> {
           password: password ?? passController.text);
       await loginUseCaseProvider.login(body);
 
-      context.pop();
-      context.go("/home");
+      // context.go("/home");
     }, context);
   }
 

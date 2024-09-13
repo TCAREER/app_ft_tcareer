@@ -10,6 +10,7 @@ import 'package:app_tcareer/src/modules/splash/intro_page.dart';
 import 'package:app_tcareer/src/modules/splash/splash_page.dart';
 import 'package:app_tcareer/src/routes/index_route.dart';
 import 'package:app_tcareer/src/routes/transition_builder.dart';
+import 'package:app_tcareer/src/services/apis/api_service_provider.dart';
 import 'package:app_tcareer/src/shared/utils/user_utils.dart';
 import 'package:app_tcareer/src/shared/widgets/photo_manager_page.dart';
 import 'package:flutter/widgets.dart';
@@ -32,26 +33,36 @@ class AppRouter {
   static final navigatorKey = GlobalKey<NavigatorState>();
 
   static GoRouter router(WidgetRef ref) {
+    final refreshTokenProvider = ref.watch(refreshTokenStateProvider);
     return GoRouter(
         debugLogDiagnostics: true,
         navigatorKey: navigatorKey,
-        initialLocation: "/splash",
+        initialLocation: "/home",
         redirect: (context, state) async {
-          // final userUtils = ref.watch(userUtilsProvider);
-          // print(">>>>>>>>>>>${await userUtils.isAuthenticated()}");
-          // // final isAuthenticated = ref.watch(isAuthenticatedProvider);
-          // print(">>>>>>>>>>>>>>>>>>$isAuthenticated");
-          // if (isAuthenticated != true ||
-          //     await userUtils.isAuthenticated() != true) {
-          //   if (state.fullPath?.contains("/intro") == true) {
-          //     return "/intro";
-          //   }
-          //   if (state.fullPath?.contains("/login") == true) {
-          //     return "/login";
-          //   }
-          //   return "/splash";
-          // }
+          final userUtils = ref.watch(userUtilsProvider);
+          final isAuthenticated = await userUtils.isAuthenticated();
+          final Map<String, String> routeRedirectMap = {
+            '/register': '/register',
+            '/forgotPassword': '/forgotPassword',
+            '/forgotPassword/verify': '/forgotPassword/verify',
+            '/forgotPassword/resetPassword': '/forgotPassword/resetPassword',
+            '/login': '/login',
+            '/intro': '/intro',
+          };
 
+          if (refreshTokenProvider.isRefreshTokenExpired == true) {
+            if (routeRedirectMap.containsKey(state.fullPath)) {
+              return routeRedirectMap[state.fullPath];
+            }
+            return "/login";
+          }
+          // context.go("/home");
+          if (isAuthenticated != true) {
+            if (routeRedirectMap.containsKey(state.fullPath)) {
+              return routeRedirectMap[state.fullPath];
+            }
+            return "/intro";
+          }
           return null;
         },
         routes: [
@@ -136,6 +147,10 @@ class AppRouter {
 }
 
 class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream() {
+    // Không cần truyền tham số
+  }
+
   @override
   void notifyListeners() {
     super.notifyListeners();

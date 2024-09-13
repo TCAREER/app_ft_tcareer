@@ -99,9 +99,10 @@ class _HomePageState extends ConsumerState<HomePage> {
               createdAt: post?.createdAt ?? "",
               content: post?.body ?? "",
               images: post?.mediaUrl ?? [],
-              likes: post?.likeCount.toString() ?? "",
-              comments: post?.commentCount.toString() ?? "",
-              shares: post?.shareCount.toString() ?? "");
+              likes: post?.likeCount != null ? "${post?.likeCount}" : "0",
+              comments:
+                  post?.commentCount != null ? "${post?.commentCount}" : "0",
+              shares: post?.shareCount != null ? "${post?.shareCount}" : "0");
         },
       ),
     );

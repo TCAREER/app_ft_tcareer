@@ -62,31 +62,10 @@ class GoogleDriveService {
       final response =
           await driveApi.files.create(driveFile, uploadMedia: media);
       final fileId = response.id;
-
-      // Cập nhật quyền chia sẻ của tệp để công khai
-      if (fileId != null) {
-        await updateFilePermissions(driveApi, fileId);
-
-        // Tạo liên kết web content
-        final fileUrl = 'https://drive.google.com/uc?export=view&id=$fileId';
-        return fileUrl;
-      } else {
-        throw Exception("Failed to get file ID after upload.");
-      }
+      final fileUrl = 'https://drive.google.com/thumbnail?id=$fileId&sz=w1000';
+      return fileUrl;
     } catch (e) {
       throw Exception("Error uploading file: $e");
-    }
-  }
-
-  Future<void> updateFilePermissions(DriveApi driveApi, String fileId) async {
-    final permission = Permission()
-      ..type = 'anyone'
-      ..role = 'reader';
-
-    try {
-      await driveApi.permissions.create(permission, fileId);
-    } catch (e) {
-      throw Exception("Error updating file permissions: $e");
     }
   }
 
@@ -102,7 +81,7 @@ class GoogleDriveService {
     );
 
     if (results.files?.isNotEmpty == true) {
-      return results.files?.first.id;
+      return results.files?.first.id!;
     }
 
     final folderMetadata = File()
@@ -111,7 +90,7 @@ class GoogleDriveService {
       ..parents = parentId != null ? [parentId] : [];
 
     final folder = await driveApi.files.create(folderMetadata);
-    return folder.id;
+    return folder.id!;
   }
 }
 

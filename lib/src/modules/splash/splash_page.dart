@@ -13,24 +13,26 @@ class SplashPage extends ConsumerStatefulWidget {
 }
 
 class _SplashPageState extends ConsumerState<SplashPage> {
-  @override
-  void initState() {
-    super.initState();
+  // @override
+  // void initState() {
+  //   super.initState();
 
-    final userUtils = ref.read(userUtilsProvider);
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     final userUtils = ref.watch(userUtilsProvider);
 
-    Future.delayed(Duration(seconds: 1), () async {
-      if (!mounted)
-        return; // Kiểm tra xem widget có còn trong cây widget hay không
-      final isAuthenticated = await userUtils.isAuthenticated();
-      // context.go("/home");
-      if (isAuthenticated != true) {
-        context.go("/intro");
-      } else {
-        context.go("/home");
-      }
-    });
-  }
+  //     Future.delayed(Duration(seconds: 1), () async {
+  //       if (!mounted)
+  //         return; // Kiểm tra xem widget có còn trong cây widget hay không
+  //       final isAuthenticated = await userUtils.isAuthenticated();
+  //       // context.go("/home");
+  //       if (isAuthenticated != true) {
+  //         context.go("/intro");
+  //       } else {
+  //         context.go("/home");
+  //       }
+  //     });
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {

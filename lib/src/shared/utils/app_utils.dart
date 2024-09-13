@@ -50,6 +50,23 @@ class AppUtils {
     // }
   }
 
+  static Future<void> futureApi(
+      Function onLoading, BuildContext context) async {
+    try {
+      await onLoading();
+    } on DioException catch (error) {
+      if (error.response?.statusCode != null) {
+        if (error.response?.statusCode == 400) {
+          showExceptionErrorUser(error, context);
+        } else {
+          checkExceptionStatusCode(error, context);
+        }
+      } else {
+        checkException(error, context);
+      }
+    }
+  }
+
   static void checkException(DioException error, BuildContext context) {
     ApiException exception = ApiException();
     List<String> errorMessage = exception.getExceptionMessage(error);
@@ -92,11 +109,11 @@ class AppUtils {
       filePath = await HeifConverter.convert(filePath, output: filePath) ?? "";
     }
     File file = File(filePath);
-    print(">>>>>>filePath: $filePath");
+    // print(">>>>>>filePath: $filePath");
     List<int> imageBytes = await file.readAsBytes();
-    print(">>>>>>>imageBytes: $imageBytes");
+    // print(">>>>>>>imageBytes: $imageBytes");
     img.Image? image = img.decodeImage(Uint8List.fromList(imageBytes));
-    print(">>>>>>>>>>image: $image");
+    // print(">>>>>>>>>>image: $image");
     if (image != null) {
       Uint8List jpgBytes =
           Uint8List.fromList(img.encodeJpg(image, quality: 70));
@@ -105,7 +122,7 @@ class AppUtils {
       File newFile = File('$fileNameWithoutExtension.jpg');
       newFile = await newFile.writeAsBytes(jpgBytes);
       path = newFile.path;
-      print(">>>>>>>>>>path: $path");
+      // print(">>>>>>>>>>path: $path");
     }
     return path;
   }

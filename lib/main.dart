@@ -28,9 +28,5 @@ void main() async {
     );
   }
 
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-  runApp(ProviderScope(
-      child: App(
-    navigatorKey: navigatorKey,
-  )));
+  runApp(ProviderScope(child: App()));
 }

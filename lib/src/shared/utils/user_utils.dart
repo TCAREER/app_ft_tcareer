@@ -1,5 +1,6 @@
 import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/configs/shared_preferences_provider.dart';
+import 'package:app_tcareer/src/services/apis/api_service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,9 +12,17 @@ class UserUtils {
   Future<void> saveAuthToken(
       {required String authToken, required String refreshToken}) async {
     final sharedRef = await ref.read(sharedPreferencesProvider.future);
+    final refreshTokenNotifier = ref.watch(refreshTokenStateProvider.notifier);
     sharedRef.setString(AppConstants.authToken, authToken);
     sharedRef.setString(AppConstants.refreshToken, refreshToken);
-    // ref.read(isAuthenticatedProvider.notifier).update((state) => true);
+    refreshTokenNotifier.setTokenExpired(false);
+  }
+
+  Future<void> clearToken() async {
+    final sharedRef = await ref.read(sharedPreferencesProvider.future);
+
+    sharedRef.remove(AppConstants.authToken);
+    sharedRef.remove(AppConstants.refreshToken);
   }
 
   Future<bool> isAuthenticated() async {
