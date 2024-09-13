@@ -216,6 +216,33 @@ class _ApiServices implements ApiServices {
   }
 
   @override
+  Future<UserData> getUserInfo() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result =
+        await _dio.fetch<Map<String, dynamic>>(_setStreamType<UserData>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'auth/me',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = UserData.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<dynamic> postCreatePost({required CreatePostRequest body}) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

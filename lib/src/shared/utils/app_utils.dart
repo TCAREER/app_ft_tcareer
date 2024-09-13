@@ -50,11 +50,13 @@ class AppUtils {
     // }
   }
 
-  static Future<void> futureApi(
-      Function onLoading, BuildContext context) async {
+  static Future<void> futureApi(Function onLoading, BuildContext context,
+      void Function(bool value) setIsLoading) async {
     try {
+      setIsLoading(true);
       await onLoading();
     } on DioException catch (error) {
+      setIsLoading(false);
       if (error.response?.statusCode != null) {
         if (error.response?.statusCode == 400) {
           showExceptionErrorUser(error, context);

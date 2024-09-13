@@ -151,20 +151,19 @@ class PostingController extends ChangeNotifier {
   Future<void> createPost(BuildContext context) async {
     final mediaController = ref.watch(mediaControllerProvider);
     AppUtils.futureApi(() async {
-      setIsLoading(true);
       if (mediaController.imagePaths.isNotEmpty) {
         await uploadImage();
       }
       await postUseCase.createPost(
           body: CreatePostRequest(
               body: contentController.text,
-              privacy: "public",
+              privacy: selectedPrivacy,
               mediaUrl: mediaUrl));
-      setIsLoading(false);
+
       showSnackBar("Tạo bài viết thành công");
       context.pop();
       context.goNamed("home");
-    }, context);
+    }, context, setIsLoading);
   }
 
   List<String> mediaUrl = [];
@@ -175,7 +174,6 @@ class PostingController extends ChangeNotifier {
     final uuid = Uuid();
     final id = uuid.v4();
     for (String asset in mediaController.imagePaths) {
-      String path = "posts/$id";
       String? assetPath = await AppUtils.compressImage(asset);
       // String url = await postUseCase.uploadImage(
       //     file: File(assetPath ?? ""), folderPath: path);
@@ -183,6 +181,15 @@ class PostingController extends ChangeNotifier {
           file: File(assetPath ?? ""), topic: "Posts", folderName: id);
       mediaUrl.add(url);
     }
+    notifyListeners();
+  }
+
+  String selectedPrivacy = "public";
+
+  Future<void> selectPrivacy(String privacy, BuildContext context) async {
+    selectedPrivacy = privacy;
+
+    context.pop();
     notifyListeners();
   }
 }

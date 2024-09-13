@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:app_tcareer/src/configs/app_colors.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/media_controller.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/controllers/posting_controller.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/widgets/privacy_bottom_sheet_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -19,12 +21,12 @@ class PostingPage extends ConsumerStatefulWidget {
 }
 
 class _PostingPageState extends ConsumerState<PostingPage> {
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   Future.microtask(() => ref.read(postingControllerProvider).loadPostCache());
-  // }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.microtask(() => ref.read(postingControllerProvider).loadPostCache());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +71,10 @@ class _PostingPageState extends ConsumerState<PostingPage> {
                       style:
                           TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
-                    objectWidget()
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    privacyWidget(controller, context)
                   ],
                 )
               ],
@@ -103,7 +108,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
       required bool isLoading}) {
     return AppBar(
       bottom: PreferredSize(
-        preferredSize: Size.fromHeight(5),
+        preferredSize: const Size.fromHeight(5),
         child: Visibility(
           visible: isLoading,
           replacement: const Divider(),
@@ -129,26 +134,86 @@ class _PostingPageState extends ConsumerState<PostingPage> {
         fontWeight: FontWeight.w700,
       ),
       actions: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  backgroundColor: AppColors.executeButton),
-              onPressed: isActive ? onPosting : null,
-              child: const Text(
-                "Đăng",
-                style: TextStyle(color: Colors.white),
-              )),
+        SizedBox(
+          height: 30,
+          width: 90,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2),
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    backgroundColor: AppColors.executeButton),
+                onPressed: isActive ? onPosting : null,
+                child: const Text(
+                  "Đăng",
+                  style: TextStyle(color: Colors.white, fontSize: 13),
+                )),
+          ),
         )
       ],
     );
   }
 
-  Widget objectWidget() {
-    return const Row(
-      children: [Text("Mọi người"), Icon(Icons.arrow_drop_down)],
+  Widget privacyWidget(PostingController controller, BuildContext context) {
+    return GestureDetector(
+      onTap: () => showModalBottomSheet(
+          isScrollControlled: true,
+          context: context,
+          builder: (context) => privacyBottomSheetWidget(context: context)),
+      child: Container(
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.grey.shade200),
+        child: Visibility(
+          visible: controller.selectedPrivacy.contains("public"),
+          replacement: const Row(
+            children: [
+              Icon(
+                Icons.group,
+                size: 15,
+              ),
+              SizedBox(
+                width: 2,
+              ),
+              const Text(
+                "Bạn bè",
+                style: TextStyle(fontSize: 12),
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Icon(
+                Icons.arrow_drop_down,
+                size: 15,
+              ),
+            ],
+          ),
+          child: const Row(
+            children: [
+              Icon(
+                Icons.public,
+                size: 15,
+              ),
+              const SizedBox(
+                width: 2,
+              ),
+              Text(
+                "Công khai",
+                style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                width: 5,
+              ),
+              Icon(
+                Icons.arrow_drop_down,
+                size: 15,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

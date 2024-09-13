@@ -47,13 +47,13 @@ final apiServiceProvider = Provider<ApiServices>((ref) {
       handler.next(options);
     }
   }, onError: (error, handler) async {
-     final userUtils = ref.read(userUtilsProvider);
-    if (error.response?.statusCode == 401 && await userUtils.getAuthToken()!=null) {
-     
+    final userUtils = ref.read(userUtilsProvider);
+    if (error.response?.statusCode == 401 &&
+        await userUtils.getAuthToken() != null) {
       final refreshToken = await userUtils.getRefreshToken();
 
-      final response = await refreshAccessToken(
-          dio: dio, refreshToken: refreshToken, ref: ref);
+      final response =
+          await refreshAccessToken(refreshToken: refreshToken, ref: ref);
       await userUtils.saveAuthToken(
           authToken: response?.accessToken ?? "", refreshToken: refreshToken);
       final authToken = await userUtils.getAuthToken();
@@ -76,15 +76,21 @@ final apiServiceProvider = Provider<ApiServices>((ref) {
 });
 
 Future<LoginResponse?> refreshAccessToken(
-    {required Dio dio,
-    required String refreshToken,
-    required ProviderRef ref}) async {
+    {required String refreshToken, required ProviderRef ref}) async {
   final LoginResponse? data;
-
+  final dio = Dio();
   final refreshTokenNotifier = ref.watch(refreshTokenStateProvider.notifier);
   try {
     dio.options.baseUrl = AppConstants.baseUrl;
-
+    dio.interceptors.add(CurlLoggerDioInterceptor(printOnSuccess: true));
+    dio.interceptors.add(PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseBody: true,
+        responseHeader: false,
+        error: true,
+        compact: true,
+        maxWidth: 90));
     final response = await dio.post('auth/refresh',
         data: RefreshTokenRequest(refreshToken: refreshToken).toJson(),
         options: Options(headers: {

@@ -10,6 +10,7 @@ import 'package:app_tcareer/src/modules/authentication/data/models/login_respons
 import 'package:app_tcareer/src/modules/authentication/data/models/register_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/posts_response.dart';
+import 'package:app_tcareer/src/modules/user/data/models/user_data.dart';
 import 'package:app_tcareer/src/shared/utils/app_utils.dart';
 import 'package:app_tcareer/src/shared/utils/user_utils.dart';
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
@@ -49,6 +50,9 @@ abstract class ApiServices {
 
   @POST('auth/forgot_password_change')
   Future postResetPassword({@Body() required ResetPasswordRequest body});
+
+  @GET("auth/me")
+  Future<UserData> getUserInfo();
 
   @POST('api/auth/create_post')
   Future postCreatePost({@Body() required CreatePostRequest body});
