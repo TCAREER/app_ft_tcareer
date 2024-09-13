@@ -7,6 +7,8 @@ import 'package:app_tcareer/src/modules/posts/data/models/posts_response.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/media_controller.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/modules/posts/usecases/post_use_case.dart';
+import 'package:app_tcareer/src/modules/user/data/models/user_data.dart';
+import 'package:app_tcareer/src/modules/user/usercases/user_use_case.dart';
 import 'package:app_tcareer/src/shared/utils/alert_dialog_util.dart';
 import 'package:app_tcareer/src/shared/utils/app_utils.dart';
 import 'package:app_tcareer/src/shared/utils/snackbar_utils.dart';
@@ -190,6 +192,14 @@ class PostingController extends ChangeNotifier {
     selectedPrivacy = privacy;
 
     context.pop();
+    notifyListeners();
+  }
+
+  UserData userData = UserData();
+
+  Future<void> getUserInfo() async {
+    final userUseCase = ref.watch(userUseCaseProvider);
+    userData = await userUseCase.getUserInfo();
     notifyListeners();
   }
 }

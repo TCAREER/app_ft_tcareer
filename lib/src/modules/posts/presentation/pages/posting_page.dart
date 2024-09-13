@@ -25,7 +25,11 @@ class _PostingPageState extends ConsumerState<PostingPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.microtask(() => ref.read(postingControllerProvider).loadPostCache());
+    Future.microtask(() {
+      final controller = ref.read(postingControllerProvider);
+      controller.getUserInfo();
+      controller.loadPostCache();
+    });
   }
 
   @override
@@ -55,10 +59,10 @@ class _PostingPageState extends ConsumerState<PostingPage> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 30,
-                  backgroundImage: NetworkImage(
-                      "https://mighty.tools/mockmind-api/content/human/7.jpg"),
+                  backgroundImage: NetworkImage(controller.userData.avatar ??
+                      "https://ui-avatars.com/api/?name=${controller.userData?.fullName}&background=random"),
                 ),
                 const SizedBox(
                   width: 10,
@@ -66,8 +70,8 @@ class _PostingPageState extends ConsumerState<PostingPage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Quang Thiện",
+                    Text(
+                      controller.userData.fullName ?? "",
                       style:
                           TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
