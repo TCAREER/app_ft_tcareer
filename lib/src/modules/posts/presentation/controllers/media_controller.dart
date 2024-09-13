@@ -65,15 +65,23 @@ class MediaController extends ChangeNotifier {
     if (selectedAsset.isEmpty ||
         !hasChanged ||
         imagePaths.length == selectedAsset.length) {
-      context.pop();
+      Future.microtask(() {
+        if (context.canPop()) {
+          context.pop();
+        }
+      });
     } else {
       showModalPopup(
           context: context,
           onPop: () async {
             // selectedAsset.clear();
             // assetIndices.clear();
-            context.pop();
-            context.pop();
+            Future.microtask(() {
+              if (context.canPop()) {
+                // context.pop();
+                context.pushReplacementNamed("posting");
+              }
+            });
           });
     }
   }

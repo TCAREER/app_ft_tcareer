@@ -19,12 +19,12 @@ class PostingPage extends ConsumerStatefulWidget {
 }
 
 class _PostingPageState extends ConsumerState<PostingPage> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    Future.microtask(() => ref.read(postingControllerProvider).loadPostCache());
-  }
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   Future.microtask(() => ref.read(postingControllerProvider).loadPostCache());
+  // }
 
   @override
   Widget build(BuildContext context) {

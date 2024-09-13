@@ -129,7 +129,11 @@ class PostingController extends ChangeNotifier {
     final mediaController = ref.watch(mediaControllerProvider);
 
     if (mediaController.imagePaths.isEmpty) {
-      context.pop();
+      Future.microtask(() {
+        if (context.canPop()) {
+          context.pop();
+        }
+      });
     } else {
       showModalPopup(
           context: context,
