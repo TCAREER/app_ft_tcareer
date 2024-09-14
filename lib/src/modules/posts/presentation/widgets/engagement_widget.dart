@@ -29,68 +29,79 @@ Widget engagementWidget(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(children: [
-              const WidgetSpan(
-                  alignment: PlaceholderAlignment.middle,
-                  child: PhosphorIcon(
-                    PhosphorIconsBold.heart,
-                    color: Colors.black,
-                    size: 20,
-                  )),
-              TextSpan(
-                  text: " $likeCount",
-                  style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 12))
-            ])),
+        Row(
+          children: [
+            PhosphorIcon(
+              PhosphorIconsBold.heart,
+              color: Colors.grey,
+              size: 20,
+            ),
+            const SizedBox(
+              width: 3,
+            ),
+            Visibility(
+              visible: likeCount != "0",
+              child: Text(
+                "$likeCount",
+                style: TextStyle(color: Colors.grey),
+              ),
+            )
+          ],
+        ),
+        const SizedBox(
+          width: 10,
+        ),
         GestureDetector(
           onTap: () => index.showBottomSheet(
               context: context,
               builder: (scrollController) =>
                   CommentsPage(scrollController: scrollController)),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: RichText(
-                text: TextSpan(children: [
-              const WidgetSpan(
-                  alignment: PlaceholderAlignment.middle,
-                  child: PhosphorIcon(
-                    PhosphorIconsBold.chatCircle,
-                    color: Colors.black,
-                    size: 20,
-                  )),
-              TextSpan(
-                  text: " $commentCount",
-                  style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 12))
-            ])),
+          child: Row(
+            children: [
+              PhosphorIcon(
+                PhosphorIconsBold.chatCircle,
+                color: Colors.grey,
+                size: 20,
+              ),
+              const SizedBox(
+                width: 3,
+              ),
+              Visibility(
+                visible: commentCount != "0",
+                child: Text(
+                  "$commentCount",
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ),
+            ],
           ),
+        ),
+        const SizedBox(
+          width: 10,
         ),
         GestureDetector(
           onTap: () => controller.sharePost(
               title: "Bài viết",
               url: "https://tcareer.thiendev.shop/home/detail/quang%20thien"),
-          child: RichText(
-              text: TextSpan(children: [
-            const WidgetSpan(
-                alignment: PlaceholderAlignment.middle,
-                child: PhosphorIcon(
-                  PhosphorIconsBold.paperPlaneTilt,
-                  color: Colors.black,
-                  size: 20,
-                )),
-            TextSpan(
-                text: " $shareCount",
-                style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 12))
-          ])),
+          child: Row(
+            children: [
+              PhosphorIcon(
+                PhosphorIconsBold.paperPlaneTilt,
+                color: Colors.grey,
+                size: 20,
+              ),
+              const SizedBox(
+                width: 3,
+              ),
+              Visibility(
+                visible: commentCount != "0",
+                child: Text(
+                  "$shareCount",
+                  style: TextStyle(color: Colors.grey),
+                ),
+              )
+            ],
+          ),
         ),
       ],
     ),

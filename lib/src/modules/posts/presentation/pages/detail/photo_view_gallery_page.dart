@@ -107,6 +107,7 @@ class PhotoViewGalleryPage extends ConsumerWidget {
           ],
         ),
         bottomNavigationBar: BottomAppBar(
+          color: Colors.black,
           child: engagementWidget(
               ref: ref,
               postId: postId,
