@@ -10,13 +10,13 @@ import 'package:go_router/go_router.dart';
 Widget privacyBottomSheetWidget({required BuildContext context}) {
   List<Map<String, dynamic>> privacies = [
     {
-      "value": "public",
+      "value": "Public",
       "title": "Công khai",
       "subTitle": "Bất kỳ ai ở trên và ngoài Tcareer",
       "icon": Icons.public
     },
     {
-      "value": "friend",
+      "value": "Friend",
       "title": "Bạn bè",
       "subTitle": "Bạn bè của bạn ở Tcareer",
       "icon": Icons.group

@@ -51,9 +51,9 @@ class AppRouter {
           };
 
           if (refreshTokenProvider.isRefreshTokenExpired == true) {
-            if (routeRedirectMap.containsKey(state.fullPath)) {
-              return routeRedirectMap[state.fullPath];
-            }
+            // if (routeRedirectMap.containsKey(state.fullPath)) {
+            //   return routeRedirectMap[state.fullPath];
+            // }
             return "/login";
           }
           // context.go("/home");

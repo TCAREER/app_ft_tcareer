@@ -186,7 +186,7 @@ class PostingController extends ChangeNotifier {
     notifyListeners();
   }
 
-  String selectedPrivacy = "public";
+  String selectedPrivacy = "Public";
 
   Future<void> selectPrivacy(String privacy, BuildContext context) async {
     selectedPrivacy = privacy;
@@ -200,6 +200,13 @@ class PostingController extends ChangeNotifier {
   Future<void> getUserInfo() async {
     final userUseCase = ref.watch(userUseCaseProvider);
     userData = await userUseCase.getUserInfo();
+    notifyListeners();
+  }
+
+  int activeIndex = 0;
+
+  void setActiveIndex(index) {
+    activeIndex = index;
     notifyListeners();
   }
 }

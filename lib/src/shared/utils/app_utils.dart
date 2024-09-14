@@ -55,6 +55,7 @@ class AppUtils {
     try {
       setIsLoading(true);
       await onLoading();
+      setIsLoading(false);
     } on DioException catch (error) {
       setIsLoading(false);
       if (error.response?.statusCode != null) {

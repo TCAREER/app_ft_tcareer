@@ -4,6 +4,7 @@ import 'package:app_tcareer/src/configs/app_colors.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/media_controller.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/posting_controller.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/widgets/posting_image_wiget.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/widgets/privacy_bottom_sheet_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -91,12 +92,11 @@ class _PostingPageState extends ConsumerState<PostingPage> {
               height: 10,
             ),
             Visibility(
-              visible: mediaController.imagePaths.isNotEmpty,
-              child: FBPhotoView(
-                dataSource: mediaController.imagePaths,
-                displayType: FBPhotoViewType.grid3,
-              ),
-            ),
+                visible: mediaController.imagePaths.isNotEmpty,
+                child: FBPhotoView(
+                  dataSource: mediaController.imagePaths,
+                  displayType: FBPhotoViewType.list,
+                )),
           ],
         ),
         bottomNavigationBar: bottomAppBar(context, ref),
@@ -171,7 +171,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
             borderRadius: BorderRadius.circular(20),
             color: Colors.grey.shade200),
         child: Visibility(
-          visible: controller.selectedPrivacy.contains("public"),
+          visible: controller.selectedPrivacy.contains("Public"),
           replacement: const Row(
             children: [
               Icon(

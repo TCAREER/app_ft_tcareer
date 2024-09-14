@@ -18,7 +18,10 @@ class GoogleDriveService {
 
   static Future<DriveApi> _createDriveApi() async {
     final credentials = await loadCredentials();
+    
     final client = await clientViaServiceAccount(credentials, _scopes);
+    
+    
     return DriveApi(client);
   }
 

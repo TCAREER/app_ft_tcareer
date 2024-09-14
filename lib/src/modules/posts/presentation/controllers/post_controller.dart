@@ -7,6 +7,7 @@ import 'package:app_tcareer/src/modules/posts/usecases/post_use_case.dart';
 import 'package:app_tcareer/src/shared/utils/alert_dialog_util.dart';
 import 'package:app_tcareer/src/shared/utils/snackbar_utils.dart';
 import 'package:app_tcareer/src/shared/utils/user_utils.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -33,5 +34,31 @@ class PostController extends ChangeNotifier {
 
   Future<void> sharePost({required String url, required String title}) async {
     await Share.share(url, subject: title);
+  }
+
+  Map<String, int> activeIndexMap = {};
+
+  void setActiveIndex({required String postId, required int index}) {
+    activeIndexMap[postId] = index;
+
+    notifyListeners();
+  }
+
+  int getActiveIndex(String postId) {
+    return activeIndexMap[postId] ?? 0;
+  }
+
+  PageController pageController = PageController();
+  CarouselController carouselController = CarouselController();
+  int activeIndexPhotoView = 0;
+
+  void setActiveIndexPhotoView(index) {
+    activeIndexPhotoView = index;
+    notifyListeners();
+  }
+
+  void animatePostImage(String postId) {
+    carouselController.animateToPage(activeIndexMap[postId] ?? 0);
+    notifyListeners();
   }
 }

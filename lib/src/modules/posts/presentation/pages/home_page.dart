@@ -89,7 +89,8 @@ class _HomePageState extends ConsumerState<HomePage> {
         itemBuilder: (context, index) {
           final post = controller.postData.data?[index];
           return postWidget(
-              postId: post?.title ?? "",
+              privacy: post?.privacy ?? "",
+              postId: post?.id.toString() ?? "",
               ref: ref,
               context: context,
               avatarUrl: post?.avatar != null
