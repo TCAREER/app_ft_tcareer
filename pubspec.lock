@@ -807,7 +807,7 @@ packages:
     source: hosted
     version: "0.8.12+12"
   image_picker_for_web:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: image_picker_for_web
       sha256: "65d94623e15372c5c51bebbcb820848d7bcb323836e12dfdba60b5d3a8b39e50"
@@ -846,6 +846,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.10.0"
+  image_picker_web:
+    dependency: "direct main"
+    description:
+      name: image_picker_web
+      sha256: b5cf4faf66714f17b3e86b37a39d19743603163a08b968b28cadfc5df1dc2b75
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.0"
   image_picker_windows:
     dependency: transitive
     description:
@@ -1031,7 +1039,7 @@ packages:
     source: hosted
     version: "1.0.1"
   path_provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider
       sha256: fec0d61223fba3154d87759e3cc27fe2c8dc498f6386c6d6fc80d1afdd1bf378
@@ -1483,6 +1491,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.2"
+  universal_io:
+    dependency: "direct main"
+    description:
+      name: universal_io
+      sha256: "1722b2dcc462b4b2f3ee7d188dad008b6eb4c40bbd03a3de451d82c78bba9aad"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.2"
   universal_platform:
     dependency: transitive
     description:

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:app_tcareer/src/modules/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/post_response.dart';
@@ -6,6 +7,7 @@ import 'package:app_tcareer/src/modules/posts/data/models/post_state.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/posts_response.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/media_controller.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
+import 'package:app_tcareer/src/modules/posts/usecases/media_use_case.dart';
 import 'package:app_tcareer/src/modules/posts/usecases/post_use_case.dart';
 import 'package:app_tcareer/src/modules/user/data/models/user_data.dart';
 import 'package:app_tcareer/src/modules/user/usercases/user_use_case.dart';
@@ -14,6 +16,7 @@ import 'package:app_tcareer/src/shared/utils/app_utils.dart';
 import 'package:app_tcareer/src/shared/utils/snackbar_utils.dart';
 import 'package:app_tcareer/src/shared/utils/user_utils.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,7 +39,6 @@ class PostingController extends ChangeNotifier {
     List<String>? imageCache = await userUtils.loadCacheList("imageCache");
     if (imageCache?.isNotEmpty == true) {
       mediaController.imagePaths = imageCache!;
-
       notifyListeners();
     }
   }
@@ -63,6 +65,8 @@ class PostingController extends ChangeNotifier {
     await userUtils.removeCache("selectedAsset");
     mediaController.selectedAsset.clear();
     mediaController.imagePaths.clear();
+    contentController.clear();
+    imagesWeb?.clear();
 
     context.goNamed("home");
     notifyListeners();
@@ -71,6 +75,7 @@ class PostingController extends ChangeNotifier {
   Future<void> setCacheImagePath() async {
     final userUtils = ref.watch(userUtilsProvider);
     final mediaController = ref.read(mediaControllerProvider);
+
     await userUtils.saveCacheList(
         key: "imageCache", value: mediaController.imagePaths);
   }
@@ -156,6 +161,9 @@ class PostingController extends ChangeNotifier {
       if (mediaController.imagePaths.isNotEmpty) {
         await uploadImage();
       }
+      if (imagesWeb?.isNotEmpty == true) {
+        await uploadImageFromUint8List();
+      }
       await postUseCase.createPost(
           body: CreatePostRequest(
               body: contentController.text,
@@ -163,6 +171,7 @@ class PostingController extends ChangeNotifier {
               mediaUrl: mediaUrl));
 
       showSnackBar("Tạo bài viết thành công");
+      await clearPostCache(context);
       context.pop();
       context.goNamed("home");
     }, context, setIsLoading);
@@ -171,7 +180,6 @@ class PostingController extends ChangeNotifier {
   List<String> mediaUrl = [];
   Future<void> uploadImage() async {
     mediaUrl.clear();
-
     final mediaController = ref.watch(mediaControllerProvider);
     final uuid = Uuid();
     final id = uuid.v4();
@@ -185,6 +193,8 @@ class PostingController extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  List<String> mediaPreviewUrl = [];
 
   String selectedPrivacy = "Public";
 
@@ -207,6 +217,39 @@ class PostingController extends ChangeNotifier {
 
   void setActiveIndex(index) {
     activeIndex = index;
+    notifyListeners();
+  }
+
+  List<Uint8List>? imagesWeb = [];
+  Future<void> pickImageWeb() async {
+    final mediaUseCase = ref.watch(mediaUseCaseProvider);
+
+    imagesWeb = await mediaUseCase.pickImageWeb();
+    print(">>>>>>>>>${imagesWeb?.length}");
+    // for (Uint8List asset in imagesWeb!) {
+    //   // String? path = await AppUtils.compressImageWeb(asset);
+    //   // mediaController.imagePaths.add(path!);
+    //   String url =
+    //       await postUseCase.uploadImageWeb(file: asset, folderPath: "posts");
+    // }
+
+    notifyListeners();
+  }
+
+  Future<void> uploadImageFromUint8List() async {
+    mediaUrl.clear();
+
+    final uuid = Uuid();
+    final id = uuid.v4();
+    for (Uint8List asset in imagesWeb!) {
+      // String? assetPath = await AppUtils.compressImage(asset);
+      // String url = await postUseCase.uploadImage(
+      //     file: File(assetPath ?? ""), folderPath: path);
+      asset = await AppUtils.compressImageWeb(asset);
+      String url = await postUseCase.uploadImageWeb(
+          file: asset, folderPath: "Posts/$id");
+      mediaUrl.add(url);
+    }
     notifyListeners();
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+import 'package:image_picker_web/image_picker_web.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photo_manager/photo_manager.dart';
 
@@ -24,6 +26,11 @@ class MediaRepository {
         await album.getAssetListPaged(page: page, size: size ?? totalAssets);
 
     return assets;
+  }
+
+  Future<List<Uint8List>?> pickImageWeb() async {
+    List<Uint8List>? imageList = await ImagePickerWeb.getMultiImagesAsBytes();
+    return imageList;
   }
 }
 

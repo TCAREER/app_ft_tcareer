@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/create_post_request.dart';
@@ -46,12 +47,29 @@ class PostRepository {
     return firebaseStorage.uploadFile(file, folderPath);
   }
 
+  Future<String> uploadImageWeb({
+    required Uint8List file,
+    required String folderPath,
+  }) async {
+    final firebaseStorage = ref.watch(firebaseStorageServiceProvider);
+    return firebaseStorage.uploadPreviewImage(file, folderPath);
+  }
+
   Future<String> uploadFile(
       {required File file,
       required String topic,
       required String folderName}) async {
     final googleDrive = ref.watch(googleDriveServiceProvider);
     return googleDrive.uploadFile(file, topic, folderName);
+  }
+
+  Future<String> uploadFileFromUint8List(
+      {required Uint8List file,
+      required String topic,
+      required String folderName}) async {
+    final googleDrive = ref.watch(googleDriveServiceProvider);
+    return googleDrive.uploadFileFromUint8List(
+        file, topic, folderName, "image/jpg");
   }
 
   Future<void> createPost({required CreatePostRequest body}) async {

@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:heif_converter/heif_converter.dart';
 import 'package:image/image.dart' as img;
+import 'package:uuid/uuid.dart';
 import 'alert_dialog_util.dart';
+import 'package:path_provider/path_provider.dart';
 
 class AppUtils {
   static showLoading(BuildContext context) {
@@ -128,6 +130,34 @@ class AppUtils {
       // print(">>>>>>>>>>path: $path");
     }
     return path;
+  }
+
+  // static Future<Uint8List> compressImageWeb(Uint8List list) async {
+  //   img.Image? image = img.decodeImage(list);
+
+  //   if (image == null) {
+  //     throw Exception("Unable to decode image");
+  //   }
+
+  //   img.Image resized = img.copyResize(image, width: 85, height: 85);
+
+  //   Uint8List compressed =
+  //       Uint8List.fromList(img.encodeJpg(resized, quality: 85));
+
+  //   return compressed;
+  // }
+
+  static Future<Uint8List> compressImageWeb(Uint8List list) async {
+    img.Image? image = img.decodeImage(list);
+
+    if (image == null) {
+      throw Exception("Unable to decode image");
+    }
+
+    Uint8List compressed =
+        Uint8List.fromList(img.encodeJpg(image, quality: 70));
+
+    return compressed;
   }
 
   static Future<bool> isHeif(String filePath) async {

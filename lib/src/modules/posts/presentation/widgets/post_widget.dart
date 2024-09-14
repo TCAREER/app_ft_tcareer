@@ -93,23 +93,23 @@ Widget postWidget(
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SizedBox(
-                            height: 25,
-                            child: ElevatedButton(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    backgroundColor: Colors.blueGrey.shade50),
-                                child: const Text(
-                                  "Theo dõi",
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 12),
-                                )),
-                          ),
+                          // SizedBox(
+                          //   height: 25,
+                          //   child: ElevatedButton(
+                          //       onPressed: () {},
+                          //       style: ElevatedButton.styleFrom(
+                          //           padding: const EdgeInsets.symmetric(
+                          //               horizontal: 10),
+                          //           shape: RoundedRectangleBorder(
+                          //               borderRadius:
+                          //                   BorderRadius.circular(20)),
+                          //           backgroundColor: Colors.blueGrey.shade50),
+                          //       child: const Text(
+                          //         "Theo dõi",
+                          //         style: TextStyle(
+                          //             color: Colors.black, fontSize: 12),
+                          //       )),
+                          // ),
                           const SizedBox(
                             width: 10,
                           ),

@@ -18,10 +18,9 @@ class GoogleDriveService {
 
   static Future<DriveApi> _createDriveApi() async {
     final credentials = await loadCredentials();
-    
+
     final client = await clientViaServiceAccount(credentials, _scopes);
-    
-    
+
     return DriveApi(client);
   }
 
@@ -94,6 +93,47 @@ class GoogleDriveService {
 
     final folder = await driveApi.files.create(folderMetadata);
     return folder.id!;
+  }
+
+  Future<String> uploadFileFromUint8List(Uint8List fileData, String topic,
+      String folderName, String mimeType) async {
+    final driveApi = await _driveApi;
+
+    const parentFolderId = "18KYXb729bytijEE6dqDIJf2NWOAoruzE";
+
+    final topicFolderId =
+        await getOrCreateFolderId(driveApi, topic, parentFolderId);
+    if (topicFolderId == null) {
+      throw Exception("Could not create or find the topic folder.");
+    }
+
+    final folderId =
+        await getOrCreateFolderId(driveApi, folderName, topicFolderId);
+    if (folderId == null) {
+      throw Exception("Could not create the folderName folder.");
+    }
+
+    final uuid = Uuid();
+    final fileName = uuid.v4();
+
+    // Tạo media từ Uint8List thay vì đọc từ file
+    final media = Media(Stream.value(fileData), fileData.length);
+
+    final driveFile = File()
+      ..name = fileName
+      ..mimeType =
+          mimeType // Định dạng MIME của file (image/png, image/jpeg,...)
+      ..parents = [folderId];
+
+    try {
+      final response =
+          await driveApi.files.create(driveFile, uploadMedia: media);
+      final fileId = response.id;
+      final fileUrl = 'https://drive.google.com/thumbnail?id=$fileId&sz=w1000';
+      return fileUrl;
+    } catch (e) {
+      throw Exception("Error uploading file: $e");
+    }
   }
 }
 

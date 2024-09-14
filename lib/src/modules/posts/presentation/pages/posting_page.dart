@@ -7,6 +7,7 @@ import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/widgets/posting_image_wiget.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/widgets/privacy_bottom_sheet_widget.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_fb_photo_view/flutter_fb_photo_view.dart';
@@ -38,7 +39,8 @@ class _PostingPageState extends ConsumerState<PostingPage> {
     final mediaController = ref.watch(mediaControllerProvider);
     final controller = ref.watch(postingControllerProvider);
     bool isActive = controller.contentController.text != "" ||
-        mediaController.imagePaths.isNotEmpty;
+        mediaController.imagePaths.isNotEmpty ||
+        controller.imagesWeb?.isNotEmpty == true;
     return PopScope(
       onPopInvoked: (didPop) {
         if (didPop) {
@@ -91,12 +93,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
             const SizedBox(
               height: 10,
             ),
-            Visibility(
-                visible: mediaController.imagePaths.isNotEmpty,
-                child: FBPhotoView(
-                  dataSource: mediaController.imagePaths,
-                  displayType: FBPhotoViewType.list,
-                )),
+            postingImageWidget(mediaUrl: mediaController.imagePaths, ref: ref),
           ],
         ),
         bottomNavigationBar: bottomAppBar(context, ref),
@@ -257,9 +254,13 @@ class _PostingPageState extends ConsumerState<PostingPage> {
                   onPressed: () async {
                     // await controller.setCacheContent();
                     // await controller.loadContentCache();
-                    await mediaController.getAlbums();
+                    if (!kIsWeb) {
+                      await mediaController.getAlbums();
 
-                    context.goNamed("photoManager");
+                      context.goNamed("photoManager");
+                    } else {
+                      await controller.pickImageWeb();
+                    }
                   },
                   icon: const PhosphorIcon(
                     PhosphorIconsBold.image,

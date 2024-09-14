@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:app_tcareer/src/modules/authentication/usecases/login_use_case.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/create_post_request.dart';
@@ -27,6 +28,22 @@ class PostUseCase {
           required String folderName}) async =>
       await postRepository.uploadFile(
           file: file, topic: topic, folderName: folderName);
+
+  Future<String> uploadFileFromUint8List(
+          {required Uint8List file,
+          required String topic,
+          required String folderName}) async =>
+      await postRepository.uploadFileFromUint8List(
+          file: file, topic: topic, folderName: folderName);
+
+  Future<String> uploadImageWeb({
+    required Uint8List file,
+    required String folderPath,
+  }) async =>
+      await postRepository.uploadImageWeb(
+        file: file,
+        folderPath: folderPath,
+      );
 
   Future<void> createPost({required CreatePostRequest body}) async =>
       await postRepository.createPost(body: body);
