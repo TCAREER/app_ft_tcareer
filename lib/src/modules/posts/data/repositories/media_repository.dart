@@ -1,6 +1,7 @@
 import 'dart:typed_data';
-import 'package:image_picker_web/image_picker_web.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class MediaRepository {
@@ -29,8 +30,15 @@ class MediaRepository {
   }
 
   Future<List<Uint8List>?> pickImageWeb() async {
-    List<Uint8List>? imageList = await ImagePickerWeb.getMultiImagesAsBytes();
-    return imageList;
+    final picker = ImagePicker();
+    final pickedFiles = await picker.pickMultiImage();
+    List<Uint8List> images = [];
+    //  if (pickedFiles == null) return null;
+    for (var file in pickedFiles) {
+      final bytes = await file.readAsBytes();
+      images.add(bytes);
+    }
+    return images;
   }
 }
 
