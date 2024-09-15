@@ -89,9 +89,6 @@ class PhotoViewGalleryPage extends ConsumerWidget {
                           child: SizedBox(
                             width: 20.0,
                             height: 20.0,
-                            // child: CircularProgressIndicator(
-                            //   value: event == null ? 0 : event.cumulativeBytesLoaded / (event.expectedTotalBytes ?? 1),
-                            // ),
                             child: CupertinoActivityIndicator(
                                 color: Colors.white, radius: 10),
                           ),
@@ -109,6 +106,8 @@ class PhotoViewGalleryPage extends ConsumerWidget {
         bottomNavigationBar: BottomAppBar(
           color: Colors.black,
           child: engagementWidget(
+              index: 1,
+              liked: true,
               ref: ref,
               postId: postId,
               context: context,

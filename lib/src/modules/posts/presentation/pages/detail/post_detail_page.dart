@@ -21,6 +21,8 @@ class PostDetailPage extends ConsumerWidget {
       body: ListView(
         children: [
           postWidget(
+              index: 1,
+              liked: true,
               privacy: "public",
               context: context,
               ref: ref,

@@ -82,6 +82,7 @@ class CommentsPage extends StatelessWidget {
       height: 45,
       child: TextField(
         keyboardType: TextInputType.multiline,
+        maxLines: null,
         decoration: InputDecoration(
           hintText: "Bình luận cho Quang Thiện",
           contentPadding:

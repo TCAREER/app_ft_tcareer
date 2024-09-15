@@ -242,15 +242,18 @@ class Data {
     String? firstName,
     String? lastName,
     String? fullName,
-    String? avatar,
+    dynamic avatar,
     dynamic title,
     String? body,
     String? privacy,
+    bool? liked,
     num? likeCount,
     num? commentCount,
     num? shareCount,
     List<String>? mediaUrl,
     dynamic status,
+    dynamic sharedPostId,
+    dynamic sharedPost,
     String? createdAt,
     String? updatedAt,
     dynamic deletedAt,
@@ -264,11 +267,14 @@ class Data {
     _title = title;
     _body = body;
     _privacy = privacy;
+    _liked = liked;
     _likeCount = likeCount;
     _commentCount = commentCount;
     _shareCount = shareCount;
     _mediaUrl = mediaUrl;
     _status = status;
+    _sharedPostId = sharedPostId;
+    _sharedPost = sharedPost;
     _createdAt = createdAt;
     _updatedAt = updatedAt;
     _deletedAt = deletedAt;
@@ -284,12 +290,15 @@ class Data {
     _title = json['title'];
     _body = json['body'];
     _privacy = json['privacy'];
+    _liked = json['liked'];
     _likeCount = json['like_count'];
     _commentCount = json['comment_count'];
     _shareCount = json['share_count'];
     _mediaUrl =
         json['media_url'] != null ? json['media_url'].cast<String>() : [];
     _status = json['status'];
+    _sharedPostId = json['shared_post_id'];
+    _sharedPost = json['shared_post'];
     _createdAt = json['created_at'];
     _updatedAt = json['updated_at'];
     _deletedAt = json['deleted_at'];
@@ -299,15 +308,18 @@ class Data {
   String? _firstName;
   String? _lastName;
   String? _fullName;
-  String? _avatar;
+  dynamic _avatar;
   dynamic _title;
   String? _body;
   String? _privacy;
+  bool? _liked;
   num? _likeCount;
   num? _commentCount;
   num? _shareCount;
   List<String>? _mediaUrl;
   dynamic _status;
+  dynamic _sharedPostId;
+  dynamic _sharedPost;
   String? _createdAt;
   String? _updatedAt;
   dynamic _deletedAt;
@@ -317,15 +329,18 @@ class Data {
     String? firstName,
     String? lastName,
     String? fullName,
-    String? avatar,
+    dynamic avatar,
     dynamic title,
     String? body,
     String? privacy,
+    bool? liked,
     num? likeCount,
     num? commentCount,
     num? shareCount,
     List<String>? mediaUrl,
     dynamic status,
+    dynamic sharedPostId,
+    dynamic sharedPost,
     String? createdAt,
     String? updatedAt,
     dynamic deletedAt,
@@ -340,11 +355,14 @@ class Data {
         title: title ?? _title,
         body: body ?? _body,
         privacy: privacy ?? _privacy,
+        liked: liked ?? _liked,
         likeCount: likeCount ?? _likeCount,
         commentCount: commentCount ?? _commentCount,
         shareCount: shareCount ?? _shareCount,
         mediaUrl: mediaUrl ?? _mediaUrl,
         status: status ?? _status,
+        sharedPostId: sharedPostId ?? _sharedPostId,
+        sharedPost: sharedPost ?? _sharedPost,
         createdAt: createdAt ?? _createdAt,
         updatedAt: updatedAt ?? _updatedAt,
         deletedAt: deletedAt ?? _deletedAt,
@@ -354,15 +372,18 @@ class Data {
   String? get firstName => _firstName;
   String? get lastName => _lastName;
   String? get fullName => _fullName;
-  String? get avatar => _avatar;
+  dynamic get avatar => _avatar;
   dynamic get title => _title;
   String? get body => _body;
   String? get privacy => _privacy;
+  bool? get liked => _liked;
   num? get likeCount => _likeCount;
   num? get commentCount => _commentCount;
   num? get shareCount => _shareCount;
   List<String>? get mediaUrl => _mediaUrl;
   dynamic get status => _status;
+  dynamic get sharedPostId => _sharedPostId;
+  dynamic get sharedPost => _sharedPost;
   String? get createdAt => _createdAt;
   String? get updatedAt => _updatedAt;
   dynamic get deletedAt => _deletedAt;
@@ -378,11 +399,14 @@ class Data {
     map['title'] = _title;
     map['body'] = _body;
     map['privacy'] = _privacy;
+    map['liked'] = _liked;
     map['like_count'] = _likeCount;
     map['comment_count'] = _commentCount;
     map['share_count'] = _shareCount;
     map['media_url'] = _mediaUrl;
     map['status'] = _status;
+    map['shared_post_id'] = _sharedPostId;
+    map['shared_post'] = _sharedPost;
     map['created_at'] = _createdAt;
     map['updated_at'] = _updatedAt;
     map['deleted_at'] = _deletedAt;

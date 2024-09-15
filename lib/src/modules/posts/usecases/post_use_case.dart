@@ -47,6 +47,9 @@ class PostUseCase {
 
   Future<void> createPost({required CreatePostRequest body}) async =>
       await postRepository.createPost(body: body);
+
+  Future<void> postLikePost(String postId) async =>
+      await postRepository.postLikePost(postId);
 }
 
 final postUseCaseProvider =

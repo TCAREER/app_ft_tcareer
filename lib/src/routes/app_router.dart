@@ -50,14 +50,8 @@ class AppRouter {
             '/intro': '/intro',
           };
 
-          if (refreshTokenProvider.isRefreshTokenExpired == true) {
-            // if (routeRedirectMap.containsKey(state.fullPath)) {
-            //   return routeRedirectMap[state.fullPath];
-            // }
-            return "/login";
-          }
-          // context.go("/home");
-          if (isAuthenticated != true) {
+          if (isAuthenticated != true ||
+              refreshTokenProvider.isRefreshTokenExpired == true) {
             if (routeRedirectMap.containsKey(state.fullPath)) {
               return routeRedirectMap[state.fullPath];
             }

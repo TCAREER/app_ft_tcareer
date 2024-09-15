@@ -50,17 +50,22 @@ final apiServiceProvider = Provider<ApiServices>((ref) {
     final userUtils = ref.read(userUtilsProvider);
     if (error.response?.statusCode == 401 &&
         await userUtils.getAuthToken() != null) {
-      final refreshToken = await userUtils.getRefreshToken();
+      // final refreshToken = await userUtils.getRefreshToken();
+      //
+      // final response =
+      //     await refreshAccessToken(refreshToken: refreshToken, ref: ref);
+      // await userUtils.saveAuthToken(
+      //     authToken: response?.accessToken ?? "", refreshToken: refreshToken);
+      // final authToken = await userUtils.getAuthToken();
+      // final options = error.requestOptions;
+      // options.headers["Authorization"] = "Bearer $authToken";
+      //
+      // return handler.resolve(await dio.fetch(options));
 
-      final response =
-          await refreshAccessToken(refreshToken: refreshToken, ref: ref);
-      await userUtils.saveAuthToken(
-          authToken: response?.accessToken ?? "", refreshToken: refreshToken);
-      final authToken = await userUtils.getAuthToken();
-      final options = error.requestOptions;
-      options.headers["Authorization"] = "Bearer $authToken";
-
-      return handler.resolve(await dio.fetch(options));
+      final refreshTokenNotifier =
+          ref.watch(refreshTokenStateProvider.notifier);
+      refreshTokenNotifier.setTokenExpired(true);
+      await userUtils.clearToken();
     } else {
       handler.reject(error);
     }

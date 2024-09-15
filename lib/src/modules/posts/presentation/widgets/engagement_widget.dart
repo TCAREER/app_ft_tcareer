@@ -16,43 +16,52 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Widget engagementWidget(
     {required WidgetRef ref,
+    required int index,
+    required bool liked,
     required String postId,
     required BuildContext context,
     required String likeCount,
     required String commentCount,
     required String shareCount}) {
-  final index = ref.watch(indexControllerProvider.notifier);
+  final indexController = ref.watch(indexControllerProvider.notifier);
   final controller = ref.watch(postControllerProvider.notifier);
+  // bool likedPost = controller.getLikePosts(postId);
   return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 5),
+    padding: const EdgeInsets.symmetric(horizontal: 10),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            PhosphorIcon(
-              PhosphorIconsBold.heart,
-              color: Colors.grey,
-              size: 20,
-            ),
-            const SizedBox(
-              width: 3,
-            ),
-            Visibility(
-              visible: likeCount != "0",
-              child: Text(
-                "$likeCount",
-                style: TextStyle(color: Colors.grey),
+        GestureDetector(
+          onTap: () async =>
+              controller.postLikePost(index: index, postId: postId),
+          child: Row(
+            children: [
+              PhosphorIcon(
+                liked != true
+                    ? PhosphorIconsBold.heart
+                    : PhosphorIconsFill.heart,
+                color: liked != true ? Colors.grey : Colors.red,
+                size: 20,
               ),
-            )
-          ],
+              const SizedBox(
+                width: 3,
+              ),
+              Visibility(
+                visible: likeCount != "0",
+                child: Text(
+                  "$likeCount",
+                  style: TextStyle(color: Colors.grey),
+                ),
+              )
+            ],
+          ),
         ),
         const SizedBox(
           width: 10,
         ),
         GestureDetector(
-          onTap: () => index.showBottomSheet(
+          onTap: () => indexController.showBottomSheet(
               context: context,
               builder: (scrollController) =>
                   CommentsPage(scrollController: scrollController)),

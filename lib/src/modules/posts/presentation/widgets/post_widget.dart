@@ -20,10 +20,12 @@ Widget postWidget(
     required String createdAt,
     required String content,
     required List<String> images,
+    required bool liked,
     required String likes,
     required String comments,
     required String shares,
     required String postId,
+    required int index,
     required String privacy}) {
   return Container(
     color: Colors.white,
@@ -37,97 +39,67 @@ Widget postWidget(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CircleAvatar(
-                            radius: 20,
-                            backgroundImage: NetworkImage(avatarUrl),
-                          ),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                userName,
-                                style: const TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold),
-                              ),
-                              Visibility(
-                                visible: subName != null,
-                                child: Text(
-                                  subName ?? "",
-                                  style: const TextStyle(color: Colors.black54),
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    "$createdAt • ",
-                                    style: const TextStyle(
-                                        color: Colors.grey, fontSize: 11),
-                                  ),
-                                  Icon(
-                                    privacy == "Public"
-                                        ? Icons.public
-                                        : Icons.group,
-                                    color: Colors.grey,
-                                    size: 11,
-                                  )
-                                ],
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // SizedBox(
-                          //   height: 25,
-                          //   child: ElevatedButton(
-                          //       onPressed: () {},
-                          //       style: ElevatedButton.styleFrom(
-                          //           padding: const EdgeInsets.symmetric(
-                          //               horizontal: 10),
-                          //           shape: RoundedRectangleBorder(
-                          //               borderRadius:
-                          //                   BorderRadius.circular(20)),
-                          //           backgroundColor: Colors.blueGrey.shade50),
-                          //       child: const Text(
-                          //         "Theo dõi",
-                          //         style: TextStyle(
-                          //             color: Colors.black, fontSize: 12),
-                          //       )),
-                          // ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          const PhosphorIcon(PhosphorIconsBold.dotsThree),
-                        ],
-                      )
-                    ],
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 18,
+                          backgroundImage: NetworkImage(avatarUrl),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(
-                    height: 10,
+                    width: 5,
                   ),
-                  contentWidget(content),
+                  Column(
+                    children: [
+                      Text(
+                        userName,
+                        style: const TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    flex: 7,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        SizedBox(
+                          height: 25,
+                          child: ElevatedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20)),
+                                  backgroundColor: Colors.blueGrey.shade50),
+                              child: const Text(
+                                "Theo dõi",
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 12),
+                              )),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        const PhosphorIcon(PhosphorIconsBold.dotsThree),
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            // const SizedBox(
+            //   height: 10,
+            // ),
             Visibility(
                 visible: images.isNotEmpty,
                 child: PostImageWidget(mediaUrl: images, postId: postId)),
@@ -137,10 +109,17 @@ Widget postWidget(
             //       dataSource: images,
             //       displayType: FBPhotoViewType.grid3,
             //     )),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: contentWidget(content),
+            ),
             const SizedBox(
-              height: 10,
+              height: 8,
             ),
             engagementWidget(
+                index: index,
+                liked: liked,
                 ref: ref,
                 postId: postId,
                 context: context,
@@ -149,6 +128,22 @@ Widget postWidget(
                 shareCount: shares),
             const SizedBox(
               height: 8,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                children: [
+                  Text(
+                    "$createdAt • ",
+                    style: const TextStyle(color: Colors.grey, fontSize: 11),
+                  ),
+                  Icon(
+                    privacy == "Public" ? Icons.public : Icons.group,
+                    color: Colors.grey,
+                    size: 11,
+                  )
+                ],
+              ),
             ),
           ],
         )

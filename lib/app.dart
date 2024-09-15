@@ -33,6 +33,9 @@ class App extends StatelessWidget {
                   routerConfig: router,
                   title: 'TCareer',
                   theme: ThemeData(
+                    progressIndicatorTheme:
+                        ProgressIndicatorThemeData(color: AppColors.primary),
+                    indicatorColor: AppColors.primary,
                     inputDecorationTheme: const InputDecorationTheme(
                         hintStyle:
                             TextStyle(color: Colors.black45, fontSize: 14)),

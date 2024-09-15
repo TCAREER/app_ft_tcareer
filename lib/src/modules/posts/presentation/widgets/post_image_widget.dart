@@ -41,7 +41,7 @@ class _PostImageWidgetState extends ConsumerState<PostImageWidget> {
           itemBuilder: (context, index, realIndex) {
             final image = widget.mediaUrl[index];
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: GestureDetector(
