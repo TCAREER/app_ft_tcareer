@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:app_tcareer/src/modules/authentication/usecases/login_use_case.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/post_response.dart';
+import 'package:app_tcareer/src/modules/posts/data/models/posts_detail_response.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/posts_response.dart';
 import 'package:app_tcareer/src/modules/posts/data/repositories/post_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,6 +51,8 @@ class PostUseCase {
 
   Future<void> postLikePost(String postId) async =>
       await postRepository.postLikePost(postId);
+  Future<PostsDetailResponse> getPostById(String postId) async =>
+      await postRepository.getPostById(postId);
 }
 
 final postUseCaseProvider =

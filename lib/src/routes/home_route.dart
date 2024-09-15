@@ -7,12 +7,15 @@ import 'package:go_router/go_router.dart';
 class HomeRoute {
   static final List<RouteBase> routes = [
     GoRoute(
-      path: "detail/:slug",
+      path: "detail/:id",
       name: "detail",
-      pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const PostDetailPage(),
-          transitionsBuilder: fadeTransitionBuilder),
+      pageBuilder: (context, state) {
+        final postId = state.pathParameters["id"] ?? "";
+        return CustomTransitionPage(
+            key: state.pageKey,
+            child: PostDetailPage(postId),
+            transitionsBuilder: fadeTransitionBuilder);
+      },
     ),
     GoRoute(
       path: "photoView",

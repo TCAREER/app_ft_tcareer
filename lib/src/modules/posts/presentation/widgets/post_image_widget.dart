@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:app_tcareer/src/configs/app_colors.dart';
 import 'package:app_tcareer/src/modules/index/index_controller.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/photo_view_data.dart';
+import 'package:app_tcareer/src/modules/posts/get_image_orientation.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/shared/widgets/cached_image_widget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -10,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+// Import provider cho imageOrientationProvider
 class PostImageWidget extends ConsumerStatefulWidget {
   final List<String> mediaUrl;
   final String postId;
@@ -40,6 +43,8 @@ class _PostImageWidgetState extends ConsumerState<PostImageWidget> {
           itemCount: widget.mediaUrl.length,
           itemBuilder: (context, index, realIndex) {
             final image = widget.mediaUrl[index];
+            final imageOrientation = ref.watch(imageOrientationProvider(image));
+
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: ClipRRect(
@@ -82,6 +87,15 @@ class _PostImageWidgetState extends ConsumerState<PostImageWidget> {
             );
           },
           options: CarouselOptions(
+            aspectRatio: ref
+                .watch(imageOrientationProvider(widget.mediaUrl[0]))
+                .when(
+                  data: (orientation) =>
+                      orientation == ImageOrientation.landscape ? 1.91 : 4 / 5,
+                  loading: () => 16 / 9, // Giá trị mặc định khi chưa tải xong
+                  error: (error, stack) =>
+                      16 / 9, // Giá trị mặc định khi có lỗi
+                ),
             initialPage: controller.getActiveIndex(widget.postId),
             enableInfiniteScroll: false,
             viewportFraction: 1,

@@ -10,7 +10,9 @@ import 'package:app_tcareer/src/modules/authentication/data/models/login_respons
 import 'package:app_tcareer/src/modules/authentication/data/models/register_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/like_post_request.dart';
+import 'package:app_tcareer/src/modules/posts/data/models/posts_detail_response.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/posts_response.dart';
+import 'package:app_tcareer/src/modules/posts/data/models/share_post_request.dart';
 import 'package:app_tcareer/src/modules/user/data/models/user_data.dart';
 import 'package:app_tcareer/src/shared/utils/app_utils.dart';
 import 'package:app_tcareer/src/shared/utils/user_utils.dart';
@@ -63,4 +65,10 @@ abstract class ApiServices {
 
   @POST('api/auth/like_post')
   Future postLikePost({@Body() required LikePostRequest body});
+
+  @GET('api/auth/post/{id}')
+  Future<PostsDetailResponse> getPostById({@Path('id') required String postId});
+
+  @GET('api/auth/share_post')
+  Future postSharePost({@Body() required SharePostRequest body});
 }

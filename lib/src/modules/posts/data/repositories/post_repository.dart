@@ -5,6 +5,7 @@ import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/like_post_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/post_response.dart';
+import 'package:app_tcareer/src/modules/posts/data/models/posts_detail_response.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/posts_response.dart';
 import 'package:app_tcareer/src/services/apis/api_service_provider.dart';
 import 'package:app_tcareer/src/services/drive/google_drive_service.dart';
@@ -85,9 +86,14 @@ class PostRepository {
     return await api.getPosts(personal: personal);
   }
 
-  Future<void>postLikePost(String postId) async {
+  Future<void> postLikePost(String postId) async {
     final api = ref.watch(apiServiceProvider);
     return api.postLikePost(body: LikePostRequest(postId: postId));
+  }
+
+  Future<PostsDetailResponse> getPostById(String postId) async {
+    final api = ref.watch(apiServiceProvider);
+    return api.getPostById(postId: postId);
   }
 }
 

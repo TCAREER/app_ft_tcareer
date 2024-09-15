@@ -8,6 +8,7 @@ import 'package:app_tcareer/src/modules/posts/presentation/widgets/search_bar_wi
 import 'package:app_tcareer/src/shared/widgets/circular_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -34,26 +35,30 @@ class _HomePageState extends ConsumerState<HomePage> {
             builderDelegate: PagedChildBuilderDelegate(
               firstPageProgressIndicatorBuilder: postLoadingWidget,
               itemBuilder: (context, post, index) {
-                return postWidget(
-                    index: index,
-                    liked: post.liked ?? false,
-                    privacy: post.privacy ?? "",
-                    postId: post.id.toString(),
-                    ref: ref,
-                    context: context,
-                    avatarUrl: post.avatar != null
-                        ? "${post.avatar}"
-                        : "https://mighty.tools/mockmind-api/content/human/45.jpg",
-                    userName: post.fullName ?? "",
-                    createdAt: post.createdAt ?? "",
-                    content: post.body ?? "",
-                    images: post.mediaUrl ?? [],
-                    likes: post.likeCount != null ? "${post.likeCount}" : "0",
-                    comments: post.commentCount != null
-                        ? "${post.commentCount}"
-                        : "0",
-                    shares:
-                        post.shareCount != null ? "${post.shareCount}" : "0");
+                return GestureDetector(
+                  onTap: () => context
+                      .goNamed("detail", pathParameters: {"id": "${post.id}"}),
+                  child: postWidget(
+                      index: index,
+                      liked: post.liked ?? false,
+                      privacy: post.privacy ?? "",
+                      postId: post.id.toString(),
+                      ref: ref,
+                      context: context,
+                      avatarUrl: post.avatar != null
+                          ? "${post.avatar}"
+                          : "https://mighty.tools/mockmind-api/content/human/45.jpg",
+                      userName: post.fullName ?? "",
+                      createdAt: post.createdAt ?? "",
+                      content: post.body ?? "",
+                      images: post.mediaUrl ?? [],
+                      likes: post.likeCount != null ? "${post.likeCount}" : "0",
+                      comments: post.commentCount != null
+                          ? "${post.commentCount}"
+                          : "0",
+                      shares:
+                          post.shareCount != null ? "${post.shareCount}" : "0"),
+                );
               },
             ),
           ),

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:app_tcareer/src/configs/app_colors.dart';
+import 'package:app_tcareer/src/modules/posts/get_image_orientation.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/shared/widgets/cached_image_widget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -38,6 +39,31 @@ Widget postingImageWidget(
                   width: ScreenUtil().screenWidth, fit: BoxFit.cover);
             },
             options: CarouselOptions(
+              aspectRatio: mediaUrl.isNotEmpty ||
+                      controller.imagesWeb?.isNotEmpty == true
+                  ? ref
+                      .watch(imageOrientationProvider(
+                          controller.imagesWeb?.isNotEmpty != true
+                              ? File(mediaUrl[0])
+                              : controller.imagesWeb?[0]))
+                      .when(
+                      data: (orientation) {
+                        print(
+                            'Orientation: $orientation'); // Debug: in ra hướng
+                        return orientation == ImageOrientation.landscape
+                            ? 1.91 // Tỉ lệ cho ảnh ngang
+                            : 4 / 5; // Tỉ lệ cho ảnh dọc
+                      },
+                      loading: () {
+                        print('Loading...'); // Debug: in ra trạng thái đang tải
+                        return 16 / 9; // Giá trị mặc định khi chưa tải xong
+                      },
+                      error: (error, stack) {
+                        print('Error: $error'); // Debug: in ra lỗi
+                        return 16 / 9; // Giá trị mặc định khi có lỗi
+                      },
+                    )
+                  : 1,
               enableInfiniteScroll: false,
               viewportFraction: 1,
               onPageChanged: (index, reason) =>

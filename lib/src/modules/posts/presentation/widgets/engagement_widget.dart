@@ -91,7 +91,7 @@ Widget engagementWidget(
         GestureDetector(
           onTap: () => controller.sharePost(
               title: "Bài viết",
-              url: "https://tcareer.thiendev.shop/home/detail/quang%20thien"),
+              url: "https://tcareer.thiendev.shop/home/detail/$postId"),
           child: Row(
             children: [
               PhosphorIcon(
