@@ -21,63 +21,12 @@ class PostController extends ChangeNotifier {
   final PostUseCase postUseCase;
   final ChangeNotifierProviderRef<Object?> ref;
   PostController(this.postUseCase, this.ref) {
-    pagingController.addPageRequestListener((pageKey) {
-      getPost();
-    });
+    scrollController.addListener(loadMore);
   }
   post_model.PostsResponse? postData;
   bool isLoading = false;
   final PagingController<int, post_model.Data> pagingController =
       PagingController(firstPageKey: 0);
-
-  Future<void> getPost({bool isRefresh = false}) async {
-    try {
-      if (isRefresh) {
-        // Làm mới dữ liệu
-        pagingController.itemList?.clear();
-        pagingController
-            .refresh(); // Chỉ làm mới danh sách, không tải lại dữ liệu từ API
-      }
-
-      print("Loading posts");
-
-      postData =
-          await postUseCase.getPost(personal: "n"); // API không cần pageKey
-
-      if (postData?.data == null || postData?.data?.isEmpty == true) {
-        if (isRefresh) {
-          pagingController
-              .appendLastPage([]); // Trang cuối khi làm mới mà không có dữ liệu
-        } else {
-          pagingController.appendLastPage(
-              []); // Trang cuối khi tải thêm mà không có dữ liệu
-        }
-      } else {
-        final itemList = pagingController.itemList ?? [];
-        final newPosts = postData!.data!
-            .where((newPost) => !itemList.any((post) => post.id == newPost.id))
-            .toList();
-
-        if (newPosts.isEmpty) {
-          pagingController.appendLastPage([]); // Không có dữ liệu mới
-        } else {
-          if (isRefresh) {
-            pagingController.appendPage(
-                newPosts, 1); // Reset pageKey và thêm dữ liệu mới
-          } else {
-            pagingController.appendPage(
-                newPosts,
-                pagingController.nextPageKey ??
-                    1); // Thêm dữ liệu mới và cập nhật pageKey
-          }
-        }
-      }
-    } catch (e) {
-      pagingController.error = e;
-    }
-    print(
-        "Item list length after getPost: ${pagingController.itemList?.length}");
-  }
 
   void setIsLoading(bool value) {
     isLoading = value;
@@ -111,12 +60,12 @@ class PostController extends ChangeNotifier {
   Map<String, bool> likePosts = {};
 
   void setLikePost(int index) {
-    if (postData != null && postData!.data != null) {
-      final updatedPost = postData!.data![index].copyWith(
-        liked: !(postData!.data![index].liked ?? false),
+    if (postData != null && postCache.isNotEmpty) {
+      final updatedPost = postCache[index].copyWith(
+        liked: !(postCache[index].liked ?? false),
       );
 
-      postData!.data![index] = updatedPost;
+      postCache[index] = updatedPost;
       final itemList = pagingController.itemList;
       if (itemList != null) {
         final itemIndex =
@@ -136,5 +85,34 @@ class PostController extends ChangeNotifier {
       {required int index, required String postId}) async {
     setLikePost(index);
     await postUseCase.postLikePost(postId);
+  }
+
+  final ScrollController scrollController = ScrollController();
+  List<post_model.Data> postCache = [];
+  Future<void> getPost() async {
+    postData = await postUseCase.getPost(personal: "n");
+    if (postData?.data != null) {
+      final newPosts = postData?.data
+          ?.where((newPost) =>
+              !postCache.any((cachedPost) => cachedPost.id == newPost.id))
+          .toList();
+      postCache.addAll(newPosts as Iterable<post_model.Data>);
+    }
+    print(">>>>>>>>>>${postCache.length}");
+    notifyListeners();
+  }
+
+  Future<void> loadMore() async {
+    if (scrollController.position.maxScrollExtent == scrollController.offset) {
+      await getPost();
+    }
+  }
+
+  Future<void> refresh() async {
+    postData?.data?.clear();
+    postCache.clear();
+    print(">>>>>>>>>>${postCache.length}");
+    notifyListeners();
+    await getPost();
   }
 }

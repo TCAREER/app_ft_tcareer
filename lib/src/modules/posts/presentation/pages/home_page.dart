@@ -21,6 +21,14 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      ref.read(postControllerProvider).getPost();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final controller = ref.watch(postControllerProvider);
     return Scaffold(
@@ -28,40 +36,10 @@ class _HomePageState extends ConsumerState<HomePage> {
         appBar: appBar(),
         // ignore: unnecessary_null_comparison
         body: RefreshIndicator(
-          onRefresh: () async => controller.getPost(isRefresh: true),
-          child: PagedListView<int, Data>(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            pagingController: controller.pagingController,
-            builderDelegate: PagedChildBuilderDelegate(
-              firstPageProgressIndicatorBuilder: postLoadingWidget,
-              itemBuilder: (context, post, index) {
-                return GestureDetector(
-                  onTap: () => context
-                      .goNamed("detail", pathParameters: {"id": "${post.id}"}),
-                  child: postWidget(
-                      index: index,
-                      liked: post.liked ?? false,
-                      privacy: post.privacy ?? "",
-                      postId: post.id.toString(),
-                      ref: ref,
-                      context: context,
-                      avatarUrl: post.avatar != null
-                          ? "${post.avatar}"
-                          : "https://mighty.tools/mockmind-api/content/human/45.jpg",
-                      userName: post.fullName ?? "",
-                      createdAt: post.createdAt ?? "",
-                      content: post.body ?? "",
-                      images: post.mediaUrl ?? [],
-                      likes: post.likeCount != null ? "${post.likeCount}" : "0",
-                      comments: post.commentCount != null
-                          ? "${post.commentCount}"
-                          : "0",
-                      shares:
-                          post.shareCount != null ? "${post.shareCount}" : "0"),
-                );
-              },
-            ),
-          ),
+          onRefresh: () async => await controller.refresh(),
+          child: controller.postData != null
+              ? postList(ref)
+              : postLoadingWidget(context),
         ));
   }
 
@@ -103,6 +81,59 @@ class _HomePageState extends ConsumerState<HomePage> {
             radius: 18,
             backgroundImage: NetworkImage(
                 "https://mighty.tools/mockmind-api/content/human/7.jpg"),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget postList(WidgetRef ref) {
+    final controller = ref.watch(postControllerProvider);
+    bool hasData = controller.postCache.isNotEmpty;
+    return ListView(
+      controller: controller.scrollController,
+      children: [
+        ListView.separated(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          separatorBuilder: (context, index) => const SizedBox(
+            height: 10,
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          itemCount:
+              controller.isLoading ? 5 : controller.postCache.length ?? 0,
+          itemBuilder: (context, index) {
+            final post = controller.postCache[index];
+            return GestureDetector(
+              onTap: () => context
+                  .goNamed("detail", pathParameters: {"id": "${post.id}"}),
+              child: postWidget(
+                  index: index,
+                  liked: post.liked ?? false,
+                  privacy: post.privacy ?? "",
+                  postId: post.id.toString(),
+                  ref: ref,
+                  context: context,
+                  avatarUrl: post.avatar != null
+                      ? "${post.avatar}"
+                      : "https://mighty.tools/mockmind-api/content/human/45.jpg",
+                  userName: post.fullName ?? "",
+                  createdAt: post.createdAt ?? "",
+                  content: post.body ?? "",
+                  images: post.mediaUrl ?? [],
+                  likes: post.likeCount != null ? "${post.likeCount}" : "0",
+                  comments:
+                      post.commentCount != null ? "${post.commentCount}" : "0",
+                  shares: post.shareCount != null ? "${post.shareCount}" : "0"),
+            );
+          },
+        ),
+        Visibility(
+          visible: hasData &&
+              controller.postCache.length != controller.postData?.meta?.total,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: circularLoadingWidget(context),
           ),
         )
       ],
