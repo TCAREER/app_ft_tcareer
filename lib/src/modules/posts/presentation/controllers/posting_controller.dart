@@ -164,7 +164,7 @@ class PostingController extends ChangeNotifier {
       if (imagesWeb?.isNotEmpty == true) {
         await uploadImageFromUint8List();
       }
-      if (mediaController.videoPaths.isNotEmpty == true) {
+      if (mediaController.videoPaths != null) {
         await uploadVideo();
       }
       await postUseCase.createPost(
@@ -191,7 +191,10 @@ class PostingController extends ChangeNotifier {
       // String url = await postUseCase.uploadImage(
       //     file: File(assetPath ?? ""), folderPath: path);
       String url = await postUseCase.uploadFile(
-          file: File(assetPath ?? ""), topic: "Posts", folderName: id);
+          mimeType: "image/jpg",
+          file: File(assetPath ?? ""),
+          topic: "Posts",
+          folderName: id);
       mediaUrl.add(url);
     }
     notifyListeners();
@@ -202,13 +205,12 @@ class PostingController extends ChangeNotifier {
     final mediaController = ref.watch(mediaControllerProvider);
     final uuid = Uuid();
     final id = uuid.v4();
-    for (String asset in mediaController.videoPaths) {
-      // String url = await postUseCase.uploadImage(
-      //     file: File(assetPath ?? ""), folderPath: path);
-      String url = await postUseCase.uploadFile(
-          file: File(asset ?? ""), topic: "Posts", folderName: id);
-      mediaUrl.add(url);
-    }
+    String url = await postUseCase.uploadFile(
+        mimeType: "video/mp4",
+        file: File(mediaController.videoPaths ?? ""),
+        topic: "Posts",
+        folderName: id);
+    mediaUrl.add(url);
     notifyListeners();
   }
 

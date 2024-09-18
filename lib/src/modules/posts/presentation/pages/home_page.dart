@@ -28,6 +28,15 @@ class _HomePageState extends ConsumerState<HomePage> {
     });
   }
 
+  // @override
+  // void didChangeDependencies() {
+  //   // TODO: implement didChangeDependencies
+  //   super.didChangeDependencies();
+  //   Future.microtask(() {
+  //     ref.read(postControllerProvider).refresh();
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
     final controller = ref.watch(postControllerProvider);
@@ -37,7 +46,8 @@ class _HomePageState extends ConsumerState<HomePage> {
         // ignore: unnecessary_null_comparison
         body: RefreshIndicator(
           onRefresh: () async => await controller.refresh(),
-          child: controller.postData != null
+          child: controller.postData != null &&
+                  controller.postCache.isNotEmpty == true
               ? postList(ref)
               : postLoadingWidget(context),
         ));
@@ -120,7 +130,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   userName: post.fullName ?? "",
                   createdAt: post.createdAt ?? "",
                   content: post.body ?? "",
-                  images: post.mediaUrl ?? [],
+                  mediaUrl: post.mediaUrl,
                   likes: post.likeCount != null ? "${post.likeCount}" : "0",
                   comments:
                       post.commentCount != null ? "${post.commentCount}" : "0",

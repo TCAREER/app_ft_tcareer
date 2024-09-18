@@ -5,8 +5,8 @@ import 'package:app_tcareer/src/modules/posts/presentation/controllers/media_con
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/posting_controller.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/widgets/posting_image_wiget.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/widgets/posting_video_player_widget.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/widgets/privacy_bottom_sheet_widget.dart';
-import 'package:app_tcareer/src/modules/posts/presentation/widgets/video_thumbnail_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -94,7 +94,9 @@ class _PostingPageState extends ConsumerState<PostingPage> {
             const SizedBox(
               height: 10,
             ),
-            videoThumbnailWidget(ref: ref),
+            Visibility(
+                visible: mediaController.videoPaths != null,
+                child: PostingVideoPlayerWidget()),
             postingImageWidget(mediaUrl: mediaController.imagePaths, ref: ref),
           ],
         ),

@@ -60,9 +60,10 @@ class PostRepository {
   Future<String> uploadFile(
       {required File file,
       required String topic,
-      required String folderName}) async {
+      required String folderName,
+      required String mimeType}) async {
     final googleDrive = ref.watch(googleDriveServiceProvider);
-    return googleDrive.uploadFile(file, topic, folderName);
+    return googleDrive.uploadFile(file, topic, folderName, mimeType);
   }
 
   Future<String> uploadFileFromUint8List(

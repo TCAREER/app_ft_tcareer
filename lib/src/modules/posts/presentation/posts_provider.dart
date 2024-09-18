@@ -5,6 +5,7 @@ import 'package:app_tcareer/src/modules/posts/data/models/post_state.dart';
 import 'package:app_tcareer/src/modules/posts/get_image_orientation.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/media_controller.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/posting_controller.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/controllers/video_player_controller.dart';
 import 'package:app_tcareer/src/modules/posts/usecases/media_use_case.dart';
 import 'package:app_tcareer/src/modules/posts/usecases/post_use_case.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,10 @@ final postingControllerProvider = ChangeNotifierProvider((ref) {
 final mediaControllerProvider = ChangeNotifierProvider((ref) {
   final mediaUseCase = ref.read(mediaUseCaseProvider);
   return MediaController(mediaUseCase, ref);
+});
+
+final videoPlayerControllerProvider = ChangeNotifierProvider((ref) {
+  return VideoPlayerController();
 });
 
 // Provider để lấy loại ảnh

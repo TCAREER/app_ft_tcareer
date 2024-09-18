@@ -50,7 +50,7 @@ class PostDetailPage extends ConsumerWidget {
                     userName: post?.fullName ?? "",
                     createdAt: post?.createdAt ?? "",
                     content: post?.body ?? "",
-                    images: post?.mediaUrl ?? [],
+                    mediaUrl: post?.mediaUrl ?? [],
                     likes: post?.likeCount != null ? "${post?.likeCount}" : "0",
                     comments: post?.commentCount != null
                         ? "${post?.commentCount}"

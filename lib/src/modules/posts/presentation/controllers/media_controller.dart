@@ -89,7 +89,7 @@ class MediaController extends ChangeNotifier {
   }
 
   List<String> imagePaths = [];
-  List<String> videoPaths = [];
+  String? videoPaths;
 
   Future<void> getAssetPaths(BuildContext context) async {
     final userUtils = ref.watch(userUtilsProvider);
@@ -97,7 +97,7 @@ class MediaController extends ChangeNotifier {
     await userUtils.removeCache("imageCache");
 
     imagePaths.clear();
-    videoPaths.clear(); // Clear videoPaths as well
+    // Clear videoPaths as well
 
     for (AssetEntity asset in selectedAsset) {
       File? file = await asset.file;
@@ -105,13 +105,11 @@ class MediaController extends ChangeNotifier {
         if (asset.type == AssetType.image) {
           imagePaths.add(file.path);
         } else if (asset.type == AssetType.video) {
-          videoPaths.add(file.path);
+          videoPaths = file.path;
         }
       }
     }
-    if (videoPaths.isNotEmpty) {
-      await generateVideoThumbnail();
-    }
+
     notifyListeners();
     print("Image Paths: $imagePaths");
     print("Video Paths: $videoPaths");
@@ -144,34 +142,58 @@ class MediaController extends ChangeNotifier {
     required AssetEntity asset,
     required BuildContext context,
   }) async {
-    if (selectedAsset.length == 10 && !selectedAsset.contains(asset)) {
-      showSnackBarError(
-        "Bạn chỉ có thể chọn tối đa là 10 ảnh hoặc video",
-      );
-    } else {
-      selectedAsset.contains(asset)
-          ? selectedAsset.remove(asset)
-          : selectedAsset.add(asset);
-      assetIndices =
-          selectedAsset.map((asset) => selectedAsset.indexOf(asset)).toList();
+    // Kiểm tra nếu loại tài sản đã chọn và số lượng hiện tại
+    if (asset.type == AssetType.image) {
+      if (selectedAsset.length >= 10 && !selectedAsset.contains(asset)) {
+        showSnackBarError(
+          "Bạn chỉ có thể chọn tối đa là 10 ảnh",
+        );
+        return; // Dừng hàm nếu đã đạt giới hạn
+      }
+    } else if (asset.type == AssetType.video) {
+      if (selectedAsset.length >= 10 && !selectedAsset.contains(asset)) {
+        showSnackBarError(
+          "Bạn chỉ có thể chọn tối đa là 10 ảnh và 1 video",
+        );
+        return; // Dừng hàm nếu đã đạt giới hạn
+      } else if (selectedAsset
+              .where((a) => a.type == AssetType.video)
+              .isNotEmpty &&
+          !selectedAsset.contains(asset)) {
+        showSnackBarError(
+          "Bạn chỉ có thể chọn tối đa là 1 video",
+        );
+        return; // Dừng hàm nếu đã đạt giới hạn video
+      }
     }
+
+    // Thêm hoặc xóa tài sản từ danh sách đã chọn
+    if (selectedAsset.contains(asset)) {
+      selectedAsset.remove(asset);
+    } else {
+      selectedAsset.add(asset);
+    }
+
+    // Cập nhật chỉ số của các tài sản đã chọn
+    assetIndices =
+        selectedAsset.map((asset) => selectedAsset.indexOf(asset)).toList();
+
     notifyListeners();
   }
 
   List<Uint8List> videoThumbnails = [];
-  Future<void> generateVideoThumbnail() async {
-    videoThumbnails.clear();
-    for (String path in videoPaths) {
-      final thumbnail = await VideoThumbnail.thumbnailData(
-        video: path,
-        imageFormat: ImageFormat.JPEG,
-        maxWidth: 128, // Đặt chiều rộng tối đa của thumbnail
-        quality: 75,
-      );
-      videoThumbnails.add(thumbnail!);
-    }
-    notifyListeners();
-  }
+  // Future<void> generateVideoThumbnail() async {
+  //   videoThumbnails.clear();
+  //   for (String path in videoPaths) {
+  //     final thumbnail = await VideoThumbnail.thumbnailData(
+  //       video: path,
+  //       imageFormat: ImageFormat.JPEG,
+  //       quality: 75,
+  //     );
+  //     videoThumbnails.add(thumbnail!);
+  //   }
+  //   notifyListeners();
+  // }
 
   Future<void> setCacheSelectedAssets() async {
     final userUtils = ref.watch(userUtilsProvider);

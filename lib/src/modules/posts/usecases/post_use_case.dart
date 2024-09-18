@@ -26,9 +26,10 @@ class PostUseCase {
   Future<String> uploadFile(
           {required File file,
           required String topic,
-          required String folderName}) async =>
+          required String folderName,
+          required String mimeType}) async =>
       await postRepository.uploadFile(
-          file: file, topic: topic, folderName: folderName);
+          file: file, topic: topic, folderName: folderName, mimeType: mimeType);
 
   Future<String> uploadFileFromUint8List(
           {required Uint8List file,

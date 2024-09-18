@@ -1,3 +1,5 @@
+import 'package:app_tcareer/src/modules/posts/presentation/widgets/video_player_widget.dart';
+import 'package:app_tcareer/src/shared/extensions/video_extension.dart';
 import 'package:app_tcareer/src/shared/widgets/cached_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -11,25 +13,28 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'engagement_widget.dart';
 import 'post_image_widget.dart';
 
-Widget postWidget(
-    {required BuildContext context,
-    required WidgetRef ref,
-    required String avatarUrl,
-    required String userName,
-    String? subName,
-    required String createdAt,
-    required String content,
-    required List<String> images,
-    required bool liked,
-    required String likes,
-    required String comments,
-    required String shares,
-    required String postId,
-    required int index,
-    required String privacy}) {
+Widget postWidget({
+  required BuildContext context,
+  required WidgetRef ref,
+  required String avatarUrl,
+  required String userName,
+  String? subName,
+  required String createdAt,
+  required String content,
+  List<String>? mediaUrl,
+  required bool liked,
+  required String likes,
+  required String comments,
+  required String shares,
+  required String postId,
+  required int index,
+  required String privacy,
+}) {
+  final hasMediaUrl = mediaUrl != null && mediaUrl.isNotEmpty;
+  final firstMediaUrl = hasMediaUrl ? mediaUrl.first : "";
+
   return Container(
     color: Colors.white,
-    // padding: const EdgeInsets.all(4),
     width: ScreenUtil().screenWidth,
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -54,9 +59,7 @@ Widget postWidget(
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    width: 5,
-                  ),
+                  const SizedBox(width: 5),
                   Column(
                     children: [
                       Text(
@@ -64,6 +67,9 @@ Widget postWidget(
                         style: const TextStyle(
                             fontSize: 15, fontWeight: FontWeight.bold),
                       ),
+                      if (subName != null) ...[
+                        Text(subName, style: TextStyle(color: Colors.grey)),
+                      ],
                     ],
                   ),
                   Expanded(
@@ -74,61 +80,56 @@ Widget postWidget(
                         SizedBox(
                           height: 25,
                           child: ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20)),
-                                  backgroundColor: Colors.blueGrey.shade50),
-                              child: const Text(
-                                "Theo dõi",
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 12),
-                              )),
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              backgroundColor: Colors.blueGrey.shade50,
+                            ),
+                            child: const Text(
+                              "Theo dõi",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 12),
+                            ),
+                          ),
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
+                        const SizedBox(width: 10),
                         const PhosphorIcon(PhosphorIconsBold.dotsThree),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
-            // const SizedBox(
-            //   height: 10,
-            // ),
+            // Hiển thị video hoặc ảnh
             Visibility(
-                visible: images.isNotEmpty,
-                child: PostImageWidget(mediaUrl: images, postId: postId)),
-            // Visibility(
-            //     visible: images.isNotEmpty,
-            //     child: FBPhotoView(
-            //       dataSource: images,
-            //       displayType: FBPhotoViewType.grid3,
-            //     )),
-
+              visible: hasMediaUrl,
+              child: Visibility(
+                visible: mediaUrl!.hasVideos,
+                replacement:
+                    PostImageWidget(mediaUrl: mediaUrl, postId: postId),
+                child: VideoPlayerWidget(videoUrl: firstMediaUrl),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: contentWidget(content),
             ),
-            const SizedBox(
-              height: 8,
-            ),
+            const SizedBox(height: 8),
             engagementWidget(
-                index: index,
-                liked: liked,
-                ref: ref,
-                postId: postId,
-                context: context,
-                likeCount: likes,
-                commentCount: comments,
-                shareCount: shares),
-            const SizedBox(
-              height: 8,
+              index: index,
+              liked: liked,
+              ref: ref,
+              postId: postId,
+              context: context,
+              likeCount: likes,
+              commentCount: comments,
+              shareCount: shares,
             ),
+            const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Row(
@@ -141,12 +142,12 @@ Widget postWidget(
                     privacy == "Public" ? Icons.public : Icons.group,
                     color: Colors.grey,
                     size: 11,
-                  )
+                  ),
                 ],
               ),
             ),
           ],
-        )
+        ),
       ],
     ),
   );

@@ -31,8 +31,9 @@ class GoogleDriveService {
     return ServiceAccountCredentials.fromJson(jsonMap);
   }
 
-  Future<String> uploadFile(
-      io.File file, String topic, String folderName) async {
+  Future<String> uploadFile(io.File file, String topic, String folderName,
+      String mimeType // thêm mimeType vào đây
+      ) async {
     final driveApi = await _driveApi;
 
     const parentFolderId = "18KYXb729bytijEE6dqDIJf2NWOAoruzE";
@@ -57,14 +58,19 @@ class GoogleDriveService {
 
     final driveFile = File()
       ..name = fileName
-      ..mimeType = 'application/octet-stream'
+      ..mimeType = mimeType // sử dụng mimeType từ tham số
       ..parents = [folderId];
 
     try {
       final response =
           await driveApi.files.create(driveFile, uploadMedia: media);
       final fileId = response.id;
-      final fileUrl = 'https://drive.google.com/thumbnail?id=$fileId&sz=w1000';
+
+      // URL khác nhau cho image và video
+      final fileUrl = mimeType.startsWith('image/')
+          ? 'https://drive.google.com/thumbnail?id=$fileId&sz=w1000'
+          : 'https://drive.google.com/uc?export=download&id=$fileId';
+
       return fileUrl;
     } catch (e) {
       throw Exception("Error uploading file: $e");
