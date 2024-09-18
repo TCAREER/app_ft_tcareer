@@ -14,6 +14,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class MediaController extends ChangeNotifier {
   final MediaUseCase mediaUseCase;
@@ -41,6 +42,7 @@ class MediaController extends ChangeNotifier {
 
   Future<void> getMediaFromAlbum(AssetPathEntity album) async {
     media = await mediaUseCase.getMediaFromAlbum(album: album);
+    await prefetchVideoDurations();
     notifyListeners();
   }
 
@@ -87,22 +89,53 @@ class MediaController extends ChangeNotifier {
   }
 
   List<String> imagePaths = [];
-  Future<void> getImagePaths(BuildContext context) async {
+  List<String> videoPaths = [];
+
+  Future<void> getAssetPaths(BuildContext context) async {
     final userUtils = ref.watch(userUtilsProvider);
     await userUtils.removeCache("selectedAsset");
     await userUtils.removeCache("imageCache");
 
     imagePaths.clear();
+    videoPaths.clear(); // Clear videoPaths as well
+
     for (AssetEntity asset in selectedAsset) {
       File? file = await asset.file;
       if (file != null) {
-        imagePaths.add(file.path);
+        if (asset.type == AssetType.image) {
+          imagePaths.add(file.path);
+        } else if (asset.type == AssetType.video) {
+          videoPaths.add(file.path);
+        }
       }
     }
-
+    if (videoPaths.isNotEmpty) {
+      await generateVideoThumbnail();
+    }
     notifyListeners();
-    print(">>>>>>>>$selectedAsset");
+    print("Image Paths: $imagePaths");
+    print("Video Paths: $videoPaths");
     context.replaceNamed("posting");
+  }
+
+  Map<String, Duration?> cachedVideoDurations = {};
+
+  Future<void> prefetchVideoDurations() async {
+    for (var item in media) {
+      if (item.type == AssetType.video) {
+        final duration = await getVideoDuration(item);
+        cachedVideoDurations[item.id] = duration;
+      }
+    }
+    print(">>>>>>>>>>$cachedVideoDurations");
+    notifyListeners();
+  }
+
+  Future<Duration?> getVideoDuration(AssetEntity asset) async {
+    if (asset.type == AssetType.video) {
+      return asset.videoDuration;
+    }
+    return null;
   }
 
   List<AssetEntity> selectedAsset = [];
@@ -121,6 +154,21 @@ class MediaController extends ChangeNotifier {
           : selectedAsset.add(asset);
       assetIndices =
           selectedAsset.map((asset) => selectedAsset.indexOf(asset)).toList();
+    }
+    notifyListeners();
+  }
+
+  List<Uint8List> videoThumbnails = [];
+  Future<void> generateVideoThumbnail() async {
+    videoThumbnails.clear();
+    for (String path in videoPaths) {
+      final thumbnail = await VideoThumbnail.thumbnailData(
+        video: path,
+        imageFormat: ImageFormat.JPEG,
+        maxWidth: 128, // Đặt chiều rộng tối đa của thumbnail
+        quality: 75,
+      );
+      videoThumbnails.add(thumbnail!);
     }
     notifyListeners();
   }

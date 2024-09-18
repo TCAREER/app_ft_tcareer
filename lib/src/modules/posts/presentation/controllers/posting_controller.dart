@@ -135,17 +135,17 @@ class PostingController extends ChangeNotifier {
   Future<void> showDialog(BuildContext context) async {
     final mediaController = ref.watch(mediaControllerProvider);
 
-    if (mediaController.imagePaths.isEmpty) {
-      Future.microtask(() {
-        if (context.canPop()) {
-          context.pop();
-        }
-      });
-    } else {
+    if (mediaController.imagePaths.isNotEmpty) {
       showModalPopup(
           context: context,
           onSave: () async => await setPostCache(context),
           onDiscard: () async => await clearPostCache(context));
+    } else {
+      // Future.microtask(() {
+      //   if (context.canPop()) {
+      context.goNamed("home");
+      //   }
+      // });
     }
   }
 
@@ -163,6 +163,9 @@ class PostingController extends ChangeNotifier {
       }
       if (imagesWeb?.isNotEmpty == true) {
         await uploadImageFromUint8List();
+      }
+      if (mediaController.videoPaths.isNotEmpty == true) {
+        await uploadVideo();
       }
       await postUseCase.createPost(
           body: CreatePostRequest(
@@ -189,6 +192,21 @@ class PostingController extends ChangeNotifier {
       //     file: File(assetPath ?? ""), folderPath: path);
       String url = await postUseCase.uploadFile(
           file: File(assetPath ?? ""), topic: "Posts", folderName: id);
+      mediaUrl.add(url);
+    }
+    notifyListeners();
+  }
+
+  Future<void> uploadVideo() async {
+    mediaUrl.clear();
+    final mediaController = ref.watch(mediaControllerProvider);
+    final uuid = Uuid();
+    final id = uuid.v4();
+    for (String asset in mediaController.videoPaths) {
+      // String url = await postUseCase.uploadImage(
+      //     file: File(assetPath ?? ""), folderPath: path);
+      String url = await postUseCase.uploadFile(
+          file: File(asset ?? ""), topic: "Posts", folderName: id);
       mediaUrl.add(url);
     }
     notifyListeners();
@@ -253,5 +271,10 @@ class PostingController extends ChangeNotifier {
     notifyListeners();
   }
 
-  
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    getUserInfo();
+  }
 }

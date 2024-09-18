@@ -87,98 +87,119 @@ class _MediaPageState extends ConsumerState<MediaPage> {
                     "Hoàn tất",
                     style: TextStyle(color: Colors.blue),
                   ),
-                  onPressed: () => controller.getImagePaths(context),
+                  onPressed: () => controller.getAssetPaths(context),
                 ),
               )
             ],
           ),
           body: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 4,
-              mainAxisSpacing: 4,
-            ),
-            itemCount: controller.media.length,
-            itemBuilder: (context, index) {
-              final item = controller.media[index];
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 4,
+                mainAxisSpacing: 4,
+              ),
+              itemCount: controller.media.length,
+              itemBuilder: (context, index) {
+                final item = controller.media[index];
 
-              Uint8List? cachedThumbnail = controller.cachedThumbnails[item.id];
+                Uint8List? cachedThumbnail =
+                    controller.cachedThumbnails[item.id];
+                return FutureBuilder<Uint8List?>(
+                  future: cachedThumbnail != null
+                      ? Future.value(cachedThumbnail)
+                      : item.thumbnailData,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center();
+                    }
 
-              return FutureBuilder<Uint8List?>(
-                future: cachedThumbnail != null
-                    ? Future.value(cachedThumbnail)
-                    : item.thumbnailData,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData == false) {
-                    return const Center();
-                  }
+                    if (cachedThumbnail == null && snapshot.data != null) {
+                      controller.cachedThumbnails[item.id] = snapshot.data!;
+                    }
 
-                  if (cachedThumbnail == null && snapshot.data != null) {
-                    controller.cachedThumbnails[item.id] = snapshot.data!;
-                  }
+                    bool isSelected = controller.selectedAsset.contains(item);
+                    int? selectedIndex = isSelected
+                        ? controller.selectedAsset.indexOf(item) + 1
+                        : null;
+                    final duration = controller.cachedVideoDurations[item.id];
+                    final formattedDuration = duration != null
+                        ? '${(duration.inMinutes % 60).toString().padLeft(2, '0')}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}'
+                        : "00:00";
 
-                  bool isSelected = controller.selectedAsset.contains(item);
-                  int? selectedIndex = isSelected
-                      ? controller.selectedAsset.indexOf(item) + 1
-                      : null;
-
-                  return InkWell(
-                    onTap: () async => await controller.addAsset(
-                        asset: item, context: context),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: isSelected
-                            ? Border.all(color: Colors.blue, width: 2.5)
-                            : null,
-                      ),
-                      child: Stack(
-                        children: [
-                          Positioned.fill(
-                            child: Image.memory(
-                              snapshot.data!,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Positioned(
-                            top: 8,
-                            right: 8,
-                            child: Container(
-                              alignment: Alignment.center,
-                              height: 24,
-                              width: 24,
-                              decoration: BoxDecoration(
-                                border: isSelected
-                                    ? Border.all(color: Colors.blue, width: 1)
-                                    : Border.all(color: Colors.white, width: 1),
-                                shape: BoxShape.circle,
-                                color: isSelected
-                                    ? Colors.blue
-                                    : Colors.transparent,
+                    return InkWell(
+                      onTap: () async => await controller.addAsset(
+                          asset: item, context: context),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: isSelected
+                              ? Border.all(color: Colors.blue, width: 2.5)
+                              : null,
+                        ),
+                        child: Stack(
+                          children: [
+                            if (item.type == AssetType.video)
+                              Positioned(
+                                bottom: 8,
+                                left: 8,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.5),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Text(
+                                    formattedDuration,
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ),
                               ),
-                              child: isSelected
-                                  ? Text(
-                                      '$selectedIndex',
-                                      style: const TextStyle(
-                                          color: Colors.white, fontSize: 13),
-                                      textAlign: TextAlign.center,
-                                    )
-                                  : const Text(
-                                      '2',
-                                      style: const TextStyle(
-                                          color: Colors.transparent,
-                                          fontSize: 13),
-                                      textAlign: TextAlign.center,
-                                    ),
+                            Positioned.fill(
+                              child: Image.memory(
+                                snapshot.data!,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                        ],
+                            Positioned(
+                              top: 8,
+                              right: 8,
+                              child: Container(
+                                alignment: Alignment.center,
+                                height: 24,
+                                width: 24,
+                                decoration: BoxDecoration(
+                                  border: isSelected
+                                      ? Border.all(color: Colors.blue, width: 1)
+                                      : Border.all(
+                                          color: Colors.white, width: 1),
+                                  shape: BoxShape.circle,
+                                  color: isSelected
+                                      ? Colors.blue
+                                      : Colors.transparent,
+                                ),
+                                child: isSelected
+                                    ? Text(
+                                        '$selectedIndex',
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 13),
+                                        textAlign: TextAlign.center,
+                                      )
+                                    : const Text(
+                                        '2',
+                                        style: TextStyle(
+                                            color: Colors.transparent,
+                                            fontSize: 13),
+                                        textAlign: TextAlign.center,
+                                      ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
-              );
-            },
-          )),
+                    );
+                  },
+                );
+              })),
     );
   }
 }
