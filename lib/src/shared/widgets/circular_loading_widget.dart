@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 @override
-Widget circularLoadingWidget(BuildContext context) {
+Widget circularLoadingWidget() {
   return const Center(
       child: SizedBox(
     width: 20.0,

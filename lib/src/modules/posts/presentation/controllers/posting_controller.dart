@@ -67,6 +67,8 @@ class PostingController extends ChangeNotifier {
     mediaController.imagePaths.clear();
     contentController.clear();
     imagesWeb?.clear();
+    videoPicked?.clear();
+    videoUrlWeb = null;
 
     context.goNamed("home");
     notifyListeners();
@@ -157,6 +159,7 @@ class PostingController extends ChangeNotifier {
 
   Future<void> createPost(BuildContext context) async {
     final mediaController = ref.watch(mediaControllerProvider);
+
     AppUtils.futureApi(() async {
       if (mediaController.imagePaths.isNotEmpty) {
         await uploadImage();
@@ -167,6 +170,9 @@ class PostingController extends ChangeNotifier {
       if (mediaController.videoPaths != null) {
         await uploadVideo();
       }
+      if (videoPicked != null) {
+        await uploadVideoFromUint8List();
+      }
       await postUseCase.createPost(
           body: CreatePostRequest(
               body: contentController.text,
@@ -174,6 +180,7 @@ class PostingController extends ChangeNotifier {
               mediaUrl: mediaUrl));
 
       showSnackBar("Tạo bài viết thành công");
+
       await clearPostCache(context);
       context.pop();
       context.goNamed("home");
@@ -205,11 +212,10 @@ class PostingController extends ChangeNotifier {
     final mediaController = ref.watch(mediaControllerProvider);
     final uuid = Uuid();
     final id = uuid.v4();
-    String url = await postUseCase.uploadFile(
-        mimeType: "video/mp4",
-        file: File(mediaController.videoPaths ?? ""),
-        topic: "Posts",
-        folderName: id);
+    String url = await postUseCase.uploadFileFireBase(
+      folderPath: "Posts/Videos/$id",
+      file: File(mediaController.videoPaths ?? ""),
+    );
     mediaUrl.add(url);
     notifyListeners();
   }
@@ -246,13 +252,23 @@ class PostingController extends ChangeNotifier {
 
     imagesWeb = await mediaUseCase.pickImageWeb();
     print(">>>>>>>>>${imagesWeb?.length}");
-    // for (Uint8List asset in imagesWeb!) {
-    //   // String? path = await AppUtils.compressImageWeb(asset);
-    //   // mediaController.imagePaths.add(path!);
-    //   String url =
-    //       await postUseCase.uploadImageWeb(file: asset, folderPath: "posts");
-    // }
 
+    notifyListeners();
+  }
+
+  String? videoUrlWeb;
+  Uint8List? videoPicked;
+  Future<void> pickVideoWeb(BuildContext context) async {
+    final mediaUseCase = ref.watch(mediaUseCaseProvider);
+    final postUseCase = ref.watch(postUseCaseProvider);
+    final uuid = Uuid();
+    final id = uuid.v4();
+    videoPicked = await mediaUseCase.pickVideoWeb();
+    await AppUtils.showLoading(context);
+    videoUrlWeb = await postUseCase.uploadFileFromUint8ListPreview(
+        file: videoPicked!, folderPath: "Posts/Videos/$id");
+    context.pop();
+    print(">>>>>>>>$videoUrlWeb");
     notifyListeners();
   }
 
@@ -266,10 +282,16 @@ class PostingController extends ChangeNotifier {
       // String url = await postUseCase.uploadImage(
       //     file: File(assetPath ?? ""), folderPath: path);
       asset = await AppUtils.compressImageWeb(asset);
-      String url = await postUseCase.uploadImageWeb(
+      String url = await postUseCase.uploadFileFromUint8List(
           file: asset, folderPath: "Posts/$id");
       mediaUrl.add(url);
     }
+    notifyListeners();
+  }
+
+  Future<void> uploadVideoFromUint8List() async {
+    mediaUrl.add(videoUrlWeb!);
+
     notifyListeners();
   }
 

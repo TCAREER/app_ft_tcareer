@@ -14,11 +14,11 @@ class PostUseCase {
   PostUseCase(this.postRepository);
   Future<PostsResponse> getPost({required String personal}) async =>
       await postRepository.getPosts(personal: personal);
-  Future<String> uploadImage({
+  Future<String> uploadFileFireBase({
     required File file,
     required String folderPath,
   }) async =>
-      await postRepository.uploadImage(
+      await postRepository.uploadFileFirebase(
         file: file,
         folderPath: folderPath,
       );
@@ -31,20 +31,24 @@ class PostUseCase {
       await postRepository.uploadFile(
           file: file, topic: topic, folderName: folderName, mimeType: mimeType);
 
-  Future<String> uploadFileFromUint8List(
-          {required Uint8List file,
-          required String topic,
-          required String folderName}) async =>
-      await postRepository.uploadFileFromUint8List(
-          file: file, topic: topic, folderName: folderName);
-
-  Future<String> uploadImageWeb({
+  Future<String> uploadFileFromUint8List({
     required Uint8List file,
     required String folderPath,
   }) async =>
-      await postRepository.uploadImageWeb(
+      await postRepository.uploadFileFromUint8List(
         file: file,
         folderPath: folderPath,
+      );
+
+  Future<String> uploadFileFromUint8ListPreview({
+    required Uint8List file,
+    required String folderPath,
+    bool isPreview = false
+  }) async =>
+      await postRepository.uploadFileFromUint8ListVideo(
+        file: file,
+        folderPath: folderPath,
+        isPreview: isPreview
       );
 
   Future<void> createPost({required CreatePostRequest body}) async =>

@@ -61,7 +61,7 @@ class PostDetailPage extends ConsumerWidget {
             );
           },
           error: (error, stackTrace) {},
-          loading: () => circularLoadingWidget(context),
+          loading: () => circularLoadingWidget(),
         ));
   }
 }

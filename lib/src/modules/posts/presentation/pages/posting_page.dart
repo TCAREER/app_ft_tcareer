@@ -95,7 +95,8 @@ class _PostingPageState extends ConsumerState<PostingPage> {
               height: 10,
             ),
             Visibility(
-                visible: mediaController.videoPaths != null,
+                visible: mediaController.videoPaths != null ||
+                    controller.videoUrlWeb != null,
                 child: PostingVideoPlayerWidget()),
             postingImageWidget(mediaUrl: mediaController.imagePaths, ref: ref),
           ],
@@ -271,6 +272,18 @@ class _PostingPageState extends ConsumerState<PostingPage> {
                     color: Colors.grey,
                     size: 30,
                   )),
+              Visibility(
+                visible: kIsWeb,
+                child: IconButton(
+                    onPressed: () async {
+                      await controller.pickVideoWeb(context);
+                    },
+                    icon: const PhosphorIcon(
+                      PhosphorIconsBold.video,
+                      color: Colors.grey,
+                      size: 30,
+                    )),
+              ),
               const SizedBox(
                 width: 10,
               ),

@@ -41,7 +41,7 @@ class PostRepository {
     return data;
   }
 
-  Future<String> uploadImage({
+  Future<String> uploadFileFirebase({
     required File file,
     required String folderPath,
   }) async {
@@ -49,12 +49,21 @@ class PostRepository {
     return firebaseStorage.uploadFile(file, folderPath);
   }
 
-  Future<String> uploadImageWeb({
+  Future<String> uploadFileFromUint8List({
     required Uint8List file,
     required String folderPath,
   }) async {
     final firebaseStorage = ref.watch(firebaseStorageServiceProvider);
-    return firebaseStorage.uploadPreviewImage(file, folderPath);
+    return firebaseStorage.uploadFileFromUint8List(file, folderPath);
+  }
+
+  Future<String> uploadFileFromUint8ListVideo(
+      {required Uint8List file,
+      required String folderPath,
+      bool isPreview = false}) async {
+    final firebaseStorage = ref.watch(firebaseStorageServiceProvider);
+    return firebaseStorage.uploadFileFromUint8ListVideo(file, folderPath,
+        isPreview: isPreview);
   }
 
   Future<String> uploadFile(
@@ -64,15 +73,6 @@ class PostRepository {
       required String mimeType}) async {
     final googleDrive = ref.watch(googleDriveServiceProvider);
     return googleDrive.uploadFile(file, topic, folderName, mimeType);
-  }
-
-  Future<String> uploadFileFromUint8List(
-      {required Uint8List file,
-      required String topic,
-      required String folderName}) async {
-    final googleDrive = ref.watch(googleDriveServiceProvider);
-    return googleDrive.uploadFileFromUint8List(
-        file, topic, folderName, "image/jpg");
   }
 
   Future<void> createPost({required CreatePostRequest body}) async {

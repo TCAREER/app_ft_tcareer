@@ -40,6 +40,13 @@ class MediaRepository {
     }
     return images;
   }
+
+  Future<Uint8List?> pickVideoWeb() async {
+    final picker = ImagePicker();
+    final pickedFiles = await picker.pickVideo(source: ImageSource.gallery);
+    Uint8List? video = await pickedFiles?.readAsBytes();
+    return video;
+  }
 }
 
 final mediaRepository = Provider((ref) => MediaRepository());

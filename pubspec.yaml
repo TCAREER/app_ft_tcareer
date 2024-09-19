@@ -97,6 +97,7 @@ dependencies:
   video_thumbnail: ^0.5.3
   better_player: ^0.0.84
   visibility_detector: ^0.4.0+2
+  flick_video_player: ^0.9.0
 
 dev_dependencies:
   flutter_test:

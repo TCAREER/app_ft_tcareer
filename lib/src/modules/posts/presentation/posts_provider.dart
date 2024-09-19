@@ -28,10 +28,6 @@ final mediaControllerProvider = ChangeNotifierProvider((ref) {
   return MediaController(mediaUseCase, ref);
 });
 
-final videoPlayerControllerProvider = ChangeNotifierProvider((ref) {
-  return VideoPlayerController();
-});
-
 // Provider để lấy loại ảnh
 final imageOrientationProvider =
     FutureProvider.family<ImageOrientation, dynamic>((ref, imageSource) async {

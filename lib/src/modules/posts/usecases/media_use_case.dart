@@ -22,6 +22,10 @@ class MediaUseCase {
   Future<List<Uint8List>?> pickImageWeb() async {
     return await mediaRepository.pickImageWeb();
   }
+
+  Future<Uint8List?> pickVideoWeb() async {
+    return await mediaRepository.pickVideoWeb();
+  }
 }
 
 final mediaUseCaseProvider =

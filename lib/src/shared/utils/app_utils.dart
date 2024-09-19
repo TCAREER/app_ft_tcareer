@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:app_tcareer/src/configs/exceptions/api_exception.dart';
+import 'package:app_tcareer/src/shared/widgets/circular_loading_widget.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -15,8 +16,8 @@ class AppUtils {
   static showLoading(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => const Center(
-        child: CircularProgressIndicator(),
+      builder: (context) => Center(
+        child: circularLoadingWidget(),
       ),
     );
   }

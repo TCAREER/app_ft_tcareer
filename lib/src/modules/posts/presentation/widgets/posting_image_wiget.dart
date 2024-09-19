@@ -11,18 +11,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-Widget postingImageWidget(
-    {required List<String> mediaUrl, required WidgetRef ref}) {
+Widget postingImageWidget({List<String>? mediaUrl, required WidgetRef ref}) {
   final controller = ref.watch(postingControllerProvider);
   return Column(
     children: [
       Visibility(
         visible: controller.imagesWeb?.isNotEmpty == true,
         replacement: CarouselSlider.builder(
-            itemCount: mediaUrl.length,
+            itemCount: mediaUrl?.length,
             itemBuilder: (context, index, realIndex) {
-              final image = mediaUrl[index];
-              return Image.file(File(image),
+              final image = mediaUrl?[index];
+              return Image.file(File(image!),
                   width: ScreenUtil().screenWidth, fit: BoxFit.cover);
             },
             options: CarouselOptions(
@@ -39,12 +38,12 @@ Widget postingImageWidget(
                   width: ScreenUtil().screenWidth, fit: BoxFit.cover);
             },
             options: CarouselOptions(
-              aspectRatio: mediaUrl.isNotEmpty ||
+              aspectRatio: mediaUrl?.isNotEmpty == true ||
                       controller.imagesWeb?.isNotEmpty == true
                   ? ref
                       .watch(imageOrientationProvider(
                           controller.imagesWeb?.isNotEmpty != true
-                              ? File(mediaUrl[0])
+                              ? File(mediaUrl?.first ?? "")
                               : controller.imagesWeb?[0]))
                       .when(
                       data: (orientation) {
@@ -73,20 +72,23 @@ Widget postingImageWidget(
       const SizedBox(
         height: 10,
       ),
-      Center(
-        child: Visibility(
-          visible: controller.imagesWeb?.isNotEmpty == true,
-          replacement: AnimatedSmoothIndicator(
-            count: mediaUrl.length,
-            activeIndex: controller.activeIndex,
-            effect: const ScrollingDotsEffect(
-                dotWidth: 5, dotHeight: 5, activeDotColor: Colors.blue),
-          ),
-          child: AnimatedSmoothIndicator(
-            count: controller.imagesWeb?.length ?? 0,
-            activeIndex: controller.activeIndex,
-            effect: const ScrollingDotsEffect(
-                dotWidth: 5, dotHeight: 5, activeDotColor: Colors.blue),
+      Visibility(
+        visible: mediaUrl != null || controller.imagesWeb?.isNotEmpty == true,
+        child: Center(
+          child: Visibility(
+            visible: controller.imagesWeb?.isNotEmpty == true,
+            replacement: AnimatedSmoothIndicator(
+              count: mediaUrl?.length ?? 0,
+              activeIndex: controller.activeIndex,
+              effect: const ScrollingDotsEffect(
+                  dotWidth: 5, dotHeight: 5, activeDotColor: Colors.blue),
+            ),
+            child: AnimatedSmoothIndicator(
+              count: controller.imagesWeb?.length ?? 0,
+              activeIndex: controller.activeIndex,
+              effect: const ScrollingDotsEffect(
+                  dotWidth: 5, dotHeight: 5, activeDotColor: Colors.blue),
+            ),
           ),
         ),
       )

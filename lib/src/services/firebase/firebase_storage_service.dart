@@ -25,7 +25,8 @@ class FirebaseStorageService {
     }
   }
 
-  Future<String> uploadPreviewImage(Uint8List file, String folderPath) async {
+  Future<String> uploadFileFromUint8List(
+      Uint8List file, String folderPath) async {
     final uuid = Uuid();
     String fileName = uuid.v4();
     String path = "$folderPath/$fileName.jpg";
@@ -44,6 +45,35 @@ class FirebaseStorageService {
       return url;
     } catch (e) {
       // Hiển thị thông báo lỗi nếu có
+      showSnackBarError("Có lỗi xảy ra, Vui lòng thử lại");
+      rethrow;
+    }
+  }
+
+  Future<String> uploadFileFromUint8ListVideo(Uint8List file, String folderPath,
+      {bool isPreview = false}) async {
+    final uuid = Uuid();
+    String fileName = uuid.v4();
+    String path = "$folderPath/$fileName.mp4";
+    final ref = FirebaseStorage.instance.ref().child(path);
+
+    try {
+      UploadTask uploadTask = ref.putData(
+        file,
+        SettableMetadata(contentType: "video/mp4"),
+      );
+      TaskSnapshot snapshot = await uploadTask;
+      String url = await snapshot.ref.getDownloadURL();
+
+      if (isPreview == true) {
+        Future.delayed(Duration(minutes: 4), () async {
+          await ref.delete();
+          print("Video đã được xóa.");
+        });
+      }
+
+      return url; // Trả về link tạm thời
+    } catch (e) {
       showSnackBarError("Có lỗi xảy ra, Vui lòng thử lại");
       rethrow;
     }

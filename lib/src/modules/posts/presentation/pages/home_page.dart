@@ -143,7 +143,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               controller.postCache.length != controller.postData?.meta?.total,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
-            child: circularLoadingWidget(context),
+            child: circularLoadingWidget(),
           ),
         )
       ],

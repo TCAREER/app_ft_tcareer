@@ -1,47 +1,42 @@
-import 'package:better_player/better_player.dart';
+import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:video_player/video_player.dart';
 
-class VideoPlayerController extends ChangeNotifier {
-  BetterPlayerController? betterPlayerController;
+class VideoPlayerControllerNotifier extends ChangeNotifier {
+  VideoPlayerController? videoPlayerController;
   String? currentVideoUrl;
+  FlickManager? flickManager;
 
-  void initializePlayer(String videoUrl) {
-    if (betterPlayerController == null || currentVideoUrl != videoUrl) {
+  // Khởi tạo video player
+  void initializePlayer(String videoUrl) async {
+    if (videoPlayerController == null || currentVideoUrl != videoUrl) {
       disposePlayer();
-      final playerConfiguration = const BetterPlayerConfiguration(
-          aspectRatio: 4 / 5,
+      videoPlayerController = VideoPlayerController.network(videoUrl)
+        ..setLooping(false);
+      flickManager = FlickManager(
+          videoPlayerController: videoPlayerController!,
           autoPlay: false,
-          looping: false,
-          controlsConfiguration: BetterPlayerControlsConfiguration(
-              showControlsOnInitialize: false, enableFullscreen: false));
-
-      final betterPlayerDataSource = BetterPlayerDataSource(
-        BetterPlayerDataSourceType.network,
-        videoUrl,
-      );
-
-      betterPlayerController = BetterPlayerController(
-        playerConfiguration,
-        betterPlayerDataSource: betterPlayerDataSource,
-      );
+          autoInitialize: true);
+      // await videoPlayerController!.initialize(); // Chờ khởi tạo
+      notifyListeners(); // Chỉ notify sau khi khởi tạo xong
       currentVideoUrl = videoUrl;
-      notifyListeners();
     }
   }
 
   void disposePlayer() {
-    betterPlayerController?.dispose();
-    betterPlayerController = null;
+    videoPlayerController?.dispose();
+    flickManager?.dispose();
+    videoPlayerController = null;
     notifyListeners();
   }
 }
 
-// Tạo provider cho VideoPlayerNotifier
+// Tạo provider cho VideoPlayerControllerNotifier
 final videoPlayerProvider =
-    ChangeNotifierProvider.family<VideoPlayerController, String>(
+    ChangeNotifierProvider.family<VideoPlayerControllerNotifier, String>(
   (ref, videoUrl) {
-    final controller = VideoPlayerController();
+    final controller = VideoPlayerControllerNotifier();
     ref.onDispose(() => controller
         .disposePlayer()); // Dispose controller when the provider is disposed
     controller.initializePlayer(videoUrl);

@@ -142,32 +142,33 @@ class MediaController extends ChangeNotifier {
     required AssetEntity asset,
     required BuildContext context,
   }) async {
-    // Kiểm tra nếu loại tài sản đã chọn và số lượng hiện tại
     if (asset.type == AssetType.image) {
       if (selectedAsset.length >= 10 && !selectedAsset.contains(asset)) {
-        showSnackBarError(
-          "Bạn chỉ có thể chọn tối đa là 10 ảnh",
-        );
-        return; // Dừng hàm nếu đã đạt giới hạn
+        showSnackBarError("Bạn chỉ có thể chọn tối đa là 10 ảnh");
+        return;
       }
     } else if (asset.type == AssetType.video) {
+      final videoFile = await asset.file; // Lấy file video
+      if (videoFile != null) {
+        final videoSize = await videoFile.length();
+        if (videoSize > 30 * 1024 * 1024) {
+          showSnackBarError("Video phải có kích thước dưới 30MB");
+          return;
+        }
+      }
+
       if (selectedAsset.length >= 10 && !selectedAsset.contains(asset)) {
-        showSnackBarError(
-          "Bạn chỉ có thể chọn tối đa là 10 ảnh và 1 video",
-        );
-        return; // Dừng hàm nếu đã đạt giới hạn
+        showSnackBarError("Bạn chỉ có thể chọn tối đa là 10 ảnh hoặc 1 video");
+        return;
       } else if (selectedAsset
               .where((a) => a.type == AssetType.video)
               .isNotEmpty &&
           !selectedAsset.contains(asset)) {
-        showSnackBarError(
-          "Bạn chỉ có thể chọn tối đa là 1 video",
-        );
-        return; // Dừng hàm nếu đã đạt giới hạn video
+        showSnackBarError("Bạn chỉ có thể chọn tối đa là 1 video");
+        return;
       }
     }
 
-    // Thêm hoặc xóa tài sản từ danh sách đã chọn
     if (selectedAsset.contains(asset)) {
       selectedAsset.remove(asset);
     } else {
@@ -180,20 +181,6 @@ class MediaController extends ChangeNotifier {
 
     notifyListeners();
   }
-
-  List<Uint8List> videoThumbnails = [];
-  // Future<void> generateVideoThumbnail() async {
-  //   videoThumbnails.clear();
-  //   for (String path in videoPaths) {
-  //     final thumbnail = await VideoThumbnail.thumbnailData(
-  //       video: path,
-  //       imageFormat: ImageFormat.JPEG,
-  //       quality: 75,
-  //     );
-  //     videoThumbnails.add(thumbnail!);
-  //   }
-  //   notifyListeners();
-  // }
 
   Future<void> setCacheSelectedAssets() async {
     final userUtils = ref.watch(userUtilsProvider);
