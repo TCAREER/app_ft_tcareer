@@ -9,6 +9,7 @@ import 'package:app_tcareer/src/modules/posts/data/models/posts_detail_response.
 import 'package:app_tcareer/src/modules/posts/data/models/posts_response.dart';
 import 'package:app_tcareer/src/services/apis/api_service_provider.dart';
 import 'package:app_tcareer/src/services/drive/google_drive_service.dart';
+import 'package:app_tcareer/src/services/drive/upload_file_service.dart';
 import 'package:app_tcareer/src/services/firebase/firebase_storage_service.dart';
 import 'package:app_tcareer/src/shared/utils/user_utils.dart';
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
@@ -67,12 +68,13 @@ class PostRepository {
   }
 
   Future<String> uploadFile(
-      {required File file,
+      {File? file,
+      Uint8List? uint8List,
       required String topic,
-      required String folderName,
-      required String mimeType}) async {
-    final googleDrive = ref.watch(googleDriveServiceProvider);
-    return googleDrive.uploadFile(file, topic, folderName, mimeType);
+      required String folderName}) async {
+    final api = ref.watch(uploadFileServiceProvider);
+    return api.uploadFile(
+        topic: topic, folderName: folderName, file: file, uint8List: uint8List);
   }
 
   Future<void> createPost({required CreatePostRequest body}) async {

@@ -5,7 +5,7 @@ import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:flutter/services.dart';
 import 'package:googleapis/drive/v3.dart';
 import 'package:googleapis_auth/auth_io.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 

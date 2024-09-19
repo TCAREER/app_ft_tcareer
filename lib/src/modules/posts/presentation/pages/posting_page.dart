@@ -41,7 +41,10 @@ class _PostingPageState extends ConsumerState<PostingPage> {
     final controller = ref.watch(postingControllerProvider);
     bool isActive = controller.contentController.text != "" ||
         mediaController.imagePaths.isNotEmpty ||
-        controller.imagesWeb?.isNotEmpty == true;
+        controller.imagesWeb?.isNotEmpty == true ||
+        controller.videoUrlWeb != null ||
+        controller.videoPicked != null ||
+        mediaController.videoPaths != null;
     return PopScope(
       onPopInvoked: (didPop) {
         if (didPop) {
@@ -230,7 +233,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
       controller: controller,
       keyboardType: TextInputType.multiline,
       decoration: const InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 10),
+          // contentPadding: EdgeInsets.symmetric(horizontal: 5),
           hintText: "Hôm nay bạn muốn chia sẻ điều gì?",
           border: InputBorder.none,
           errorBorder: InputBorder.none,

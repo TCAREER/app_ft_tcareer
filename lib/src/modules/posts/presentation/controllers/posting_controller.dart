@@ -161,11 +161,9 @@ class PostingController extends ChangeNotifier {
     final mediaController = ref.watch(mediaControllerProvider);
 
     AppUtils.futureApi(() async {
-      if (mediaController.imagePaths.isNotEmpty) {
+      if (mediaController.imagePaths.isNotEmpty ||
+          imagesWeb?.isNotEmpty == true) {
         await uploadImage();
-      }
-      if (imagesWeb?.isNotEmpty == true) {
-        await uploadImageFromUint8List();
       }
       if (mediaController.videoPaths != null) {
         await uploadVideo();
@@ -188,7 +186,7 @@ class PostingController extends ChangeNotifier {
   }
 
   List<String> mediaUrl = [];
-  Future<void> uploadImage() async {
+  Future<void> uploadImageFile() async {
     mediaUrl.clear();
     final mediaController = ref.watch(mediaControllerProvider);
     final uuid = Uuid();
@@ -198,13 +196,20 @@ class PostingController extends ChangeNotifier {
       // String url = await postUseCase.uploadImage(
       //     file: File(assetPath ?? ""), folderPath: path);
       String url = await postUseCase.uploadFile(
-          mimeType: "image/jpg",
-          file: File(assetPath ?? ""),
-          topic: "Posts",
-          folderName: id);
+          file: File(assetPath ?? ""), topic: "Posts", folderName: id);
       mediaUrl.add(url);
     }
     notifyListeners();
+  }
+
+  Future<void> uploadImage() async {
+    final mediaController = ref.watch(mediaControllerProvider);
+    if (mediaController.imagePaths.isNotEmpty) {
+      await uploadImageFile();
+    }
+    if (imagesWeb?.isNotEmpty == true) {
+      await uploadImageFromUint8List();
+    }
   }
 
   Future<void> uploadVideo() async {
@@ -251,8 +256,6 @@ class PostingController extends ChangeNotifier {
     final mediaUseCase = ref.watch(mediaUseCaseProvider);
 
     imagesWeb = await mediaUseCase.pickImageWeb();
-    print(">>>>>>>>>${imagesWeb?.length}");
-
     notifyListeners();
   }
 
@@ -278,14 +281,14 @@ class PostingController extends ChangeNotifier {
     final uuid = Uuid();
     final id = uuid.v4();
     for (Uint8List asset in imagesWeb!) {
-      // String? assetPath = await AppUtils.compressImage(asset);
+      asset = await AppUtils.compressImageWeb(asset);
       // String url = await postUseCase.uploadImage(
       //     file: File(assetPath ?? ""), folderPath: path);
-      asset = await AppUtils.compressImageWeb(asset);
-      String url = await postUseCase.uploadFileFromUint8List(
-          file: asset, folderPath: "Posts/$id");
+      String url = await postUseCase.uploadFile(
+          uint8List: asset, topic: "Posts", folderName: id);
       mediaUrl.add(url);
     }
+
     notifyListeners();
   }
 

@@ -22,7 +22,7 @@ class VideoPlayerWidget extends ConsumerWidget {
           ? FlickVideoPlayer(
               flickManager: controller.flickManager!,
             )
-          : const Center(child: CircularProgressIndicator()),
+          : Center(),
       onVisibilityChanged: (info) {
         if (info.visibleFraction > 0.5) {
           videoPlayerController?.play();

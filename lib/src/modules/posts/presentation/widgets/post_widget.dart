@@ -105,6 +105,13 @@ Widget postWidget({
               ),
             ),
             // Hiển thị video hoặc ảnh
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: contentWidget(content),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
             Visibility(
               visible: hasMediaUrl,
               child: Visibility(
@@ -114,10 +121,7 @@ Widget postWidget({
                 child: VideoPlayerWidget(videoUrl: firstMediaUrl),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: contentWidget(content),
-            ),
+
             const SizedBox(height: 8),
             engagementWidget(
               index: index,
