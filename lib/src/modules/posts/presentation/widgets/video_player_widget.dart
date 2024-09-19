@@ -19,8 +19,14 @@ class VideoPlayerWidget extends ConsumerWidget {
     return VisibilityDetector(
       key: Key(videoUrl),
       child: videoPlayerController != null && controller.flickManager != null
-          ? FlickVideoPlayer(
-              flickManager: controller.flickManager!,
+          ? Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: FlickVideoPlayer(
+                  flickManager: controller.flickManager!,
+                ),
+              ),
             )
           : Center(),
       onVisibilityChanged: (info) {
