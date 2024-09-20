@@ -35,7 +35,7 @@ class _PostingVideoPlayerWidgetState
                 "${postingController.videoUrlWeb}&${AppConstants.driveApiKey}")
             : VideoPlayerController.file(File(controller.videoPaths ?? "")),
         autoPlay: false,
-        autoInitialize: false);
+        autoInitialize: true);
   }
 
   @override

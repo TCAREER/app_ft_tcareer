@@ -1,5 +1,5 @@
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/video_player_controller.dart';
-import 'package:flick_video_player/flick_video_player.dart';
+import 'package:app_tcareer/src/shared/widgets/circular_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:video_player/video_player.dart';
@@ -13,22 +13,23 @@ class VideoPlayerWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.watch(videoPlayerProvider(videoUrl));
-
     final videoPlayerController = controller.videoPlayerController;
 
     return VisibilityDetector(
       key: Key(videoUrl),
-      child: videoPlayerController != null && controller.flickManager != null
+      child: videoPlayerController != null &&
+              videoPlayerController.value.isInitialized
           ? Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: FlickVideoPlayer(
-                  flickManager: controller.flickManager!,
+                child: AspectRatio(
+                  aspectRatio: videoPlayerController.value.aspectRatio,
+                  child: VideoPlayer(videoPlayerController),
                 ),
               ),
             )
-          : Center(),
+          : circularLoadingWidget(),
       onVisibilityChanged: (info) {
         if (info.visibleFraction > 0.5) {
           videoPlayerController?.play();
