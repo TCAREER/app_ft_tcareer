@@ -281,11 +281,11 @@ class PostingController extends ChangeNotifier {
     final uuid = Uuid();
     final id = uuid.v4();
     for (Uint8List asset in imagesWeb!) {
-      asset = await AppUtils.compressImageWeb(asset);
+      // asset = await AppUtils.compressImageWeb(asset);
       // String url = await postUseCase.uploadImage(
       //     file: File(assetPath ?? ""), folderPath: path);
-      String url = await postUseCase.uploadFile(
-          uint8List: asset, topic: "Posts", folderName: id);
+      String url = await postUseCase.uploadFileFromUint8List(
+          file: asset, folderPath: "Posts/Images/$id");
       mediaUrl.add(url);
     }
 
