@@ -31,7 +31,7 @@ class UploadFileService {
       "api_key": AppConstants.keyUpload,
       "file": file != null
           ? await MultipartFile.fromFile(file.path)
-          : MultipartFile.fromBytes(uint8List!),
+          : MultipartFile.fromBytes(uint8List!, filename: "upload.jpg"),
       "topic": topic,
       "folderName": folderName
     });
