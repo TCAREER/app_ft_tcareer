@@ -68,7 +68,7 @@ class PostingController extends ChangeNotifier {
     mediaController.selectedAsset.clear();
     mediaController.imagePaths.clear();
     contentController.clear();
-    imagesWeb?.clear();
+    imagesWeb.clear();
     videoPicked?.clear();
     videoUrlWeb = null;
 
@@ -161,29 +161,32 @@ class PostingController extends ChangeNotifier {
 
   Future<void> createPost(BuildContext context) async {
     final mediaController = ref.watch(mediaControllerProvider);
+    final postController = ref.watch(postControllerProvider);
+    AppUtils.loadingApi(
+      () async {
+        if (mediaController.imagePaths.isNotEmpty ||
+            imagesWeb.isNotEmpty == true) {
+          await uploadImage();
+        }
+        if (mediaController.videoPaths != null) {
+          await uploadVideo();
+        }
+        if (videoPicked != null) {
+          await uploadVideoFromUint8List();
+        }
+        await postUseCase.createPost(
+            body: CreatePostRequest(
+                body: contentController.text,
+                privacy: selectedPrivacy,
+                mediaUrl: mediaUrl));
 
-    AppUtils.futureApi(() async {
-      if (mediaController.imagePaths.isNotEmpty ||
-          imagesWeb?.isNotEmpty == true) {
-        await uploadImage();
-      }
-      if (mediaController.videoPaths != null) {
-        await uploadVideo();
-      }
-      if (videoPicked != null) {
-        await uploadVideoFromUint8List();
-      }
-      await postUseCase.createPost(
-          body: CreatePostRequest(
-              body: contentController.text,
-              privacy: selectedPrivacy,
-              mediaUrl: mediaUrl));
-
-      showSnackBar("Tạo bài viết thành công");
-      clearPostCache(context);
-      context.pop();
-      context.goNamed("home");
-    }, context, setIsLoading);
+        showSnackBar("Tạo bài viết thành công");
+        clearPostCache(context);
+        await postController.refresh();
+        context.goNamed("home");
+      },
+      context,
+    );
   }
 
   List<String> mediaUrl = [];
@@ -261,22 +264,37 @@ class PostingController extends ChangeNotifier {
     final mediaUseCase = ref.watch(mediaUseCaseProvider);
     final postUseCase = ref.watch(postUseCaseProvider);
     final pickedFile = await mediaUseCase.pickMediaWeb();
+
     for (var asset in pickedFile!) {
       if (asset.isImage()) {
+        if (imagesWeb.length == 10) {
+          showSnackBarError("Bạn chỉ có thể chọn tối đa là 10 ảnh");
+          return;
+        }
         videoPicked = null;
         Uint8List image = await asset.readAsBytes();
         imagesWeb.add(image);
       }
       if (asset.isVideo()) {
+        final fileSizeInBytes = await asset.length();
+        final fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+
+        // Kiểm tra nếu dung lượng video lớn hơn 30MB
+        if (fileSizeInMB > 30) {
+          showSnackBarError("Video phải có kích thước dưới 30MB");
+          return; // Hoặc có thể hiển thị thông báo lỗi cho người dùng.
+        }
+
         imagesWeb.clear();
         videoPicked = await asset.readAsBytes();
         final uuid = Uuid();
         final id = uuid.v4();
-        AppUtils.showLoading(context);
-        String videoId = await postUseCase.uploadFile(
-            folderName: id, topic: "Posts", uint8List: videoPicked!);
-        videoUrlWeb = "${AppConstants.driveUrl}$videoId?alt=media";
-        context.pop();
+
+        AppUtils.loadingApi(() async {
+          String videoId = await postUseCase.uploadFile(
+              folderName: id, topic: "Posts", uint8List: videoPicked!);
+          videoUrlWeb = "${AppConstants.driveUrl}$videoId?alt=media";
+        }, context);
       }
     }
 
@@ -288,7 +306,7 @@ class PostingController extends ChangeNotifier {
 
     final uuid = Uuid();
     final id = uuid.v4();
-    for (Uint8List asset in imagesWeb!) {
+    for (Uint8List asset in imagesWeb) {
       // asset = await AppUtils.compressImageWeb(asset);
       // String url = await postUseCase.uploadImage(
       //     file: File(assetPath ?? ""), folderPath: path);

@@ -26,12 +26,7 @@ class AppUtils {
       Function onLoading, BuildContext context) async {
     AlertDialogUtil alertDialog = AlertDialogUtil();
     try {
-      showDialog(
-        context: context,
-        builder: (context) => const Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      showLoading(context);
       await onLoading();
       context.pop();
     } on DioException catch (error) {
