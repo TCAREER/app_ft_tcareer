@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
 import 'package:better_player/better_player.dart';
 import 'package:flick_video_player/flick_video_player.dart';
@@ -30,11 +31,11 @@ class _PostingVideoPlayerWidgetState
 
     flickManager = FlickManager(
         videoPlayerController: kIsWeb
-            ? VideoPlayerController.networkUrl(
-                Uri.parse(postingController.videoUrlWeb ?? ""))
+            ? VideoPlayerController.network(
+                "${postingController.videoUrlWeb}&${AppConstants.driveApiKey}")
             : VideoPlayerController.file(File(controller.videoPaths ?? "")),
         autoPlay: false,
-        autoInitialize: true);
+        autoInitialize: false);
   }
 
   @override

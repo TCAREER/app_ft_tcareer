@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/post_response.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/post_state.dart';
@@ -11,6 +12,7 @@ import 'package:app_tcareer/src/modules/posts/usecases/media_use_case.dart';
 import 'package:app_tcareer/src/modules/posts/usecases/post_use_case.dart';
 import 'package:app_tcareer/src/modules/user/data/models/user_data.dart';
 import 'package:app_tcareer/src/modules/user/usercases/user_use_case.dart';
+import 'package:app_tcareer/src/shared/extensions/file_type_extension.dart';
 import 'package:app_tcareer/src/shared/utils/alert_dialog_util.dart';
 import 'package:app_tcareer/src/shared/utils/app_utils.dart';
 import 'package:app_tcareer/src/shared/utils/snackbar_utils.dart';
@@ -178,8 +180,7 @@ class PostingController extends ChangeNotifier {
               mediaUrl: mediaUrl));
 
       showSnackBar("Tạo bài viết thành công");
-
-      await clearPostCache(context);
+      clearPostCache(context);
       context.pop();
       context.goNamed("home");
     }, context, setIsLoading);
@@ -195,8 +196,8 @@ class PostingController extends ChangeNotifier {
       String? assetPath = await AppUtils.compressImage(asset);
       // String url = await postUseCase.uploadImage(
       //     file: File(assetPath ?? ""), folderPath: path);
-      String url = await postUseCase.uploadFile(
-          file: File(assetPath ?? ""), topic: "Posts", folderName: id);
+      String url = await postUseCase.uploadFileFireBase(
+          file: File(assetPath ?? ""), folderPath: "Posts/$id");
       mediaUrl.add(url);
     }
     notifyListeners();
@@ -207,7 +208,7 @@ class PostingController extends ChangeNotifier {
     if (mediaController.imagePaths.isNotEmpty) {
       await uploadImageFile();
     }
-    if (imagesWeb?.isNotEmpty == true) {
+    if (imagesWeb.isNotEmpty == true) {
       await uploadImageFromUint8List();
     }
   }
@@ -217,8 +218,9 @@ class PostingController extends ChangeNotifier {
     final mediaController = ref.watch(mediaControllerProvider);
     final uuid = Uuid();
     final id = uuid.v4();
-    String url = await postUseCase.uploadFileFireBase(
-      folderPath: "Posts/Videos/$id",
+    String url = await postUseCase.uploadFile(
+      topic: "Posts",
+      folderName: id,
       file: File(mediaController.videoPaths ?? ""),
     );
     mediaUrl.add(url);
@@ -251,27 +253,33 @@ class PostingController extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<Uint8List>? imagesWeb = [];
-  Future<void> pickImageWeb() async {
-    final mediaUseCase = ref.watch(mediaUseCaseProvider);
-
-    imagesWeb = await mediaUseCase.pickImageWeb();
-    notifyListeners();
-  }
+  List<Uint8List> imagesWeb = [];
 
   String? videoUrlWeb;
   Uint8List? videoPicked;
-  Future<void> pickVideoWeb(BuildContext context) async {
+  Future<void> pickMediaWeb(BuildContext context) async {
     final mediaUseCase = ref.watch(mediaUseCaseProvider);
     final postUseCase = ref.watch(postUseCaseProvider);
-    final uuid = Uuid();
-    final id = uuid.v4();
-    videoPicked = await mediaUseCase.pickVideoWeb();
-    await AppUtils.showLoading(context);
-    videoUrlWeb = await postUseCase.uploadFileFromUint8ListPreview(
-        file: videoPicked!, folderPath: "Posts/Videos/$id");
-    context.pop();
-    print(">>>>>>>>$videoUrlWeb");
+    final pickedFile = await mediaUseCase.pickMediaWeb();
+    for (var asset in pickedFile!) {
+      if (asset.isImage()) {
+        videoPicked = null;
+        Uint8List image = await asset.readAsBytes();
+        imagesWeb.add(image);
+      }
+      if (asset.isVideo()) {
+        imagesWeb.clear();
+        videoPicked = await asset.readAsBytes();
+        final uuid = Uuid();
+        final id = uuid.v4();
+        AppUtils.showLoading(context);
+        String videoId = await postUseCase.uploadFile(
+            folderName: id, topic: "Posts", uint8List: videoPicked!);
+        videoUrlWeb = "${AppConstants.driveUrl}$videoId?alt=media";
+        context.pop();
+      }
+    }
+
     notifyListeners();
   }
 

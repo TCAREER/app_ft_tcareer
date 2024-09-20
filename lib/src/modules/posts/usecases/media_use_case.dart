@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:app_tcareer/src/modules/posts/data/repositories/media_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class MediaUseCase {
@@ -23,8 +24,8 @@ class MediaUseCase {
     return await mediaRepository.pickImageWeb();
   }
 
-  Future<Uint8List?> pickVideoWeb() async {
-    return await mediaRepository.pickVideoWeb();
+  Future<List<XFile>?> pickMediaWeb() async {
+    return await mediaRepository.pickMediaWeb();
   }
 }
 

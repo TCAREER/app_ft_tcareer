@@ -31,7 +31,7 @@ class UploadFileService {
       "api_key": AppConstants.keyUpload,
       "file": file != null
           ? await MultipartFile.fromFile(file.path)
-          : MultipartFile.fromBytes(uint8List!, filename: "upload.jpg"),
+          : MultipartFile.fromBytes(uint8List!, filename: "upload.mp4"),
       "topic": topic,
       "folderName": folderName
     });
@@ -40,7 +40,7 @@ class UploadFileService {
         options: Options(headers: {
           'Content-Type': 'application/json',
         }));
-    fileUrl = UploadData.fromJson(response.data).fileUrl ?? "";
+    fileUrl = UploadData.fromJson(response.data).id ?? "";
     return fileUrl;
   }
 }

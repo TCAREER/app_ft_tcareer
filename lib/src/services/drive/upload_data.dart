@@ -1,21 +1,21 @@
 class UploadData {
   UploadData({
-      String? fileUrl,}){
-    _fileUrl = fileUrl;
+      String? id,}){
+    _id = id;
 }
 
   UploadData.fromJson(dynamic json) {
-    _fileUrl = json['file_url'];
+    _id = json['id'];
   }
-  String? _fileUrl;
-UploadData copyWith({  String? fileUrl,
-}) => UploadData(  fileUrl: fileUrl ?? _fileUrl,
+  String? _id;
+UploadData copyWith({  String? id,
+}) => UploadData(  id: id ?? _id,
 );
-  String? get fileUrl => _fileUrl;
+  String? get id => _id;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    map['file_url'] = _fileUrl;
+    map['id'] = _id;
     return map;
   }
 

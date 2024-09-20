@@ -267,7 +267,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
 
                       context.goNamed("photoManager");
                     } else {
-                      await controller.pickImageWeb();
+                      await controller.pickMediaWeb(context);
                     }
                   },
                   icon: const PhosphorIcon(
@@ -275,18 +275,6 @@ class _PostingPageState extends ConsumerState<PostingPage> {
                     color: Colors.grey,
                     size: 30,
                   )),
-              Visibility(
-                visible: kIsWeb,
-                child: IconButton(
-                    onPressed: () async {
-                      await controller.pickVideoWeb(context);
-                    },
-                    icon: const PhosphorIcon(
-                      PhosphorIconsBold.video,
-                      color: Colors.grey,
-                      size: 30,
-                    )),
-              ),
               const SizedBox(
                 width: 10,
               ),

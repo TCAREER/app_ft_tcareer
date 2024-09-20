@@ -1,3 +1,4 @@
+import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,8 +13,9 @@ class VideoPlayerControllerNotifier extends ChangeNotifier {
   void initializePlayer(String videoUrl) async {
     if (videoPlayerController == null || currentVideoUrl != videoUrl) {
       disposePlayer();
-      videoPlayerController = VideoPlayerController.network(videoUrl)
-        ..setLooping(false);
+      videoPlayerController =
+          VideoPlayerController.network("$videoUrl&${AppConstants.driveApiKey}")
+            ..setLooping(false);
       flickManager = FlickManager(
           videoPlayerController: videoPlayerController!,
           autoPlay: false,
