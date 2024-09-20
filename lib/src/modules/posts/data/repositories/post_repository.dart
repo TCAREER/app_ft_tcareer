@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:app_tcareer/src/configs/app_constants.dart';
+import 'package:app_tcareer/src/modules/posts/data/models/create_comment_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/like_post_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/post_response.dart';
@@ -97,6 +98,20 @@ class PostRepository {
   Future<PostsDetailResponse> getPostById(String postId) async {
     final api = ref.watch(apiServiceProvider);
     return api.getPostById(postId: postId);
+  }
+
+  Future<void> postCreateComment(
+      {required int postId,
+      int? parentId,
+      required String content,
+      List<String>? mediaUrl}) async {
+    final api = ref.watch(apiServiceProvider);
+    final body = CreateCommentRequest(
+        postId: postId,
+        commentId: parentId,
+        content: content,
+        mediaUrl: mediaUrl);
+    return api.postCreateComment(body: body);
   }
 }
 

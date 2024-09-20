@@ -8,6 +8,7 @@ import 'package:app_tcareer/src/modules/authentication/data/models/reset_passwor
 import 'package:app_tcareer/src/modules/authentication/data/models/login_request.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/login_response.dart';
 import 'package:app_tcareer/src/modules/authentication/data/models/register_request.dart';
+import 'package:app_tcareer/src/modules/posts/data/models/create_comment_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/like_post_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/posts_detail_response.dart';
@@ -71,4 +72,7 @@ abstract class ApiServices {
 
   @GET('api/auth/share_post')
   Future postSharePost({@Body() required SharePostRequest body});
+
+  @POST('api/auth/comment')
+  Future postCreateComment({@Body() required CreateCommentRequest body});
 }

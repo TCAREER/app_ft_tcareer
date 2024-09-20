@@ -57,6 +57,17 @@ class PostUseCase {
       await postRepository.postLikePost(postId);
   Future<PostsDetailResponse> getPostById(String postId) async =>
       await postRepository.getPostById(postId);
+
+  Future<void> postCreateComment(
+          {required int postId,
+          int? parentId,
+          required String content,
+          List<String>? mediaUrl}) async =>
+      await postRepository.postCreateComment(
+          postId: postId,
+          content: content,
+          mediaUrl: mediaUrl,
+          parentId: parentId);
 }
 
 final postUseCaseProvider =
