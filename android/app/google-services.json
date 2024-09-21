@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "353946571533",
+    "firebase_url": "https://tcareer-4fa7d-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "tcareer-4fa7d",
     "storage_bucket": "tcareer-4fa7d.appspot.com"
   },
@@ -19,6 +20,14 @@
           "android_info": {
             "package_name": "com.tdev.tcareer",
             "certificate_hash": "2ee0f5c06756e46b793a625b05c35a68328582db"
+          }
+        },
+        {
+          "client_id": "353946571533-erddbhmvrq6lo92a41uip5sbenqqhpsc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tdev.tcareer",
+            "certificate_hash": "393f9adb88540840cab312f7087aa4f5c3053cb7"
           }
         },
         {
@@ -43,7 +52,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "353946571533-ledtoi22hitji7cqg0tlrcnqeaf8mclb.apps.googleusercontent.com",
+              "client_id": "353946571533-1f2rh8jr9nrj5fgmapbpurftg5ieuefj.apps.googleusercontent.com",
               "client_type": 3
             },
             {

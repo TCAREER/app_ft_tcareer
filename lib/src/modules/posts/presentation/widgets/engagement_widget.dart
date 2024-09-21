@@ -63,8 +63,10 @@ Widget engagementWidget(
         GestureDetector(
           onTap: () => indexController.showBottomSheet(
               context: context,
-              builder: (scrollController) =>
-                  CommentsPage(scrollController: scrollController)),
+              builder: (scrollController) => CommentsPage(
+                    postId: int.parse(postId),
+                    scrollController: scrollController,
+                  )),
           child: Row(
             children: [
               PhosphorIcon(
@@ -78,7 +80,7 @@ Widget engagementWidget(
               Visibility(
                 visible: commentCount != "0",
                 child: Text(
-                  "$commentCount",
+                  commentCount,
                   style: TextStyle(color: Colors.grey),
                 ),
               ),

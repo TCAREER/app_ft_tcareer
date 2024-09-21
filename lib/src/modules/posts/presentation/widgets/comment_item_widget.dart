@@ -1,6 +1,13 @@
+import 'package:app_tcareer/src/modules/posts/presentation/controllers/comment_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-Widget commentItemWidget() {
+Widget commentItemWidget(
+    String commentId, Map<dynamic, dynamic> comment, WidgetRef ref) {
+  int userName = comment['user_id'];
+  String content = comment['content'];
+
+  print(">>>>>>>>>>>>>$comment");
   return Row(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -16,14 +23,14 @@ Widget commentItemWidget() {
           ],
         ),
       ),
-      const Expanded(
+      Expanded(
         flex: 5,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text.rich(
               TextSpan(
-                  text: 'Quang Thiện ',
+                  text: "$userName",
                   style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                   children: [
                     TextSpan(
@@ -32,7 +39,7 @@ Widget commentItemWidget() {
                   ]),
             ),
             Text(
-              "Tokio I have filmed a small vlog of north Dhaka🤭",
+              content,
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
             ),
             SizedBox(
