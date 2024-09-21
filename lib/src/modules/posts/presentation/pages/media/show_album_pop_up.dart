@@ -24,35 +24,57 @@ Future<AssetPathEntity?> showAlbumPopup(
     albumWithThumbnail
         .add({"album": album, "first": assetFirst, "total": totalAssets});
   }
+
+  print(">>>>>>>>>>albumLength: ${albumWithThumbnail}");
+
   return showMenu<AssetPathEntity>(
     color: Colors.white,
-    // ignore: use_build_context_synchronously
     context: context,
     constraints: BoxConstraints(minWidth: ScreenUtil().screenWidth),
     position: const RelativeRect.fromLTRB(100, 80, 100, 100),
     items: albumWithThumbnail.map((albumData) {
       final AssetPathEntity album = albumData["album"];
-      final AssetEntity assetFirst = albumData["first"];
+      final AssetEntity? assetFirst = albumData["first"];
       controller.setIsShowPopUp(true);
+
       return PopupMenuItem<AssetPathEntity>(
         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
         onTap: () async => await controller.selectAlbum(album),
         value: album,
         child: ListTile(
-          leading: FutureBuilder<Uint8List?>(
-            future: assetFirst.thumbnailData,
-            builder: (context, snapshot) {
-              if (snapshot.hasData == false) {
-                return Center();
-              }
-              return Image.memory(
-                snapshot.data!,
-                height: 64,
-                width: 64,
-                fit: BoxFit.cover,
-              );
-            },
-          ),
+          leading: assetFirst != null
+              ? FutureBuilder<Uint8List?>(
+                  future: assetFirst.thumbnailData,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return SizedBox(
+                        height: 64,
+                        width: 64,
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    } else if (snapshot.hasData) {
+                      return Image.memory(
+                        snapshot.data!,
+                        height: 64,
+                        width: 64,
+                        fit: BoxFit.cover,
+                      );
+                    } else {
+                      return SizedBox(
+                        height: 64,
+                        width: 64,
+                        child:
+                            Container(), // Hoặc một widget khác nếu không có dữ liệu
+                      );
+                    }
+                  },
+                )
+              : SizedBox(
+                  height: 64,
+                  width: 64,
+                  child:
+                      Container(), // Hoặc một widget khác để hiển thị khi assetFirst là null
+                ),
           title: Text(album.name),
           subtitle: Text("${albumData["total"]}"),
         ),

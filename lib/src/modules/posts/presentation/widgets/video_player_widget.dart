@@ -31,7 +31,7 @@ class VideoPlayerWidget extends ConsumerWidget {
             )
           : circularLoadingWidget(),
       onVisibilityChanged: (info) {
-        if (info.visibleFraction > 0.5) {
+        if (info.visibleFraction > 0.6) {
           videoPlayerController?.play();
         } else {
           videoPlayerController?.pause();

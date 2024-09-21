@@ -73,10 +73,10 @@ Widget postingImageWidget({List<String>? mediaUrl, required WidgetRef ref}) {
         height: 10,
       ),
       Visibility(
-        visible: mediaUrl != null || controller.imagesWeb?.isNotEmpty == true,
+        visible: mediaUrl != null || controller.imagesWeb.isNotEmpty == true,
         child: Center(
           child: Visibility(
-            visible: controller.imagesWeb?.isNotEmpty == true,
+            visible: controller.imagesWeb.isNotEmpty == true,
             replacement: AnimatedSmoothIndicator(
               count: mediaUrl?.length ?? 0,
               activeIndex: controller.activeIndex,
@@ -84,7 +84,7 @@ Widget postingImageWidget({List<String>? mediaUrl, required WidgetRef ref}) {
                   dotWidth: 5, dotHeight: 5, activeDotColor: Colors.blue),
             ),
             child: AnimatedSmoothIndicator(
-              count: controller.imagesWeb?.length ?? 0,
+              count: controller.imagesWeb.length ?? 0,
               activeIndex: controller.activeIndex,
               effect: const ScrollingDotsEffect(
                   dotWidth: 5, dotHeight: 5, activeDotColor: Colors.blue),

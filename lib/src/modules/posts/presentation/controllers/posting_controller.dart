@@ -28,7 +28,7 @@ import 'package:uuid/uuid.dart';
 
 class PostingController extends ChangeNotifier {
   final PostUseCase postUseCase;
-  final ChangeNotifierProviderRef<Object?> ref;
+  final Ref ref;
   PostingController(this.postUseCase, this.ref);
 
   Future<void> sharePost({required String url, required String title}) async {
@@ -41,6 +41,16 @@ class PostingController extends ChangeNotifier {
     List<String>? imageCache = await userUtils.loadCacheList("imageCache");
     if (imageCache?.isNotEmpty == true) {
       mediaController.imagePaths = imageCache!;
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadVideoCache() async {
+    final userUtils = ref.watch(userUtilsProvider);
+    final mediaController = ref.watch(mediaControllerProvider);
+    String? videoCache = await userUtils.loadCache("videoCache");
+    if (videoCache != null) {
+      mediaController.videoPaths = videoCache;
       notifyListeners();
     }
   }
@@ -58,6 +68,7 @@ class PostingController extends ChangeNotifier {
   Future<void> loadPostCache() async {
     await loadContentCache();
     await loadCacheImage();
+    await loadVideoCache();
   }
 
   Future<void> clearPostCache(BuildContext context) async {
@@ -70,7 +81,7 @@ class PostingController extends ChangeNotifier {
     contentController.clear();
     imagesWeb.clear();
     videoPicked?.clear();
-    videoUrlWeb = null;
+    mediaController.videoPaths = null;
 
     context.goNamed("home");
     notifyListeners();
@@ -88,6 +99,14 @@ class PostingController extends ChangeNotifier {
     final userUtils = ref.watch(userUtilsProvider);
     await userUtils.saveCache(
         key: "postContent", value: contentController.text);
+  }
+
+  Future<void> setCacheVideo() async {
+    final userUtils = ref.watch(userUtilsProvider);
+    final mediaController = ref.read(mediaControllerProvider);
+
+    await userUtils.saveCache(
+        key: "videoCache", value: mediaController.videoPaths ?? "");
   }
 
   Future<void> setPostCache(BuildContext context) async {
@@ -139,17 +158,15 @@ class PostingController extends ChangeNotifier {
   Future<void> showDialog(BuildContext context) async {
     final mediaController = ref.watch(mediaControllerProvider);
 
-    if (mediaController.imagePaths.isNotEmpty) {
+    if (mediaController.imagePaths.isNotEmpty ||
+        mediaController.videoPaths != null) {
       showModalPopup(
           context: context,
           onSave: () async => await setPostCache(context),
           onDiscard: () async => await clearPostCache(context));
     } else {
-      // Future.microtask(() {
-      //   if (context.canPop()) {
+      clearPostCache(context);
       context.goNamed("home");
-      //   }
-      // });
     }
   }
 
@@ -221,12 +238,13 @@ class PostingController extends ChangeNotifier {
     final mediaController = ref.watch(mediaControllerProvider);
     final uuid = Uuid();
     final id = uuid.v4();
-    String url = await postUseCase.uploadFile(
+    String videoId = await postUseCase.uploadFile(
       topic: "Posts",
       folderName: id,
       file: File(mediaController.videoPaths ?? ""),
     );
-    mediaUrl.add(url);
+    String videoUrl = "${AppConstants.driveUrl}$videoId?alt=media";
+    mediaUrl.add(videoUrl);
     notifyListeners();
   }
 
@@ -322,12 +340,5 @@ class PostingController extends ChangeNotifier {
     mediaUrl.add(videoUrlWeb!);
 
     notifyListeners();
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    getUserInfo();
   }
 }

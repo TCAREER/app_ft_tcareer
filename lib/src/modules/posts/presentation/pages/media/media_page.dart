@@ -19,7 +19,6 @@ class MediaPage extends ConsumerStatefulWidget {
 class _MediaPageState extends ConsumerState<MediaPage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Future.microtask(() {
       ref.read(mediaControllerProvider).loadCache();
@@ -54,7 +53,7 @@ class _MediaPageState extends ConsumerState<MediaPage> {
                 controller.setIsShowPopUp(false);
               },
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 100),
+                constraints: const BoxConstraints(maxWidth: 110),
                 child: Container(
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
@@ -63,11 +62,17 @@ class _MediaPageState extends ConsumerState<MediaPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(controller.selectedAlbum?.name ?? ""),
+                      Text(
+                        controller.selectedAlbum?.name ?? "",
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       Visibility(
-                          visible: controller.isShowPopUp != true,
-                          replacement: const Icon(Icons.keyboard_arrow_up),
-                          child: const Icon(Icons.keyboard_arrow_down))
+                        visible: controller.albums.length >= 1,
+                        child: Visibility(
+                            visible: controller.isShowPopUp != true,
+                            replacement: const Icon(Icons.keyboard_arrow_up),
+                            child: const Icon(Icons.keyboard_arrow_down)),
+                      )
                     ],
                   ),
                 ),
@@ -137,6 +142,12 @@ class _MediaPageState extends ConsumerState<MediaPage> {
                         ),
                         child: Stack(
                           children: [
+                            Positioned.fill(
+                              child: Image.memory(
+                                snapshot.data!,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                             if (item.type == AssetType.video)
                               Positioned(
                                 bottom: 8,
@@ -154,12 +165,6 @@ class _MediaPageState extends ConsumerState<MediaPage> {
                                   ),
                                 ),
                               ),
-                            Positioned.fill(
-                              child: Image.memory(
-                                snapshot.data!,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
                             Positioned(
                               top: 8,
                               right: 8,

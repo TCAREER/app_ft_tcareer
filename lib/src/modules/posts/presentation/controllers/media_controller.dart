@@ -32,6 +32,7 @@ class MediaController extends ChangeNotifier {
     bool isPermission = await requestPermission();
     if (isPermission) {
       albums = await mediaUseCase.getAlbums();
+
       selectedAlbum = albums.first;
       notifyListeners();
       if (media.isEmpty) {
@@ -81,6 +82,7 @@ class MediaController extends ChangeNotifier {
             Future.microtask(() {
               if (context.canPop()) {
                 // context.pop();
+                selectedAsset.clear();
                 context.pushReplacementNamed("posting");
               }
             });
@@ -142,6 +144,16 @@ class MediaController extends ChangeNotifier {
     required AssetEntity asset,
     required BuildContext context,
   }) async {
+    if (asset.type == AssetType.video &&
+        selectedAsset.any((a) => a.type == AssetType.image)) {
+      showSnackBarError("Bạn chỉ có thể chọn tối đa 10 ảnh hoặc 1 video");
+      return;
+    }
+    if (selectedAsset.any(
+        (a) => a.type == AssetType.video && !selectedAsset.contains(asset))) {
+      showSnackBarError("Bạn đã chọn 1 video, không thể chọn thêm ảnh.");
+      return;
+    }
     if (asset.type == AssetType.image) {
       if (selectedAsset.length >= 10 && !selectedAsset.contains(asset)) {
         showSnackBarError("Bạn chỉ có thể chọn tối đa là 10 ảnh");

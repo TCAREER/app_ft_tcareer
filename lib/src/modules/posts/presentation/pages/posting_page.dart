@@ -10,6 +10,7 @@ import 'package:app_tcareer/src/modules/posts/presentation/widgets/privacy_botto
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_fb_photo_view/flutter_fb_photo_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,15 +25,30 @@ class PostingPage extends ConsumerStatefulWidget {
 }
 
 class _PostingPageState extends ConsumerState<PostingPage> {
+  final ScrollController scrollController = ScrollController();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     Future.microtask(() {
-      final controller = ref.read(postingControllerProvider);
-      controller.getUserInfo();
+      final controller = ref.watch(postingControllerProvider);
+
       controller.loadPostCache();
     });
+
+    scrollController.addListener(() {
+      if (scrollController.position.userScrollDirection !=
+          ScrollDirection.idle) {
+        FocusScope.of(context).unfocus();
+      }
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    ref.read(postingControllerProvider).getUserInfo();
   }
 
   @override
@@ -41,7 +57,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
     final controller = ref.watch(postingControllerProvider);
     bool isActive = controller.contentController.text != "" ||
         mediaController.imagePaths.isNotEmpty ||
-        controller.imagesWeb?.isNotEmpty == true ||
+        controller.imagesWeb.isNotEmpty == true ||
         controller.videoUrlWeb != null ||
         controller.videoPicked != null ||
         mediaController.videoPaths != null;
@@ -61,6 +77,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
             onPop: () => controller.showDialog(context),
             onPosting: () async => await controller.createPost(context)),
         body: ListView(
+          controller: scrollController,
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           children: [
             Row(
@@ -91,16 +108,16 @@ class _PostingPageState extends ConsumerState<PostingPage> {
               ],
             ),
             const SizedBox(
-              height: 10,
+              height: 5,
             ),
             postInput(controller.contentController),
             const SizedBox(
-              height: 10,
+              height: 5,
             ),
             Visibility(
                 visible: mediaController.videoPaths != null ||
                     controller.videoUrlWeb != null,
-                child: PostingVideoPlayerWidget()),
+                child: const PostingVideoPlayerWidget()),
             postingImageWidget(mediaUrl: mediaController.imagePaths, ref: ref),
           ],
         ),
@@ -245,58 +262,54 @@ class _PostingPageState extends ConsumerState<PostingPage> {
   Widget bottomAppBar(BuildContext context, WidgetRef ref) {
     final mediaController = ref.watch(mediaControllerProvider);
     final controller = ref.watch(postingControllerProvider);
-    return MediaQuery(
-      data: MediaQuery.of(context), // Get the MediaQuery data
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 100), // Animation duration
-        curve: Curves.easeInOut, // Animation curve
-        margin: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom *
-                .95), // Adjust bottom margin based on keyboard height
-        child: BottomAppBar(
-          color: Colors.white,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              IconButton(
-                  onPressed: () async {
-                    // await controller.setCacheContent();
-                    // await controller.loadContentCache();
-                    if (!kIsWeb) {
-                      await mediaController.getAlbums();
 
-                      context.goNamed("photoManager");
-                    } else {
-                      await controller.pickMediaWeb(context);
-                    }
-                  },
-                  icon: const PhosphorIcon(
-                    PhosphorIconsBold.image,
-                    color: Colors.grey,
-                    size: 30,
-                  )),
-              const SizedBox(
-                width: 10,
+    double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+      margin: EdgeInsets.only(bottom: keyboardHeight > 0 ? keyboardHeight : 0),
+      child: Container(
+        height: 48,
+        color: Colors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            IconButton(
+              onPressed: () async {
+                if (!kIsWeb) {
+                  await mediaController.getAlbums();
+                  context.goNamed("photoManager");
+                } else {
+                  await controller.pickMediaWeb(context);
+                }
+              },
+              icon: const PhosphorIcon(
+                PhosphorIconsFill.image,
+                color: Colors.grey,
+                size: 25,
               ),
-              IconButton(
-                  onPressed: () {},
-                  icon: const PhosphorIcon(
-                    PhosphorIconsBold.link,
-                    color: Colors.grey,
-                    size: 30,
-                  )),
-              const SizedBox(
-                width: 10,
+            ),
+
+            IconButton(
+              onPressed: () {},
+              icon: const PhosphorIcon(
+                PhosphorIconsFill.link,
+                color: Colors.grey,
+                size: 25,
               ),
-              IconButton(
-                  onPressed: () {},
-                  icon: const PhosphorIcon(
-                    PhosphorIconsBold.smiley,
-                    color: Colors.grey,
-                    size: 30,
-                  )),
-            ],
-          ),
+            ),
+
+            // IconButton(
+            //   onPressed: () {},
+            //   icon: const PhosphorIcon(
+            //     PhosphorIconsBold.smiley,
+            //     color: Colors.grey,
+            //     size: 20,
+            //   ),
+            // ),
+          ],
         ),
       ),
     );
