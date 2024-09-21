@@ -2,6 +2,7 @@ import 'package:app_tcareer/src/modules/posts/presentation/controllers/video_pla
 import 'package:app_tcareer/src/shared/widgets/circular_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 

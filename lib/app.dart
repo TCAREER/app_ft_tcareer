@@ -51,6 +51,8 @@ class App extends StatelessWidget {
                         )),
                     bottomNavigationBarTheme:
                         const BottomNavigationBarThemeData(
+                      landscapeLayout:
+                          BottomNavigationBarLandscapeLayout.centered,
                       type: BottomNavigationBarType.fixed,
                       backgroundColor: Colors.white,
                       selectedLabelStyle:

@@ -177,33 +177,31 @@ class PostingController extends ChangeNotifier {
   }
 
   Future<void> createPost(BuildContext context) async {
+    context.goNamed("home");
     final mediaController = ref.watch(mediaControllerProvider);
     final postController = ref.watch(postControllerProvider);
-    AppUtils.loadingApi(
-      () async {
-        if (mediaController.imagePaths.isNotEmpty ||
-            imagesWeb.isNotEmpty == true) {
-          await uploadImage();
-        }
-        if (mediaController.videoPaths != null) {
-          await uploadVideo();
-        }
-        if (videoPicked != null) {
-          await uploadVideoFromUint8List();
-        }
-        await postUseCase.createPost(
-            body: CreatePostRequest(
-                body: contentController.text,
-                privacy: selectedPrivacy,
-                mediaUrl: mediaUrl));
+    AppUtils.futureApi(() async {
+      if (mediaController.imagePaths.isNotEmpty ||
+          imagesWeb.isNotEmpty == true) {
+        await uploadImage();
+      }
+      if (mediaController.videoPaths != null) {
+        await uploadVideo();
+      }
+      if (videoPicked != null) {
+        await uploadVideoFromUint8List();
+      }
+      await postUseCase.createPost(
+          body: CreatePostRequest(
+              body: contentController.text,
+              privacy: selectedPrivacy,
+              mediaUrl: mediaUrl));
 
-        showSnackBar("Tạo bài viết thành công");
-        clearPostCache(context);
-        await postController.refresh();
-        context.goNamed("home");
-      },
-      context,
-    );
+      showSnackBar("Tạo bài viết thành công");
+      clearPostCache(context);
+      await postController.refresh();
+    }, context, setIsLoading);
+    notifyListeners();
   }
 
   List<String> mediaUrl = [];
@@ -220,7 +218,7 @@ class PostingController extends ChangeNotifier {
           file: File(assetPath ?? ""), folderPath: "Posts/$id");
       mediaUrl.add(url);
     }
-    notifyListeners();
+    // notifyListeners();
   }
 
   Future<void> uploadImage() async {
@@ -245,7 +243,6 @@ class PostingController extends ChangeNotifier {
     );
     String videoUrl = "${AppConstants.driveUrl}$videoId?alt=media";
     mediaUrl.add(videoUrl);
-    notifyListeners();
   }
 
   List<String> mediaPreviewUrl = [];
@@ -332,13 +329,9 @@ class PostingController extends ChangeNotifier {
           file: asset, folderPath: "Posts/Images/$id");
       mediaUrl.add(url);
     }
-
-    notifyListeners();
   }
 
   Future<void> uploadVideoFromUint8List() async {
     mediaUrl.add(videoUrlWeb!);
-
-    notifyListeners();
   }
 }

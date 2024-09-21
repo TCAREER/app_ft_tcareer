@@ -44,7 +44,7 @@ Widget postWidget({
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -110,7 +110,7 @@ Widget postWidget({
               child: contentWidget(content),
             ),
             const SizedBox(
-              height: 10,
+              height: 5,
             ),
             Visibility(
               visible: hasMediaUrl,
@@ -122,7 +122,7 @@ Widget postWidget({
               ),
             ),
 
-            const SizedBox(height: 8),
+            const SizedBox(height: 5),
             engagementWidget(
               index: index,
               liked: liked,

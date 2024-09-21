@@ -1,3 +1,4 @@
+import 'package:app_tcareer/src/modules/index/index_controller.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/post_response.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/post_state.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/posts_response.dart'
@@ -11,6 +12,7 @@ import 'package:app_tcareer/src/shared/utils/user_utils.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -21,12 +23,23 @@ class PostController extends ChangeNotifier {
   final PostUseCase postUseCase;
   final ChangeNotifierProviderRef<Object?> ref;
   PostController(this.postUseCase, this.ref) {
-    scrollController.addListener(loadMore);
+    scrollController.addListener(() {
+      loadMore();
+      if (scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        ref
+            .read(indexControllerProvider.notifier)
+            .setBottomNavigationBarVisibility(false);
+      } else if (scrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        ref
+            .read(indexControllerProvider.notifier)
+            .setBottomNavigationBarVisibility(true);
+      }
+    });
   }
   post_model.PostsResponse? postData;
   bool isLoading = false;
-  final PagingController<int, post_model.Data> pagingController =
-      PagingController(firstPageKey: 0);
 
   void setIsLoading(bool value) {
     isLoading = value;
@@ -66,15 +79,13 @@ class PostController extends ChangeNotifier {
       );
 
       postCache[index] = updatedPost;
-      final itemList = pagingController.itemList;
-      if (itemList != null) {
-        final itemIndex =
-            itemList.indexWhere((post) => post.id == updatedPost.id);
-        if (itemIndex != -1) {
-          itemList[itemIndex] = updatedPost;
-          pagingController
-              .notifyListeners(); // Thông báo cho PagingController về sự thay đổi
-        }
+      final itemList = postCache;
+
+      final itemIndex =
+          itemList.indexWhere((post) => post.id == updatedPost.id);
+      if (itemIndex != -1) {
+        itemList[itemIndex] = updatedPost;
+        notifyListeners(); // Thông báo cho PagingController về sự thay đổi
       }
 
       notifyListeners(); // Thông báo cho widget khác về sự thay đổi

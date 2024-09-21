@@ -24,7 +24,7 @@ class IndexController extends StateNotifier<bool> {
               maxChildSize: 0.95,
               minChildSize: 0.7,
               builder: (context, scrollController) => builder(scrollController),
-            )).whenComplete(() => setBottomNavigationBarVisibility(true));
+            ));
   }
 }
 

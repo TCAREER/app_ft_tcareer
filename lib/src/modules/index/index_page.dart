@@ -26,10 +26,10 @@ class IndexPage extends ConsumerWidget {
         "label": "Công việc"
       },
       {
-        'icon': PhosphorIconsFill.plus,
-        'activeIcon': PhosphorIconsFill.plus,
+        'icon': PhosphorIconsThin.plusSquare,
+        'activeIcon': PhosphorIconsThin.plusSquare,
         'route': "/",
-        "label": ""
+        "label": "Tạo mới"
       },
       {
         'icon': PhosphorIconsThin.bell,
@@ -48,34 +48,41 @@ class IndexPage extends ConsumerWidget {
 
     return Scaffold(
       body: shell,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Visibility(
-        visible: state == true,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 30, right: 20, left: 20),
-          child: Padding(
-            padding: const EdgeInsets.all(5),
-            child: FloatingActionButton(
-                shape: const CircleBorder(),
-                backgroundColor: AppColors.primary,
-                isExtended: true,
-                onPressed: () => context.pushNamed("posting"),
-                child: const Icon(
-                  Icons.add,
-                  color: Colors.white,
-                  size: 35,
-                )),
-          ),
-        ),
-      ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // floatingActionButton: Visibility(
+      //   visible: state == true,
+      //   child: Padding(
+      //     padding: const EdgeInsets.only(top: 30, right: 20, left: 20),
+      //     child: Padding(
+      //       padding: const EdgeInsets.all(5),
+      //       child: FloatingActionButton(
+      //           shape: const CircleBorder(),
+      //           backgroundColor: AppColors.primary,
+      //           isExtended: true,
+      //           onPressed: () => context.pushNamed("posting"),
+      //           child: const Icon(
+      //             Icons.add,
+      //             color: Colors.white,
+      //             size: 35,
+      //           )),
+      //     ),
+      //   ),
+      // ),
       bottomNavigationBar: Visibility(
         visible: state == true,
         child: BottomNavigationBar(
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
             // selectedItemColor: Colors.black,
             // unselectedItemColor: Colors.grey,
-            // unselectedLabelStyle: TextStyle(fontSize: 0),
+            // unselectedLabelStyle: TextStyle(fontSize: 10),
+            // selectedLabelStyle: TextStyle(fontSize: 10),
             onTap: (index) {
-              shell.goBranch(index);
+              if (index != 2) {
+                shell.goBranch(index);
+              } else {
+                context.pushNamed("posting");
+              }
             },
             currentIndex: shell.currentIndex,
             items: items.map((item) {
