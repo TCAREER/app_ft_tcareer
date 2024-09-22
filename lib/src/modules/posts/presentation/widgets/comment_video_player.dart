@@ -9,31 +9,27 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:video_player/video_player.dart';
 
-class PostingVideoPlayerWidget extends ConsumerStatefulWidget {
+class CommentVideoPlayerWidget extends ConsumerStatefulWidget {
   // Đường dẫn đến file video
-
-  const PostingVideoPlayerWidget({Key? key}) : super(key: key);
+  final String videoUrl;
+  const CommentVideoPlayerWidget(this.videoUrl, {Key? key}) : super(key: key);
 
   @override
-  _PostingVideoPlayerWidgetState createState() =>
-      _PostingVideoPlayerWidgetState();
+  _CommentVideoPlayerWidgetState createState() =>
+      _CommentVideoPlayerWidgetState();
 }
 
-class _PostingVideoPlayerWidgetState
-    extends ConsumerState<PostingVideoPlayerWidget> {
+class _CommentVideoPlayerWidgetState
+    extends ConsumerState<CommentVideoPlayerWidget> {
   FlickManager? flickManager;
 
   @override
   void initState() {
     super.initState();
-    final controller = ref.read(mediaControllerProvider);
-    final postingController = ref.read(postingControllerProvider);
 
     flickManager = FlickManager(
-        videoPlayerController: kIsWeb
-            ? VideoPlayerController.network(
-                "${postingController.videoUrlWeb}&${AppConstants.driveApiKey}")
-            : VideoPlayerController.file(File(controller.videoPaths ?? "")),
+        videoPlayerController: VideoPlayerController.network(
+            "${widget.videoUrl}&${AppConstants.driveApiKey}"),
         autoPlay: false,
         autoInitialize: true);
   }
@@ -47,9 +43,15 @@ class _PostingVideoPlayerWidgetState
   @override
   Widget build(BuildContext context) {
     return flickManager != null
-        ? ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: FlickVideoPlayer(flickManager: flickManager!))
+        ? SizedBox(
+            height: 200,
+            width: 200,
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: FlickVideoPlayer(
+                  flickManager: flickManager!,
+                )),
+          )
         : const Center(child: CircularProgressIndicator());
   }
 }

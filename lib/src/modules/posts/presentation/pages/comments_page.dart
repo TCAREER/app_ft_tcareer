@@ -1,9 +1,16 @@
+import 'dart:io';
+
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/comment_controller.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/widgets/comment_item_widget.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/widgets/empty_widget.dart';
+import 'package:app_tcareer/src/shared/widgets/photo_manager_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:pinput/pinput.dart';
 
 class CommentsPage extends ConsumerStatefulWidget {
@@ -18,18 +25,27 @@ class CommentsPage extends ConsumerStatefulWidget {
 
 class _CommentsPageState extends ConsumerState<CommentsPage> {
   ScrollController scrollController = ScrollController();
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    scrollController = ScrollController();
+    final controller =
+        ref.read(commentControllerProvider); // Sử dụng read thay vì watch
+
     Future.microtask(() {
-      final controller = ref.watch(commentControllerProvider);
       controller.getCommentByPostId(widget.postId.toString());
       controller.listenToComments(widget.postId.toString());
     });
+    widget.scrollController.addListener(() {
+      if (widget.scrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        FocusScope.of(context).unfocus();
+      }
+    });
     scrollController.addListener(() {
       if (scrollController.position.userScrollDirection ==
-          ScrollDirection.reverse) {
+          ScrollDirection.forward) {
         FocusScope.of(context).unfocus();
       }
     });
@@ -37,34 +53,43 @@ class _CommentsPageState extends ConsumerState<CommentsPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     scrollController.dispose();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final controller = ref.watch(commentControllerProvider);
-    return ClipRRect(
-      borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: RefreshIndicator(
-          onRefresh: () async =>
-              await controller.getCommentByPostId(widget.postId.toString()),
-          child: Column(
-            children: [
-              appBar(),
-              Divider(
-                // thickness: 0.1,
-                color: Colors.grey.shade200,
-              ),
-              Expanded(child: items(ref))
-            ],
+    final mediaController = ref.watch(mediaControllerProvider);
+    return PopScope(
+      onPopInvoked: (didPop) {
+        controller.clearRepComment();
+        controller.contentController.clear();
+        mediaController.removeAssets();
+      },
+      child: ClipRRect(
+        borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: RefreshIndicator(
+            onRefresh: () async =>
+                await controller.getCommentByPostId(widget.postId.toString()),
+            child: Column(
+              children: [
+                appBar(),
+                Divider(
+                  // thickness: 0.1,
+                  color: Colors.grey.shade200,
+                ),
+                Expanded(child: items(ref)),
+                bottomAppBar(ref, context)
+              ],
+            ),
           ),
+          // bottomNavigationBar: bottomAppBar(ref, context),
         ),
-        bottomNavigationBar: bottomAppBar(ref, context),
       ),
     );
   }
@@ -109,7 +134,10 @@ class _CommentsPageState extends ConsumerState<CommentsPage> {
 
   Widget items(WidgetRef ref) {
     final controller = ref.watch(commentControllerProvider);
-    final comments = controller.commentData?.entries.toList();
+    final commentData = controller.commentData?.entries.toList();
+    final comments = commentData
+        ?.where((entry) => entry.value['parent_id'] == null)
+        .toList();
 
     return Visibility(
       visible: controller.commentData?.isNotEmpty == true,
@@ -118,8 +146,36 @@ class _CommentsPageState extends ConsumerState<CommentsPage> {
         controller: scrollController,
         itemCount: comments?.length ?? 0,
         itemBuilder: (context, index) {
+          int commentId = int.parse(comments?[index].key);
           final comment = comments?[index].value;
-          return commentItemWidget(index, comment, ref, context);
+          final commentsChild =
+              controller.getCommentChildren(commentId, commentData!);
+
+          print(">>>>>>>>>>commentId: $commentId");
+          print(">>>>>>child: $commentsChild");
+          return Column(
+            children: [
+              commentItemWidget(commentId, comment, ref, context),
+              Visibility(
+                visible: commentsChild.isNotEmpty == true,
+                child: ListView.separated(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  separatorBuilder: (context, index) => const SizedBox(
+                    height: 10,
+                  ),
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: commentsChild.length ?? 0,
+                  itemBuilder: (context, ind) {
+                    int commentChildId = int.parse(commentsChild[ind].key);
+                    final commentChild = commentsChild[ind].value;
+                    return commentItemWidget(
+                        commentChildId, commentChild, ref, context);
+                  },
+                ),
+              )
+            ],
+          );
         },
         separatorBuilder: (context, index) => const SizedBox(
           height: 10,
@@ -131,82 +187,187 @@ class _CommentsPageState extends ConsumerState<CommentsPage> {
   Widget commentInput(WidgetRef ref, BuildContext context) {
     final controller = ref.watch(commentControllerProvider);
 
-    return SizedBox(
-      height: 45,
-      child: TextField(
-        onChanged: (val) => controller.setHasContent(val),
-        controller: controller.contentController,
-        keyboardType: TextInputType.multiline,
-        maxLines: null,
-        decoration: InputDecoration(
-          suffix: Visibility(
-            visible: controller.hasContent,
-            child: GestureDetector(
-              onTap: () async => await controller.postCreateComment(
-                postId: widget.postId,
-                context: context,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Visibility(
+          visible: controller.parentId != null,
+          child: Row(
+            children: [
+              Text(
+                "Đang trả lời ",
+                style: TextStyle(fontSize: 12),
               ),
-              child: Container(
-                padding: const EdgeInsets.all(
-                    5), // Thêm padding để làm cho nút đẹp hơn
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  shape: BoxShape.circle,
+              Text(
+                controller.userName ?? "",
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              ),
+              TextButton(
+                  onPressed: () => controller.clearRepComment(),
+                  child: Text(
+                    "Hủy",
+                    style: TextStyle(color: Colors.blue),
+                  ))
+            ],
+          ),
+        ),
+        TextField(
+          style: TextStyle(fontSize: 12),
+          textAlignVertical: TextAlignVertical.center,
+          onChanged: (val) => controller.setHasContent(val),
+          controller: controller.contentController,
+          keyboardType: TextInputType.multiline,
+          maxLines: null,
+          decoration: InputDecoration(
+            suffix: Visibility(
+              visible: controller.hasContent,
+              child: GestureDetector(
+                onTap: () async => await controller.postCreateComment(
+                  postId: widget.postId,
+                  context: context,
                 ),
-                child: Icon(
-                  Icons.arrow_forward_rounded,
-                  color: Colors.white,
-                  size: 20,
+                child: Container(
+                  padding: const EdgeInsets.all(
+                      3), // Thêm padding để làm cho nút đẹp hơn
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.arrow_forward_rounded,
+                    color: Colors.white,
+                    size: 18,
+                  ),
                 ),
               ),
             ),
+            hintText: "Thêm bình luận...",
+            hintStyle: TextStyle(fontSize: 12),
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+            enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide(color: Colors.grey.shade200)),
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide(color: Colors.grey.shade200)),
+            focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide(color: Colors.grey.shade200)),
           ),
-          hintText: controller.hintText != null
-              ? controller.hintText
-              : "Thêm bình luận...",
-          hintStyle: TextStyle(fontSize: 12),
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide(color: Colors.grey.shade200)),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide(color: Colors.grey.shade200)),
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide(color: Colors.grey.shade200)),
         ),
-      ),
+      ],
     );
   }
 
   Widget bottomAppBar(WidgetRef ref, BuildContext context) {
-    return BottomAppBar(
-      color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
+    final controller = ref.watch(commentControllerProvider);
+    final mediaController = ref.watch(mediaControllerProvider);
+    final hasAsset = mediaController.imagePaths.isNotEmpty ||
+        mediaController.videoThumbnail != null;
+    final imagesPath = mediaController.imagePaths;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          const Expanded(
-            flex: 1,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(
-                      "https://mighty.tools/mockmind-api/content/human/39.jpg"),
+          Visibility(
+            visible: hasAsset,
+            child: Visibility(
+              visible: mediaController.imagePaths.isNotEmpty,
+              replacement: Padding(
+                padding: const EdgeInsets.only(right: 5),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.file(
+                        File(mediaController.videoThumbnail ?? ""),
+                        height: 60,
+                        width: 60,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: IconButton(
+                          onPressed: () => mediaController.removeAssets(),
+                          icon: PhosphorIcon(PhosphorIconsBold.xCircle)),
+                    )
+                  ],
                 ),
-              ],
+              ),
+              child: Wrap(
+                children: imagesPath.map((image) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 5),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.file(
+                            File(image),
+                            height: 60,
+                            width: 60,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: IconButton(
+                              onPressed: () => mediaController.removeAssets(),
+                              icon: PhosphorIcon(PhosphorIconsBold.xCircle)),
+                        )
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
           ),
-          Expanded(
-            flex: 6,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.symmetric(
+                vertical: 8), // Thêm padding để tạo không gian
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.end, // Đặt align cho Row
               children: [
-                commentInput(ref, context),
+                Visibility(
+                  visible: !hasAsset,
+                  child: Expanded(
+                    flex: 1,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          onPressed: () async {
+                            if (!kIsWeb) {
+                              await mediaController.getAlbums();
+                              context.pushNamed("photoManager",
+                                  queryParameters: {"isComment": "true"});
+                            } else {
+                              await controller.pickMedia();
+                            }
+                          },
+                          icon: const PhosphorIcon(
+                            PhosphorIconsBold.camera,
+                            color: Colors.grey,
+                            size: 30,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 6,
+                  child: commentInput(ref, context),
+                ),
               ],
             ),
           ),

@@ -119,22 +119,28 @@ class AppRouter {
                     routes: []),
               ]),
           GoRoute(
-              path: "/${RouteNames.posting.name}",
-              name: RouteNames.posting.name,
-              pageBuilder: (context, state) => CustomTransitionPage(
+            path: "/${RouteNames.posting.name}",
+            name: RouteNames.posting.name,
+            pageBuilder: (context, state) => CustomTransitionPage(
+                key: state.pageKey,
+                child: const PostingPage(),
+                transitionsBuilder: slideUpTransitionBuilder),
+          ),
+          GoRoute(
+            path: "/${RouteNames.photoManager.name}",
+            name: RouteNames.photoManager.name,
+            pageBuilder: (context, state) {
+              String isCommentString =
+                  state.uri.queryParameters["isComment"] ?? "false";
+              bool isComment = bool.parse(isCommentString);
+              return CustomTransitionPage(
                   key: state.pageKey,
-                  child: const PostingPage(),
-                  transitionsBuilder: slideUpTransitionBuilder),
-              routes: [
-                GoRoute(
-                  path: "${RouteNames.photoManager.name}",
-                  name: RouteNames.photoManager.name,
-                  pageBuilder: (context, state) => CustomTransitionPage(
-                      key: state.pageKey,
-                      child: const MediaPage(),
-                      transitionsBuilder: slideUpTransitionBuilder),
-                ),
-              ]),
+                  child: MediaPage(
+                    isComment: isComment,
+                  ),
+                  transitionsBuilder: slideUpTransitionBuilder);
+            },
+          ),
         ],
         refreshListenable: GoRouterRefreshStream());
   }

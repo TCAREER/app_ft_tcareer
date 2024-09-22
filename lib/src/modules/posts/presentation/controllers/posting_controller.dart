@@ -256,14 +256,6 @@ class PostingController extends ChangeNotifier {
     notifyListeners();
   }
 
-  UserData userData = UserData();
-
-  Future<void> getUserInfo() async {
-    final userUseCase = ref.watch(userUseCaseProvider);
-    userData = await userUseCase.getUserInfo();
-    notifyListeners();
-  }
-
   int activeIndex = 0;
 
   void setActiveIndex(index) {

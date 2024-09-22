@@ -10,7 +10,8 @@ import 'package:photo_manager/photo_manager.dart';
 import 'show_album_pop_up.dart';
 
 class MediaPage extends ConsumerStatefulWidget {
-  const MediaPage({super.key});
+  const MediaPage({super.key, this.isComment});
+  final bool? isComment;
 
   @override
   ConsumerState<MediaPage> createState() => _MediaPageState();
@@ -29,17 +30,30 @@ class _MediaPageState extends ConsumerState<MediaPage> {
   Widget build(BuildContext context) {
     final controller = ref.watch(mediaControllerProvider);
 
-    return PopScope(
-      onPopInvoked: (didPop) {
-        if (didPop) {
-          Future.delayed(Duration.zero, () => controller.clearData(context));
-        }
+    return BackButtonListener(
+      onBackButtonPressed: () async {
+        Future.delayed(Duration.zero, () {
+          controller.resetAutoPop();
+          controller.clearData(context);
+        });
+        return true;
       },
+      // onPopInvoked: (didPop) {
+      //   if (didPop) {
+      //     Future.delayed(Duration.zero, () {
+      //       controller.resetAutoPop();
+      //       controller.clearData(context);
+      //     });
+      //   }
+      // },
       child: Scaffold(
           appBar: AppBar(
             centerTitle: true,
             leading: IconButton(
-              onPressed: () => controller.clearData(context),
+              onPressed: () {
+                controller.resetAutoPop();
+                controller.clearData(context);
+              },
               icon: const Icon(
                 Icons.close,
                 color: Colors.black,
@@ -133,7 +147,9 @@ class _MediaPageState extends ConsumerState<MediaPage> {
 
                     return InkWell(
                       onTap: () async => await controller.addAsset(
-                          asset: item, context: context),
+                          asset: item,
+                          context: context,
+                          isComment: widget.isComment),
                       child: Container(
                         decoration: BoxDecoration(
                           border: isSelected

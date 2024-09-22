@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
@@ -63,16 +64,16 @@ class MediaController extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool isAutoPop = false;
   Future<void> clearData(BuildContext context) async {
     bool hasChanged = await hasChangedSelectedAssets();
+    if (isAutoPop) {
+      return;
+    }
     if (selectedAsset.isEmpty ||
         !hasChanged ||
         imagePaths.length == selectedAsset.length) {
-      Future.microtask(() {
-        if (context.canPop()) {
-          context.pop();
-        }
-      });
+      context.pop();
     } else {
       showModalPopup(
           context: context,
@@ -80,11 +81,9 @@ class MediaController extends ChangeNotifier {
             // selectedAsset.clear();
             // assetIndices.clear();
             Future.microtask(() {
-              if (context.canPop()) {
-                // context.pop();
-                selectedAsset.clear();
-                context.pushReplacementNamed("posting");
-              }
+              selectedAsset.clear();
+              context.pop();
+              context.pop();
             });
           });
     }
@@ -108,6 +107,7 @@ class MediaController extends ChangeNotifier {
           imagePaths.add(file.path);
         } else if (asset.type == AssetType.video) {
           videoPaths = file.path;
+          await generateVideoThumbnail();
         }
       }
     }
@@ -115,7 +115,12 @@ class MediaController extends ChangeNotifier {
     notifyListeners();
     print("Image Paths: $imagePaths");
     print("Video Paths: $videoPaths");
-    context.replaceNamed("posting");
+    isAutoPop = true;
+    context.pop();
+  }
+
+  void resetAutoPop() {
+    isAutoPop = false;
   }
 
   Map<String, Duration?> cachedVideoDurations = {};
@@ -143,7 +148,16 @@ class MediaController extends ChangeNotifier {
   Future<void> addAsset({
     required AssetEntity asset,
     required BuildContext context,
+    bool? isComment,
   }) async {
+    print(">>>>>>>>>$isComment");
+    if (isComment != false &&
+        selectedAsset.length == 1 &&
+        !selectedAsset.contains(asset)) {
+      showSnackBarError("Bạn chỉ có thể chọn tối đa 1 ảnh hoặc 1 video");
+      return;
+    }
+
     if (asset.type == AssetType.video &&
         selectedAsset.any((a) => a.type == AssetType.image)) {
       showSnackBarError("Bạn chỉ có thể chọn tối đa 10 ảnh hoặc 1 video");
@@ -263,7 +277,20 @@ class MediaController extends ChangeNotifier {
   }
 
   Future<void> removeAssets() async {
+    imagePaths.clear();
+    videoPaths = null;
+    videoThumbnail = null;
     selectedAsset.clear();
+    notifyListeners();
+  }
+
+  String? videoThumbnail;
+  Future<void> generateVideoThumbnail() async {
+    videoThumbnail = await VideoThumbnail.thumbnailFile(
+        video: videoPaths ?? "",
+        thumbnailPath: (await getTemporaryDirectory()).path,
+        imageFormat: ImageFormat.JPEG,
+        quality: 100);
   }
 
   Future<bool> hasChangedSelectedAssets() async {

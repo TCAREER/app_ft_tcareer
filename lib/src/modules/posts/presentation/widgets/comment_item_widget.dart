@@ -1,27 +1,35 @@
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/comment_controller.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/widgets/comment_video_player.dart';
+import 'package:app_tcareer/src/shared/widgets/cached_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:app_tcareer/src/shared/extensions/video_extension.dart';
 
-Widget commentItemWidget(int index, Map<dynamic, dynamic> comment,
+Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
     WidgetRef ref, BuildContext context) {
   final controller = ref.watch(commentControllerProvider);
-  final comments = controller.commentData?.entries.toList();
-  int commentId = int.parse(comments?[index].key);
-  print(">>>>>>>>>>commentId: $commentId");
-  int userName = comment['user_id'];
+  final postController = ref.watch(postControllerProvider);
+
+  String userName = comment['full_name'];
   String content = comment['content'];
+  String? avatar = comment['avatar'];
+  String createdAt = comment['created_at'];
+  List<String> mediaUrl =
+      (comment['media_url'] as List?)?.whereType<String>().toList() ?? [];
 
   return Row(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      const Expanded(
+      Expanded(
         flex: 1,
         child: Column(
           children: [
             CircleAvatar(
               radius: 15,
-              backgroundImage: NetworkImage(
-                  "https://mighty.tools/mockmind-api/content/human/39.jpg"),
+              backgroundImage: NetworkImage(avatar != null
+                  ? avatar
+                  : "https://ui-avatars.com/api/?name=$userName&background=random"),
             ),
           ],
         ),
@@ -31,15 +39,9 @@ Widget commentItemWidget(int index, Map<dynamic, dynamic> comment,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text.rich(
-              TextSpan(
-                  text: "$userName ",
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                  children: [
-                    TextSpan(
-                        text: '1giờ',
-                        style: TextStyle(fontSize: 12, color: Colors.black54))
-                  ]),
+            Text(
+              userName,
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
             Text(
               content,
@@ -48,18 +50,54 @@ Widget commentItemWidget(int index, Map<dynamic, dynamic> comment,
             SizedBox(
               height: 5,
             ),
-            GestureDetector(
-              onTap: () {
-                FocusScope.of(context).requestFocus();
+            Visibility(
+              visible: mediaUrl.isNotEmpty,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: mediaUrl.map((image) {
+                    return Visibility(
+                      visible: !mediaUrl.hasVideos,
+                      replacement: CommentVideoPlayerWidget(image),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: cachedImageWidget(
+                            imageUrl: image,
+                            fit: BoxFit.cover,
+                            height: 100,
+                            width: 100),
+                      ),
+                    );
+                  }).toList()),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Row(
+              children: [
+                Text(
+                  createdAt,
+                  style: TextStyle(color: Colors.black45, fontSize: 12),
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    FocusScope.of(context).requestFocus();
 
-                controller.setRepComment(
-                    userName: userName.toString(), commentId: commentId);
-              },
-              child: Text(
-                "Trả lời",
-                style: TextStyle(color: Colors.black54, fontSize: 12),
-              ),
-            )
+                    controller.setRepComment(
+                        fullName: userName.toString(), commentId: commentId);
+                  },
+                  child: Text(
+                    "Trả lời",
+                    style: TextStyle(color: Colors.black54, fontSize: 12),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
           ],
         ),
       ),

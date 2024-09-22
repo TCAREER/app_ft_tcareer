@@ -16,13 +16,16 @@ Widget postingImageWidget({List<String>? mediaUrl, required WidgetRef ref}) {
   return Column(
     children: [
       Visibility(
-        visible: controller.imagesWeb?.isNotEmpty == true,
+        visible: controller.imagesWeb.isNotEmpty == true,
         replacement: CarouselSlider.builder(
             itemCount: mediaUrl?.length,
             itemBuilder: (context, index, realIndex) {
               final image = mediaUrl?[index];
-              return Image.file(File(image!),
-                  width: ScreenUtil().screenWidth, fit: BoxFit.cover);
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.file(File(image!),
+                    width: ScreenUtil().screenWidth, fit: BoxFit.cover),
+              );
             },
             options: CarouselOptions(
               enableInfiniteScroll: false,
@@ -31,20 +34,23 @@ Widget postingImageWidget({List<String>? mediaUrl, required WidgetRef ref}) {
                   controller.setActiveIndex(index),
             )),
         child: CarouselSlider.builder(
-            itemCount: controller.imagesWeb?.length,
+            itemCount: controller.imagesWeb.length,
             itemBuilder: (context, index, realIndex) {
-              final image = controller.imagesWeb?[index];
-              return Image.memory(image!,
-                  width: ScreenUtil().screenWidth, fit: BoxFit.cover);
+              final image = controller.imagesWeb[index];
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.memory(image,
+                    width: ScreenUtil().screenWidth, fit: BoxFit.cover),
+              );
             },
             options: CarouselOptions(
               aspectRatio: mediaUrl?.isNotEmpty == true ||
-                      controller.imagesWeb?.isNotEmpty == true
+                      controller.imagesWeb.isNotEmpty == true
                   ? ref
                       .watch(imageOrientationProvider(
-                          controller.imagesWeb?.isNotEmpty != true
+                          controller.imagesWeb.isNotEmpty != true
                               ? File(mediaUrl?.first ?? "")
-                              : controller.imagesWeb?[0]))
+                              : controller.imagesWeb[0]))
                       .when(
                       data: (orientation) {
                         print(

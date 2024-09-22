@@ -45,27 +45,20 @@ class _PostingPageState extends ConsumerState<PostingPage> {
   }
 
   @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-    ref.read(postingControllerProvider).getUserInfo();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final mediaController = ref.watch(mediaControllerProvider);
     final controller = ref.watch(postingControllerProvider);
+    final postController = ref.watch(postControllerProvider);
     bool isActive = controller.contentController.text != "" ||
         mediaController.imagePaths.isNotEmpty ||
         controller.imagesWeb.isNotEmpty == true ||
         controller.videoUrlWeb != null ||
         controller.videoPicked != null ||
         mediaController.videoPaths != null;
-    return PopScope(
-      onPopInvoked: (didPop) {
-        if (didPop) {
-          controller.showDialog(context);
-        }
+    return BackButtonListener(
+      onBackButtonPressed: () async {
+        await controller.showDialog(context);
+        return true;
       },
       child: Scaffold(
         resizeToAvoidBottomInset: true,
@@ -85,8 +78,9 @@ class _PostingPageState extends ConsumerState<PostingPage> {
               children: [
                 CircleAvatar(
                   radius: 30,
-                  backgroundImage: NetworkImage(controller.userData.avatar ??
-                      "https://ui-avatars.com/api/?name=${controller.userData?.fullName}&background=random"),
+                  backgroundImage: NetworkImage(postController
+                          .userData.avatar ??
+                      "https://ui-avatars.com/api/?name=${postController.userData.fullName}&background=random"),
                 ),
                 const SizedBox(
                   width: 10,
@@ -95,7 +89,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      controller.userData.fullName ?? "",
+                      postController.userData.fullName ?? "",
                       style:
                           TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
@@ -280,7 +274,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
               onPressed: () async {
                 if (!kIsWeb) {
                   await mediaController.getAlbums();
-                  context.goNamed("photoManager");
+                  context.pushNamed("photoManager");
                 } else {
                   await controller.pickMediaWeb(context);
                 }

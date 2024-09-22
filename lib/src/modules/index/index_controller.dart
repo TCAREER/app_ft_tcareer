@@ -16,6 +16,7 @@ class IndexController extends StateNotifier<bool> {
     setBottomNavigationBarVisibility(false);
     showModalBottomSheet(
         isScrollControlled: true,
+        useRootNavigator: true,
         context: context,
         builder: (context) => DraggableScrollableSheet(
               expand: false,

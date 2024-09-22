@@ -27,6 +27,13 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    ref.read(postControllerProvider).getUserInfo();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final controller = ref.watch(postControllerProvider);
     final postingController = ref.watch(postingControllerProvider);
@@ -41,7 +48,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           child: CustomScrollView(
             controller: controller.scrollController,
             slivers: [
-              sliverAppBar(),
+              sliverAppBar(ref),
               postingLoading(ref),
               SliverVisibility(
                   visible: controller.postCache.isNotEmpty,
@@ -82,7 +89,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               ref: ref,
               context: context,
               avatarUrl: post.avatar ??
-                  "https://mighty.tools/mockmind-api/content/human/45.jpg",
+                  "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
               userName: post.fullName ?? "",
               createdAt: post.createdAt ?? "",
               content: post.body ?? "",
@@ -98,7 +105,9 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  Widget sliverAppBar() {
+  Widget sliverAppBar(WidgetRef ref) {
+    final controller = ref.watch(postControllerProvider);
+    final userData = controller.userData;
     return SliverAppBar(
       backgroundColor: Colors.white,
       floating: true,
@@ -132,12 +141,12 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
           ),
         ),
-        const Padding(
+        Padding(
           padding: EdgeInsets.symmetric(horizontal: 10),
           child: CircleAvatar(
             radius: 18,
-            backgroundImage: NetworkImage(
-                "https://mighty.tools/mockmind-api/content/human/7.jpg"),
+            backgroundImage: NetworkImage(userData.avatar ??
+                "https://ui-avatars.com/api/?name=${userData.fullName}&background=random"),
           ),
         ),
       ],
