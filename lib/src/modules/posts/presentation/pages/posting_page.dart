@@ -168,7 +168,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
             child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5)),
+                        borderRadius: BorderRadius.circular(20)),
                     backgroundColor: AppColors.executeButton),
                 onPressed: isActive ? onPosting : null,
                 child: const Text(

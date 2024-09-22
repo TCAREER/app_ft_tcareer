@@ -2,12 +2,15 @@ import 'package:app_tcareer/src/modules/posts/presentation/controllers/comment_c
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-Widget commentItemWidget(
-    String commentId, Map<dynamic, dynamic> comment, WidgetRef ref) {
+Widget commentItemWidget(int index, Map<dynamic, dynamic> comment,
+    WidgetRef ref, BuildContext context) {
+  final controller = ref.watch(commentControllerProvider);
+  final comments = controller.commentData?.entries.toList();
+  int commentId = int.parse(comments?[index].key);
+  print(">>>>>>>>>>commentId: $commentId");
   int userName = comment['user_id'];
   String content = comment['content'];
 
-  print(">>>>>>>>>>>>>$comment");
   return Row(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -30,11 +33,11 @@ Widget commentItemWidget(
           children: [
             Text.rich(
               TextSpan(
-                  text: "$userName",
+                  text: "$userName ",
                   style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                   children: [
                     TextSpan(
-                        text: '1 giờ',
+                        text: '1giờ',
                         style: TextStyle(fontSize: 12, color: Colors.black54))
                   ]),
             ),
@@ -45,9 +48,17 @@ Widget commentItemWidget(
             SizedBox(
               height: 5,
             ),
-            Text(
-              "Trả lời",
-              style: TextStyle(color: Colors.black54, fontSize: 12),
+            GestureDetector(
+              onTap: () {
+                FocusScope.of(context).requestFocus();
+
+                controller.setRepComment(
+                    userName: userName.toString(), commentId: commentId);
+              },
+              child: Text(
+                "Trả lời",
+                style: TextStyle(color: Colors.black54, fontSize: 12),
+              ),
             )
           ],
         ),

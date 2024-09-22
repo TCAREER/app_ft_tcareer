@@ -2,6 +2,7 @@ import 'package:app_tcareer/src/modules/posts/presentation/controllers/comment_c
 import 'package:app_tcareer/src/modules/posts/presentation/widgets/comment_item_widget.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/widgets/empty_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinput/pinput.dart';
 
@@ -16,6 +17,7 @@ class CommentsPage extends ConsumerStatefulWidget {
 }
 
 class _CommentsPageState extends ConsumerState<CommentsPage> {
+  ScrollController scrollController = ScrollController();
   @override
   void initState() {
     // TODO: implement initState
@@ -25,6 +27,19 @@ class _CommentsPageState extends ConsumerState<CommentsPage> {
       controller.getCommentByPostId(widget.postId.toString());
       controller.listenToComments(widget.postId.toString());
     });
+    scrollController.addListener(() {
+      if (scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        FocusScope.of(context).unfocus();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -100,11 +115,11 @@ class _CommentsPageState extends ConsumerState<CommentsPage> {
       visible: controller.commentData?.isNotEmpty == true,
       replacement: emptyWidget("Không có bình luận!"),
       child: ListView.separated(
+        controller: scrollController,
         itemCount: comments?.length ?? 0,
         itemBuilder: (context, index) {
-          final commentId = comments?[index].key;
           final comment = comments?[index].value;
-          return commentItemWidget(commentId, comment, ref);
+          return commentItemWidget(index, comment, ref, context);
         },
         separatorBuilder: (context, index) => const SizedBox(
           height: 10,
@@ -128,7 +143,9 @@ class _CommentsPageState extends ConsumerState<CommentsPage> {
             visible: controller.hasContent,
             child: GestureDetector(
               onTap: () async => await controller.postCreateComment(
-                  postId: widget.postId, context: context),
+                postId: widget.postId,
+                context: context,
+              ),
               child: Container(
                 padding: const EdgeInsets.all(
                     5), // Thêm padding để làm cho nút đẹp hơn
@@ -144,7 +161,10 @@ class _CommentsPageState extends ConsumerState<CommentsPage> {
               ),
             ),
           ),
-          hintText: "Bình luận cho Quang Thiện",
+          hintText: controller.hintText != null
+              ? controller.hintText
+              : "Thêm bình luận...",
+          hintStyle: TextStyle(fontSize: 12),
           contentPadding:
               const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           enabledBorder: OutlineInputBorder(

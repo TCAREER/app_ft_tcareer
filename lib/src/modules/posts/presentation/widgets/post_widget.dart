@@ -85,19 +85,25 @@ Widget postWidget({
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              backgroundColor: Colors.blueGrey.shade50,
+                                  borderRadius: BorderRadius.circular(20),
+                                  side:
+                                      BorderSide(color: Colors.grey.shade100)),
+                              backgroundColor: Colors.white,
                             ),
                             child: const Text(
                               "Theo dõi",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 12),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.normal),
                             ),
                           ),
                         ),
                         const SizedBox(width: 10),
-                        const PhosphorIcon(PhosphorIconsBold.dotsThree),
+                        const PhosphorIcon(
+                          PhosphorIconsLight.dotsThreeCircle,
+                          color: Colors.grey,
+                        ),
                       ],
                     ),
                   ),

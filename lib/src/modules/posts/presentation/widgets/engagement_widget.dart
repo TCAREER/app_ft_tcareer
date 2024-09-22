@@ -30,7 +30,6 @@ Widget engagementWidget(
     padding: const EdgeInsets.symmetric(horizontal: 10),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         GestureDetector(
           onTap: () async =>
@@ -60,35 +59,35 @@ Widget engagementWidget(
         const SizedBox(
           width: 10,
         ),
-        GestureDetector(
-          onTap: () => indexController.showBottomSheet(
-              context: context,
-              builder: (scrollController) => CommentsPage(
-                    postId: int.parse(postId),
-                    scrollController: scrollController,
-                  )),
-          child: Row(
-            children: [
-              PhosphorIcon(
-                PhosphorIconsBold.chatCircle,
-                color: Colors.grey,
-                size: 20,
-              ),
-              const SizedBox(
-                width: 3,
-              ),
-              Visibility(
-                visible: commentCount != "0",
-                child: Text(
-                  commentCount,
-                  style: TextStyle(color: Colors.grey),
+        Expanded(
+          flex: 6,
+          child: GestureDetector(
+            onTap: () => indexController.showBottomSheet(
+                context: context,
+                builder: (scrollController) => CommentsPage(
+                      postId: int.parse(postId),
+                      scrollController: scrollController,
+                    )),
+            child: Row(
+              children: [
+                PhosphorIcon(
+                  PhosphorIconsBold.chatCircle,
+                  color: Colors.grey,
+                  size: 20,
                 ),
-              ),
-            ],
+                const SizedBox(
+                  width: 3,
+                ),
+                Visibility(
+                  visible: commentCount != "0",
+                  child: Text(
+                    commentCount,
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(
-          width: 10,
         ),
         GestureDetector(
           onTap: () => controller.sharePost(
@@ -105,7 +104,7 @@ Widget engagementWidget(
                 width: 3,
               ),
               Visibility(
-                visible: commentCount != "0",
+                visible: shareCount != "0",
                 child: Text(
                   "$shareCount",
                   style: TextStyle(color: Colors.grey),
