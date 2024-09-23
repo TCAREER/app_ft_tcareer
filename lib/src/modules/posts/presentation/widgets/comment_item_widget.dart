@@ -1,6 +1,7 @@
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/comment_controller.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/widgets/comment_video_player.dart';
+import 'package:app_tcareer/src/shared/utils/app_utils.dart';
 import 'package:app_tcareer/src/shared/widgets/cached_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,12 +10,11 @@ import 'package:app_tcareer/src/shared/extensions/video_extension.dart';
 Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
     WidgetRef ref, BuildContext context) {
   final controller = ref.watch(commentControllerProvider);
-  final postController = ref.watch(postControllerProvider);
 
   String userName = comment['full_name'];
   String content = comment['content'];
   String? avatar = comment['avatar'];
-  String createdAt = comment['created_at'];
+  String createdAt = AppUtils.formatTime(comment['created_at']);
   List<String> mediaUrl =
       (comment['media_url'] as List?)?.whereType<String>().toList() ?? [];
 
@@ -72,28 +72,32 @@ Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
             SizedBox(
               height: 5,
             ),
-            Row(
-              children: [
-                Text(
-                  createdAt,
-                  style: TextStyle(color: Colors.black45, fontSize: 12),
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).requestFocus();
-
-                    controller.setRepComment(
-                        fullName: userName.toString(), commentId: commentId);
-                  },
-                  child: Text(
-                    "Trả lời",
-                    style: TextStyle(color: Colors.black54, fontSize: 12),
+            SizedBox(
+              width: 100,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    createdAt,
+                    style: TextStyle(color: Colors.black38, fontSize: 10),
                   ),
-                ),
-              ],
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).requestFocus();
+
+                      controller.setRepComment(
+                          fullName: userName.toString(), commentId: commentId);
+                    },
+                    child: Text(
+                      "Trả lời",
+                      style: TextStyle(color: Colors.black54, fontSize: 12),
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(
               height: 20,

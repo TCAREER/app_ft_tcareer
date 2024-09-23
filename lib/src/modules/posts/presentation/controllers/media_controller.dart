@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:app_tcareer/src/modules/posts/data/models/media_state.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/controllers/comment_controller.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/post_controller.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/pages/posting_page.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';

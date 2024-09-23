@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:app_tcareer/src/configs/app_constants.dart';
@@ -17,6 +18,8 @@ class CommentController extends ChangeNotifier {
   final MediaUseCase mediaUseCase;
   final Ref ref;
   final CommentUseCase commentUseCase;
+  bool isDisposed = false;
+  StreamSubscription? commentSubscription;
   CommentController(
       this.postUseCase, this.ref, this.commentUseCase, this.mediaUseCase);
   TextEditingController contentController = TextEditingController();
@@ -25,22 +28,29 @@ class CommentController extends ChangeNotifier {
     required int postId,
     required BuildContext context,
   }) async {
+    if (isDisposed) return; // Kiểm tra xem controller đã bị dispose chưa
+
     final mediaController = ref.watch(mediaControllerProvider);
     if (mediaController.videoPaths != null) {
-      await uploadVideo();
+      await AppUtils.loadingApi(() async => await uploadVideo(), context);
     }
+
     if (mediaController.imagePaths.isNotEmpty) {
-      await uploadImageFile();
+      await AppUtils.loadingApi(() async => await uploadImageFile(), context);
     }
     await postUseCase.postCreateComment(
-        postId: postId,
-        content: contentController.text,
-        parentId: parentId,
-        mediaUrl: mediaUrl);
-    contentController.clear();
-    mediaController.removeAssets();
-    clearRepComment();
+      postId: postId,
+      content: contentController.text,
+      parentId: parentId,
+      mediaUrl: mediaUrl,
+    );
 
+    if (!isDisposed) {
+      contentController.clear();
+      mediaController.removeAssets(); // Chỉ gọi clear nếu chưa dispose
+    }
+
+    clearRepComment();
     FocusScope.of(context).unfocus();
   }
 
@@ -66,12 +76,28 @@ class CommentController extends ChangeNotifier {
 
   Map<dynamic, dynamic>? commentData;
   Future<void> getCommentByPostId(String postId) async {
-    commentData?.clear();
     commentData = await commentUseCase.getCommentByPostId(postId);
 
     notifyListeners();
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    isDisposed = true;
+    commentSubscription?.cancel();
+    contentController.dispose();
+    super.dispose();
+  }
+
+  // void listenToComments(String postId) {
+  //   commentSubscription =
+  //       commentUseCase.listenToComment(postId).listen((event) {
+  //     if (event.snapshot.value != null) {
+  //       commentData = event.snapshot.value as Map<dynamic, dynamic>;
+  //     }
+  //   });
+  // }
   List<MapEntry<dynamic, dynamic>> getCommentChildren(
       int parentId, List<MapEntry<dynamic, dynamic>> commentData) {
     final directChildren = commentData
@@ -86,12 +112,26 @@ class CommentController extends ChangeNotifier {
     return allChildren;
   }
 
-  void listenToComments(String postId) {
-    commentData?.clear();
-    commentUseCase.listenToComment(postId).listen((event) {
+  Stream<Map<dynamic, dynamic>> commentsStream(String postId) {
+    return commentUseCase.listenToComment(postId).map((event) {
       if (event.snapshot.value != null) {
-        commentData = event.snapshot.value as Map<dynamic, dynamic>;
-        notifyListeners();
+        final commentMap = event.snapshot.value as Map<dynamic, dynamic>;
+
+        print(">>>>>>>>>>>>>>data: $commentMap"); // Kiểm tra dữ liệu
+
+        // Sắp xếp bình luận
+        final sortedComments = commentMap.entries.toList()
+          ..sort((a, b) {
+            final createdA = DateTime.tryParse(a.value['created_at']);
+            final createdB = DateTime.tryParse(b.value['created_at']);
+            return (createdB ?? DateTime.now())
+                .compareTo(createdA ?? DateTime.now());
+          });
+
+        // Tạo bản đồ đã sắp xếp
+        return {for (var e in sortedComments) e.key: e.value};
+      } else {
+        return {};
       }
     });
   }
@@ -103,6 +143,7 @@ class CommentController extends ChangeNotifier {
   void clearRepComment() {
     userName = null;
     parentId = null;
+    notifyListeners();
   }
 
   List<String> mediaUrl = [];

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:heif_converter/heif_converter.dart';
 import 'package:image/image.dart' as img;
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'alert_dialog_util.dart';
 import 'package:path_provider/path_provider.dart';
@@ -176,5 +177,32 @@ class AppUtils {
     }
 
     return false;
+  }
+
+  static String formatTime(String dateString) {
+    // Chuyển đổi định dạng ngày tháng
+    dateString = dateString.replaceAll('/', '-'); // Đổi dấu '/' thành '-'
+
+    final dateTime = DateTime.tryParse(dateString);
+    if (dateTime == null) {
+      return 'Invalid date format';
+    }
+
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inSeconds < 60) {
+      return '${difference.inSeconds} giây';
+    } else if (difference.inMinutes < 60) {
+      return '${difference.inMinutes} phút';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours} giờ';
+    } else if (difference.inDays < 7) {
+      return '${difference.inDays} ngày';
+    } else if (difference.inDays < 14) {
+      return '1 tuần';
+    } else {
+      return DateFormat('dd/MM/yyyy').format(dateTime);
+    }
   }
 }

@@ -4,6 +4,7 @@ import 'package:app_tcareer/src/modules/posts/presentation/controllers/comment_c
 import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/widgets/comment_item_widget.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/widgets/empty_widget.dart';
+import 'package:app_tcareer/src/shared/widgets/circular_loading_widget.dart';
 import 'package:app_tcareer/src/shared/widgets/photo_manager_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -33,10 +34,10 @@ class _CommentsPageState extends ConsumerState<CommentsPage> {
     final controller =
         ref.read(commentControllerProvider); // Sử dụng read thay vì watch
 
-    Future.microtask(() {
-      controller.getCommentByPostId(widget.postId.toString());
-      controller.listenToComments(widget.postId.toString());
-    });
+    // Future.microtask(() {
+    //   controller.getCommentByPostId(widget.postId.toString());
+    //   // controller.listenToComments(widget.postId.toString());
+    // });
     widget.scrollController.addListener(() {
       if (widget.scrollController.position.userScrollDirection ==
           ScrollDirection.forward) {
@@ -73,20 +74,16 @@ class _CommentsPageState extends ConsumerState<CommentsPage> {
             topLeft: Radius.circular(20), topRight: Radius.circular(20)),
         child: Scaffold(
           backgroundColor: Colors.white,
-          body: RefreshIndicator(
-            onRefresh: () async =>
-                await controller.getCommentByPostId(widget.postId.toString()),
-            child: Column(
-              children: [
-                appBar(),
-                Divider(
-                  // thickness: 0.1,
-                  color: Colors.grey.shade200,
-                ),
-                Expanded(child: items(ref)),
-                bottomAppBar(ref, context)
-              ],
-            ),
+          body: Column(
+            children: [
+              appBar(),
+              Divider(
+                // thickness: 0.1,
+                color: Colors.grey.shade200,
+              ),
+              Expanded(child: items(ref)),
+              bottomAppBar(ref, context)
+            ],
           ),
           // bottomNavigationBar: bottomAppBar(ref, context),
         ),
@@ -134,53 +131,61 @@ class _CommentsPageState extends ConsumerState<CommentsPage> {
 
   Widget items(WidgetRef ref) {
     final controller = ref.watch(commentControllerProvider);
-    final commentData = controller.commentData?.entries.toList();
-    final comments = commentData
-        ?.where((entry) => entry.value['parent_id'] == null)
-        .toList();
+    return StreamBuilder<Map<dynamic, dynamic>>(
+      stream: ref
+          .watch(commentControllerProvider)
+          .commentsStream(widget.postId.toString()),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return circularLoadingWidget();
+        }
+        if (snapshot.data?.isEmpty == true) {
+          return emptyWidget("Không có bình luận!");
+        }
+        final commentData = snapshot.data?.entries.toList();
+        final comments = commentData
+            ?.where((entry) => entry.value['parent_id'] == null)
+            .toList();
+        return ListView.separated(
+          controller: scrollController,
+          itemCount: comments?.length ?? 0,
+          itemBuilder: (context, index) {
+            int commentId = int.parse(comments?[index].key);
+            final comment = comments?[index].value;
+            final commentsChild =
+                controller.getCommentChildren(commentId, commentData!);
 
-    return Visibility(
-      visible: controller.commentData?.isNotEmpty == true,
-      replacement: emptyWidget("Không có bình luận!"),
-      child: ListView.separated(
-        controller: scrollController,
-        itemCount: comments?.length ?? 0,
-        itemBuilder: (context, index) {
-          int commentId = int.parse(comments?[index].key);
-          final comment = comments?[index].value;
-          final commentsChild =
-              controller.getCommentChildren(commentId, commentData!);
-
-          print(">>>>>>>>>>commentId: $commentId");
-          print(">>>>>>child: $commentsChild");
-          return Column(
-            children: [
-              commentItemWidget(commentId, comment, ref, context),
-              Visibility(
-                visible: commentsChild.isNotEmpty == true,
-                child: ListView.separated(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  separatorBuilder: (context, index) => const SizedBox(
-                    height: 10,
+            print(">>>>>>>>>>commentId: $commentId");
+            print(">>>>>>child: $commentsChild");
+            return Column(
+              children: [
+                commentItemWidget(commentId, comment, ref, context),
+                Visibility(
+                  visible: commentsChild.isNotEmpty == true,
+                  child: ListView.separated(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    separatorBuilder: (context, index) => const SizedBox(
+                      height: 10,
+                    ),
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: commentsChild.length ?? 0,
+                    itemBuilder: (context, ind) {
+                      int commentChildId = int.parse(commentsChild[ind].key);
+                      final commentChild = commentsChild[ind].value;
+                      return commentItemWidget(
+                          commentChildId, commentChild, ref, context);
+                    },
                   ),
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: commentsChild.length ?? 0,
-                  itemBuilder: (context, ind) {
-                    int commentChildId = int.parse(commentsChild[ind].key);
-                    final commentChild = commentsChild[ind].value;
-                    return commentItemWidget(
-                        commentChildId, commentChild, ref, context);
-                  },
-                ),
-              )
-            ],
-          );
-        },
-        separatorBuilder: (context, index) => const SizedBox(
-          height: 10,
-        ),
-      ),
+                )
+              ],
+            );
+          },
+          separatorBuilder: (context, index) => const SizedBox(
+            height: 10,
+          ),
+        );
+      },
     );
   }
 
