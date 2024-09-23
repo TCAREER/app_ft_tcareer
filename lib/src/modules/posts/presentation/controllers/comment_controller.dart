@@ -87,6 +87,7 @@ class CommentController extends ChangeNotifier {
     isDisposed = true;
     commentSubscription?.cancel();
     contentController.dispose();
+    commentVisibility.clear();
     super.dispose();
   }
 
@@ -143,6 +144,7 @@ class CommentController extends ChangeNotifier {
   void clearRepComment() {
     userName = null;
     parentId = null;
+
     notifyListeners();
   }
 
@@ -175,6 +177,13 @@ class CommentController extends ChangeNotifier {
       mediaUrl.add(url);
     }
     // notifyListeners();
+  }
+
+  Map<int, bool> commentVisibility = {};
+
+  void toggleCommentVisibility(int commentId) {
+    commentVisibility[commentId] = !(commentVisibility[commentId] ?? false);
+    notifyListeners();
   }
 }
 

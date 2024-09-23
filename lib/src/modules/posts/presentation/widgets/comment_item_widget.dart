@@ -15,6 +15,7 @@ Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
   String content = comment['content'];
   String? avatar = comment['avatar'];
   String createdAt = AppUtils.formatTime(comment['created_at']);
+  String? parentName = comment['parent_name'];
   List<String> mediaUrl =
       (comment['media_url'] as List?)?.whereType<String>().toList() ?? [];
 
@@ -39,15 +40,51 @@ Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              userName,
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            Visibility(
+              visible: parentName != null,
+              replacement: Text(
+                userName,
+                style:
+                    const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+              ),
+              child: Row(
+                children: [
+                  Text(
+                    userName,
+                    style: const TextStyle(
+                        fontSize: 11, fontWeight: FontWeight.bold),
+                  ),
+                  Visibility(
+                    visible: parentName != userName,
+                    replacement: Text(" • "),
+                    child: const Icon(
+                      Icons.arrow_right_outlined,
+                      size: 11,
+                    ),
+                  ),
+                  Visibility(
+                    visible: parentName != userName,
+                    replacement: Text(
+                      "Tác giả",
+                      style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue),
+                    ),
+                    child: Text(
+                      "$parentName",
+                      style: const TextStyle(
+                          fontSize: 11, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
             ),
             Text(
               content,
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
             ),
-            SizedBox(
+            const SizedBox(
               height: 5,
             ),
             Visibility(
@@ -69,7 +106,7 @@ Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
                     );
                   }).toList()),
             ),
-            SizedBox(
+            const SizedBox(
               height: 5,
             ),
             SizedBox(
@@ -79,7 +116,7 @@ Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
                 children: [
                   Text(
                     createdAt,
-                    style: TextStyle(color: Colors.black38, fontSize: 10),
+                    style: const TextStyle(color: Colors.black38, fontSize: 10),
                   ),
                   const SizedBox(
                     width: 10,
@@ -91,7 +128,7 @@ Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
                       controller.setRepComment(
                           fullName: userName.toString(), commentId: commentId);
                     },
-                    child: Text(
+                    child: const Text(
                       "Trả lời",
                       style: TextStyle(color: Colors.black54, fontSize: 12),
                     ),

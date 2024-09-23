@@ -68,6 +68,7 @@ class _CommentsPageState extends ConsumerState<CommentsPage> {
         controller.clearRepComment();
         controller.contentController.clear();
         mediaController.removeAssets();
+        controller.commentVisibility.clear();
       },
       child: ClipRRect(
         borderRadius: const BorderRadius.only(
@@ -157,25 +158,56 @@ class _CommentsPageState extends ConsumerState<CommentsPage> {
 
             print(">>>>>>>>>>commentId: $commentId");
             print(">>>>>>child: $commentsChild");
+            bool isVisible = controller.commentVisibility[commentId] == true;
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 commentItemWidget(commentId, comment, ref, context),
                 Visibility(
                   visible: commentsChild.isNotEmpty == true,
-                  child: ListView.separated(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    separatorBuilder: (context, index) => const SizedBox(
-                      height: 10,
+                  child: Visibility(
+                    visible: isVisible,
+                    replacement: GestureDetector(
+                      onTap: () =>
+                          controller.toggleCommentVisibility(commentId),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              color: Colors.grey.shade300,
+                              width: 15,
+                              height: 2,
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              "Xem ${commentsChild.length} câu trả lời",
+                              style: TextStyle(
+                                  color: Colors.black54, fontSize: 11),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: commentsChild.length ?? 0,
-                    itemBuilder: (context, ind) {
-                      int commentChildId = int.parse(commentsChild[ind].key);
-                      final commentChild = commentsChild[ind].value;
-                      return commentItemWidget(
-                          commentChildId, commentChild, ref, context);
-                    },
+                    child: ListView.separated(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      separatorBuilder: (context, index) => const SizedBox(
+                        height: 10,
+                      ),
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: commentsChild.length ?? 0,
+                      itemBuilder: (context, ind) {
+                        int commentChildId = int.parse(commentsChild[ind].key);
+                        final commentChild = commentsChild[ind].value;
+                        return commentItemWidget(
+                            commentChildId, commentChild, ref, context);
+                      },
+                    ),
                   ),
                 )
               ],
