@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app_tcareer/src/shared/extensions/video_extension.dart';
 
 Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
-    WidgetRef ref, BuildContext context) {
+    WidgetRef ref, BuildContext context, String postId) {
   final controller = ref.watch(commentControllerProvider);
 
   String userName = comment['full_name'];
@@ -16,6 +16,8 @@ Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
   String? avatar = comment['avatar'];
   String createdAt = AppUtils.formatTime(comment['created_at']);
   String? parentName = comment['parent_name'];
+  String userId = ref.watch(postControllerProvider).userData.id.toString();
+  int likeCount = comment['like_count'];
   List<String> mediaUrl =
       (comment['media_url'] as List?)?.whereType<String>().toList() ?? [];
 
@@ -109,32 +111,29 @@ Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
             const SizedBox(
               height: 5,
             ),
-            SizedBox(
-              width: 50,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    createdAt,
-                    style: const TextStyle(color: Colors.black38, fontSize: 10),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      FocusScope.of(context).requestFocus();
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  createdAt,
+                  style: const TextStyle(color: Colors.black38, fontSize: 10),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    FocusScope.of(context).requestFocus();
 
-                      controller.setRepComment(
-                          fullName: userName.toString(), commentId: commentId);
-                    },
-                    child: const Text(
-                      "Trả lời",
-                      style: TextStyle(color: Colors.black54, fontSize: 12),
-                    ),
+                    controller.setRepComment(
+                        fullName: userName.toString(), commentId: commentId);
+                  },
+                  child: const Text(
+                    "Trả lời",
+                    style: TextStyle(color: Colors.black54, fontSize: 12),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             const SizedBox(
               height: 20,
@@ -146,13 +145,45 @@ Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
         flex: 1,
         child: Column(
           children: [
-            IconButton(
-                onPressed: () async =>
-                    await controller.postLikeComment(commentId.toString()),
-                icon: const Icon(
-                  Icons.favorite_outline,
-                  size: 20,
-                  color: Colors.grey,
+            StreamBuilder(
+              stream: controller.likeCommentsStream(postId),
+              builder: (context, snapshot) {
+                final likesCommentData = snapshot.data?.entries.toList();
+
+                Map<dynamic, dynamic>? userLikesEntry =
+                    likesCommentData?.map((entry) {
+                  if (entry.key == commentId.toString()) {
+                    return entry.value['user_likes'];
+                  }
+                }).firstWhere((value) => value != null, orElse: () => null);
+
+                bool hasLiked = userLikesEntry != null
+                    ? userLikesEntry.containsKey(userId)
+                    : false;
+
+                return GestureDetector(
+                    onTap: () async =>
+                        await controller.postLikeComment(commentId.toString()),
+                    child: Visibility(
+                      visible: hasLiked,
+                      replacement: const Icon(
+                        Icons.favorite_outline,
+                        size: 20,
+                        color: Colors.grey,
+                      ),
+                      child: const Icon(
+                        Icons.favorite,
+                        size: 20,
+                        color: Colors.red,
+                      ),
+                    ));
+              },
+            ),
+            Visibility(
+                visible: likeCount != 0,
+                child: Text(
+                  "$likeCount",
+                  style: TextStyle(fontSize: 11),
                 ))
           ],
         ),

@@ -136,7 +136,6 @@ Widget postWidget({
               postId: postId,
               context: context,
               likeCount: likes,
-              commentCount: comments,
               shareCount: shares,
             ),
             const SizedBox(height: 8),

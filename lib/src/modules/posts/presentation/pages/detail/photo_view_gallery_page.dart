@@ -112,7 +112,6 @@ class PhotoViewGalleryPage extends ConsumerWidget {
               postId: postId,
               context: context,
               likeCount: "0",
-              commentCount: "0",
               shareCount: "0"),
         ),
       ),

@@ -21,11 +21,10 @@ Widget engagementWidget(
     required String postId,
     required BuildContext context,
     required String likeCount,
-    required String commentCount,
     required String shareCount}) {
   final indexController = ref.watch(indexControllerProvider.notifier);
   final controller = ref.watch(postControllerProvider.notifier);
-  // bool likedPost = controller.getLikePosts(postId);
+
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 10),
     child: Row(
@@ -62,32 +61,37 @@ Widget engagementWidget(
         Expanded(
           flex: 6,
           child: GestureDetector(
-            onTap: () => indexController.showBottomSheet(
-                context: context,
-                builder: (scrollController) => CommentsPage(
-                      postId: int.parse(postId),
-                      scrollController: scrollController,
-                    )),
-            child: Row(
-              children: [
-                PhosphorIcon(
-                  PhosphorIconsBold.chatCircle,
-                  color: Colors.grey,
-                  size: 20,
-                ),
-                const SizedBox(
-                  width: 3,
-                ),
-                Visibility(
-                  visible: commentCount != "0",
-                  child: Text(
-                    commentCount,
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ),
-              ],
-            ),
-          ),
+              onTap: () => indexController.showBottomSheet(
+                  context: context,
+                  builder: (scrollController) => CommentsPage(
+                        postId: int.parse(postId),
+                        scrollController: scrollController,
+                      )),
+              child: StreamBuilder(
+                stream: controller.commentsStream(postId),
+                builder: (context, snapshot) {
+                  final commentCount = snapshot.data?.length;
+                  return Row(
+                    children: [
+                      PhosphorIcon(
+                        PhosphorIconsBold.chatCircle,
+                        color: Colors.grey,
+                        size: 20,
+                      ),
+                      const SizedBox(
+                        width: 3,
+                      ),
+                      Visibility(
+                        visible: commentCount != 0 && snapshot.hasData,
+                        child: Text(
+                          "$commentCount",
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              )),
         ),
         GestureDetector(
           onTap: () => controller.sharePost(

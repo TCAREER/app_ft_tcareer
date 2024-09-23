@@ -156,13 +156,12 @@ class _CommentsPageState extends ConsumerState<CommentsPage> {
             final commentsChild =
                 controller.getCommentChildren(commentId, commentData!);
 
-            print(">>>>>>>>>>commentId: $commentId");
-            print(">>>>>>child: $commentsChild");
             bool isVisible = controller.commentVisibility[commentId] == true;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                commentItemWidget(commentId, comment, ref, context),
+                commentItemWidget(
+                    commentId, comment, ref, context, widget.postId.toString()),
                 Visibility(
                   visible: commentsChild.isNotEmpty == true,
                   child: Visibility(
@@ -204,8 +203,8 @@ class _CommentsPageState extends ConsumerState<CommentsPage> {
                       itemBuilder: (context, ind) {
                         int commentChildId = int.parse(commentsChild[ind].key);
                         final commentChild = commentsChild[ind].value;
-                        return commentItemWidget(
-                            commentChildId, commentChild, ref, context);
+                        return commentItemWidget(commentChildId, commentChild,
+                            ref, context, widget.postId.toString());
                       },
                     ),
                   ),

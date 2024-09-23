@@ -44,14 +44,10 @@ class CommentController extends ChangeNotifier {
       parentId: parentId,
       mediaUrl: mediaUrl,
     );
-
-    if (!isDisposed) {
-      contentController.clear();
-      mediaController.removeAssets(); // Chỉ gọi clear nếu chưa dispose
-    }
-
-    clearRepComment();
     FocusScope.of(context).unfocus();
+    contentController.clear();
+    clearRepComment();
+    mediaController.removeAssets(); // Chỉ gọi clear nếu chưa dispose
   }
 
   bool hasContent = false;
@@ -188,6 +184,22 @@ class CommentController extends ChangeNotifier {
 
   Future<void> postLikeComment(String commentId) async {
     await commentUseCase.postLikeComment(commentId);
+    likeCommentsStream("45");
+  }
+
+  Stream<Map<dynamic, dynamic>> likeCommentsStream(String postId) {
+    return commentUseCase.listenToLikeComment(postId).map((event) {
+      if (event.snapshot.value != null) {
+        final likesComment = event.snapshot.value as Map<dynamic, dynamic>;
+
+        // Sắp xếp bình luận
+
+        // Tạo bản đồ đã sắp xếp
+        return likesComment;
+      } else {
+        return {};
+      }
+    });
   }
 }
 

@@ -5,6 +5,7 @@ import 'package:app_tcareer/src/modules/posts/data/models/posts_response.dart'
     as post_model;
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/media_controller.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
+import 'package:app_tcareer/src/modules/posts/usecases/comment_use_case.dart';
 import 'package:app_tcareer/src/modules/posts/usecases/post_use_case.dart';
 import 'package:app_tcareer/src/modules/user/data/models/user_data.dart';
 import 'package:app_tcareer/src/modules/user/usercases/user_use_case.dart';
@@ -135,5 +136,21 @@ class PostController extends ChangeNotifier {
     print(">>>>>>>>>>${postCache.length}");
     notifyListeners();
     await getPost();
+  }
+
+  Stream<Map<dynamic, dynamic>> commentsStream(String postId) {
+    final commentUseCase = ref.watch(commentUseCaseProvider);
+    return commentUseCase.listenToComment(postId).map((event) {
+      if (event.snapshot.value != null) {
+        final commentMap = event.snapshot.value as Map<dynamic, dynamic>;
+
+        // Sắp xếp bình luận
+
+        // Tạo bản đồ đã sắp xếp
+        return commentMap;
+      } else {
+        return {};
+      }
+    });
   }
 }
