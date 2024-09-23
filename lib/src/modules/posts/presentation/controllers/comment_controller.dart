@@ -182,9 +182,16 @@ class CommentController extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool isLiking = false;
   Future<void> postLikeComment(String commentId) async {
-    await commentUseCase.postLikeComment(commentId);
-    likeCommentsStream("45");
+    if (isLiking) return;
+    isLiking = true;
+    try {
+      await Future.delayed(Duration(milliseconds: 500));
+      await commentUseCase.postLikeComment(commentId);
+    } finally {
+      isLiking = false;
+    }
   }
 
   Stream<Map<dynamic, dynamic>> likeCommentsStream(String postId) {

@@ -81,10 +81,11 @@ class PostingController extends ChangeNotifier {
     contentController.clear();
     imagesWeb.clear();
     videoPicked?.clear();
-    mediaController.videoPaths = null;
 
-    context.goNamed("home");
+    mediaController.videoPaths = null;
+    mediaController.videoThumbnail = null;
     notifyListeners();
+    context.goNamed("home");
   }
 
   Future<void> setCacheImagePath() async {
@@ -177,9 +178,11 @@ class PostingController extends ChangeNotifier {
   }
 
   Future<void> createPost(BuildContext context) async {
-    context.goNamed("home");
     final mediaController = ref.watch(mediaControllerProvider);
     final postController = ref.watch(postControllerProvider);
+
+    context.goNamed("home");
+
     AppUtils.futureApi(() async {
       if (mediaController.imagePaths.isNotEmpty ||
           imagesWeb.isNotEmpty == true) {

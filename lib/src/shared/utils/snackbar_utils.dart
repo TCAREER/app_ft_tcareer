@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 void showSnackBar(String message) {
-  showSimpleNotification(Text(message), background: AppColors.primary);
+  showSimpleNotification(Text(message), background: Colors.blue);
 }
 
 void showSnackBarError(String message) {

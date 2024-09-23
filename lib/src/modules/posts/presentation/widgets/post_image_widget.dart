@@ -43,7 +43,6 @@ class _PostImageWidgetState extends ConsumerState<PostImageWidget> {
           itemCount: widget.mediaUrl.length,
           itemBuilder: (context, index, realIndex) {
             final image = widget.mediaUrl[index];
-            final imageOrientation = ref.watch(imageOrientationProvider(image));
 
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),

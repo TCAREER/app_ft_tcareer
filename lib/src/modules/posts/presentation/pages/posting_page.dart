@@ -238,18 +238,21 @@ class _PostingPageState extends ConsumerState<PostingPage> {
   }
 
   Widget postInput(TextEditingController controller) {
-    return TextField(
-      autofocus: true,
-      maxLines: null,
-      controller: controller,
-      keyboardType: TextInputType.multiline,
-      decoration: const InputDecoration(
-          // contentPadding: EdgeInsets.symmetric(horizontal: 5),
-          hintText: "Hôm nay bạn muốn chia sẻ điều gì?",
-          border: InputBorder.none,
-          errorBorder: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          focusedBorder: InputBorder.none),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: TextField(
+        autofocus: true,
+        maxLines: null,
+        controller: controller,
+        keyboardType: TextInputType.multiline,
+        decoration: const InputDecoration(
+            // contentPadding: EdgeInsets.symmetric(horizontal: 5),
+            hintText: "Hôm nay bạn muốn chia sẻ điều gì?",
+            border: InputBorder.none,
+            errorBorder: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none),
+      ),
     );
   }
 

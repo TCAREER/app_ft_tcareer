@@ -294,6 +294,20 @@ class MediaController extends ChangeNotifier {
         quality: 100);
   }
 
+  Future<void> removeImage(int index) async {
+    imagePaths.removeAt(index);
+    selectedAsset.removeAt(index);
+    notifyListeners();
+  }
+
+  Future<void> removeVideo() async {
+    videoPaths = null;
+    videoThumbnail = null;
+
+    selectedAsset.clear();
+    notifyListeners();
+  }
+
   Future<bool> hasChangedSelectedAssets() async {
     final userUtils = ref.watch(userUtilsProvider);
     List<String>? assetIds = await userUtils.loadCacheList("selectedAsset");

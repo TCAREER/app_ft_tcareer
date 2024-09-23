@@ -46,10 +46,42 @@ class _PostingVideoPlayerWidgetState
 
   @override
   Widget build(BuildContext context) {
+    final mediaController = ref.watch(mediaControllerProvider);
     return flickManager != null
-        ? ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: FlickVideoPlayer(flickManager: flickManager!))
+        ? Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Stack(
+              children: [
+                ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: FlickVideoPlayer(flickManager: flickManager!)),
+                Positioned(
+                  right: 15,
+                  top: 5,
+                  child: GestureDetector(
+                    onTap: () {
+                      // Gọi hàm để xóa ảnh tại index
+                      mediaController.removeVideo();
+                    },
+                    child: Opacity(
+                      opacity: 0.5,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black54,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: const Icon(
+                          Icons.close,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
         : const Center(child: CircularProgressIndicator());
   }
 }

@@ -22,6 +22,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   void initState() {
     super.initState();
     Future.microtask(() {
+      ref.read(postControllerProvider).scrollToTop();
       ref.read(postControllerProvider).getPost();
     });
   }
@@ -31,6 +32,9 @@ class _HomePageState extends ConsumerState<HomePage> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     ref.read(postControllerProvider).getUserInfo();
+    Future.microtask(() {
+      ref.read(postControllerProvider).scrollToTop();
+    });
   }
 
   @override
@@ -49,7 +53,6 @@ class _HomePageState extends ConsumerState<HomePage> {
             controller: controller.scrollController,
             slivers: [
               sliverAppBar(ref),
-              postingLoading(ref),
               SliverVisibility(
                   visible: controller.postCache.isNotEmpty,
                   replacementSliver: postLoadingWidget(context),
@@ -107,6 +110,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   Widget sliverAppBar(WidgetRef ref) {
     final controller = ref.watch(postControllerProvider);
+    final postingController = ref.watch(postingControllerProvider);
     final userData = controller.userData;
     return SliverAppBar(
       backgroundColor: Colors.white,
@@ -150,46 +154,50 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
         ),
       ],
+      bottom: PreferredSize(
+        preferredSize: postingController.isLoading == true
+            ? Size.fromHeight(30)
+            : Size.fromHeight(0),
+        child: postingLoading(ref),
+      ),
     );
   }
 
   Widget postingLoading(WidgetRef ref) {
     final postingController = ref.watch(postingControllerProvider);
-    return SliverToBoxAdapter(
-      child: Visibility(
-        visible: postingController.isLoading == true,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 10,
-                    width: 10,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: AppColors.primary,
-                    ),
+    return Visibility(
+      visible: postingController.isLoading == true,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 10,
+                  width: 10,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: AppColors.primary,
                   ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    "Đang tải bài viết lên...",
-                    style: TextStyle(fontSize: 11),
-                  )
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 5),
-                child: Divider(
-                  color: Colors.grey.shade100,
                 ),
-              )
-            ],
-          ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  "Đang tải bài viết lên...",
+                  style: TextStyle(fontSize: 11),
+                )
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: Divider(
+                color: Colors.grey.shade100,
+              ),
+            )
+          ],
         ),
       ),
     );

@@ -130,6 +130,11 @@ class PostController extends ChangeNotifier {
     }
   }
 
+  void scrollToTop() {
+    scrollController.jumpTo(0);
+    notifyListeners();
+  }
+
   Future<void> refresh() async {
     postData?.data?.clear();
     postCache.clear();
