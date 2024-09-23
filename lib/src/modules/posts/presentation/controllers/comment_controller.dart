@@ -157,7 +157,7 @@ class CommentController extends ChangeNotifier {
       folderName: id,
       file: File(mediaController.videoPaths ?? ""),
     );
-    String videoUrl = "${AppConstants.driveUrl}$videoId?alt=media";
+    String videoUrl = "${AppConstants.driveUrl}$videoId";
     mediaUrl.add(videoUrl);
   }
 

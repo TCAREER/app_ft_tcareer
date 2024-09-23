@@ -14,6 +14,6 @@ class AppConstants {
   static const driveParent = "18KYXb729bytijEE6dqDIJf2NWOAoruzE";
   static const keyUpload =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGNhcmVlciIsImlkIjo5MTkyMDI0fQ.b7zlBr-ZdM3w7nP2k5YfL8lQjXIKF2lB0vq0LmLIp7A";
-  static const driveApiKey = "key=AIzaSyBrvqtHB5Q4hpykQ-ypjOu_itlIc4HhtC0";
-  static const driveUrl = "https://www.googleapis.com/drive/v3/files/";
+  static const driveApiKey = "key=AIzaSyDbkwrxPX1NCrrbWp5m9uOdmsd3nAX-Rpg";
+  static const driveUrl = "https://drive.google.com/uc?export=download&id=";
 }

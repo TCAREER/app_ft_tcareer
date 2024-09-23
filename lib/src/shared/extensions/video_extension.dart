@@ -3,7 +3,7 @@ extension FileTypeChecker on String {
   bool get isVideo =>
       this.contains(
           'https://firebasestorage.googleapis.com/v0/b/tcareer-4fa7d.appspot.com/o/Posts%2FVideos%') ||
-      this.contains("https://www.googleapis.com/drive/v3/files");
+      this.contains("https://drive.google.com/uc?export=download&id=");
 }
 
 extension ListFileTypeChecker on List<String> {

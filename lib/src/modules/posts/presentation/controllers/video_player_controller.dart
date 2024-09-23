@@ -11,9 +11,8 @@ class VideoPlayerControllerNotifier extends ChangeNotifier {
   void initializePlayer(String videoUrl) async {
     if (videoPlayerController == null || currentVideoUrl != videoUrl) {
       disposePlayer();
-      videoPlayerController =
-          VideoPlayerController.network("$videoUrl&${AppConstants.driveApiKey}")
-            ..setLooping(false);
+      videoPlayerController = VideoPlayerController.network(videoUrl)
+        ..setLooping(false);
 
       await videoPlayerController!.initialize(); // Chờ khởi tạo
       notifyListeners(); // Chỉ notify sau khi khởi tạo xong
