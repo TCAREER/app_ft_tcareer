@@ -10,6 +10,7 @@ import 'package:app_tcareer/src/modules/authentication/data/models/login_respons
 import 'package:app_tcareer/src/modules/authentication/data/models/register_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/create_comment_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/create_post_request.dart';
+import 'package:app_tcareer/src/modules/posts/data/models/like_comment_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/like_post_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/posts_detail_response.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/posts_response.dart';
@@ -75,4 +76,7 @@ abstract class ApiServices {
 
   @POST('api/auth/comment')
   Future postCreateComment({@Body() required CreateCommentRequest body});
+
+  @POST('api/auth/like_comment')
+  Future postLikeComment({@Body() required LikeCommentRequest body});
 }

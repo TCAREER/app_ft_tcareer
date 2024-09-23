@@ -185,6 +185,10 @@ class CommentController extends ChangeNotifier {
     commentVisibility[commentId] = !(commentVisibility[commentId] ?? false);
     notifyListeners();
   }
+
+  Future<void> postLikeComment(String commentId) async {
+    await commentUseCase.postLikeComment(commentId);
+  }
 }
 
 final commentControllerProvider = ChangeNotifierProvider((ref) {

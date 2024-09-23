@@ -10,6 +10,11 @@ class CommentUseCase {
       await postRepository.getCommentByPostId(postId);
   Stream<DatabaseEvent> listenToComment(String postId) =>
       postRepository.listenToComments(postId);
+  Future<void> postLikeComment(String commentId) async =>
+      await postRepository.postLikeComment(commentId);
+
+  Stream<DatabaseEvent> listenToLikeComment(String postId) =>
+      postRepository.listenToLikeComments(postId);
 }
 
 final commentUseCaseProvider =

@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/create_comment_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/create_post_request.dart';
+import 'package:app_tcareer/src/modules/posts/data/models/like_comment_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/like_post_request.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/post_response.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/posts_detail_response.dart';
@@ -105,6 +106,18 @@ class PostRepository {
   Stream<DatabaseEvent> listenToComments(String postId) {
     final database = ref.watch(firebaseDatabaseServiceProvider);
     String path = "comments/$postId";
+    return database.listenToData(path);
+  }
+
+  Future<void> postLikeComment(String commentId) async {
+    final api = ref.watch(apiServiceProvider);
+    return api.postLikeComment(
+        body: LikeCommentRequest(commentId: num.parse(commentId)));
+  }
+
+  Stream<DatabaseEvent> listenToLikeComments(String postId) {
+    final database = ref.watch(firebaseDatabaseServiceProvider);
+    String path = "likes/$postId";
     return database.listenToData(path);
   }
 }

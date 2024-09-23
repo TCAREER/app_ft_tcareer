@@ -64,7 +64,7 @@ Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
                   ),
                   Visibility(
                     visible: parentName != userName,
-                    replacement: Text(
+                    replacement: const Text(
                       "Tác giả",
                       style: const TextStyle(
                           fontSize: 11,
@@ -110,7 +110,7 @@ Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
               height: 5,
             ),
             SizedBox(
-              width: 100,
+              width: 50,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -147,7 +147,8 @@ Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
         child: Column(
           children: [
             IconButton(
-                onPressed: () {},
+                onPressed: () async =>
+                    await controller.postLikeComment(commentId.toString()),
                 icon: const Icon(
                   Icons.favorite_outline,
                   size: 20,
