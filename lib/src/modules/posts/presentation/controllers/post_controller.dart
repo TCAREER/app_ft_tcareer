@@ -162,23 +162,20 @@ class PostController extends ChangeNotifier {
   }
 
   Future<void> showSharePage(BuildContext context, int postId) async {
-    final FocusNode focusNode = FocusNode();
     final index = ref.watch(indexControllerProvider.notifier);
     // index.showBottomSheet(
     //     context: context, builder: (scrollController) => SharePage());
     index.setBottomNavigationBarVisibility(false);
 
     showModalBottomSheet(
-      isScrollControlled: false,
-      useRootNavigator: false,
+      backgroundColor: Colors.white,
+      isScrollControlled: true,
       context: context,
-      builder: (context) => SizedBox(
-          height: ScreenUtil().screenHeight * .65,
-          child: Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
-            child: SharePage(postId),
-          )),
+      builder: (context) => Padding(
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: SharePage(postId),
+      ),
     );
   }
 
@@ -195,19 +192,5 @@ class PostController extends ChangeNotifier {
     context.pop();
     scrollController.jumpTo(0);
     await refresh();
-  }
-
-  void showPopUpShare(BuildContext context, String postId) async {
-    final RenderBox overlay =
-        Overlay.of(context).context.findRenderObject() as RenderBox;
-    await showMenu(
-        context: context,
-        position: RelativeRect.fromLTRB(
-          50, // Độ dài từ bên trái
-          overlay.size.height, // Đặt popup bên dưới widget
-          50, // Độ dài từ bên phải
-          0, // Độ dài từ trên cùng
-        ),
-        items: []);
   }
 }

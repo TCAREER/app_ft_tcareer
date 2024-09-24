@@ -27,6 +27,9 @@ class MediaUseCase {
   Future<List<XFile>?> pickMediaWeb() async {
     return await mediaRepository.pickMediaWeb();
   }
+
+  Future<XFile?> pickImageCamera() async =>
+      await mediaRepository.pickImageCamera();
 }
 
 final mediaUseCaseProvider =

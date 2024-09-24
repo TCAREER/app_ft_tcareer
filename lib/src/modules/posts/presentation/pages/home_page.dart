@@ -149,14 +149,12 @@ class _HomePageState extends ConsumerState<HomePage> {
       backgroundColor: Colors.white,
       floating: true,
       pinned: false, // AppBar không cố định
-      title: const Text(
-        "tcareer",
-        style: TextStyle(
-          fontSize: 20,
-          color: AppColors.primary,
-          fontWeight: FontWeight.bold,
-        ),
+      leading: Image.asset(
+        "assets/images/logo.png",
+        width: 100,
+        fit: BoxFit.cover,
       ),
+      leadingWidth: 120,
       actions: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),

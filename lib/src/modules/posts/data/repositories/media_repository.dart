@@ -46,6 +46,12 @@ class MediaRepository {
     final pickedFiles = await picker.pickMultipleMedia();
     return pickedFiles;
   }
+
+  Future<XFile?> pickImageCamera() async {
+    final picker = ImagePicker();
+    final pickedFiles = await picker.pickImage(source: ImageSource.camera);
+    return pickedFiles;
+  }
 }
 
 final mediaRepository = Provider((ref) => MediaRepository());

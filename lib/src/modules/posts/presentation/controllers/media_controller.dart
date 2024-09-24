@@ -296,7 +296,9 @@ class MediaController extends ChangeNotifier {
 
   Future<void> removeImage(int index) async {
     imagePaths.removeAt(index);
-    selectedAsset.removeAt(index);
+    if (selectedAsset.isNotEmpty) {
+      selectedAsset.removeAt(index);
+    }
     notifyListeners();
   }
 
@@ -312,5 +314,12 @@ class MediaController extends ChangeNotifier {
     final userUtils = ref.watch(userUtilsProvider);
     List<String>? assetIds = await userUtils.loadCacheList("selectedAsset");
     return assetIds?.length != selectedAsset.length;
+  }
+
+  Future<void> pickImageCamera(BuildContext context) async {
+    final image = await mediaUseCase.pickImageCamera();
+    imagePaths.add(image?.path ?? "");
+    notifyListeners();
+    context.pop();
   }
 }
