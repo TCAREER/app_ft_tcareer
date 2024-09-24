@@ -4,6 +4,7 @@ import 'package:app_tcareer/src/modules/posts/data/models/post_state.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/posts_response.dart'
     as post_model;
 import 'package:app_tcareer/src/modules/posts/presentation/controllers/media_controller.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/pages/share_page.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/modules/posts/usecases/comment_use_case.dart';
 import 'package:app_tcareer/src/modules/posts/usecases/post_use_case.dart';
@@ -18,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:share_plus/share_plus.dart';
@@ -57,7 +59,7 @@ class PostController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> sharePost({required String url, required String title}) async {
+  Future<void> shareLink({required String url, required String title}) async {
     await Share.share(url, subject: title);
   }
 
@@ -157,5 +159,41 @@ class PostController extends ChangeNotifier {
         return {};
       }
     });
+  }
+
+  Future<void> showSharePage(BuildContext context, int postId) async {
+    final FocusNode focusNode = FocusNode();
+    final index = ref.watch(indexControllerProvider.notifier);
+    // index.showBottomSheet(
+    //     context: context, builder: (scrollController) => SharePage());
+    index.setBottomNavigationBarVisibility(false);
+
+    showModalBottomSheet(
+      isScrollControlled: false,
+      useRootNavigator: false,
+      context: context,
+      builder: (context) => SizedBox(
+          height: ScreenUtil().screenHeight * .65,
+          child: Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: SharePage(postId),
+          )),
+    );
+  }
+
+  TextEditingController shareContentController = TextEditingController();
+  Future<void> sharePost(
+      {required int postId,
+      required String privacy,
+      required BuildContext context}) async {
+    await postUseCase.postSharePost(
+        postId: postId, privacy: privacy, body: shareContentController.text);
+    shareContentController.clear();
+
+    FocusScope.of(context).unfocus();
+    context.pop();
+    scrollController.jumpTo(0);
+    await refresh();
   }
 }

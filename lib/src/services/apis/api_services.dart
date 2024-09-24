@@ -71,7 +71,7 @@ abstract class ApiServices {
   @GET('api/auth/post/{id}')
   Future<PostsDetailResponse> getPostById({@Path('id') required String postId});
 
-  @GET('api/auth/share_post')
+  @POST('api/auth/share_post')
   Future postSharePost({@Body() required SharePostRequest body});
 
   @POST('api/auth/comment')

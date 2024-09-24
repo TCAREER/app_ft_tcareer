@@ -14,6 +14,7 @@ import 'engagement_widget.dart';
 import 'post_image_widget.dart';
 
 Widget postWidget({
+  bool isShared = false,
   required BuildContext context,
   required WidgetRef ref,
   required String avatarUrl,
@@ -34,7 +35,6 @@ Widget postWidget({
   final firstMediaUrl = hasMediaUrl ? mediaUrl.first : "";
 
   return Container(
-    color: Colors.white,
     width: ScreenUtil().screenWidth,
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -121,40 +121,47 @@ Widget postWidget({
             Visibility(
               visible: hasMediaUrl,
               child: Visibility(
-                visible: mediaUrl!.hasVideos,
+                visible: mediaUrl?.hasVideos ?? false,
                 replacement:
-                    PostImageWidget(mediaUrl: mediaUrl, postId: postId),
+                    PostImageWidget(mediaUrl: mediaUrl ?? [], postId: postId),
                 child: VideoPlayerWidget(videoUrl: firstMediaUrl),
               ),
             ),
 
             const SizedBox(height: 5),
-            engagementWidget(
-              index: index,
-              liked: liked,
-              ref: ref,
-              postId: postId,
-              context: context,
-              likeCount: likes,
-              shareCount: shares,
-            ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
-                children: [
-                  Text(
-                    "$createdAt • ",
-                    style: const TextStyle(color: Colors.grey, fontSize: 11),
-                  ),
-                  Icon(
-                    privacy == "Public" ? Icons.public : Icons.group,
-                    color: Colors.grey,
-                    size: 11,
-                  ),
-                ],
-              ),
-            ),
+            Visibility(
+                visible: !isShared,
+                child: Column(
+                  children: [
+                    engagementWidget(
+                      index: index,
+                      liked: liked,
+                      ref: ref,
+                      postId: postId,
+                      context: context,
+                      likeCount: likes,
+                      shareCount: shares,
+                    ),
+                    const SizedBox(height: 8),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(
+                        children: [
+                          Text(
+                            "$createdAt • ",
+                            style: const TextStyle(
+                                color: Colors.grey, fontSize: 11),
+                          ),
+                          Icon(
+                            privacy == "Public" ? Icons.public : Icons.group,
+                            color: Colors.grey,
+                            size: 11,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ))
           ],
         ),
       ],

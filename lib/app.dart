@@ -38,7 +38,7 @@ class App extends StatelessWidget {
                     indicatorColor: AppColors.primary,
                     inputDecorationTheme: const InputDecorationTheme(
                         hintStyle:
-                            TextStyle(color: Colors.black45, fontSize: 14)),
+                            TextStyle(color: Colors.black45, fontSize: 12)),
                     colorScheme:
                         ColorScheme.fromSeed(seedColor: Colors.deepPurple),
                     useMaterial3: true,
@@ -61,7 +61,7 @@ class App extends StatelessWidget {
                         fontSize: 12,
                       ),
                       selectedItemColor: AppColors.primary,
-                      unselectedItemColor: Colors.grey,
+                      unselectedItemColor: Colors.black,
                     ),
                     textSelectionTheme: const TextSelectionThemeData(
                         cursorColor: AppColors.primary),

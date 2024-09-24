@@ -358,7 +358,7 @@ class _ApiServices implements ApiServices {
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
     final _result = await _dio.fetch(_setStreamType<dynamic>(Options(
-      method: 'GET',
+      method: 'POST',
       headers: _headers,
       extra: _extra,
     )

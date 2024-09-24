@@ -9,6 +9,7 @@ import 'package:app_tcareer/src/modules/posts/data/models/like_post_request.dart
 import 'package:app_tcareer/src/modules/posts/data/models/post_response.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/posts_detail_response.dart';
 import 'package:app_tcareer/src/modules/posts/data/models/posts_response.dart';
+import 'package:app_tcareer/src/modules/posts/data/models/share_post_request.dart';
 import 'package:app_tcareer/src/services/apis/api_service_provider.dart';
 import 'package:app_tcareer/src/services/drive/google_drive_service.dart';
 import 'package:app_tcareer/src/services/drive/upload_file_service.dart';
@@ -119,6 +120,12 @@ class PostRepository {
     final database = ref.watch(firebaseDatabaseServiceProvider);
     String path = "likes/$postId";
     return database.listenToData(path);
+  }
+
+  Future<void> postSharePost(int postId, String privacy, String body) async {
+    final api = ref.watch(apiServiceProvider);
+    return api.postSharePost(
+        body: SharePostRequest(postId: postId, privacy: privacy, body: body));
   }
 }
 

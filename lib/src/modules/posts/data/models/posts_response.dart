@@ -1,3 +1,5 @@
+import 'shared_post.dart';
+
 class PostsResponse {
   PostsResponse({
     List<Data>? data,
@@ -252,8 +254,8 @@ class Data {
     num? shareCount,
     List<String>? mediaUrl,
     dynamic status,
-    dynamic sharedPostId,
-    dynamic sharedPost,
+    num? sharedPostId,
+    SharedPost? sharedPost,
     String? createdAt,
     String? updatedAt,
     dynamic deletedAt,
@@ -298,7 +300,9 @@ class Data {
         json['media_url'] != null ? json['media_url'].cast<String>() : [];
     _status = json['status'];
     _sharedPostId = json['shared_post_id'];
-    _sharedPost = json['shared_post'];
+    _sharedPost = json['shared_post'] != null
+        ? SharedPost.fromJson(json['shared_post'])
+        : null;
     _createdAt = json['created_at'];
     _updatedAt = json['updated_at'];
     _deletedAt = json['deleted_at'];
@@ -318,8 +322,8 @@ class Data {
   num? _shareCount;
   List<String>? _mediaUrl;
   dynamic _status;
-  dynamic _sharedPostId;
-  dynamic _sharedPost;
+  num? _sharedPostId;
+  SharedPost? _sharedPost;
   String? _createdAt;
   String? _updatedAt;
   dynamic _deletedAt;
@@ -339,8 +343,8 @@ class Data {
     num? shareCount,
     List<String>? mediaUrl,
     dynamic status,
-    dynamic sharedPostId,
-    dynamic sharedPost,
+    num? sharedPostId,
+    SharedPost? sharedPost,
     String? createdAt,
     String? updatedAt,
     dynamic deletedAt,
@@ -382,8 +386,8 @@ class Data {
   num? get shareCount => _shareCount;
   List<String>? get mediaUrl => _mediaUrl;
   dynamic get status => _status;
-  dynamic get sharedPostId => _sharedPostId;
-  dynamic get sharedPost => _sharedPost;
+  num? get sharedPostId => _sharedPostId;
+  SharedPost? get sharedPost => _sharedPost;
   String? get createdAt => _createdAt;
   String? get updatedAt => _updatedAt;
   dynamic get deletedAt => _deletedAt;
@@ -406,7 +410,9 @@ class Data {
     map['media_url'] = _mediaUrl;
     map['status'] = _status;
     map['shared_post_id'] = _sharedPostId;
-    map['shared_post'] = _sharedPost;
+    if (_sharedPost != null) {
+      map['shared_post'] = _sharedPost?.toJson();
+    }
     map['created_at'] = _createdAt;
     map['updated_at'] = _updatedAt;
     map['deleted_at'] = _deletedAt;

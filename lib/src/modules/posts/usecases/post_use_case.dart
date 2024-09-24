@@ -68,6 +68,13 @@ class PostUseCase {
           content: content,
           mediaUrl: mediaUrl,
           parentId: parentId);
+
+  Future<void> postSharePost(
+      {required int postId,
+      required String privacy,
+      required String body}) async {
+    return postRepository.postSharePost(postId, privacy, body);
+  }
 }
 
 final postUseCaseProvider =

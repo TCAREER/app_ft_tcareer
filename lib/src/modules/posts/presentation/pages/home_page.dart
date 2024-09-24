@@ -4,6 +4,7 @@ import 'package:app_tcareer/src/modules/posts/presentation/controllers/post_cont
 import 'package:app_tcareer/src/modules/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/widgets/post_loading_widget.dart';
 import 'package:app_tcareer/src/modules/posts/presentation/widgets/post_widget.dart';
+import 'package:app_tcareer/src/modules/posts/presentation/widgets/shared_post_widget.dart';
 import 'package:app_tcareer/src/shared/widgets/circular_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -81,9 +82,30 @@ class _HomePageState extends ConsumerState<HomePage> {
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           final post = controller.postCache[index];
-          return GestureDetector(
-            onTap: () =>
-                context.goNamed("detail", pathParameters: {"id": "${post.id}"}),
+          final sharedPost = controller.postCache[index].sharedPost;
+          return Visibility(
+            replacement: sharedPostWidget(
+                originPostId: sharedPost?.id.toString() ?? "",
+                mediaUrl: sharedPost?.mediaUrl,
+                context: context,
+                ref: ref,
+                avatarUrl: post.avatar ??
+                    "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
+                userName: post.fullName ?? "",
+                userNameOrigin: sharedPost?.fullName ?? "",
+                avatarUrlOrigin: sharedPost?.avatar ??
+                    "https://ui-avatars.com/api/?name=${sharedPost?.fullName}&background=random",
+                createdAt: post.createdAt ?? "",
+                content: post.body ?? "",
+                contentOrigin: sharedPost?.body ?? "",
+                liked: post.liked ?? false,
+                likes: post.likeCount?.toString() ?? "0",
+                comments: post.commentCount?.toString() ?? "0",
+                shares: post.shareCount?.toString() ?? "0",
+                privacy: post.privacy ?? "",
+                postId: post.id.toString(),
+                index: index),
+            visible: post.sharedPostId == null,
             child: postWidget(
               index: index,
               liked: post.liked ?? false,
@@ -113,13 +135,24 @@ class _HomePageState extends ConsumerState<HomePage> {
     final postingController = ref.watch(postingControllerProvider);
     final userData = controller.userData;
     return SliverAppBar(
+      // leading: Column(
+      //   mainAxisAlignment: MainAxisAlignment.center,
+      //   children: [
+      //     CircleAvatar(
+      //       radius: 18,
+      //       backgroundImage: NetworkImage(userData.avatar ??
+      //           "https://ui-avatars.com/api/?name=${userData.fullName}&background=random"),
+      //     ),
+      //   ],
+      // ),
+      centerTitle: false,
       backgroundColor: Colors.white,
       floating: true,
       pinned: false, // AppBar không cố định
       title: const Text(
         "tcareer",
         style: TextStyle(
-          fontSize: 25,
+          fontSize: 20,
           color: AppColors.primary,
           fontWeight: FontWeight.bold,
         ),
@@ -143,14 +176,6 @@ class _HomePageState extends ConsumerState<HomePage> {
               color: Colors.black,
               size: 20,
             ),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: CircleAvatar(
-            radius: 18,
-            backgroundImage: NetworkImage(userData.avatar ??
-                "https://ui-avatars.com/api/?name=${userData.fullName}&background=random"),
           ),
         ),
       ],
