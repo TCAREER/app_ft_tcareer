@@ -19,6 +19,7 @@ Widget engagementWidget(
     required int index,
     required bool liked,
     required String postId,
+    String? originPostId,
     required BuildContext context,
     required String likeCount,
     required String shareCount}) {
@@ -49,7 +50,7 @@ Widget engagementWidget(
                 visible: likeCount != "0",
                 child: Text(
                   "$likeCount",
-                  style: TextStyle(color: Colors.grey),
+                  style: const TextStyle(color: Colors.grey),
                 ),
               )
             ],
@@ -73,7 +74,7 @@ Widget engagementWidget(
                   final commentCount = snapshot.data?.length;
                   return Row(
                     children: [
-                      PhosphorIcon(
+                      const PhosphorIcon(
                         PhosphorIconsBold.chatCircle,
                         color: Colors.grey,
                         size: 20,
@@ -85,7 +86,7 @@ Widget engagementWidget(
                         visible: commentCount != 0 && snapshot.hasData,
                         child: Text(
                           "$commentCount",
-                          style: TextStyle(color: Colors.grey),
+                          style: const TextStyle(color: Colors.grey),
                         ),
                       ),
                     ],
@@ -93,11 +94,41 @@ Widget engagementWidget(
                 },
               )),
         ),
-        GestureDetector(
-          onTap: () => controller.showSharePage(context, int.parse(postId)),
+        PopupMenuButton(
+          color: Colors.white,
+          itemBuilder: (context) {
+            return [
+              PopupMenuItem(
+                  onTap: () async {
+                    String id = originPostId ?? postId;
+                    controller.showSharePage(context, int.parse(id));
+                  },
+                  child: const ListTile(
+                    title: Text("Tạo bài đăng"),
+                    trailing: PhosphorIcon(
+                      PhosphorIconsLight.notePencil,
+                      color: Colors.black,
+                    ),
+                  )),
+              PopupMenuItem(
+                  onTap: () async {
+                    String id = originPostId ?? postId;
+                    controller.shareLink(
+                        title: "Bài viết",
+                        url: "https://tcareer.thiendev.shop/home/detail/$id");
+                  },
+                  child: const ListTile(
+                    title: Text("Thêm"),
+                    trailing: PhosphorIcon(
+                      PhosphorIconsLight.dotsThreeCircle,
+                      color: Colors.black,
+                    ),
+                  )),
+            ];
+          },
           child: Row(
             children: [
-              PhosphorIcon(
+              const PhosphorIcon(
                 PhosphorIconsBold.paperPlaneTilt,
                 color: Colors.grey,
                 size: 20,
@@ -108,8 +139,8 @@ Widget engagementWidget(
               Visibility(
                 visible: shareCount != "0",
                 child: Text(
-                  "$shareCount",
-                  style: TextStyle(color: Colors.grey),
+                  shareCount,
+                  style: const TextStyle(color: Colors.grey),
                 ),
               )
             ],

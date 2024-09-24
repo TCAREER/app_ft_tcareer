@@ -196,4 +196,18 @@ class PostController extends ChangeNotifier {
     scrollController.jumpTo(0);
     await refresh();
   }
+
+  void showPopUpShare(BuildContext context, String postId) async {
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+    await showMenu(
+        context: context,
+        position: RelativeRect.fromLTRB(
+          50, // Độ dài từ bên trái
+          overlay.size.height, // Đặt popup bên dưới widget
+          50, // Độ dài từ bên phải
+          0, // Độ dài từ trên cùng
+        ),
+        items: []);
+  }
 }

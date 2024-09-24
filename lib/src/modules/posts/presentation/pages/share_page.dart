@@ -15,13 +15,17 @@ class SharePage extends ConsumerWidget {
     return ClipRRect(
       borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        extendBody: true,
-        backgroundColor: Colors.blueGrey.shade50,
-        appBar: appBar(),
-        body: ListView(
-          children: [shareComponent(ref, context)],
+      child: PopScope(
+        onPopInvoked: (didPop) =>
+            ref.watch(postControllerProvider).shareContentController.clear(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          extendBody: true,
+          backgroundColor: Colors.blueGrey.shade50,
+          appBar: appBar(),
+          body: ListView(
+            children: [shareComponent(ref, context)],
+          ),
         ),
       ),
     );
