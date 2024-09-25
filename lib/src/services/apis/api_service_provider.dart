@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:app_tcareer/app.dart';
 import 'package:app_tcareer/src/configs/app_constants.dart';
-import 'package:app_tcareer/src/modules/authentication/data/models/login_response.dart';
-import 'package:app_tcareer/src/modules/authentication/data/models/refresh_token_request.dart';
-import 'package:app_tcareer/src/shared/utils/snackbar_utils.dart';
-import 'package:app_tcareer/src/shared/utils/user_utils.dart';
+import 'package:app_tcareer/src/features/authentication/data/models/login_response.dart';
+import 'package:app_tcareer/src/features/authentication/data/models/refresh_token_request.dart';
+import 'package:app_tcareer/src/utils/user_utils.dart';
+
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';

@@ -60,7 +60,7 @@ class App extends StatelessWidget {
                       unselectedLabelStyle: TextStyle(
                         fontSize: 12,
                       ),
-                      selectedItemColor: AppColors.primary,
+                      selectedItemColor: Colors.black,
                       unselectedItemColor: Colors.black,
                     ),
                     textSelectionTheme: const TextSelectionThemeData(

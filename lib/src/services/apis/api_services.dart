@@ -1,23 +1,23 @@
 import 'package:app_tcareer/app.dart';
 import 'package:app_tcareer/src/configs/app_constants.dart';
-import 'package:app_tcareer/src/modules/authentication/data/models/forgot_password_request.dart';
-import 'package:app_tcareer/src/modules/authentication/data/models/forgot_password_verify_request.dart';
-import 'package:app_tcareer/src/modules/authentication/data/models/login_google_request.dart';
-import 'package:app_tcareer/src/modules/authentication/data/models/refresh_token_request.dart';
-import 'package:app_tcareer/src/modules/authentication/data/models/reset_password_request.dart';
-import 'package:app_tcareer/src/modules/authentication/data/models/login_request.dart';
-import 'package:app_tcareer/src/modules/authentication/data/models/login_response.dart';
-import 'package:app_tcareer/src/modules/authentication/data/models/register_request.dart';
-import 'package:app_tcareer/src/modules/posts/data/models/create_comment_request.dart';
-import 'package:app_tcareer/src/modules/posts/data/models/create_post_request.dart';
-import 'package:app_tcareer/src/modules/posts/data/models/like_comment_request.dart';
-import 'package:app_tcareer/src/modules/posts/data/models/like_post_request.dart';
-import 'package:app_tcareer/src/modules/posts/data/models/posts_detail_response.dart';
-import 'package:app_tcareer/src/modules/posts/data/models/posts_response.dart';
-import 'package:app_tcareer/src/modules/posts/data/models/share_post_request.dart';
-import 'package:app_tcareer/src/modules/user/data/models/user_data.dart';
-import 'package:app_tcareer/src/shared/utils/app_utils.dart';
-import 'package:app_tcareer/src/shared/utils/user_utils.dart';
+import 'package:app_tcareer/src/features/authentication/data/models/forgot_password_request.dart';
+import 'package:app_tcareer/src/features/authentication/data/models/forgot_password_verify_request.dart';
+import 'package:app_tcareer/src/features/authentication/data/models/login_google_request.dart';
+import 'package:app_tcareer/src/features/authentication/data/models/refresh_token_request.dart';
+import 'package:app_tcareer/src/features/authentication/data/models/reset_password_request.dart';
+import 'package:app_tcareer/src/features/authentication/data/models/login_request.dart';
+import 'package:app_tcareer/src/features/authentication/data/models/login_response.dart';
+import 'package:app_tcareer/src/features/authentication/data/models/register_request.dart';
+import 'package:app_tcareer/src/features/posts/data/models/create_comment_request.dart';
+import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
+import 'package:app_tcareer/src/features/posts/data/models/like_comment_request.dart';
+import 'package:app_tcareer/src/features/posts/data/models/like_post_request.dart';
+import 'package:app_tcareer/src/features/posts/data/models/posts_detail_response.dart';
+import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart';
+import 'package:app_tcareer/src/features/posts/data/models/share_post_request.dart';
+import 'package:app_tcareer/src/features/posts/data/models/quick_search_user_data.dart';
+import 'package:app_tcareer/src/features/posts/data/models/quick_search_user_request.dart';
+import 'package:app_tcareer/src/features/user/data/models/user_data.dart';
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -79,4 +79,8 @@ abstract class ApiServices {
 
   @POST('api/auth/like_comment')
   Future postLikeComment({@Body() required LikeCommentRequest body});
+
+  @GET('api/auth/quick_search_user')
+  Future<QuickSearchUserData> getQuickSearchUser(
+      {@Query('q') required String query});
 }

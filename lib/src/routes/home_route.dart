@@ -1,6 +1,6 @@
-import 'package:app_tcareer/src/modules/posts/data/models/photo_view_data.dart';
-import 'package:app_tcareer/src/modules/posts/presentation/pages/detail/photo_view_gallery_page.dart';
-import 'package:app_tcareer/src/modules/posts/presentation/pages/detail/post_detail_page.dart';
+import 'package:app_tcareer/src/features/posts/data/models/photo_view_data.dart';
+import 'package:app_tcareer/src/features/posts/presentation/pages/detail/photo_view_gallery_page.dart';
+import 'package:app_tcareer/src/features/posts/presentation/pages/detail/post_detail_page.dart';
 import 'package:app_tcareer/src/routes/transition_builder.dart';
 import 'package:go_router/go_router.dart';
 

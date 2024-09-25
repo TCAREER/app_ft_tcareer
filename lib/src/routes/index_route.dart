@@ -1,8 +1,8 @@
-import 'package:app_tcareer/src/modules/index/index_page.dart';
-import 'package:app_tcareer/src/modules/messages/presentation/pages/message_page.dart';
-import 'package:app_tcareer/src/modules/posts/presentation/pages/home_page.dart';
-import 'package:app_tcareer/src/modules/posts/presentation/pages/posting_page.dart';
-import 'package:app_tcareer/src/modules/user/presentation/pages/profile_page.dart';
+import 'package:app_tcareer/src/features/index/index_page.dart';
+import 'package:app_tcareer/src/features/messages/presentation/pages/message_page.dart';
+import 'package:app_tcareer/src/features/posts/presentation/pages/home_page.dart';
+import 'package:app_tcareer/src/features/posts/presentation/pages/posting_page.dart';
+import 'package:app_tcareer/src/features/user/presentation/pages/profile_page.dart';
 import 'package:app_tcareer/src/routes/home_route.dart';
 import 'package:app_tcareer/src/routes/transition_builder.dart';
 import 'package:flutter/widgets.dart';
