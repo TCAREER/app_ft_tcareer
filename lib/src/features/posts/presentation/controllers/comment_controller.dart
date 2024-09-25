@@ -204,9 +204,4 @@ class CommentController extends ChangeNotifier {
   }
 }
 
-final commentControllerProvider = ChangeNotifierProvider((ref) {
-  final postUseCase = ref.read(postUseCaseProvider);
-  final commentUseCase = ref.read(commentUseCaseProvider);
-  final mediaUseCase = ref.read(mediaUseCaseProvider);
-  return CommentController(postUseCase, ref, commentUseCase, mediaUseCase);
-});
+

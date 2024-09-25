@@ -5,12 +5,16 @@ import 'package:app_tcareer/src/features/posts/data/models/post_state.dart';
 import 'package:app_tcareer/src/features/posts/get_image_orientation.dart';
 import 'package:app_tcareer/src/features/posts/presentation/controllers/media_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/controllers/posting_controller.dart';
+import 'package:app_tcareer/src/features/posts/presentation/controllers/search_post_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/controllers/video_player_controller.dart';
+import 'package:app_tcareer/src/features/posts/usecases/comment_use_case.dart';
 import 'package:app_tcareer/src/features/posts/usecases/media_use_case.dart';
 import 'package:app_tcareer/src/features/posts/usecases/post_use_case.dart';
+import 'package:app_tcareer/src/features/posts/usecases/search_use_case.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'controllers/comment_controller.dart';
 import 'controllers/post_controller.dart';
 
 final postControllerProvider = ChangeNotifierProvider((ref) {
@@ -28,6 +32,18 @@ final mediaControllerProvider = ChangeNotifierProvider((ref) {
   return MediaController(mediaUseCase, ref);
 });
 
+final commentControllerProvider = ChangeNotifierProvider((ref) {
+  final postUseCase = ref.read(postUseCaseProvider);
+  final commentUseCase = ref.read(commentUseCaseProvider);
+  final mediaUseCase = ref.read(mediaUseCaseProvider);
+  return CommentController(postUseCase, ref, commentUseCase, mediaUseCase);
+});
+
+final searchPostControllerProvider = ChangeNotifierProvider((ref){
+  
+  final searchUseCase = ref.watch(searchUseCaseProvider);
+  return SearchPostController(searchUseCase);
+});
 // Provider để lấy loại ảnh
 final imageOrientationProvider =
     FutureProvider.family<ImageOrientation, dynamic>((ref, imageSource) async {

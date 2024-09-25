@@ -163,7 +163,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       backgroundColor: Colors.white,
       floating: true,
       pinned: false, // AppBar không cố định
-      title: Text(
+      title: const Text(
         "tcareer",
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
       ),
@@ -172,6 +172,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: GestureDetector(
+            onTap: ()=>context.goNamed('search'),
             child: const PhosphorIcon(
               PhosphorIconsBold.magnifyingGlass,
               color: Colors.black,
@@ -192,8 +193,8 @@ class _HomePageState extends ConsumerState<HomePage> {
       ],
       bottom: PreferredSize(
         preferredSize: postingController.isLoading == true
-            ? Size.fromHeight(30)
-            : Size.fromHeight(0),
+            ? const Size.fromHeight(30)
+            : const Size.fromHeight(0),
         child: postingLoading(ref),
       ),
     );
@@ -207,7 +208,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
         child: Column(
           children: [
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SizedBox(
@@ -218,7 +219,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     color: AppColors.primary,
                   ),
                 ),
-                const SizedBox(
+                SizedBox(
                   width: 10,
                 ),
                 Text(

@@ -81,7 +81,7 @@ class Data {
   Data({
       num? id, 
       String? fullName, 
-      dynamic avatar,}){
+      String? avatar,}){
     _id = id;
     _fullName = fullName;
     _avatar = avatar;
@@ -94,17 +94,17 @@ class Data {
   }
   num? _id;
   String? _fullName;
-  dynamic _avatar;
+  String? _avatar;
 Data copyWith({  num? id,
   String? fullName,
-  dynamic avatar,
+  String? avatar,
 }) => Data(  id: id ?? _id,
   fullName: fullName ?? _fullName,
   avatar: avatar ?? _avatar,
 );
   num? get id => _id;
   String? get fullName => _fullName;
-  dynamic get avatar => _avatar;
+  String? get avatar => _avatar;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};

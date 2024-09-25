@@ -1,19 +1,21 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-Widget searchBarWidget() {
+Widget searchBarWidget({void Function(String)? onChanged,required TextEditingController controller}) {
   return SizedBox(
     height: 40,
     child: TextField(
-      readOnly: true,
+      controller: controller,
+      onChanged: onChanged,
       decoration: InputDecoration(
           contentPadding:
               const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
           hintText: "Tìm kiếm",
-          prefixIcon: Icon(
+          prefixIcon: const Icon(
             Icons.search,
             color: Colors.black45,
           ),
-          fillColor: Color(0xffEBF2FA),
+          fillColor: Colors.grey.shade100,
           filled: true,
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
