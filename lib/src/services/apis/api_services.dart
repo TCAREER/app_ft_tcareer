@@ -83,4 +83,5 @@ abstract class ApiServices {
   @GET('api/auth/quick_search_user')
   Future<QuickSearchUserData> getQuickSearchUser(
       {@Query('q') required String query});
+
 }

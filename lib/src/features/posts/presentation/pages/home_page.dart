@@ -172,7 +172,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: GestureDetector(
-            onTap: ()=>context.goNamed('search'),
+            onTap: ()=>context.pushNamed('search'),
             child: const PhosphorIcon(
               PhosphorIconsBold.magnifyingGlass,
               color: Colors.black,

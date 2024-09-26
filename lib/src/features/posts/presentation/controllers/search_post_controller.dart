@@ -21,6 +21,9 @@ class SearchPostController extends ChangeNotifier{
     debouncer.run(()async{
       if(queryController.text.isNotEmpty){
         await quickSearchUser();
+      }else{
+        quickSearchData.data?.clear();
+        notifyListeners();
       }
     });
   }

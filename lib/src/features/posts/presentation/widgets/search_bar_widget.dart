@@ -5,6 +5,8 @@ Widget searchBarWidget({void Function(String)? onChanged,required TextEditingCon
   return SizedBox(
     height: 40,
     child: TextField(
+      textInputAction: TextInputAction.search,
+      autofocus: true,
       controller: controller,
       onChanged: onChanged,
       decoration: InputDecoration(

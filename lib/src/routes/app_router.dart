@@ -6,6 +6,7 @@ import 'package:app_tcareer/src/features/authentication/presentation/pages/regis
 import 'package:app_tcareer/src/features/authentication/presentation/pages/verify/verify_page.dart';
 import 'package:app_tcareer/src/features/posts/presentation/pages/media/media_page.dart';
 import 'package:app_tcareer/src/features/posts/presentation/pages/posting_page.dart';
+import 'package:app_tcareer/src/features/posts/presentation/pages/search_page.dart';
 import 'package:app_tcareer/src/features/splash/intro_page.dart';
 import 'package:app_tcareer/src/features/splash/splash_page.dart';
 import 'package:app_tcareer/src/routes/index_route.dart';
@@ -16,6 +17,8 @@ import 'package:app_tcareer/src/utils/user_utils.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../features/posts/presentation/pages/search_page.dart';
 
 enum RouteNames {
   splash,
@@ -139,6 +142,13 @@ class AppRouter {
                     isComment: isComment,
                   ),
                   transitionsBuilder: slideUpTransitionBuilder);
+            },
+          ),
+          GoRoute(
+            path: "/search",
+            name: "search",
+            builder: (context, state) {
+              return const SearchPage();
             },
           ),
         ],

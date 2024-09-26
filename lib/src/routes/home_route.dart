@@ -27,12 +27,6 @@ class HomeRoute {
         return PhotoViewGalleryPage(data.images, postId, data.onPageChanged);
       },
     ),
-    GoRoute(
-      path: "search",
-      name: "search",
-      builder: (context, state) {
-        return const SearchPage();
-      },
-    ),
+
   ];
 }
