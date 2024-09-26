@@ -6,6 +6,7 @@ import 'package:app_tcareer/src/features/posts/data/models/create_comment_reques
 import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/like_comment_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/like_post_request.dart';
+import 'package:app_tcareer/src/features/posts/data/models/post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/post_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_detail_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart';
@@ -69,11 +70,14 @@ class PostRepository {
     await api.postCreatePost(body: body);
   }
 
-  Future<PostsResponse> getPosts({required String personal}) async {
+  Future<PostsResponse> getPosts({required String personal,String? userId}) async {
     final api = ref.watch(apiServiceProvider);
     final userUtils = ref.watch(userUtilsProvider);
     print(">>>>>>refreshToken: ${await userUtils.getRefreshToken()}");
-    return await api.getPosts(personal: personal);
+    return await api.getPosts(queries: PostRequest(
+      personal: personal,
+      profileUserId: userId
+    ));
   }
 
   Future<void> postLikePost(String postId) async {

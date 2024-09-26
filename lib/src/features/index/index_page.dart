@@ -1,5 +1,6 @@
 import 'package:app_tcareer/src/configs/app_colors.dart';
 import 'package:app_tcareer/src/features/index/index_controller.dart';
+import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/routes/index_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,11 +41,12 @@ class IndexPage extends ConsumerWidget {
       {
         'icon': PhosphorIconsThin.userCircle,
         'activeIcon': PhosphorIconsFill.userCircle,
-        'route': "/profile",
+        'route': "/index",
         "label": "Tài khoản"
       },
     ];
     final state = ref.watch(indexControllerProvider);
+    final postController = ref.watch(postControllerProvider);
 
     return Scaffold(
       body: shell,
@@ -79,8 +81,20 @@ class IndexPage extends ConsumerWidget {
             // selectedLabelStyle: TextStyle(fontSize: 10),
             onTap: (index) {
               if (index != 2) {
-                shell.goBranch(index);
-              } else {
+                if(index == shell.currentIndex){
+                  final GoRouter router = GoRouter.of(context);
+                  String currentRoute = router.routeInformationProvider.value.uri.toString();
+                  print(">>>>>>>$currentRoute");
+                  if(currentRoute.startsWith("/home/") && currentRoute!="/home"){
+                    context.goNamed("home");
+
+                  }
+
+                }
+                else{
+                  shell.goBranch(index);
+                }
+              }else{
                 context.pushNamed("posting");
               }
             },

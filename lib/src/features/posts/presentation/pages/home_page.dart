@@ -90,6 +90,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                 padding: const EdgeInsets.symmetric(vertical: 15),
                 child: Visibility(
                   replacement: sharedPostWidget(
+                    originUserId: sharedPost?.userId.toString()??"",
+                    userId: post.userId.toString(),
                       originCreatedAt: sharedPost?.createdAt ?? "",
                       originPostId: sharedPost?.id.toString() ?? "",
                       mediaUrl: sharedPost?.mediaUrl,
@@ -113,6 +115,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                       index: index),
                   visible: post.sharedPostId == null,
                   child: postWidget(
+                    userId: post.userId.toString(),
                     index: index,
                     liked: post.liked ?? false,
                     privacy: post.privacy ?? "",
@@ -172,7 +175,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: GestureDetector(
-            onTap: ()=>context.pushNamed('search'),
+            onTap: ()=>context.goNamed('search'),
             child: const PhosphorIcon(
               PhosphorIconsBold.magnifyingGlass,
               color: Colors.black,

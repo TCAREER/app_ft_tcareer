@@ -1,5 +1,6 @@
 class SharedPost {
   SharedPost({
+    num? userId,
     num? id,
     String? body,
     String? privacy,
@@ -10,6 +11,7 @@ class SharedPost {
     String? avatar,
     String? createdAt,
   }) {
+    _userId = userId;
     _id = id;
     _body = body;
     _privacy = privacy;
@@ -22,6 +24,7 @@ class SharedPost {
   }
 
   SharedPost.fromJson(dynamic json) {
+    _userId = json['user_id'];
     _id = json['id'];
     _body = json['body'];
     _privacy = json['privacy'];
@@ -33,6 +36,7 @@ class SharedPost {
     _avatar = json['avatar'];
     _createdAt = json['created_at'];
   }
+  num? _userId;
   num? _id;
   String? _body;
   String? _privacy;
@@ -43,6 +47,7 @@ class SharedPost {
   String? _avatar;
   String? _createdAt;
   SharedPost copyWith({
+    num? userId,
     num? id,
     String? body,
     String? privacy,
@@ -54,6 +59,7 @@ class SharedPost {
     String? createdAt,
   }) =>
       SharedPost(
+        userId: userId??_userId,
         id: id ?? _id,
         body: body ?? _body,
         privacy: privacy ?? _privacy,
@@ -65,6 +71,7 @@ class SharedPost {
         createdAt: createdAt ?? _createdAt,
       );
   num? get id => _id;
+  num? get userId => _userId;
   String? get body => _body;
   String? get privacy => _privacy;
   List<String>? get mediaUrl => _mediaUrl;
@@ -77,6 +84,7 @@ class SharedPost {
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['id'] = _id;
+    map['user_id'] = _userId;
     map['body'] = _body;
     map['privacy'] = _privacy;
     map['media_url'] = _mediaUrl;

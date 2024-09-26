@@ -229,7 +229,34 @@ class _ApiServices implements ApiServices {
     )
             .compose(
               _dio.options,
-              'auth/me',
+              'api/auth/user',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = UserData.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<UserData> getUserById({required String userId}) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result =
+        await _dio.fetch<Map<String, dynamic>>(_setStreamType<UserData>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'api/auth/user/${userId}',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -270,9 +297,10 @@ class _ApiServices implements ApiServices {
   }
 
   @override
-  Future<PostsResponse> getPosts({required String personal}) async {
+  Future<PostsResponse> getPosts({required PostRequest queries}) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'personal': personal};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.addAll(queries.toJson());
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
     final _result = await _dio

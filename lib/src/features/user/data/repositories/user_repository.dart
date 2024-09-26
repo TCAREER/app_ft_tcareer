@@ -8,7 +8,11 @@ class UserRepository {
 
   Future<UserData> getUserInfo() async {
     final api = ref.watch(apiServiceProvider);
-    return api.getUserInfo();
+    return await api.getUserInfo();
+  }
+  Future<UserData>getUserById(String userId)async{
+    final api = ref.watch(apiServiceProvider);
+    return await api.getUserById(userId: userId);
   }
 }
 

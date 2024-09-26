@@ -12,8 +12,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class PostUseCase {
   final PostRepository postRepository;
   PostUseCase(this.postRepository);
-  Future<PostsResponse> getPost({required String personal}) async =>
-      await postRepository.getPosts(personal: personal);
+  Future<PostsResponse> getPost({required String personal,String? userId}) async =>
+      await postRepository.getPosts(personal: personal,userId: userId);
   Future<String> uploadFileFireBase({
     required File file,
     required String folderPath,

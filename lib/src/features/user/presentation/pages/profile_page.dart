@@ -1,6 +1,7 @@
 import 'package:app_tcareer/src/features/posts/presentation/widgets/post_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/shared_post_widget.dart';
 import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
+import 'package:app_tcareer/src/features/user/presentation/widgets/information.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -41,6 +42,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
                 SliverAppBar(
+                  toolbarHeight: 30,
                   centerTitle: false,
                   title: const Text("Cá nhân",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
                   actions: [
@@ -96,31 +98,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
 
   Widget userInfo() {
     final controller = ref.watch(userControllerProvider);
-    final user = controller.userData;
-    return ListTile(
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            user.fullName ?? "",
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const Text(
-            "Flutter developer",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
-          ),
-          const SizedBox(height: 10),
-        ],
-      ),
-      subtitle: const Text(
-        "10 người theo dõi",
-        style: TextStyle(fontSize: 12, color: Colors.black54),
-      ),
-      trailing: CircleAvatar(
-        radius: 30,
-        backgroundImage: NetworkImage(user.avatar ??
-            "https://ui-avatars.com/api/?name=${user.fullName}&background=random"),
-      ),
+    final user = controller.userData.data;
+    return information(
+      friends: user?.friendCount.toString(),
+        fullName: user?.fullName??"",
+      avatar: user?.avatar,
+      follows: user?.followerCount.toString()
     );
   }
   Widget postList(){
@@ -136,6 +119,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
               padding: const EdgeInsets.symmetric(vertical: 15),
               child: Visibility(
                 replacement: sharedPostWidget(
+                  originUserId: sharedPost?.userId.toString()??"",
+                  userId: post.userId.toString(),
                   originCreatedAt: sharedPost?.createdAt ?? "",
                   originPostId: sharedPost?.id.toString() ?? "",
                   mediaUrl: sharedPost?.mediaUrl,
@@ -160,6 +145,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
                 ),
                 visible: post.sharedPostId == null,
                 child: postWidget(
+                  userId: post.userId.toString(),
                   index: index,
                   liked: post.liked ?? false,
                   privacy: post.privacy ?? "",

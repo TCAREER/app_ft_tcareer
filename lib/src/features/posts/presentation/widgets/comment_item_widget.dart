@@ -17,7 +17,7 @@ Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
   String? avatar = comment['avatar'];
   String createdAt = AppUtils.formatTime(comment['created_at']);
   String? parentName = comment['parent_name'];
-  String userId = ref.watch(postControllerProvider).userData.id.toString();
+  String userId = ref.watch(postControllerProvider).userData.data?.id.toString()??"";
   int likeCount = comment['like_count'];
   List<String> mediaUrl =
       (comment['media_url'] as List?)?.whereType<String>().toList() ?? [];

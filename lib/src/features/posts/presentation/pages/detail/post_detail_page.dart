@@ -38,6 +38,7 @@ class PostDetailPage extends ConsumerWidget {
             return ListView(
               children: [
                 postWidget(
+                    userId: post?.userId.toString()??"",
                     index: 0,
                     liked: post?.liked ?? false,
                     privacy: post?.privacy ?? "",

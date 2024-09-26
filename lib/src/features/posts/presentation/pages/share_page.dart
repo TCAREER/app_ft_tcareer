@@ -49,8 +49,8 @@ class SharePage extends ConsumerWidget {
                   CircleAvatar(
                     radius: 15,
                     backgroundImage: NetworkImage(postController
-                            .userData.avatar ??
-                        "https://ui-avatars.com/api/?name=${postController.userData.fullName}&background=random"),
+                            .userData.data?.avatar ??
+                        "https://ui-avatars.com/api/?name=${postController.userData.data?.fullName}&background=random"),
                   ),
                   const SizedBox(
                     width: 10,
@@ -59,7 +59,7 @@ class SharePage extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        postController.userData.fullName ?? "",
+                        postController.userData.data?.fullName ?? "",
                         style: const TextStyle(
                             fontSize: 15, fontWeight: FontWeight.bold),
                       ),

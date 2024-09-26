@@ -9,6 +9,7 @@ import 'package:app_tcareer/src/features/posts/presentation/pages/posting_page.d
 import 'package:app_tcareer/src/features/posts/presentation/pages/search_page.dart';
 import 'package:app_tcareer/src/features/splash/intro_page.dart';
 import 'package:app_tcareer/src/features/splash/splash_page.dart';
+import 'package:app_tcareer/src/features/user/presentation/pages/another_profile_page.dart';
 import 'package:app_tcareer/src/routes/index_route.dart';
 import 'package:app_tcareer/src/routes/transition_builder.dart';
 import 'package:app_tcareer/src/services/apis/api_service_provider.dart';
@@ -144,13 +145,9 @@ class AppRouter {
                   transitionsBuilder: slideUpTransitionBuilder);
             },
           ),
-          GoRoute(
-            path: "/search",
-            name: "search",
-            builder: (context, state) {
-              return const SearchPage();
-            },
-          ),
+
+
+
         ],
         refreshListenable: GoRouterRefreshStream());
   }

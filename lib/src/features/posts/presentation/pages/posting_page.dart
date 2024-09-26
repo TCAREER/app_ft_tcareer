@@ -81,8 +81,8 @@ class _PostingPageState extends ConsumerState<PostingPage> {
                 CircleAvatar(
                   radius: 20,
                   backgroundImage: NetworkImage(postController
-                          .userData.avatar ??
-                      "https://ui-avatars.com/api/?name=${postController.userData.fullName}&background=random"),
+                          .userData.data?.avatar ??
+                      "https://ui-avatars.com/api/?name=${postController.userData.data?.fullName}&background=random"),
                 ),
                 const SizedBox(
                   width: 10,
@@ -91,7 +91,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      postController.userData.fullName ?? "",
+                      postController.userData.data?.fullName ?? "",
                       style:
                           TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),

@@ -12,6 +12,7 @@ import 'package:app_tcareer/src/features/posts/data/models/create_comment_reques
 import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/like_comment_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/like_post_request.dart';
+import 'package:app_tcareer/src/features/posts/data/models/post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_detail_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/share_post_request.dart';
@@ -56,20 +57,25 @@ abstract class ApiServices {
   @POST('auth/forgot_password_change')
   Future postResetPassword({@Body() required ResetPasswordRequest body});
 
-  @GET("auth/me")
+  @GET("api/auth/user")
   Future<UserData> getUserInfo();
+
+  @GET("api/auth/user/{id}")
+  Future<UserData> getUserById({@Path('id') required String userId});
 
   @POST('api/auth/create_post')
   Future postCreatePost({@Body() required CreatePostRequest body});
 
   @GET('api/auth/get_post')
-  Future<PostsResponse> getPosts({@Query('personal') required String personal});
+  Future<PostsResponse> getPosts({@Queries() required PostRequest queries});
 
   @POST('api/auth/like_post')
   Future postLikePost({@Body() required LikePostRequest body});
 
   @GET('api/auth/post/{id}')
   Future<PostsDetailResponse> getPostById({@Path('id') required String postId});
+  
+
 
   @POST('api/auth/share_post')
   Future postSharePost({@Body() required SharePostRequest body});

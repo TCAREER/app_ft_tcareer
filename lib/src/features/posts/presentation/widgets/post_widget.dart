@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_fb_photo_view/flutter_fb_photo_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:readmore/readmore.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -15,6 +16,7 @@ import 'post_image_widget.dart';
 
 Widget postWidget({
   bool isShared = false,
+  required String userId,
   required BuildContext context,
   required WidgetRef ref,
   required String avatarUrl,
@@ -52,9 +54,12 @@ Widget postWidget({
                     flex: 1,
                     child: Column(
                       children: [
-                        CircleAvatar(
-                          radius: 18,
-                          backgroundImage: NetworkImage(avatarUrl),
+                        GestureDetector(
+                          onTap: ()=>context.pushNamed('profile',queryParameters: {"userId":userId}),
+                          child: CircleAvatar(
+                            radius: 18,
+                            backgroundImage: NetworkImage(avatarUrl),
+                          ),
                         ),
                       ],
                     ),
@@ -63,10 +68,13 @@ Widget postWidget({
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        userName,
-                        style: const TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.bold),
+                      GestureDetector(
+                        onTap: ()=>context.pushNamed('profile',queryParameters: {"userId":userId}),
+                        child: Text(
+                          userName,
+                          style: const TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold),
+                        ),
                       ),
                       if (subName != null) ...[
                         Text(subName, style: TextStyle(color: Colors.grey)),

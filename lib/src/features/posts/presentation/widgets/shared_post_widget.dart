@@ -16,6 +16,8 @@ import 'engagement_widget.dart';
 import 'post_image_widget.dart';
 
 Widget sharedPostWidget({
+  required String userId,
+  required String originUserId,
   required BuildContext context,
   required WidgetRef ref,
   required String avatarUrl,
@@ -58,9 +60,12 @@ Widget sharedPostWidget({
                     flex: 1,
                     child: Column(
                       children: [
-                        CircleAvatar(
-                          radius: 18,
-                          backgroundImage: NetworkImage(avatarUrl),
+                        GestureDetector(
+                          onTap: ()=>context.pushNamed('profile',queryParameters: {"userId":userId}),
+                          child: CircleAvatar(
+                            radius: 18,
+                            backgroundImage: NetworkImage(avatarUrl),
+                          ),
                         ),
                       ],
                     ),
@@ -69,10 +74,13 @@ Widget sharedPostWidget({
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        userName,
-                        style: const TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.bold),
+                      GestureDetector(
+                        onTap: ()=>context.pushNamed('profile',queryParameters: {"userId":userId}),
+                        child: Text(
+                          userName,
+                          style: const TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold),
+                        ),
                       ),
                       if (subName != null) ...[
                         Text(subName, style: TextStyle(color: Colors.grey)),
@@ -161,6 +169,7 @@ Widget sharedPostWidget({
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: Colors.grey.shade200, width: 1)),
                 child: postWidget(
+                  userId: originUserId,
                     mediaUrl: mediaUrl,
                     isShared: true,
                     context: context,

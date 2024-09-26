@@ -42,6 +42,7 @@ class SearchPage extends ConsumerWidget {
           itemBuilder: (context, index) {
             final user = controller.quickSearchData.data?[index];
             return ListTile(
+              onTap: () => context.pushNamed('profile',queryParameters: {"userId":user?.id.toString()}),
               leading: CircleAvatar(
                 backgroundImage: NetworkImage(user?.avatar??"https://ui-avatars.com/api/?name=${user?.fullName}&background=random"),
               ),
