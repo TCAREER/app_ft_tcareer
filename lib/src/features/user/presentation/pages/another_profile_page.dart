@@ -3,6 +3,7 @@ import 'package:app_tcareer/src/features/posts/presentation/widgets/post_loading
 import 'package:app_tcareer/src/features/posts/presentation/widgets/post_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/shared_post_widget.dart';
 import 'package:app_tcareer/src/features/user/presentation/controllers/another_user_controller.dart';
+import 'package:app_tcareer/src/features/user/presentation/controllers/user_connection_controller.dart';
 import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
 import 'package:app_tcareer/src/features/user/presentation/widgets/information.dart';
 import 'package:app_tcareer/src/features/user/presentation/widgets/information_loading.dart';
@@ -10,6 +11,7 @@ import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class AnotherProfilePage extends ConsumerStatefulWidget {
   final String userId;
@@ -37,8 +39,6 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
   @override
   Widget build(BuildContext context) {
     final controller = ref.watch(anotherUserControllerProvider);
-
-
     return SafeArea(
       child: DefaultTabController(
         length: 3,
@@ -53,15 +53,16 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
                   centerTitle: false,
                   toolbarHeight: 30,
                   actions: [
-                    PopupMenuButton(
-                      color: Colors.white,
-                      icon: const Icon(Icons.menu,color: Colors.black,),
-                      itemBuilder: (context) {
-                        return [
-                          
-                        ];
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: GestureDetector(
+                        onTap: ()=>controller.showMenu(context),
+                        child: PhosphorIcon(
 
-                      },
+                          PhosphorIconsRegular.dotsThreeCircle,
+
+                        ),
+                      ),
                     )
                   ],
                 ),
@@ -210,6 +211,9 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
     );
   }
   Widget buttonFollowAndMessage() {
+    final controller = ref.watch(anotherUserControllerProvider);
+    final connectionController = ref.watch(userConnectionControllerProvider);
+    String userId = controller.anotherUserData?.data?.id.toString()??"";
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
@@ -227,7 +231,7 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: ()async=>await connectionController.postFollow(userId),
                     child: const Text("Theo dõi", style: TextStyle(color: Colors.white)),
                   ),
                 ),

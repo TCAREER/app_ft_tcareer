@@ -148,7 +148,7 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
       onVisibilityChanged: (info) {
         if (_isVideoInitialized) {
           if (info.visibleFraction > 0.8) {
-            _videoPlayerController.play();
+            // _videoPlayerController.play();
           } else {
             _videoPlayerController.pause();
           }
@@ -156,4 +156,6 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
       },
     );
   }
+
+
 }

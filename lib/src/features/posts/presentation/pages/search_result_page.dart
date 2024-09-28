@@ -6,6 +6,7 @@ import 'package:app_tcareer/src/features/posts/presentation/widgets/shared_post_
 import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -23,7 +24,9 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    ref.read(searchPostControllerProvider).search(widget.query);
+    Future.microtask((){
+      ref.read(searchPostControllerProvider).search(widget.query);
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -52,18 +55,21 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
           visible: !controller.isLoading,
             replacement: circularLoadingWidget(),
           child: Visibility(
-            visible: controller.users.isNotEmpty && controller.posts.isNotEmpty,
+            visible: controller.users.isNotEmpty || controller.posts.isNotEmpty,
             replacement: emptyWidget("Không tìm thấy dữ liệu"),
             child: ListView(
               padding: EdgeInsets.symmetric(vertical: 10),
               children: [
+
                 userList(),
                  Visibility(
                    visible: controller.users.isNotEmpty && controller.posts.isNotEmpty,
-                   child: Divider(
-                    color: Colors.grey.shade200,
-                             ),
-                 ),
+                   child:  Container(
+                     margin: EdgeInsets.symmetric(vertical: 10),
+                     width: ScreenUtil().scaleWidth,
+                     color: Colors.grey.shade200,
+                     height: 10,
+                   )),
                 postList()
             
               ],
@@ -81,15 +87,15 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
+          const Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Text("Mọi người",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+            child: Text("Mọi người",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
           ),
           const SizedBox(height: 10,),
           Column(
             children: controller.users.map((user){
               return ListTile(
-
+                tileColor: Colors.white,
                 onTap: () => context.pushNamed('profile',queryParameters: {"userId":user.id.toString()}),
                 leading: CircleAvatar(
                   backgroundImage: NetworkImage(user.avatar??"https://ui-avatars.com/api/?name=${user.fullName}&background=random"),
@@ -117,7 +123,7 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Text("Bài đăng",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+            child: Text("Bài đăng",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
           ),
           const SizedBox(height: 10,),
           Column(

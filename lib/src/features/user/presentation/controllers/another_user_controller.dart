@@ -2,11 +2,13 @@ import 'package:app_tcareer/src/features/index/index_controller.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart' as post_model;
 import 'package:app_tcareer/src/features/posts/usecases/post_use_case.dart';
 import 'package:app_tcareer/src/features/user/data/models/users.dart';
+import 'package:app_tcareer/src/features/user/presentation/widgets/another_menu.dart';
 import 'package:app_tcareer/src/features/user/usercases/user_use_case.dart';
 import 'package:app_tcareer/src/utils/user_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class AnotherUserController extends ChangeNotifier{
   final UserUseCase userUseCase;
   final PostUseCase postUseCase;
@@ -91,6 +93,21 @@ class AnotherUserController extends ChangeNotifier{
     await userUtils.logout(context);
   }
 
+  Future<void> showMenu(BuildContext context) async {
+    final index = ref.watch(indexControllerProvider.notifier);
+    // index.showBottomSheet(
+    //     context: context, builder: (scrollController) => SharePage());
+    index.setBottomNavigationBarVisibility(false);
+
+    showModalBottomSheet(
+      backgroundColor: Colors.white,
+      isScrollControlled: true,
+      context: context,
+      builder: (context) => SizedBox(
+          height: ScreenUtil().screenHeight*.35,
+          child: AnotherMenu()),
+    ).whenComplete(() => index.setBottomNavigationBarVisibility(true),);
+  }
 
 
 

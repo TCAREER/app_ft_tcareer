@@ -35,7 +35,15 @@ class PostController extends ChangeNotifier {
   post_model.PostsResponse? postData;
   bool isLoading = false;
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    isDisposed == true;
+    scrollController.removeListener(loadMore);
+    scrollController.dispose();
+    super.dispose();
 
+  }
 
   void setIsLoading(bool value) {
     isLoading = value;
@@ -79,7 +87,9 @@ class PostController extends ChangeNotifier {
 
   final ScrollController scrollController = ScrollController();
   List<post_model.Data> postCache = [];
+  bool isDisposed = false;
   Future<void> getPost() async {
+
     postData = await postUseCase.getPost(personal: "n");
     if (postData?.data != null) {
       final newPosts = postData?.data
@@ -87,9 +97,11 @@ class PostController extends ChangeNotifier {
               !postCache.any((cachedPost) => cachedPost.id == newPost.id))
           .toList();
       postCache.addAll(newPosts as Iterable<post_model.Data>);
+      if (isDisposed) return;
+      notifyListeners();
     }
-    print(">>>>>>>>>>${postCache.length}");
-    notifyListeners();
+
+
   }
 
   Future<void> loadMore() async {
@@ -142,7 +154,7 @@ class PostController extends ChangeNotifier {
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: SharePage(postId),
       ),
-    );
+    ).whenComplete(() => index.setBottomNavigationBarVisibility(true),);
   }
 
   TextEditingController shareContentController = TextEditingController();
