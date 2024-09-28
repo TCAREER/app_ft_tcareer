@@ -27,6 +27,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     Future.microtask(() {
       ref.read(postControllerProvider).scrollToTop();
       ref.read(postControllerProvider).getPost();
+      ref.read(userControllerProvider).getUserInfo();
     });
   }
 
@@ -34,7 +35,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    ref.read(userControllerProvider).getUserInfo();
+
     Future.microtask(() {
       ref.read(postControllerProvider).scrollToTop();
     });

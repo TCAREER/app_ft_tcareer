@@ -70,13 +70,14 @@ class PostRepository {
     await api.postCreatePost(body: body);
   }
 
-  Future<PostsResponse> getPosts({required String personal,String? userId}) async {
+  Future<PostsResponse> getPosts({required String personal,String? userId,int? page}) async {
     final api = ref.watch(apiServiceProvider);
     final userUtils = ref.watch(userUtilsProvider);
     print(">>>>>>refreshToken: ${await userUtils.getRefreshToken()}");
     return await api.getPosts(queries: PostRequest(
       personal: personal,
-      profileUserId: userId
+      profileUserId: userId,
+      page: page
     ));
   }
 

@@ -11,22 +11,7 @@ class AnotherUserController extends ChangeNotifier{
   final UserUseCase userUseCase;
   final PostUseCase postUseCase;
   final Ref ref;
-  AnotherUserController(this.userUseCase,this.postUseCase,this.ref){
-    scrollController.addListener(() {
-      loadMore();
-      if (scrollController.position.userScrollDirection ==
-          ScrollDirection.reverse) {
-        ref
-            .read(indexControllerProvider.notifier)
-            .setBottomNavigationBarVisibility(false);
-      } else if (scrollController.position.userScrollDirection ==
-          ScrollDirection.forward) {
-        ref
-            .read(indexControllerProvider.notifier)
-            .setBottomNavigationBarVisibility(true);
-      }
-    });
-  }
+  AnotherUserController(this.userUseCase,this.postUseCase,this.ref);
 
 
 
@@ -52,10 +37,10 @@ class AnotherUserController extends ChangeNotifier{
   post_model.PostsResponse? postData ;
   final ScrollController scrollController = ScrollController();
   List<post_model.Data> postCache = [];
-  Future<void> getPost(String userId) async {
+  Future<void> getPost(String? userId) async {
     // postCache.clear();
     setIsLoading(true);
-    postData = await postUseCase.getPost(personal: "p",userId: userId);
+    postData = await postUseCase.getPost(personal: "p",userId: userId,page: page);
     if (postData?.data != null) {
       final newPosts = postData?.data
           ?.where((newPost) =>
@@ -68,10 +53,23 @@ class AnotherUserController extends ChangeNotifier{
     notifyListeners();
   }
 
+  bool isLoadingMore = false;
+  int page = 1;
   Future<void> loadMore() async {
-    if (scrollController.position.maxScrollExtent == scrollController.offset) {
-      await getPost(anotherUserData?.data?.id.toString()??"");
+    // isLoadingMore = true;
+    if (!isLoadingMore && postCache.length < (postData?.meta?.total ?? 0)) {
+      isLoadingMore = true;
+      try {
+        page += 1;
+        notifyListeners();
+        await getPost(anotherUserData?.data?.id.toString()??"");
+      } finally {
+        isLoadingMore = false; // Đặt lại trạng thái
+      }
     }
+
+
+
   }
 
 

@@ -12,9 +12,9 @@ class UserController extends ChangeNotifier{
   final PostUseCase postUseCase;
   final Ref ref;
   UserController(this.userUseCase,this.postUseCase,this.ref){
-    scrollController.addListener(() {
-      loadMore();
-    });
+    // scrollController.addListener(() {
+    //   loadMore();
+    // });
   }
 
   Users? userData;
@@ -42,9 +42,10 @@ class UserController extends ChangeNotifier{
   post_model.PostsResponse? postData ;
   final ScrollController scrollController = ScrollController();
   List<post_model.Data> postCache = [];
+  int page = 1;
   Future<void> getPost() async {
 
-    postData = await postUseCase.getPost(personal: "p");
+    postData = await postUseCase.getPost(personal: "p",page:page);
     if (postData?.data != null) {
       final newPosts = postData?.data
           ?.where((newPost) =>
@@ -52,14 +53,28 @@ class UserController extends ChangeNotifier{
           .toList();
       postCache.addAll(newPosts as Iterable<post_model.Data>);
     }
-
+    print(">>>>>>>>>postLength: ${postCache.length}");
+    print(">>>>>>>>>>>>page: $page");
     notifyListeners();
   }
-
+  bool isLoadingMore = false;
   Future<void> loadMore() async {
-    if (scrollController.position.pixels >= scrollController.position.maxScrollExtent && !scrollController.position.outOfRange) {
-      await getPost();
+
+
+        // isLoadingMore = true;
+    if (!isLoadingMore && postCache.length < (postData?.meta?.total ?? 0)) {
+      isLoadingMore = true;
+      try {
+        page += 1;
+        notifyListeners();
+        await getPost();
+      } finally {
+        isLoadingMore = false; // Đặt lại trạng thái
+      }
     }
+
+
+
   }
 
 
@@ -70,6 +85,7 @@ class UserController extends ChangeNotifier{
     notifyListeners();
   }
   Future<void> refresh() async {
+    page=1;
     postData?.data?.clear();
     postCache.clear();
 
