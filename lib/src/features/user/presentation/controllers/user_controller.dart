@@ -14,24 +14,12 @@ class UserController extends ChangeNotifier{
   UserController(this.userUseCase,this.postUseCase,this.ref){
     scrollController.addListener(() {
       loadMore();
-      if (scrollController.position.userScrollDirection ==
-          ScrollDirection.reverse) {
-        ref
-            .read(indexControllerProvider.notifier)
-            .setBottomNavigationBarVisibility(false);
-      } else if (scrollController.position.userScrollDirection ==
-          ScrollDirection.forward) {
-        ref
-            .read(indexControllerProvider.notifier)
-            .setBottomNavigationBarVisibility(true);
-      }
     });
   }
 
   Users? userData;
 
   Future<void>getUserInfo()async{
-
     userData = await userUseCase.getUserInfo();
     notifyListeners();
   }
@@ -55,7 +43,7 @@ class UserController extends ChangeNotifier{
   final ScrollController scrollController = ScrollController();
   List<post_model.Data> postCache = [];
   Future<void> getPost() async {
-    setIsLoading(true);
+
     postData = await postUseCase.getPost(personal: "p");
     if (postData?.data != null) {
       final newPosts = postData?.data
@@ -64,39 +52,22 @@ class UserController extends ChangeNotifier{
           .toList();
       postCache.addAll(newPosts as Iterable<post_model.Data>);
     }
-    setIsLoading(false);
+
     notifyListeners();
   }
 
   Future<void> loadMore() async {
-    if (scrollController.position.maxScrollExtent == scrollController.offset) {
+    if (scrollController.position.pixels >= scrollController.position.maxScrollExtent && !scrollController.position.outOfRange) {
       await getPost();
     }
   }
 
-  void setLikePost(int index) {
-    if (postData != null && postCache.isNotEmpty) {
-      final updatedPost = postCache[index].copyWith(
-        liked: !(postCache[index].liked ?? false),
-      );
 
-      postCache[index] = updatedPost;
-      final itemList = postCache;
-
-      final itemIndex =
-      itemList.indexWhere((post) => post.id == updatedPost.id);
-      if (itemIndex != -1) {
-        itemList[itemIndex] = updatedPost;
-        notifyListeners(); // Thông báo cho PagingController về sự thay đổi
-      }
-
-      notifyListeners(); // Thông báo cho widget khác về sự thay đổi
-    }
-  }
   Future<void> postLikePost(
       {required int index, required String postId}) async {
-    setLikePost(index);
-    await postUseCase.postLikePost(postId);
+    await postUseCase.postLikePost(postId: postId,index: index,postCache: postCache);
+
+    notifyListeners();
   }
   Future<void> refresh() async {
     postData?.data?.clear();

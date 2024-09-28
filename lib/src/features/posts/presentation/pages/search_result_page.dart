@@ -131,6 +131,7 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     child: Visibility(
                       replacement: sharedPostWidget(
+                          onLike: ()async=>await controller.postLikePost(index: index,postId: post.id.toString()),
                           originUserId: sharedPost?.userId.toString()??"",
                           userId: post.userId.toString(),
                           originCreatedAt: sharedPost?.createdAt ?? "",
@@ -156,6 +157,7 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
                           index: index),
                       visible: post.sharedPostId == null,
                       child: postWidget(
+                        onLike: ()async=>await controller.postLikePost(index: index,postId: post.id.toString()),
                         userId: post.userId.toString(),
                         index: index,
                         liked: post.liked ?? false,

@@ -16,6 +16,7 @@ import 'engagement_widget.dart';
 import 'post_image_widget.dart';
 
 Widget postWidget({
+  required void Function() onLike,
   bool isShared = false,
   required String userId,
   required BuildContext context,
@@ -169,6 +170,7 @@ Widget postWidget({
             Visibility(
                 visible: !isShared,
                 child: engagementWidget(
+                  onLike: onLike,
                   index: index,
                   liked: liked,
                   ref: ref,

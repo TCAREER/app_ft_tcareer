@@ -10,7 +10,8 @@ import 'package:flutter/cupertino.dart';
 
 class SearchPostController extends ChangeNotifier{
   final SearchUseCase searchUseCase;
-  SearchPostController(this.searchUseCase);
+  final PostUseCase postUseCase;
+  SearchPostController(this.searchUseCase,this.postUseCase);
 
   QuickSearchUserData quickSearchData = QuickSearchUserData();
   TextEditingController queryController = TextEditingController();
@@ -49,7 +50,12 @@ class SearchPostController extends ChangeNotifier{
    setIsLoading(false);
     notifyListeners();
   }
+  Future<void> postLikePost(
+      {required int index, required String postId}) async {
 
+    await postUseCase.postLikePost(postId: postId,index: index,postCache: posts);
+    notifyListeners();
+  }
   List<user.Data>users  = [];
   Future<void>mapUserFromJson(List<dynamic> userJson)async{
      users = userJson.whereType<Map<String,dynamic>>().map((item)=>user.Data.fromJson(item)).toList();

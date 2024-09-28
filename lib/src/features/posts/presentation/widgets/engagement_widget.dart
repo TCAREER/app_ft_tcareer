@@ -14,7 +14,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Widget engagementWidget(
-    {required WidgetRef ref,
+    {
+      required void Function() onLike,
+      required WidgetRef ref,
     required int index,
     required bool liked,
     required String postId,
@@ -31,8 +33,7 @@ Widget engagementWidget(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         GestureDetector(
-          onTap: () async =>
-              controller.postLikePost(index: index, postId: postId),
+          onTap: onLike,
           child: Row(
             children: [
               PhosphorIcon(

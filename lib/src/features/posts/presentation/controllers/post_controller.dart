@@ -66,32 +66,15 @@ class PostController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Map<String, bool> likePosts = {};
 
-  void setLikePost(int index) {
-    if (postData != null && postCache.isNotEmpty) {
-      final updatedPost = postCache[index].copyWith(
-        liked: !(postCache[index].liked ?? false),
-      );
 
-      postCache[index] = updatedPost;
-      final itemList = postCache;
 
-      final itemIndex =
-          itemList.indexWhere((post) => post.id == updatedPost.id);
-      if (itemIndex != -1) {
-        itemList[itemIndex] = updatedPost;
-        notifyListeners(); // Thông báo cho PagingController về sự thay đổi
-      }
-
-      notifyListeners(); // Thông báo cho widget khác về sự thay đổi
-    }
-  }
 
   Future<void> postLikePost(
       {required int index, required String postId}) async {
-    setLikePost(index);
-    await postUseCase.postLikePost(postId);
+    // setLikePost(index);
+    await postUseCase.postLikePost(postId: postId,index: index,postCache: postCache);
+    notifyListeners();
   }
 
   final ScrollController scrollController = ScrollController();

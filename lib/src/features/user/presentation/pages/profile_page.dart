@@ -42,6 +42,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
         child: Scaffold(
           backgroundColor: Colors.white,
           body: NestedScrollView(
+            controller: controller.scrollController,
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
                 SliverAppBar(
@@ -74,7 +75,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
                 SliverPersistentHeader(
                   pinned: true,
                   delegate: _SliverAppBarDelegate(
-                    const TabBar(
+                     TabBar(
+                      overlayColor: MaterialStateProperty.all(Colors.transparent),
                       indicatorWeight: 2,
                       dividerColor: Colors.transparent,
                       indicatorColor: Colors.black,
@@ -125,7 +127,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
         visible: controller.postCache.isNotEmpty,
         replacement: emptyWidget("Không có bài viết nào"),
         child: ListView.builder(
-
           physics: const NeverScrollableScrollPhysics(),
           itemCount: controller.postCache.length,
           itemBuilder: (context, index) {
@@ -137,6 +138,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
                   padding: const EdgeInsets.symmetric(vertical: 15),
                   child: Visibility(
                     replacement: sharedPostWidget(
+                      onLike: ()async=>await controller.postLikePost(index: index,postId: post.id.toString()),
                       originUserId: sharedPost?.userId.toString()??"",
                       userId: post.userId.toString(),
                       originCreatedAt: sharedPost?.createdAt ?? "",
@@ -163,6 +165,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
                     ),
                     visible: post.sharedPostId == null,
                     child: postWidget(
+                      onLike: ()async=>await controller.postLikePost(index: index,postId: post.id.toString()),
                       userId: post.userId.toString(),
                       index: index,
                       liked: post.liked ?? false,

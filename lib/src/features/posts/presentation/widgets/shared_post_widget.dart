@@ -17,6 +17,8 @@ import 'engagement_widget.dart';
 import 'post_image_widget.dart';
 
 Widget sharedPostWidget({
+
+  required void Function() onLike,
   required String userId,
   required String originUserId,
   required BuildContext context,
@@ -176,6 +178,7 @@ Widget sharedPostWidget({
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: Colors.grey.shade200, width: 1)),
                 child: postWidget(
+                  onLike: onLike,
                   userId: originUserId,
                     mediaUrl: mediaUrl,
                     isShared: true,
@@ -196,6 +199,7 @@ Widget sharedPostWidget({
             ),
             const SizedBox(height: 5),
             engagementWidget(
+              onLike: onLike,
                 index: index,
                 liked: liked,
                 ref: ref,

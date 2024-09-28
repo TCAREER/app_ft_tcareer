@@ -71,7 +71,8 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
                 SliverPersistentHeader(
                   pinned: true,
                   delegate: _SliverAppBarDelegate(
-                    const TabBar(
+                    TabBar(
+                      overlayColor: MaterialStateProperty.all(Colors.transparent),
                       dividerColor: Colors.transparent,
                       indicatorWeight: 2,
                       indicatorColor: Colors.black,
@@ -123,6 +124,8 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
         visible: controller.postCache.isNotEmpty,
         replacement: emptyWidget("Không có bài viết nào"),
         child: ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
           itemCount: controller.postCache.length,
           itemBuilder: (context, index) {
 
@@ -135,6 +138,7 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
                   padding: const EdgeInsets.symmetric(vertical: 15),
                   child: Visibility(
                     replacement: sharedPostWidget(
+                      onLike: ()async=>await controller.postLikePost(index: index,postId: post.id.toString()),
                       originUserId: sharedPost?.userId.toString()??"",
                       userId: post.userId.toString(),
                       originCreatedAt: sharedPost?.createdAt ?? "",
@@ -161,6 +165,7 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
                     ),
                     visible: post.sharedPostId == null,
                     child: postWidget(
+                      onLike: ()async=>await controller.postLikePost(index: index,postId: post.id.toString()),
                       userId: post.userId.toString(),
                       index: index,
                       liked: post.liked ?? false,
