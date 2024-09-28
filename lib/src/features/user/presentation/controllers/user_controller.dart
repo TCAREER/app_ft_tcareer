@@ -112,6 +112,11 @@ class UserController extends ChangeNotifier{
   }
 
 
+  bool isCurrentUser(int userId){
+    print(">>>>>>>>>>>isCurrent: ${userData?.data?.id == userId}");
+    return userData?.data?.id == userId;
+  }
+
 
 
 }

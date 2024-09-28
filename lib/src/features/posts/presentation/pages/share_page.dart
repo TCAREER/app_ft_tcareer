@@ -2,6 +2,7 @@ import 'package:app_tcareer/src/configs/app_colors.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/post_input.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/privacy_widget.dart';
+import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -23,8 +24,9 @@ class SharePage extends ConsumerWidget {
   }
 
   Widget shareComponent(WidgetRef ref, BuildContext context) {
-    final postController = ref.watch(postControllerProvider);
+    final userController = ref.watch(userControllerProvider);
     final postingController = ref.watch(postingControllerProvider);
+    final postController = ref.watch(postControllerProvider);
     return Wrap(
       children: [
         Center(
@@ -48,9 +50,9 @@ class SharePage extends ConsumerWidget {
                 children: [
                   CircleAvatar(
                     radius: 15,
-                    backgroundImage: NetworkImage(postController
-                            .userData.data?.avatar ??
-                        "https://ui-avatars.com/api/?name=${postController.userData.data?.fullName}&background=random"),
+                    backgroundImage: NetworkImage(userController
+                            .userData?.data?.avatar ??
+                        "https://ui-avatars.com/api/?name=${userController.userData?.data?.fullName}&background=random"),
                   ),
                   const SizedBox(
                     width: 10,
@@ -59,7 +61,7 @@ class SharePage extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        postController.userData.data?.fullName ?? "",
+                       userController.userData?.data?.fullName ?? "",
                         style: const TextStyle(
                             fontSize: 15, fontWeight: FontWeight.bold),
                       ),

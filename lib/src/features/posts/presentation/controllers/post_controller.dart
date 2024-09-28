@@ -9,6 +9,7 @@ import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart'
 import 'package:app_tcareer/src/features/posts/usecases/comment_use_case.dart';
 import 'package:app_tcareer/src/features/posts/usecases/post_use_case.dart';
 import 'package:app_tcareer/src/features/user/data/models/users.dart';
+import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
 import 'package:app_tcareer/src/features/user/usercases/user_use_case.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
@@ -34,13 +35,7 @@ class PostController extends ChangeNotifier {
   post_model.PostsResponse? postData;
   bool isLoading = false;
 
-  Users userData = Users();
 
-  Future<void> getUserInfo() async {
-    final userUseCase = ref.watch(userUseCaseProvider);
-    userData = await userUseCase.getUserInfo();
-    notifyListeners();
-  }
 
   void setIsLoading(bool value) {
     isLoading = value;
@@ -180,5 +175,16 @@ class PostController extends ChangeNotifier {
     context.pop();
     scrollController.jumpTo(0);
     await refresh();
+  }
+  
+  void goToProfile({required String userId,required BuildContext context}){
+    final user = ref.watch(userControllerProvider);
+    if(user.isCurrentUser(int.parse(userId))==true){
+
+       context.replaceNamed('user');
+    }
+    else{
+      context.pushNamed('profile',queryParameters: {"userId":userId});
+    }
   }
 }

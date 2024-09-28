@@ -9,6 +9,7 @@ import 'package:app_tcareer/src/features/posts/presentation/widgets/posting_imag
 import 'package:app_tcareer/src/features/posts/presentation/widgets/posting_video_player_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/privacy_bottom_sheet_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/privacy_widget.dart';
+import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
   Widget build(BuildContext context) {
     final mediaController = ref.watch(mediaControllerProvider);
     final controller = ref.watch(postingControllerProvider);
-    final postController = ref.watch(postControllerProvider);
+    final userController = ref.watch(userControllerProvider);
     bool isActive = controller.contentController.text != "" ||
         mediaController.imagePaths.isNotEmpty ||
         controller.imagesWeb.isNotEmpty == true ||
@@ -80,9 +81,9 @@ class _PostingPageState extends ConsumerState<PostingPage> {
               children: [
                 CircleAvatar(
                   radius: 20,
-                  backgroundImage: NetworkImage(postController
-                          .userData.data?.avatar ??
-                      "https://ui-avatars.com/api/?name=${postController.userData.data?.fullName}&background=random"),
+                  backgroundImage: NetworkImage(userController
+                          .userData?.data?.avatar ??
+                      "https://ui-avatars.com/api/?name=${userController.userData?.data?.fullName}&background=random"),
                 ),
                 const SizedBox(
                   width: 10,
@@ -91,7 +92,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      postController.userData.data?.fullName ?? "",
+                      userController.userData?.data?.fullName ?? "",
                       style:
                           TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),

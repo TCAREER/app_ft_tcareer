@@ -2,6 +2,7 @@ import 'package:app_tcareer/src/extensions/video_extension.dart';
 import 'package:app_tcareer/src/features/posts/presentation/controllers/comment_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/comment_video_player.dart';
+import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
 import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:app_tcareer/src/widgets/cached_image_widget.dart';
 
@@ -17,7 +18,7 @@ Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
   String? avatar = comment['avatar'];
   String createdAt = AppUtils.formatTime(comment['created_at']);
   String? parentName = comment['parent_name'];
-  String userId = ref.watch(postControllerProvider).userData.data?.id.toString()??"";
+  String userId = ref.watch(userControllerProvider).userData?.data?.id.toString()??"";
   int likeCount = comment['like_count'];
   List<String> mediaUrl =
       (comment['media_url'] as List?)?.whereType<String>().toList() ?? [];

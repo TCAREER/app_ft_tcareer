@@ -5,6 +5,7 @@ import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart'
 import 'package:app_tcareer/src/features/posts/presentation/widgets/post_loading_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/post_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/shared_post_widget.dart';
+import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
 
 import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    ref.read(postControllerProvider).getUserInfo();
+    ref.read(userControllerProvider).getUserInfo();
     Future.microtask(() {
       ref.read(postControllerProvider).scrollToTop();
     });
@@ -148,9 +149,9 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   Widget sliverAppBar(WidgetRef ref) {
-    final controller = ref.watch(postControllerProvider);
+
     final postingController = ref.watch(postingControllerProvider);
-    final userData = controller.userData;
+
     return SliverAppBar(
       // leading: Column(
       //   mainAxisAlignment: MainAxisAlignment.center,

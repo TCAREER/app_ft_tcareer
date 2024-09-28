@@ -17,31 +17,31 @@ class IndexPage extends ConsumerWidget {
       {
         'icon': PhosphorIconsThin.house,
         'activeIcon': PhosphorIconsFill.house,
-        'route': "/home",
+
         "label": "Trang chủ"
       },
       {
         'icon': PhosphorIconsThin.bagSimple,
         'activeIcon': PhosphorIconsFill.bagSimple,
-        'route': "/jobs",
+
         "label": "Công việc"
       },
       {
         'icon': PhosphorIconsThin.plusSquare,
         'activeIcon': PhosphorIconsThin.plusSquare,
-        'route': "/",
+
         "label": "Tạo mới"
       },
       {
         'icon': PhosphorIconsThin.bell,
         'activeIcon': PhosphorIconsFill.bell,
-        'route': "/messages",
+
         "label": "Thông báo"
       },
       {
         'icon': PhosphorIconsThin.userCircle,
         'activeIcon': PhosphorIconsFill.userCircle,
-        'route': "/index",
+
         "label": "Tài khoản"
       },
     ];

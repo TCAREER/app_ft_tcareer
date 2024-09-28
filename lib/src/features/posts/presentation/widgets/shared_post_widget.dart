@@ -1,3 +1,4 @@
+import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/post_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/video_player_widget.dart';
 import 'package:app_tcareer/src/extensions/video_extension.dart';
@@ -41,7 +42,7 @@ Widget sharedPostWidget({
 }) {
   final hasMediaUrl = mediaUrl != null && mediaUrl.isNotEmpty;
   final firstMediaUrl = hasMediaUrl ? mediaUrl.first : "";
-
+  final controller = ref.read(postControllerProvider);
   return Container(
     width: ScreenUtil().screenWidth,
     child: Column(
@@ -61,7 +62,10 @@ Widget sharedPostWidget({
                     child: Column(
                       children: [
                         GestureDetector(
-                          onTap: ()=>context.pushNamed('profile',queryParameters: {"userId":userId}),
+                          onTap: ()=>controller.goToProfile(
+                              userId: userId,
+                              context: context
+                          ),
                           child: CircleAvatar(
                             radius: 18,
                             backgroundImage: NetworkImage(avatarUrl),
@@ -75,7 +79,10 @@ Widget sharedPostWidget({
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       GestureDetector(
-                        onTap: ()=>context.pushNamed('profile',queryParameters: {"userId":userId}),
+                        onTap: ()=>controller.goToProfile(
+                            userId: userId,
+                            context: context
+                        ),
                         child: Text(
                           userName,
                           style: const TextStyle(
