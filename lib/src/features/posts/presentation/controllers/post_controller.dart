@@ -8,7 +8,7 @@ import 'package:app_tcareer/src/features/posts/presentation/pages/share_page.dar
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/features/posts/usecases/comment_use_case.dart';
 import 'package:app_tcareer/src/features/posts/usecases/post_use_case.dart';
-import 'package:app_tcareer/src/features/user/data/models/user_data.dart';
+import 'package:app_tcareer/src/features/user/data/models/users.dart';
 import 'package:app_tcareer/src/features/user/usercases/user_use_case.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
@@ -28,23 +28,13 @@ class PostController extends ChangeNotifier {
   PostController(this.postUseCase, this.ref) {
     scrollController.addListener(() {
       loadMore();
-      if (scrollController.position.userScrollDirection ==
-          ScrollDirection.reverse) {
-        ref
-            .read(indexControllerProvider.notifier)
-            .setBottomNavigationBarVisibility(false);
-      } else if (scrollController.position.userScrollDirection ==
-          ScrollDirection.forward) {
-        ref
-            .read(indexControllerProvider.notifier)
-            .setBottomNavigationBarVisibility(true);
-      }
+
     });
   }
   post_model.PostsResponse? postData;
   bool isLoading = false;
 
-  UserData userData = UserData();
+  Users userData = Users();
 
   Future<void> getUserInfo() async {
     final userUseCase = ref.watch(userUseCaseProvider);

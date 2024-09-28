@@ -1,7 +1,7 @@
 import 'package:app_tcareer/src/features/index/index_controller.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart' as post_model;
 import 'package:app_tcareer/src/features/posts/usecases/post_use_case.dart';
-import 'package:app_tcareer/src/features/user/data/models/user_data.dart';
+import 'package:app_tcareer/src/features/user/data/models/users.dart';
 import 'package:app_tcareer/src/features/user/usercases/user_use_case.dart';
 import 'package:app_tcareer/src/utils/user_utils.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +28,7 @@ class UserController extends ChangeNotifier{
     });
   }
 
-  UserData userData = UserData();
+  Users userData = Users();
 
   Future<void>getUserInfo()async{
 
@@ -36,7 +36,7 @@ class UserController extends ChangeNotifier{
     notifyListeners();
   }
 
-  UserData anotherUserData = UserData();
+  Users anotherUserData = Users();
 
   Future<void>getUserById(String userId)async{
     print(">>>>>>>>>>>>userId:$userId");

@@ -11,7 +11,7 @@ import 'package:app_tcareer/src/features/posts/presentation/controllers/media_co
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/features/posts/usecases/media_use_case.dart';
 import 'package:app_tcareer/src/features/posts/usecases/post_use_case.dart';
-import 'package:app_tcareer/src/features/user/data/models/user_data.dart';
+import 'package:app_tcareer/src/features/user/data/models/users.dart';
 import 'package:app_tcareer/src/features/user/usercases/user_use_case.dart';
 import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:app_tcareer/src/utils/snackbar_utils.dart';

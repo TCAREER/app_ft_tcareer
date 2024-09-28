@@ -21,7 +21,11 @@ class SearchPage extends ConsumerWidget {
           centerTitle: false,
           leadingWidth: 40,
           automaticallyImplyLeading: false,
-          title: searchBarWidget(controller: controller.queryController,onChanged: (val)async=>await controller.onSearch()),
+          title: searchBarWidget(
+              controller: controller.queryController,
+              onChanged: (val)async=>await controller.onSearch(),
+              onSubmitted: (val)=>context.goNamed("searchResult",queryParameters: {"q":val})
+          ),
           leading:GestureDetector(
             onTap: ()=>context.pop(),
             child: const Icon(Icons.arrow_back,color: Colors.black,),
@@ -47,6 +51,7 @@ class SearchPage extends ConsumerWidget {
                 backgroundImage: NetworkImage(user?.avatar??"https://ui-avatars.com/api/?name=${user?.fullName}&background=random"),
               ),
               title: Text(user?.fullName??""),
+              trailing:Icon(Icons.arrow_forward_rounded),
             );
           },
           separatorBuilder: (context, index) => const SizedBox(height: 10,),

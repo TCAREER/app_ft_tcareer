@@ -8,6 +8,8 @@ class SearchUseCase{
   SearchUseCase(this.postRepository);
 
   Future<QuickSearchUserData>getQuickSearchUser(String query)async=>await postRepository.getQuickSearchUser(query);
+
+  Future getSearch(String query)async=>await postRepository.getSearch(query);
 }
 
 final searchUseCaseProvider =

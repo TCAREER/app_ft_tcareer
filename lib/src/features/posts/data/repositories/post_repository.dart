@@ -138,6 +138,11 @@ class PostRepository {
     final api = ref.watch(apiServiceProvider);
     return await api.getQuickSearchUser(query: query);
   }
+
+  Future getSearch(String query)async{
+    final api = ref.watch(apiServiceProvider);
+    return await api.getSearch(query: query);
+  }
 }
 
 final postRepository = Provider((ref) => PostRepository(ref));

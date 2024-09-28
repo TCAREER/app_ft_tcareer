@@ -69,6 +69,8 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
                   pinned: true,
                   delegate: _SliverAppBarDelegate(
                     const TabBar(
+                      dividerColor: Colors.transparent,
+                      indicatorWeight: 2,
                       indicatorColor: Colors.black,
                       labelStyle: const TextStyle(color: Colors.black),
                       tabs: const [
@@ -243,7 +245,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Material(
       color: Colors.white,
-      elevation: 4,
+      elevation: 0.0,
       child: tabBar,
     );
   }

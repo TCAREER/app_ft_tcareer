@@ -42,6 +42,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
                 SliverAppBar(
+
                   toolbarHeight: 30,
                   centerTitle: false,
                   title: const Text("Cá nhân",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
@@ -71,6 +72,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
                   pinned: true,
                   delegate: _SliverAppBarDelegate(
                     const TabBar(
+                      indicatorWeight: 2,
+                      dividerColor: Colors.transparent,
                       indicatorColor: Colors.black,
                       labelStyle: const TextStyle(color: Colors.black),
                       tabs: const [
@@ -239,7 +242,8 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Material(
       color: Colors.white,
-      elevation: 4,
+      elevation: 0.0,
+
       child: tabBar,
     );
   }

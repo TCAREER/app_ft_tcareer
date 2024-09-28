@@ -15,10 +15,11 @@ import 'package:app_tcareer/src/features/posts/data/models/like_post_request.dar
 import 'package:app_tcareer/src/features/posts/data/models/post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_detail_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart';
+import 'package:app_tcareer/src/features/posts/data/models/search_user_and_post_data.dart';
 import 'package:app_tcareer/src/features/posts/data/models/share_post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/quick_search_user_data.dart';
 import 'package:app_tcareer/src/features/posts/data/models/quick_search_user_request.dart';
-import 'package:app_tcareer/src/features/user/data/models/user_data.dart';
+import 'package:app_tcareer/src/features/user/data/models/users.dart';
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -58,10 +59,10 @@ abstract class ApiServices {
   Future postResetPassword({@Body() required ResetPasswordRequest body});
 
   @GET("api/auth/user")
-  Future<UserData> getUserInfo();
+  Future<Users> getUserInfo();
 
   @GET("api/auth/user/{id}")
-  Future<UserData> getUserById({@Path('id') required String userId});
+  Future<Users> getUserById({@Path('id') required String userId});
 
   @POST('api/auth/create_post')
   Future postCreatePost({@Body() required CreatePostRequest body});
@@ -89,5 +90,24 @@ abstract class ApiServices {
   @GET('api/auth/quick_search_user')
   Future<QuickSearchUserData> getQuickSearchUser(
       {@Query('q') required String query});
+
+  @GET('api/auth/search_submit')
+  Future getSearch({@Query('q') required String query});
+
+  @GET('api/auth/search_post')
+  Future<PostsResponse>getSearchPost({@Query('q') required String query});
+
+  @POST('api/auth/follow/{id}')
+  Future postFollow({@Path('id') required String userId});
+
+  @POST('api/auth/friend/{id}/add')
+  Future postAddFriend({@Path('id') required String userId});
+
+  @POST('api/auth/friend/{id}/accept')
+  Future postAcceptFriend({@Path('id') required String userId});
+
+  @POST('api/auth/friend/{id}/decline')
+  Future postDeclineFriend({@Path('id') required String userId});
+
 
 }

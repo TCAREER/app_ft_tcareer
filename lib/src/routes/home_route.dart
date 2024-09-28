@@ -2,6 +2,7 @@ import 'package:app_tcareer/src/features/posts/data/models/photo_view_data.dart'
 import 'package:app_tcareer/src/features/posts/presentation/pages/detail/photo_view_gallery_page.dart';
 import 'package:app_tcareer/src/features/posts/presentation/pages/detail/post_detail_page.dart';
 import 'package:app_tcareer/src/features/posts/presentation/pages/search_page.dart';
+import 'package:app_tcareer/src/features/posts/presentation/pages/search_result_page.dart';
 import 'package:app_tcareer/src/features/user/presentation/pages/another_profile_page.dart';
 import 'package:app_tcareer/src/routes/transition_builder.dart';
 import 'package:go_router/go_router.dart';
@@ -36,6 +37,16 @@ class HomeRoute {
         return const SearchPage();
       },
     ),
+
+    GoRoute(
+      path: "searchResult",
+      name: "searchResult",
+      builder: (context, state) {
+        final query = state.uri.queryParameters['q']??"";
+        return SearchResultPage(query);
+      },
+    ),
+
 
     GoRoute(
       path: "profile",
