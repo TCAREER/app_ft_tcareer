@@ -19,6 +19,8 @@ import 'package:app_tcareer/src/features/posts/data/models/search_user_and_post_
 import 'package:app_tcareer/src/features/posts/data/models/share_post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/quick_search_user_data.dart';
 import 'package:app_tcareer/src/features/posts/data/models/quick_search_user_request.dart';
+import 'package:app_tcareer/src/features/posts/data/models/user_liked.dart';
+import 'package:app_tcareer/src/features/posts/data/models/user_liked_request.dart';
 import 'package:app_tcareer/src/features/user/data/models/users.dart';
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
@@ -108,6 +110,9 @@ abstract class ApiServices {
 
   @POST('api/auth/friend/{id}/decline')
   Future postDeclineFriend({@Path('id') required String userId});
+
+  @GET('api/auth/get_like')
+  Future<UserLiked>getUserLiked({@Queries() required UserLikedRequest query });
 
 
 

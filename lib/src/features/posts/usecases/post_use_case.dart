@@ -6,6 +6,7 @@ import 'package:app_tcareer/src/features/posts/data/models/create_post_request.d
 import 'package:app_tcareer/src/features/posts/data/models/post_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_detail_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart' as post;
+import 'package:app_tcareer/src/features/posts/data/models/user_liked.dart';
 import 'package:app_tcareer/src/features/posts/data/repositories/post_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -91,6 +92,10 @@ class PostUseCase {
       required String privacy,
       required String body}) async {
     return postRepository.postSharePost(postId, privacy, body);
+  }
+
+  Future<UserLiked>getUserLikePost(int postId)async{
+    return postRepository.getUserLiked(postId: postId);
   }
 }
 

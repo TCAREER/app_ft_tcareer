@@ -1,3 +1,4 @@
+import 'package:app_tcareer/src/features/posts/data/models/user_liked.dart';
 import 'package:app_tcareer/src/features/posts/data/repositories/post_repository.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +16,10 @@ class CommentUseCase {
 
   Stream<DatabaseEvent> listenToLikeComment(String postId) =>
       postRepository.listenToLikeComments(postId);
+
+  Future<UserLiked>getUserLikeComment(int commentId)async{
+    return postRepository.getUserLiked(commentId: commentId);
+  }
 }
 
 final commentUseCaseProvider =

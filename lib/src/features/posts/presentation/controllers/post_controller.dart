@@ -3,8 +3,10 @@ import 'package:app_tcareer/src/features/posts/data/models/post_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/post_state.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart'
     as post_model;
+import 'package:app_tcareer/src/features/posts/data/models/user_liked.dart';
 import 'package:app_tcareer/src/features/posts/presentation/controllers/media_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/pages/share_page.dart';
+import 'package:app_tcareer/src/features/posts/presentation/pages/user_liked_page.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/features/posts/usecases/comment_use_case.dart';
 import 'package:app_tcareer/src/features/posts/usecases/post_use_case.dart';
@@ -153,6 +155,28 @@ class PostController extends ChangeNotifier {
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: SharePage(postId),
+      ),
+    ).whenComplete(() => index.setBottomNavigationBarVisibility(true),);
+  }
+  UserLiked? userLiked;
+
+  Future<void>getUserLikePost(int postId)async{
+    userLiked = await postUseCase.getUserLikePost(postId);
+    notifyListeners();
+  }
+  Future<void> showUserLiked(BuildContext context, int postId) async {
+    final index = ref.watch(indexControllerProvider.notifier);
+    // index.showBottomSheet(
+    //     context: context, builder: (scrollController) => SharePage());
+    index.setBottomNavigationBarVisibility(false);
+
+    showModalBottomSheet(
+      backgroundColor: Colors.white,
+      isScrollControlled: true,
+      context: context,
+      builder: (context) => SizedBox(
+        height: ScreenUtil().screenHeight*.6,
+        child: UserLikedPage(postId),
       ),
     ).whenComplete(() => index.setBottomNavigationBarVisibility(true),);
   }

@@ -12,6 +12,8 @@ import 'package:app_tcareer/src/features/posts/data/models/posts_detail_response
 import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/quick_search_user_data.dart';
 import 'package:app_tcareer/src/features/posts/data/models/share_post_request.dart';
+import 'package:app_tcareer/src/features/posts/data/models/user_liked.dart';
+import 'package:app_tcareer/src/features/posts/data/models/user_liked_request.dart';
 import 'package:app_tcareer/src/services/apis/api_service_provider.dart';
 import 'package:app_tcareer/src/services/drive/google_drive_service.dart';
 import 'package:app_tcareer/src/services/drive/upload_file_service.dart';
@@ -143,6 +145,14 @@ class PostRepository {
   Future getSearch(String query)async{
     final api = ref.watch(apiServiceProvider);
     return await api.getSearch(query: query);
+  }
+
+  Future<UserLiked>getUserLiked({int? postId, int? commentId})async{
+    final api = ref.watch(apiServiceProvider);
+    return await api.getUserLiked(query: UserLikedRequest(
+      postId: postId,
+      commentId: commentId
+    ));
   }
 }
 
