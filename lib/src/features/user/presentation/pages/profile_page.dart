@@ -1,7 +1,11 @@
+import 'package:app_tcareer/src/features/posts/presentation/widgets/empty_widget.dart';
+import 'package:app_tcareer/src/features/posts/presentation/widgets/post_loading_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/post_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/shared_post_widget.dart';
 import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
 import 'package:app_tcareer/src/features/user/presentation/widgets/information.dart';
+import 'package:app_tcareer/src/features/user/presentation/widgets/information_loading.dart';
+import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -38,14 +42,13 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
         child: Scaffold(
           backgroundColor: Colors.white,
           body: NestedScrollView(
-
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
                 SliverAppBar(
 
                   toolbarHeight: 30,
                   centerTitle: false,
-                  title: const Text("Cá nhân",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+
                   actions: [
                     PopupMenuButton(
                       color: Colors.white,
@@ -54,7 +57,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
                         return [
                            PopupMenuItem(
                             onTap: () async=> await controller.logout(context) ,
-                            child: ListTile(
+                            child: const ListTile(
                               leading: Icon(Icons.logout,color: Colors.red,),
                               title: Text("Đăng xuất"),
                             ),
@@ -76,7 +79,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
                       dividerColor: Colors.transparent,
                       indicatorColor: Colors.black,
                       labelStyle: const TextStyle(color: Colors.black),
-                      tabs: const [
+                      tabs: [
                         Tab(text: "Bài viết"),
                         Tab(text: "Ảnh"),
                         Tab(text: "Video"),
@@ -101,79 +104,93 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
 
   Widget userInfo() {
     final controller = ref.watch(userControllerProvider);
-    final user = controller.userData.data;
-    return information(
-      friends: user?.friendCount.toString(),
-        fullName: user?.fullName??"",
-      avatar: user?.avatar,
-      follows: user?.followerCount.toString()
+    final user = controller.userData?.data;
+    return Visibility(
+      visible: controller.userData!=null,
+      replacement: informationLoading(),
+      child: information(
+        friends: user?.friendCount.toString(),
+          fullName: user?.fullName??"",
+        avatar: user?.avatar,
+        follows: user?.followerCount.toString()
+      ),
     );
   }
   Widget postList(){
     final controller = ref.watch(userControllerProvider);
-    return ListView.builder(
-      itemCount: controller.postCache.length,
-      itemBuilder: (context, index) {
-        final post = controller.postCache[index];
-        final sharedPost = post.sharedPost;
-        return Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              child: Visibility(
-                replacement: sharedPostWidget(
-                  originUserId: sharedPost?.userId.toString()??"",
-                  userId: post.userId.toString(),
-                  originCreatedAt: sharedPost?.createdAt ?? "",
-                  originPostId: sharedPost?.id.toString() ?? "",
-                  mediaUrl: sharedPost?.mediaUrl,
-                  context: context,
-                  ref: ref,
-                  avatarUrl: post.avatar ??
-                      "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
-                  userName: post.fullName ?? "",
-                  userNameOrigin: sharedPost?.fullName ?? "",
-                  avatarUrlOrigin: sharedPost?.avatar ??
-                      "https://ui-avatars.com/api/?name=${sharedPost?.fullName}&background=random",
-                  createdAt: post.createdAt ?? "",
-                  content: post.body ?? "",
-                  contentOrigin: sharedPost?.body ?? "",
-                  liked: post.liked ?? false,
-                  likes: post.likeCount?.toString() ?? "0",
-                  comments: post.commentCount?.toString() ?? "0",
-                  shares: post.shareCount?.toString() ?? "0",
-                  privacy: post.privacy ?? "",
-                  postId: post.id.toString(),
-                  index: index,
+    return Visibility(
+      visible: controller.postData!=null,
+      replacement: postLoadingListViewWidget(context),
+      child: Visibility(
+        visible: controller.postCache.isNotEmpty,
+        replacement: emptyWidget("Không có bài viết nào"),
+        child: ListView.builder(
+
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: controller.postCache.length,
+          itemBuilder: (context, index) {
+            final post = controller.postCache[index];
+            final sharedPost = post.sharedPost;
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  child: Visibility(
+                    replacement: sharedPostWidget(
+                      originUserId: sharedPost?.userId.toString()??"",
+                      userId: post.userId.toString(),
+                      originCreatedAt: sharedPost?.createdAt ?? "",
+                      originPostId: sharedPost?.id.toString() ?? "",
+                      mediaUrl: sharedPost?.mediaUrl,
+                      context: context,
+                      ref: ref,
+                      avatarUrl: post.avatar ??
+                          "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
+                      userName: post.fullName ?? "",
+                      userNameOrigin: sharedPost?.fullName ?? "",
+                      avatarUrlOrigin: sharedPost?.avatar ??
+                          "https://ui-avatars.com/api/?name=${sharedPost?.fullName}&background=random",
+                      createdAt: post.createdAt ?? "",
+                      content: post.body ?? "",
+                      contentOrigin: sharedPost?.body ?? "",
+                      liked: post.liked ?? false,
+                      likes: post.likeCount?.toString() ?? "0",
+                      comments: post.commentCount?.toString() ?? "0",
+                      shares: post.shareCount?.toString() ?? "0",
+                      privacy: post.privacy ?? "",
+                      postId: post.id.toString(),
+                      index: index,
+                    ),
+                    visible: post.sharedPostId == null,
+                    child: postWidget(
+                      userId: post.userId.toString(),
+                      index: index,
+                      liked: post.liked ?? false,
+                      privacy: post.privacy ?? "",
+                      postId: post.id.toString(),
+                      ref: ref,
+                      context: context,
+                      avatarUrl: post.avatar ??
+                          "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
+                      userName: post.fullName ?? "",
+                      createdAt: post.createdAt ?? "",
+                      content: post.body ?? "",
+                      mediaUrl: post.mediaUrl,
+                      likes: post.likeCount?.toString() ?? "0",
+                      comments: post.commentCount?.toString() ?? "0",
+                      shares: post.shareCount?.toString() ?? "0",
+                    ),
+                  ),
                 ),
-                visible: post.sharedPostId == null,
-                child: postWidget(
-                  userId: post.userId.toString(),
-                  index: index,
-                  liked: post.liked ?? false,
-                  privacy: post.privacy ?? "",
-                  postId: post.id.toString(),
-                  ref: ref,
-                  context: context,
-                  avatarUrl: post.avatar ??
-                      "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
-                  userName: post.fullName ?? "",
-                  createdAt: post.createdAt ?? "",
-                  content: post.body ?? "",
-                  mediaUrl: post.mediaUrl,
-                  likes: post.likeCount?.toString() ?? "0",
-                  comments: post.commentCount?.toString() ?? "0",
-                  shares: post.shareCount?.toString() ?? "0",
-                ),
-              ),
-            ),
-            if (index < controller.postCache.length - 1)
-              Divider(height: 1, color: Colors.grey.shade100),
-          ],
-        );
-      },
+                if (index < controller.postCache.length - 1)
+                  Divider(height: 1, color: Colors.grey.shade100),
+              ],
+            );
+          },
 
 
+        ),
+      ),
     );
   }
   Widget buttonFollowAndMessage() {

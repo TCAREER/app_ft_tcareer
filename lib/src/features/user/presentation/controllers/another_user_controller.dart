@@ -32,10 +32,11 @@ class AnotherUserController extends ChangeNotifier{
 
 
 
-  Users anotherUserData = Users();
+  Users? anotherUserData;
 
   Future<void>getUserById(String userId)async{
     print(">>>>>>>>>>>>userId:$userId");
+    anotherUserData = null;
     postCache.clear();
     anotherUserData = await userUseCase.getUserById(userId);
 
@@ -43,12 +44,17 @@ class AnotherUserController extends ChangeNotifier{
   }
 
 
+  bool isLoading = false;
+  void setIsLoading(bool value) {
+    isLoading = value;
+    notifyListeners();
+  }
   post_model.PostsResponse? postData ;
   final ScrollController scrollController = ScrollController();
   List<post_model.Data> postCache = [];
   Future<void> getPost(String userId) async {
     // postCache.clear();
-
+    setIsLoading(true);
     postData = await postUseCase.getPost(personal: "p",userId: userId);
     if (postData?.data != null) {
       final newPosts = postData?.data
@@ -57,13 +63,14 @@ class AnotherUserController extends ChangeNotifier{
           .toList();
       postCache.addAll(newPosts as Iterable<post_model.Data>);
     }
+    setIsLoading(false);
     print(">>>>>>>>>>${postCache.length}");
     notifyListeners();
   }
 
   Future<void> loadMore() async {
     if (scrollController.position.maxScrollExtent == scrollController.offset) {
-      await getPost(anotherUserData.data?.id.toString()??"");
+      await getPost(anotherUserData?.data?.id.toString()??"");
     }
   }
 
@@ -96,7 +103,7 @@ class AnotherUserController extends ChangeNotifier{
     postCache.clear();
 
     notifyListeners();
-    await getPost(anotherUserData.data?.id.toString()??"");
+    await getPost(anotherUserData?.data?.id.toString()??"");
   }
 
   Future<void>logout(BuildContext context)async{

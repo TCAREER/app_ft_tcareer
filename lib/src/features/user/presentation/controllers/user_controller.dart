@@ -28,7 +28,7 @@ class UserController extends ChangeNotifier{
     });
   }
 
-  Users userData = Users();
+  Users? userData;
 
   Future<void>getUserInfo()async{
 
@@ -37,10 +37,16 @@ class UserController extends ChangeNotifier{
   }
 
   Users anotherUserData = Users();
-
+  bool isLoading = false;
+  void setIsLoading(bool value) {
+    isLoading = value;
+    notifyListeners();
+  }
   Future<void>getUserById(String userId)async{
     print(">>>>>>>>>>>>userId:$userId");
+    setIsLoading(true);
     anotherUserData = await userUseCase.getUserById(userId);
+    setIsLoading(false);
     notifyListeners();
   }
 
@@ -49,6 +55,7 @@ class UserController extends ChangeNotifier{
   final ScrollController scrollController = ScrollController();
   List<post_model.Data> postCache = [];
   Future<void> getPost() async {
+    setIsLoading(true);
     postData = await postUseCase.getPost(personal: "p");
     if (postData?.data != null) {
       final newPosts = postData?.data
@@ -57,7 +64,7 @@ class UserController extends ChangeNotifier{
           .toList();
       postCache.addAll(newPosts as Iterable<post_model.Data>);
     }
-    print(">>>>>>>>>>${postCache.length}");
+    setIsLoading(false);
     notifyListeners();
   }
 

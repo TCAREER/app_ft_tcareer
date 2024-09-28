@@ -61,7 +61,7 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
                  Visibility(
                    visible: controller.users.isNotEmpty && controller.posts.isNotEmpty,
                    child: Divider(
-                    color: Colors.grey.shade100,
+                    color: Colors.grey.shade200,
                              ),
                  ),
                 postList()
