@@ -35,7 +35,10 @@ class _HomePageState extends ConsumerState<HomePage> {
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-
+    String? reload = GoRouterState.of(context).extra as String?;
+    if(reload!=null){
+      ref.read(postControllerProvider).refresh();
+    }
     Future.microtask(() {
       ref.read(postControllerProvider).scrollToTop();
     });
@@ -44,7 +47,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final controller = ref.watch(postControllerProvider);
-    final postingController = ref.watch(postingControllerProvider);
+
     bool hasData = controller.postCache.isNotEmpty;
 
     return SafeArea(

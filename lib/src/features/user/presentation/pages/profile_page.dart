@@ -8,6 +8,7 @@ import 'package:app_tcareer/src/features/user/presentation/widgets/information_l
 import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
@@ -17,7 +18,7 @@ class ProfilePage extends ConsumerStatefulWidget {
 }
 
 class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+  ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -30,12 +31,20 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
   }
 
 
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    String? reload = GoRouterState.of(context).extra as String?;
+    if(reload!=null){
+      scrollController.jumpTo(0);
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
     final controller = ref.watch(userControllerProvider);
-
-
     return SafeArea(
       child: DefaultTabController(
         length: 3,
@@ -44,7 +53,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
           body: RefreshIndicator(
             onRefresh: () => controller.getPost(),
             child: NestedScrollView(
-
+              controller: scrollController,
               headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return [
                   SliverAppBar(

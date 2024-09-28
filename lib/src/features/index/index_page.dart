@@ -17,31 +17,31 @@ class IndexPage extends ConsumerWidget {
       {
         'icon': PhosphorIconsThin.house,
         'activeIcon': PhosphorIconsFill.house,
-
+        'route':'home',
         "label": "Trang chủ"
       },
       {
         'icon': PhosphorIconsThin.bagSimple,
         'activeIcon': PhosphorIconsFill.bagSimple,
-
+        'route':'jobs',
         "label": "Công việc"
       },
       {
         'icon': PhosphorIconsThin.plusSquare,
         'activeIcon': PhosphorIconsThin.plusSquare,
-
+        'route':'posting',
         "label": "Tạo mới"
       },
       {
         'icon': PhosphorIconsThin.bell,
         'activeIcon': PhosphorIconsFill.bell,
-
+        'route':'nofications',
         "label": "Thông báo"
       },
       {
         'icon': PhosphorIconsThin.userCircle,
         'activeIcon': PhosphorIconsFill.userCircle,
-
+        'route':'user',
         "label": "Tài khoản"
       },
     ];
@@ -84,12 +84,9 @@ class IndexPage extends ConsumerWidget {
                 if(index == shell.currentIndex){
                   final GoRouter router = GoRouter.of(context);
                   String currentRoute = router.routeInformationProvider.value.uri.toString();
-                  print(">>>>>>>$currentRoute");
-                  if(currentRoute.startsWith("/home/") && currentRoute!="/home"){
-                    context.goNamed("home");
+                  String route = items[index]['route'];
 
-                  }
-
+                  context.goNamed(route, extra: 'reload');
                 }
                 else{
                   shell.goBranch(index);
