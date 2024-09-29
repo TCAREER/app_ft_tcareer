@@ -2,18 +2,21 @@ import 'package:app_tcareer/app.dart';
 import 'package:app_tcareer/firebase_options.dart';
 import 'package:app_tcareer/src/routes/app_router.dart';
 import 'package:app_tcareer/src/services/apis/api_services.dart';
+import 'package:app_tcareer/src/services/device_info_service.dart';
+import 'package:app_tcareer/src/services/notifications/notification_handler.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:universal_io/io.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   usePathUrlStrategy();
-
-  // Chỉ khởi tạo Firebase một lần
+  final container = ProviderContainer();
+  container.read(deviceInfoProvider).configuration();
   try {
     await Firebase.initializeApp(
       options: kIsWeb
@@ -35,5 +38,6 @@ void main() async {
     }
   }
 
-  runApp(ProviderScope(child: App()));
+  container.read(notificationProvider).initializeNotificationServices();
+  runApp(const ProviderScope(child: App()));
 }
