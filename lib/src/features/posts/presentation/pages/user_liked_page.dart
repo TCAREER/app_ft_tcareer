@@ -33,21 +33,15 @@ class _UserLikedPageState extends ConsumerState<UserLikedPage> {
       child: ListView(
         children: [
           AppBar(
+            toolbarHeight: 30,
             centerTitle: true,
             automaticallyImplyLeading: false,
-            title: Column(
-
-              children: [
-                const SizedBox(height: 10),
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(5)),
-                  width: 30,
-                  height: 4,
-                ),
-                const SizedBox(height: 10),
-              ],
+            title: Container(
+              decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(5)),
+              width: 30,
+              height: 4,
             ),
           ),
           Visibility(

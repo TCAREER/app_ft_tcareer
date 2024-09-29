@@ -84,6 +84,7 @@ class PostController extends ChangeNotifier {
       {required int index, required String postId}) async {
     // setLikePost(index);
     await postUseCase.postLikePost(postId: postId,index: index,postCache: postCache);
+
     notifyListeners();
   }
 
@@ -161,6 +162,8 @@ class PostController extends ChangeNotifier {
   UserLiked? userLiked;
 
   Future<void>getUserLikePost(int postId)async{
+    userLiked = null;
+    notifyListeners();
     userLiked = await postUseCase.getUserLikePost(postId);
     notifyListeners();
   }

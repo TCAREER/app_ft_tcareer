@@ -56,8 +56,12 @@ class PostUseCase {
 
   Future<void>setLikePost({required int index,required String postId,required List<post.Data>postCache })async{
     if(postCache.isNotEmpty && index < postCache.length){
-      final updatedPost = postCache[index].copyWith(
+      final currentPost = postCache[index];
+      final isLiked = currentPost.liked??false;
+      final likeCount = currentPost.likeCount??0;
+      final updatedPost = currentPost.copyWith(
         liked: !(postCache[index].liked ?? false),
+        likeCount:isLiked?likeCount-1:likeCount+1
       );
       postCache[index] = updatedPost;
       final itemList = postCache;

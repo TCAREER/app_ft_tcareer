@@ -1,0 +1,17 @@
+com.flutterandies.photo_manager-core-1.6.0-0 /home/thiendev/.gradle/caches/transforms-3/1227bb32d338e358eff4c5bf5b08270c/transformed/core-1.6.0/res
+com.flutterandies.photo_manager-jetified-window-1.0.0-beta04-1 /home/thiendev/.gradle/caches/transforms-3/1f063c91a907141588f51f373b1f5f4a/transformed/jetified-window-1.0.0-beta04/res
+com.flutterandies.photo_manager-lifecycle-runtime-2.3.1-2 /home/thiendev/.gradle/caches/transforms-3/36208d5fd4771203a7c41d840342ae58/transformed/lifecycle-runtime-2.3.1/res
+com.flutterandies.photo_manager-jetified-glide-4.15.1-3 /home/thiendev/.gradle/caches/transforms-3/6743bf1981c141f31fc49ad2a49ca8fc/transformed/jetified-glide-4.15.1/res
+com.flutterandies.photo_manager-jetified-window-java-1.0.0-beta04-4 /home/thiendev/.gradle/caches/transforms-3/6d2f8042b989e9f02a2914d91ea7c64c/transformed/jetified-window-java-1.0.0-beta04/res
+com.flutterandies.photo_manager-fragment-1.3.6-5 /home/thiendev/.gradle/caches/transforms-3/a0914c2d67152986342174156f970a12/transformed/fragment-1.3.6/res
+com.flutterandies.photo_manager-jetified-annotation-experimental-1.1.0-6 /home/thiendev/.gradle/caches/transforms-3/a15c6353ebee292a754ca976f2ce177d/transformed/jetified-annotation-experimental-1.1.0/res
+com.flutterandies.photo_manager-lifecycle-viewmodel-2.3.1-7 /home/thiendev/.gradle/caches/transforms-3/b33707073bb648d1a23f48bf9c795a47/transformed/lifecycle-viewmodel-2.3.1/res
+com.flutterandies.photo_manager-jetified-savedstate-1.1.0-8 /home/thiendev/.gradle/caches/transforms-3/dbb83d5536ae8364f7d55525f60e8e05/transformed/jetified-savedstate-1.1.0/res
+com.flutterandies.photo_manager-main-9 /home/thiendev/.pub-cache/hosted/pub.dev/photo_manager-3.3.0/android/src/main/res
+com.flutterandies.photo_manager-release-10 /home/thiendev/.pub-cache/hosted/pub.dev/photo_manager-3.3.0/android/src/release/res
+com.flutterandies.photo_manager-pngs-11 /home/thiendev/Documents/dev/ctut/app_ft_tcareer/build/photo_manager/generated/res/pngs/release
+com.flutterandies.photo_manager-resValues-12 /home/thiendev/Documents/dev/ctut/app_ft_tcareer/build/photo_manager/generated/res/resValues/release
+com.flutterandies.photo_manager-rs-13 /home/thiendev/Documents/dev/ctut/app_ft_tcareer/build/photo_manager/generated/res/rs/release
+com.flutterandies.photo_manager-mergeReleaseResources-14 /home/thiendev/Documents/dev/ctut/app_ft_tcareer/build/photo_manager/intermediates/incremental/release/mergeReleaseResources/merged.dir
+com.flutterandies.photo_manager-mergeReleaseResources-15 /home/thiendev/Documents/dev/ctut/app_ft_tcareer/build/photo_manager/intermediates/incremental/release/mergeReleaseResources/stripped.dir
+com.flutterandies.photo_manager-merged_res-16 /home/thiendev/Documents/dev/ctut/app_ft_tcareer/build/photo_manager/intermediates/merged_res/release

@@ -35,15 +35,18 @@ class _HomePageState extends ConsumerState<HomePage> {
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    String? reload = GoRouterState.of(context).extra as String?;
-    if(reload!=null){
+    final extra = GoRouterState.of(context).extra;
+
+    if(extra=="reload"){
       Future.microtask((){
         ref.read(postControllerProvider).refresh();
       });
     }
-    Future.microtask(() {
-      ref.read(postControllerProvider).scrollToTop();
-    });
+    if(extra=="scrollTop"){
+      Future.microtask(() {
+        ref.read(postControllerProvider).scrollToTop();
+      });
+    }
   }
 
   @override
