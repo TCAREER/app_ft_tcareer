@@ -231,56 +231,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
       ),
     );
   }
-
-  Widget buttonFollowAndMessage() {
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 35,
-                width: MediaQuery.of(context).size.width * .45,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  onPressed: () {},
-                  child: const Text("Theo dõi",
-                      style: TextStyle(color: Colors.white)),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: Column(
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .45,
-                height: 35,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    side: BorderSide(color: Colors.grey.shade100),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  onPressed: () {},
-                  child: const Text("Nhắn tin",
-                      style: TextStyle(color: Colors.black)),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
 }
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {

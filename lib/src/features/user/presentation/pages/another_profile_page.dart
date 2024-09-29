@@ -5,6 +5,7 @@ import 'package:app_tcareer/src/features/posts/presentation/widgets/shared_post_
 import 'package:app_tcareer/src/features/user/presentation/controllers/another_user_controller.dart';
 import 'package:app_tcareer/src/features/user/presentation/controllers/user_connection_controller.dart';
 import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
+import 'package:app_tcareer/src/features/user/presentation/widgets/connect_button.dart';
 import 'package:app_tcareer/src/features/user/presentation/widgets/information.dart';
 import 'package:app_tcareer/src/features/user/presentation/widgets/information_loading.dart';
 import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
@@ -38,6 +39,7 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage>
   @override
   Widget build(BuildContext context) {
     final controller = ref.watch(anotherUserControllerProvider);
+    final user = controller.anotherUserData?.data;
     return SafeArea(
       child: DefaultTabController(
         length: 3,
@@ -66,7 +68,8 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage>
                   ],
                 ),
                 SliverToBoxAdapter(child: userInfo()),
-                SliverToBoxAdapter(child: buttonFollowAndMessage()),
+                SliverToBoxAdapter(
+                    child: buttonFollowAndMessage(user?.followed ?? false)),
                 const SliverToBoxAdapter(child: SizedBox(height: 5)),
                 SliverPersistentHeader(
                   pinned: true,
@@ -213,7 +216,7 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage>
     );
   }
 
-  Widget buttonFollowAndMessage() {
+  Widget buttonFollowAndMessage(bool followed) {
     final controller = ref.watch(anotherUserControllerProvider);
     final connectionController = ref.watch(userConnectionControllerProvider);
     String userId = controller.anotherUserData?.data?.id.toString() ?? "";
@@ -221,28 +224,10 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage>
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
         children: [
-          Expanded(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 35,
-                  width: MediaQuery.of(context).size.width * .45,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    onPressed: () async =>
-                        await connectionController.postFollow(userId),
-                    child: const Text("Theo dõi",
-                        style: TextStyle(color: Colors.white)),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          connectButton(
+              friendStatus: controller.anotherUserData?.data?.friendStatus,
+              onConnect: () async =>
+                  await connectionController.postAddFriend(userId)),
           Expanded(
             child: Column(
               children: [

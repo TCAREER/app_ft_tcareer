@@ -34,13 +34,14 @@ class SearchPage extends ConsumerWidget {
             ),
           ),
         ),
-        body: userList(ref),
+        body: userList(ref, context),
       ),
     );
   }
 
-  Widget userList(WidgetRef ref) {
+  Widget userList(WidgetRef ref, BuildContext context) {
     final controller = ref.watch(searchPostControllerProvider);
+    final postController = ref.watch(postControllerProvider);
     return Visibility(
       visible: controller.quickSearchData.data?.isNotEmpty == true,
       child: ListView.separated(
@@ -49,15 +50,18 @@ class SearchPage extends ConsumerWidget {
         itemBuilder: (context, index) {
           final user = controller.quickSearchData.data?[index];
           return ListTile(
-            onTap: () => context.pushNamed('profile',
-                queryParameters: {"userId": user?.id.toString()}),
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(user?.avatar ??
-                  "https://ui-avatars.com/api/?name=${user?.fullName}&background=random"),
-            ),
-            title: Text(user?.fullName ?? ""),
-            trailing: Icon(Icons.arrow_forward_rounded),
-          );
+              onTap: () => postController.goToProfile(
+                  userId: user?.id.toString() ?? "", context: context),
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(user?.avatar ??
+                    "https://ui-avatars.com/api/?name=${user?.fullName}&background=random"),
+              ),
+              title: Text(user?.fullName ?? ""),
+              trailing: Icon(
+                size: 20,
+                Icons.arrow_forward_ios_outlined,
+                color: Colors.black,
+              ));
         },
         separatorBuilder: (context, index) => const SizedBox(
           height: 10,

@@ -38,15 +38,30 @@ class AnotherMenu extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           children: [
             ListTile(
-              onTap: () => controller.postAddFriend(
-                  anotherUser.anotherUserData?.data?.id.toString() ?? ""),
-              trailing: const PhosphorIcon(
-                PhosphorIconsLight.userCirclePlus,
-                color: Colors.black,
+              onTap: () => controller.postFollow(
+                  anotherUser.anotherUserData?.data?.id.toString() ?? "",
+                  context),
+              trailing: Visibility(
+                visible: anotherUser.anotherUserData?.data?.followed != true,
+                replacement: const PhosphorIcon(
+                  PhosphorIconsLight.xCircle,
+                  color: Colors.black,
+                ),
+                child: const PhosphorIcon(
+                  PhosphorIconsLight.plusCircle,
+                  color: Colors.black,
+                ),
               ),
-              title: const Text(
-                "Kết nối",
-                style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
+              title: Visibility(
+                visible: anotherUser.anotherUserData?.data?.followed != true,
+                replacement: const Text(
+                  "Bỏ theo dõi",
+                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
+                ),
+                child: const Text(
+                  "Theo dõi",
+                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
+                ),
               ),
             ),
             const ListTile(

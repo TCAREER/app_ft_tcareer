@@ -2,6 +2,7 @@ import 'package:app_tcareer/src/configs/app_colors.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart';
 import 'package:app_tcareer/src/features/posts/presentation/controllers/post_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
+import 'package:app_tcareer/src/features/posts/presentation/widgets/empty_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/post_loading_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/post_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/shared_post_widget.dart';
@@ -66,9 +67,14 @@ class _HomePageState extends ConsumerState<HomePage> {
             slivers: [
               sliverAppBar(ref),
               SliverVisibility(
-                  visible: controller.postCache.isNotEmpty,
+                  visible: controller.postData != null,
                   replacementSliver: postLoadingWidget(context),
-                  sliver: sliverPost(ref)),
+                  sliver: SliverVisibility(
+                      visible: controller.postCache.isNotEmpty,
+                      replacementSliver: SliverFillRemaining(
+                        child: emptyWidget("Không có bài viết nào"),
+                      ),
+                      sliver: sliverPost(ref))),
               SliverToBoxAdapter(
                 child: Visibility(
                   visible: hasData &&
