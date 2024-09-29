@@ -3,7 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class NotificationService {
-  void initialize() {
+  void initialize() async {
     AwesomeNotifications().initialize(null, [
       NotificationChannel(
         playSound: true,
@@ -21,6 +21,10 @@ class NotificationService {
         channelGroupName: 'push notify group',
       )
     ]);
+    bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
+    if (!isAllowed) {
+      await AwesomeNotifications().requestPermissionToSendNotifications();
+    }
   }
 
   Future<void> displayNotification(RemoteMessage message) async {
@@ -30,10 +34,11 @@ class NotificationService {
       AwesomeNotifications().createNotification(
           content: NotificationContent(
               id: notificationId,
-              channelKey: 'basic chanel',
+              channelKey: 'basic_channel',
               title: message.notification?.title,
               body: message.notification?.body,
               notificationLayout: NotificationLayout.Default));
+      await AwesomeNotifications().shouldShowRationaleToRequest();
     }
   }
 }

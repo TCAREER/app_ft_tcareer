@@ -12,7 +12,7 @@ class FirebaseMessagingService {
     String? deviceToken = await fcm.getToken();
     await userUtils.saveDeviceToken(deviceToken: deviceToken ?? "");
     print(">>>>>>>>>>deviceToken: $deviceToken");
-
+    fcm.subscribeToTopic("tcareer");
     fcm.getInitialMessage();
     FirebaseMessaging.onMessageOpenedApp
         .listen((RemoteMessage message) async {});

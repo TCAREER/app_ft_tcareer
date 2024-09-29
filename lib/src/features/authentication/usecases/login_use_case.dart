@@ -8,8 +8,8 @@ class LoginUseCase {
   final AuthRepository authRepository;
   LoginUseCase(this.authRepository);
 
-  Future login(LoginRequest body) async {
-    return await authRepository.login(body);
+  Future login({required String phone, required String password}) async {
+    return await authRepository.login(phone: phone, password: password);
   }
 
   Future loginWithGoogle() async {

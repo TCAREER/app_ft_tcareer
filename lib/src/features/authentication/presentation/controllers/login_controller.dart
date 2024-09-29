@@ -19,10 +19,9 @@ class LoginController extends StateNotifier<void> {
   Future<void> login(BuildContext context,
       {String? phone, String? password}) async {
     AppUtils.loadingApi(() async {
-      final body = LoginRequest(
+      await loginUseCaseProvider.login(
           phone: phone ?? phoneController.text,
           password: password ?? passController.text);
-      await loginUseCaseProvider.login(body);
 
       // context.go("/home");
     }, context);

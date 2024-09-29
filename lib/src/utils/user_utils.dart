@@ -77,9 +77,19 @@ class UserUtils {
     return shareRef.setString("deviceToken", deviceToken);
   }
 
+  Future<String?> getDeviceToken() async {
+    final sharedRef = await ref.read(sharedPreferencesProvider.future);
+    return sharedRef.getString("deviceToken");
+  }
+
   Future<bool> saveDeviceId({required String deviceId}) async {
     final shareRef = await ref.read(sharedPreferencesProvider.future);
     return shareRef.setString("deviceId", deviceId);
+  }
+
+  Future<String?> getDeviceId() async {
+    final sharedRef = await ref.read(sharedPreferencesProvider.future);
+    return sharedRef.getString("deviceId");
   }
 
   Future<String?> loadCache(String key) async {

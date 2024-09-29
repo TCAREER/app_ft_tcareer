@@ -23,11 +23,18 @@ class AuthRepository {
     await apiServices.postRegister(body: body);
   }
 
-  Future<void> login(LoginRequest body) async {
+  Future<void> login({required String phone, required String password}) async {
     try {
       final apiServices = ref.watch(apiServiceProvider);
-      final response = await apiServices.postLogin(body: body);
       final userUtil = ref.watch(userUtilsProvider);
+      String deviceToken = await userUtil.getDeviceToken() ?? "";
+      String deviceId = await userUtil.getDeviceId() ?? "";
+      final body = LoginRequest(
+          phone: phone,
+          password: password,
+          deviceToken: deviceToken,
+          deviceId: deviceId);
+      final response = await apiServices.postLogin(body: body);
       userUtil.saveAuthToken(
           authToken: response.accessToken ?? "",
           refreshToken: response.refreshToken ?? "");
@@ -42,11 +49,17 @@ class AuthRepository {
     final fireBaseAuth = ref.watch(firebaseAuthServiceProvider);
     final user = await fireBaseAuth.signInWithGoogle();
     final accessToken = user?.credential?.accessToken;
+    final userUtil = ref.watch(userUtilsProvider);
+    String deviceToken = await userUtil.getDeviceToken() ?? "";
+    String deviceId = await userUtil.getDeviceId() ?? "";
     try {
       final apiServices = ref.watch(apiServiceProvider);
       final response = await apiServices.postLoginWithGoogle(
-          body: LoginGoogleRequest(accessToken: accessToken));
-      final userUtil = ref.watch(userUtilsProvider);
+          body: LoginGoogleRequest(
+              accessToken: accessToken,
+              deviceId: deviceId,
+              deviceToken: deviceToken));
+
       userUtil.saveAuthToken(
           authToken: response.accessToken ?? "",
           refreshToken: response.refreshToken ?? "");
