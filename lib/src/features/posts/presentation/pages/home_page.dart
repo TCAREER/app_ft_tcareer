@@ -70,7 +70,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   visible: controller.postData != null,
                   replacementSliver: postLoadingWidget(context),
                   sliver: SliverVisibility(
-                      visible: controller.postCache.isNotEmpty,
+                      visible: controller.postData?.data?.isNotEmpty == true,
                       replacementSliver: SliverFillRemaining(
                         child: emptyWidget("Không có bài viết nào"),
                       ),

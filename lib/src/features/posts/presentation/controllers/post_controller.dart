@@ -111,7 +111,7 @@ class PostController extends ChangeNotifier {
   }
 
   Future<void> refresh() async {
-    postData?.data?.clear();
+    postData = null;
     postCache.clear();
     print(">>>>>>>>>>${postCache.length}");
     notifyListeners();
