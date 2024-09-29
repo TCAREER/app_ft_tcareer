@@ -8,10 +8,10 @@ class SearchPage extends ConsumerWidget {
   const SearchPage({super.key});
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.watch(searchPostControllerProvider);
     return PopScope(
-      onPopInvoked: (didPop){
+      onPopInvoked: (didPop) {
         controller.quickSearchData.data?.clear();
         controller.queryController.clear();
       },
@@ -23,12 +23,15 @@ class SearchPage extends ConsumerWidget {
           automaticallyImplyLeading: false,
           title: searchBarWidget(
               controller: controller.queryController,
-              onChanged: (val)async=>await controller.onSearch(),
-              onSubmitted: (val)=>context.goNamed("searchResult",queryParameters: {"q":val})
-          ),
-          leading:GestureDetector(
-            onTap: ()=>context.pop(),
-            child: const Icon(Icons.arrow_back,color: Colors.black,),
+              onChanged: (val) async => await controller.onSearch(),
+              onSubmitted: (val) =>
+                  context.goNamed("searchResult", queryParameters: {"q": val})),
+          leading: GestureDetector(
+            onTap: () => context.pop(),
+            child: const Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
           ),
         ),
         body: userList(ref),
@@ -36,28 +39,30 @@ class SearchPage extends ConsumerWidget {
     );
   }
 
-  Widget userList(WidgetRef ref){
+  Widget userList(WidgetRef ref) {
     final controller = ref.watch(searchPostControllerProvider);
     return Visibility(
-      visible: controller.quickSearchData.data?.isNotEmpty==true,
+      visible: controller.quickSearchData.data?.isNotEmpty == true,
       child: ListView.separated(
         padding: const EdgeInsets.symmetric(vertical: 10),
-        itemCount: controller.quickSearchData.data?.length??0,
-          itemBuilder: (context, index) {
-            final user = controller.quickSearchData.data?[index];
-            return ListTile(
-              onTap: () => context.pushNamed('profile',queryParameters: {"userId":user?.id.toString()}),
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(user?.avatar??"https://ui-avatars.com/api/?name=${user?.fullName}&background=random"),
-              ),
-              title: Text(user?.fullName??""),
-              trailing:Icon(Icons.arrow_forward_rounded),
-            );
-          },
-          separatorBuilder: (context, index) => const SizedBox(height: 10,),
+        itemCount: controller.quickSearchData.data?.length ?? 0,
+        itemBuilder: (context, index) {
+          final user = controller.quickSearchData.data?[index];
+          return ListTile(
+            onTap: () => context.pushNamed('profile',
+                queryParameters: {"userId": user?.id.toString()}),
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage(user?.avatar ??
+                  "https://ui-avatars.com/api/?name=${user?.fullName}&background=random"),
+            ),
+            title: Text(user?.fullName ?? ""),
+            trailing: Icon(Icons.arrow_forward_rounded),
+          );
+        },
+        separatorBuilder: (context, index) => const SizedBox(
+          height: 10,
+        ),
       ),
     );
   }
-
-
 }

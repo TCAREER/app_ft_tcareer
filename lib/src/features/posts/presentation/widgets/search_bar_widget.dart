@@ -1,7 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-Widget searchBarWidget({void Function(String)? onChanged,required TextEditingController controller,void Function(String)? onSubmitted,void Function()? onTap,bool readOnly = false}) {
+Widget searchBarWidget(
+    {void Function(String)? onChanged,
+    required TextEditingController controller,
+    void Function(String)? onSubmitted,
+    void Function()? onTap,
+    bool readOnly = false}) {
   return SizedBox(
     height: 40,
     child: TextField(

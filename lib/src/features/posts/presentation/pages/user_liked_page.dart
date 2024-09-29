@@ -8,11 +8,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 class UserLikedPage extends ConsumerStatefulWidget {
- final int? postId;
+  final int? postId;
 
- final int? commentId;
+  final int? commentId;
 
-  const UserLikedPage( {this.postId,  this.commentId,super.key});
+  const UserLikedPage({this.postId, this.commentId, super.key});
 
   @override
   ConsumerState<UserLikedPage> createState() => _UserLikedPageState();
@@ -23,12 +23,14 @@ class _UserLikedPageState extends ConsumerState<UserLikedPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.microtask((){
-      if(widget.postId!=null){
+    Future.microtask(() {
+      if (widget.postId != null) {
         ref.read(postControllerProvider).getUserLikePost(widget.postId!);
       }
-      if(widget.commentId!=null){
-        ref.read(commentControllerProvider).getUserLikeComment(widget.commentId!);
+      if (widget.commentId != null) {
+        ref
+            .read(commentControllerProvider)
+            .getUserLikeComment(widget.commentId!);
       }
     });
   }
@@ -38,7 +40,9 @@ class _UserLikedPageState extends ConsumerState<UserLikedPage> {
     final postController = ref.watch(postControllerProvider);
     final commentController = ref.watch(commentControllerProvider);
     final postId = widget.postId;
-    final users = postId!=null?postController.userLiked?.data:commentController.userLiked?.data;
+    final users = postId != null
+        ? postController.userLiked?.data
+        : commentController.userLiked?.data;
     return ClipRRect(
       borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20), topRight: Radius.circular(20)),
@@ -66,51 +70,53 @@ class _UserLikedPageState extends ConsumerState<UserLikedPage> {
                 ),
               ],
             ),
-
           ),
           Divider(
             // thickness: 0.1,
             color: Colors.grey.shade200,
           ),
           Visibility(
-            visible: users!=null,
+            visible: users != null,
             replacement: circularLoadingWidget(),
             child: ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               padding: const EdgeInsets.symmetric(vertical: 10),
-              itemCount: users?.length??0,
+              itemCount: users?.length ?? 0,
               itemBuilder: (context, index) {
                 final user = users?[index];
                 return ListTile(
-                  onTap: () => context.pushNamed('profile',queryParameters: {"userId":user?.id.toString()}),
+                  onTap: () => context.pushNamed('profile',
+                      queryParameters: {"userId": user?.id.toString()}),
                   leading: CircleAvatar(
-                    backgroundImage: NetworkImage(user?.avatar??"https://ui-avatars.com/api/?name=${user?.fullName}&background=random"),
+                    backgroundImage: NetworkImage(user?.avatar ??
+                        "https://ui-avatars.com/api/?name=${user?.fullName}&background=random"),
                   ),
-                  title: Text(user?.fullName??""),
-                  trailing:SizedBox(
+                  title: Text(user?.fullName ?? ""),
+                  trailing: SizedBox(
                     height: 30,
                     width: 110,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:Colors.blue,
+                        backgroundColor: Colors.blue,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      onPressed: (){},
-                      child: const Text("Theo dõi", style: TextStyle(color: Colors.white)),
+                      onPressed: () {},
+                      child: const Text("Theo dõi",
+                          style: TextStyle(color: Colors.white)),
                     ),
                   ),
                 );
               },
-              separatorBuilder: (context, index) => const SizedBox(height: 10,),
+              separatorBuilder: (context, index) => const SizedBox(
+                height: 10,
+              ),
             ),
           ),
         ],
       ),
-
-
     );
   }
 }

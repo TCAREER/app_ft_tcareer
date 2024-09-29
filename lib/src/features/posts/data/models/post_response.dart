@@ -1,12 +1,13 @@
 class PostResponse {
   PostResponse({
-      String? status, 
-      num? totalResults, 
-      List<Articles>? articles,}){
+    String? status,
+    num? totalResults,
+    List<Articles>? articles,
+  }) {
     _status = status;
     _totalResults = totalResults;
     _articles = articles;
-}
+  }
 
   PostResponse.fromJson(dynamic json) {
     _status = json['status'];
@@ -21,13 +22,16 @@ class PostResponse {
   String? _status;
   num? _totalResults;
   List<Articles>? _articles;
-PostResponse copyWith({  String? status,
-  num? totalResults,
-  List<Articles>? articles,
-}) => PostResponse(  status: status ?? _status,
-  totalResults: totalResults ?? _totalResults,
-  articles: articles ?? _articles,
-);
+  PostResponse copyWith({
+    String? status,
+    num? totalResults,
+    List<Articles>? articles,
+  }) =>
+      PostResponse(
+        status: status ?? _status,
+        totalResults: totalResults ?? _totalResults,
+        articles: articles ?? _articles,
+      );
   String? get status => _status;
   num? get totalResults => _totalResults;
   List<Articles>? get articles => _articles;
@@ -41,19 +45,19 @@ PostResponse copyWith({  String? status,
     }
     return map;
   }
-
 }
 
 class Articles {
   Articles({
-      Source? source, 
-      String? author, 
-      String? title, 
-      dynamic description, 
-      String? url, 
-      dynamic urlToImage, 
-      String? publishedAt, 
-      dynamic content,}){
+    Source? source,
+    String? author,
+    String? title,
+    dynamic description,
+    String? url,
+    dynamic urlToImage,
+    String? publishedAt,
+    dynamic content,
+  }) {
     _source = source;
     _author = author;
     _title = title;
@@ -62,7 +66,7 @@ class Articles {
     _urlToImage = urlToImage;
     _publishedAt = publishedAt;
     _content = content;
-}
+  }
 
   Articles.fromJson(dynamic json) {
     _source = json['source'] != null ? Source.fromJson(json['source']) : null;
@@ -82,23 +86,26 @@ class Articles {
   dynamic _urlToImage;
   String? _publishedAt;
   dynamic _content;
-Articles copyWith({  Source? source,
-  String? author,
-  String? title,
-  dynamic description,
-  String? url,
-  dynamic urlToImage,
-  String? publishedAt,
-  dynamic content,
-}) => Articles(  source: source ?? _source,
-  author: author ?? _author,
-  title: title ?? _title,
-  description: description ?? _description,
-  url: url ?? _url,
-  urlToImage: urlToImage ?? _urlToImage,
-  publishedAt: publishedAt ?? _publishedAt,
-  content: content ?? _content,
-);
+  Articles copyWith({
+    Source? source,
+    String? author,
+    String? title,
+    dynamic description,
+    String? url,
+    dynamic urlToImage,
+    String? publishedAt,
+    dynamic content,
+  }) =>
+      Articles(
+        source: source ?? _source,
+        author: author ?? _author,
+        title: title ?? _title,
+        description: description ?? _description,
+        url: url ?? _url,
+        urlToImage: urlToImage ?? _urlToImage,
+        publishedAt: publishedAt ?? _publishedAt,
+        content: content ?? _content,
+      );
   Source? get source => _source;
   String? get author => _author;
   String? get title => _title;
@@ -122,16 +129,16 @@ Articles copyWith({  Source? source,
     map['content'] = _content;
     return map;
   }
-
 }
 
 class Source {
   Source({
-      String? id, 
-      String? name,}){
+    String? id,
+    String? name,
+  }) {
     _id = id;
     _name = name;
-}
+  }
 
   Source.fromJson(dynamic json) {
     _id = json['id'];
@@ -139,11 +146,14 @@ class Source {
   }
   String? _id;
   String? _name;
-Source copyWith({  String? id,
-  String? name,
-}) => Source(  id: id ?? _id,
-  name: name ?? _name,
-);
+  Source copyWith({
+    String? id,
+    String? name,
+  }) =>
+      Source(
+        id: id ?? _id,
+        name: name ?? _name,
+      );
   String? get id => _id;
   String? get name => _name;
 
@@ -153,5 +163,4 @@ Source copyWith({  String? id,
     map['name'] = _name;
     return map;
   }
-
 }

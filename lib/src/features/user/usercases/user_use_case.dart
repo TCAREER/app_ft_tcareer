@@ -7,7 +7,8 @@ class UserUseCase {
   UserUseCase(this.userRepository);
 
   Future<Users> getUserInfo() async => await userRepository.getUserInfo();
-  Future<Users>getUserById(String userId)async=>await userRepository.getUserById(userId);
+  Future<Users> getUserById(String userId) async =>
+      await userRepository.getUserById(userId);
 }
 
 final userUseCaseProvider =

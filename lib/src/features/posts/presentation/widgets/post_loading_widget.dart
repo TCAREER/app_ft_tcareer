@@ -1,4 +1,3 @@
-
 import 'package:app_tcareer/src/widgets/cached_image_widget.dart';
 import 'package:app_tcareer/src/widgets/shimmer_loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -151,7 +150,7 @@ Widget postLoadingWidget(BuildContext context) {
   );
 }
 
-Widget postLoadingListViewWidget(BuildContext context){
+Widget postLoadingListViewWidget(BuildContext context) {
   return ListView.builder(
     itemCount: 5,
     itemBuilder: (context, index) {
@@ -192,34 +191,34 @@ Widget postLoadingListViewWidget(BuildContext context){
                                 children: [
                                   shimmerLoadingWidget(
                                       child: Container(
-                                        margin: EdgeInsets.symmetric(vertical: 2),
-                                        width: 200, // Độ rộng tạm của text
-                                        height: 15, // Độ cao tương đương với text
-                                        decoration: BoxDecoration(
-                                            color: Colors.grey.shade300,
-                                            borderRadius: BorderRadius.circular(
-                                                20)), // Màu skeleton
-                                      )),
+                                    margin: EdgeInsets.symmetric(vertical: 2),
+                                    width: 200, // Độ rộng tạm của text
+                                    height: 15, // Độ cao tương đương với text
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey.shade300,
+                                        borderRadius: BorderRadius.circular(
+                                            20)), // Màu skeleton
+                                  )),
                                   shimmerLoadingWidget(
                                       child: Container(
-                                        margin: EdgeInsets.symmetric(vertical: 2),
-                                        width: 150, // Độ rộng tạm của text
-                                        height: 15, // Độ cao tương đương với text
-                                        decoration: BoxDecoration(
-                                            color: Colors.grey.shade300,
-                                            borderRadius: BorderRadius.circular(
-                                                20)), // Màu skeleton
-                                      )),
+                                    margin: EdgeInsets.symmetric(vertical: 2),
+                                    width: 150, // Độ rộng tạm của text
+                                    height: 15, // Độ cao tương đương với text
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey.shade300,
+                                        borderRadius: BorderRadius.circular(
+                                            20)), // Màu skeleton
+                                  )),
                                   shimmerLoadingWidget(
                                       child: Container(
-                                        margin: EdgeInsets.symmetric(vertical: 2),
-                                        width: 100, // Độ rộng tạm của text
-                                        height: 15, // Độ cao tương đương với text
-                                        decoration: BoxDecoration(
-                                            color: Colors.grey.shade300,
-                                            borderRadius: BorderRadius.circular(
-                                                20)), // Màu skeleton
-                                      )),
+                                    margin: EdgeInsets.symmetric(vertical: 2),
+                                    width: 100, // Độ rộng tạm của text
+                                    height: 15, // Độ cao tương đương với text
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey.shade300,
+                                        borderRadius: BorderRadius.circular(
+                                            20)), // Màu skeleton
+                                  )),
                                 ],
                               )
                             ],
@@ -231,36 +230,36 @@ Widget postLoadingListViewWidget(BuildContext context){
                       ),
                       shimmerLoadingWidget(
                           child: Container(
-                            margin: EdgeInsets.symmetric(vertical: 2),
-                            width: ScreenUtil().screenWidth, // Độ rộng tạm của text
-                            height: 15, // Độ cao tương đương với text
-                            decoration: BoxDecoration(
-                                color: Colors.grey.shade300,
-                                borderRadius:
+                        margin: EdgeInsets.symmetric(vertical: 2),
+                        width: ScreenUtil().screenWidth, // Độ rộng tạm của text
+                        height: 15, // Độ cao tương đương với text
+                        decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            borderRadius:
                                 BorderRadius.circular(20)), // Màu skeleton
-                          )),
+                      )),
                       shimmerLoadingWidget(
                           child: Container(
-                            margin: EdgeInsets.symmetric(vertical: 2),
-                            width: ScreenUtil().screenWidth *
-                                .7, // Độ rộng tạm của text
-                            height: 15, // Độ cao tương đương với text
-                            decoration: BoxDecoration(
-                                color: Colors.grey.shade300,
-                                borderRadius:
+                        margin: EdgeInsets.symmetric(vertical: 2),
+                        width: ScreenUtil().screenWidth *
+                            .7, // Độ rộng tạm của text
+                        height: 15, // Độ cao tương đương với text
+                        decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            borderRadius:
                                 BorderRadius.circular(20)), // Màu skeleton
-                          )),
+                      )),
                       shimmerLoadingWidget(
                           child: Container(
-                            margin: EdgeInsets.symmetric(vertical: 2),
-                            width: ScreenUtil().screenWidth *
-                                .5, // Độ rộng tạm của text
-                            height: 15, // Độ cao tương đương với text
-                            decoration: BoxDecoration(
-                                color: Colors.grey.shade300,
-                                borderRadius:
+                        margin: EdgeInsets.symmetric(vertical: 2),
+                        width: ScreenUtil().screenWidth *
+                            .5, // Độ rộng tạm của text
+                        height: 15, // Độ cao tương đương với text
+                        decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            borderRadius:
                                 BorderRadius.circular(20)), // Màu skeleton
-                          )),
+                      )),
                     ],
                   ),
                 ),
@@ -279,13 +278,13 @@ Widget postLoadingListViewWidget(BuildContext context){
                 ),
                 shimmerLoadingWidget(
                     child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 2),
-                      width: 150, // Độ rộng tạm của text
-                      height: 15, // Độ cao tương đương với text
-                      decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
-                          borderRadius: BorderRadius.circular(20)), // Màu skeleton
-                    )),
+                  margin: EdgeInsets.symmetric(vertical: 2),
+                  width: 150, // Độ rộng tạm của text
+                  height: 15, // Độ cao tương đương với text
+                  decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(20)), // Màu skeleton
+                )),
                 const SizedBox(
                   height: 10,
                 ),
@@ -295,6 +294,5 @@ Widget postLoadingListViewWidget(BuildContext context){
         ),
       );
     },
-
   );
 }

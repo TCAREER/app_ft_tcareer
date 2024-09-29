@@ -1,16 +1,20 @@
 class LikeCommentRequest {
   LikeCommentRequest({
-      num? commentId,}){
+    num? commentId,
+  }) {
     _commentId = commentId;
-}
+  }
 
   LikeCommentRequest.fromJson(dynamic json) {
     _commentId = json['comment_id'];
   }
   num? _commentId;
-LikeCommentRequest copyWith({  num? commentId,
-}) => LikeCommentRequest(  commentId: commentId ?? _commentId,
-);
+  LikeCommentRequest copyWith({
+    num? commentId,
+  }) =>
+      LikeCommentRequest(
+        commentId: commentId ?? _commentId,
+      );
   num? get commentId => _commentId;
 
   Map<String, dynamic> toJson() {
@@ -18,5 +22,4 @@ LikeCommentRequest copyWith({  num? commentId,
     map['comment_id'] = _commentId;
     return map;
   }
-
 }

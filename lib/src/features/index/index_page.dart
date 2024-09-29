@@ -17,31 +17,31 @@ class IndexPage extends ConsumerWidget {
       {
         'icon': PhosphorIconsThin.house,
         'activeIcon': PhosphorIconsFill.house,
-        'route':'home',
+        'route': 'home',
         "label": "Trang chủ"
       },
       {
         'icon': PhosphorIconsThin.bagSimple,
         'activeIcon': PhosphorIconsFill.bagSimple,
-        'route':'jobs',
+        'route': 'jobs',
         "label": "Công việc"
       },
       {
         'icon': PhosphorIconsThin.plusSquare,
         'activeIcon': PhosphorIconsThin.plusSquare,
-        'route':'posting',
+        'route': 'posting',
         "label": "Tạo mới"
       },
       {
         'icon': PhosphorIconsThin.bell,
         'activeIcon': PhosphorIconsFill.bell,
-        'route':'nofications',
+        'route': 'nofications',
         "label": "Thông báo"
       },
       {
         'icon': PhosphorIconsThin.userCircle,
         'activeIcon': PhosphorIconsFill.userCircle,
-        'route':'user',
+        'route': 'user',
         "label": "Tài khoản"
       },
     ];
@@ -81,17 +81,17 @@ class IndexPage extends ConsumerWidget {
             // selectedLabelStyle: TextStyle(fontSize: 10),
             onTap: (index) {
               if (index != 2) {
-                if(index == shell.currentIndex){
+                if (index == shell.currentIndex) {
                   final GoRouter router = GoRouter.of(context);
-                  String currentRoute = router.routeInformationProvider.value.uri.toString();
+                  String currentRoute =
+                      router.routeInformationProvider.value.uri.toString();
                   String route = items[index]['route'];
 
                   context.goNamed(route, extra: 'reload');
-                }
-                else{
+                } else {
                   shell.goBranch(index);
                 }
-              }else{
+              } else {
                 context.pushNamed("posting");
               }
             },

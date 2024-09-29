@@ -120,7 +120,6 @@ class CommentController extends ChangeNotifier {
 
         print(">>>>>>>>>>>>>>data: $commentMap"); // Kiểm tra dữ liệu
 
-
         final sortedComments = commentMap.entries.toList()
           ..sort((a, b) {
             final createdA = DateTime.tryParse(a.value['created_at']);
@@ -128,7 +127,6 @@ class CommentController extends ChangeNotifier {
             return (createdB ?? DateTime.now())
                 .compareTo(createdA ?? DateTime.now());
           });
-
 
         return {for (var e in sortedComments) e.key: e.value};
       } else {
@@ -206,13 +204,15 @@ class CommentController extends ChangeNotifier {
       }
     });
   }
+
   UserLiked? userLiked;
-  Future<void>getUserLikeComment(int commentId)async{
+  Future<void> getUserLikeComment(int commentId) async {
     userLiked = null;
     notifyListeners();
     userLiked = await commentUseCase.getUserLikeComment(commentId);
     notifyListeners();
   }
+
   Future<void> showUserLiked(BuildContext context, int commentId) async {
     final index = ref.watch(indexControllerProvider.notifier);
     // index.showBottomSheet(
@@ -224,11 +224,13 @@ class CommentController extends ChangeNotifier {
       isScrollControlled: true,
       context: context,
       builder: (context) => SizedBox(
-        height: ScreenUtil().screenHeight*.7,
-        child: UserLikedPage(commentId: commentId,),
+        height: ScreenUtil().screenHeight * .7,
+        child: UserLikedPage(
+          commentId: commentId,
+        ),
       ),
-    ).whenComplete(() => index.setBottomNavigationBarVisibility(true),);
+    ).whenComplete(
+      () => index.setBottomNavigationBarVisibility(true),
+    );
   }
 }
-
-

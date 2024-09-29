@@ -59,7 +59,7 @@ class SharedPost {
     String? createdAt,
   }) =>
       SharedPost(
-        userId: userId??_userId,
+        userId: userId ?? _userId,
         id: id ?? _id,
         body: body ?? _body,
         privacy: privacy ?? _privacy,

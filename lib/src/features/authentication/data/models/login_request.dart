@@ -1,12 +1,13 @@
 class LoginRequest {
   LoginRequest({
-      String? phone, 
-      String? password, 
-      String? deviceId,}){
+    String? phone,
+    String? password,
+    String? deviceId,
+  }) {
     _phone = phone;
     _password = password;
     _deviceId = deviceId;
-}
+  }
 
   LoginRequest.fromJson(dynamic json) {
     _phone = json['phone'];
@@ -16,13 +17,16 @@ class LoginRequest {
   String? _phone;
   String? _password;
   String? _deviceId;
-LoginRequest copyWith({  String? phone,
-  String? password,
-  String? deviceId,
-}) => LoginRequest(  phone: phone ?? _phone,
-  password: password ?? _password,
-  deviceId: deviceId ?? _deviceId,
-);
+  LoginRequest copyWith({
+    String? phone,
+    String? password,
+    String? deviceId,
+  }) =>
+      LoginRequest(
+        phone: phone ?? _phone,
+        password: password ?? _password,
+        deviceId: deviceId ?? _deviceId,
+      );
   String? get phone => _phone;
   String? get password => _password;
   String? get deviceId => _deviceId;
@@ -34,5 +38,4 @@ LoginRequest copyWith({  String? phone,
     map['device_id'] = _deviceId;
     return map;
   }
-
 }

@@ -1,10 +1,11 @@
 class ForgotPasswordVerifyRequest {
   ForgotPasswordVerifyRequest({
-      String? email, 
-      String? verifyCode,}){
+    String? email,
+    String? verifyCode,
+  }) {
     _email = email;
     _verifyCode = verifyCode;
-}
+  }
 
   ForgotPasswordVerifyRequest.fromJson(dynamic json) {
     _email = json['email'];
@@ -12,11 +13,14 @@ class ForgotPasswordVerifyRequest {
   }
   String? _email;
   String? _verifyCode;
-ForgotPasswordVerifyRequest copyWith({  String? email,
-  String? verifyCode,
-}) => ForgotPasswordVerifyRequest(  email: email ?? _email,
-  verifyCode: verifyCode ?? _verifyCode,
-);
+  ForgotPasswordVerifyRequest copyWith({
+    String? email,
+    String? verifyCode,
+  }) =>
+      ForgotPasswordVerifyRequest(
+        email: email ?? _email,
+        verifyCode: verifyCode ?? _verifyCode,
+      );
   String? get email => _email;
   String? get verifyCode => _verifyCode;
 
@@ -26,5 +30,4 @@ ForgotPasswordVerifyRequest copyWith({  String? email,
     map['verify_code'] = _verifyCode;
     return map;
   }
-
 }

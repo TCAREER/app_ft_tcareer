@@ -10,10 +10,9 @@ Widget emptyWidget(String content) {
           height: 30,
           width: 30,
         ),
-
         Text(
           content,
-          style: TextStyle(fontSize: 10,color: Colors.black38),
+          style: TextStyle(fontSize: 10, color: Colors.black38),
         )
       ],
     ),

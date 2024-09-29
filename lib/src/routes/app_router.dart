@@ -145,9 +145,6 @@ class AppRouter {
                   transitionsBuilder: slideUpTransitionBuilder);
             },
           ),
-
-
-
         ],
         refreshListenable: GoRouterRefreshStream());
   }

@@ -47,7 +47,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '353946571533',
     projectId: 'tcareer-4fa7d',
     authDomain: 'tcareer-4fa7d.firebaseapp.com',
-    databaseURL: 'https://tcareer-4fa7d-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://tcareer-4fa7d-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'tcareer-4fa7d.appspot.com',
     measurementId: 'G-JRVZ98QJCR',
   );
@@ -57,7 +58,8 @@ class DefaultFirebaseOptions {
     appId: '1:353946571533:android:0c31a6ed7b3c5b7d72d644',
     messagingSenderId: '353946571533',
     projectId: 'tcareer-4fa7d',
-    databaseURL: 'https://tcareer-4fa7d-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://tcareer-4fa7d-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'tcareer-4fa7d.appspot.com',
   );
 
@@ -66,10 +68,13 @@ class DefaultFirebaseOptions {
     appId: '1:353946571533:ios:b2ad53c0bad8edb172d644',
     messagingSenderId: '353946571533',
     projectId: 'tcareer-4fa7d',
-    databaseURL: 'https://tcareer-4fa7d-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://tcareer-4fa7d-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'tcareer-4fa7d.appspot.com',
-    androidClientId: '353946571533-aeevc7u3rh5l91jueeepfm4q6btgts52.apps.googleusercontent.com',
-    iosClientId: '353946571533-q47i75ail4f4p2bq01k0gj331rae5h29.apps.googleusercontent.com',
+    androidClientId:
+        '353946571533-aeevc7u3rh5l91jueeepfm4q6btgts52.apps.googleusercontent.com',
+    iosClientId:
+        '353946571533-q47i75ail4f4p2bq01k0gj331rae5h29.apps.googleusercontent.com',
     iosBundleId: 'com.example.appTcareer',
   );
 
@@ -78,10 +83,13 @@ class DefaultFirebaseOptions {
     appId: '1:353946571533:ios:b2ad53c0bad8edb172d644',
     messagingSenderId: '353946571533',
     projectId: 'tcareer-4fa7d',
-    databaseURL: 'https://tcareer-4fa7d-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://tcareer-4fa7d-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'tcareer-4fa7d.appspot.com',
-    androidClientId: '353946571533-aeevc7u3rh5l91jueeepfm4q6btgts52.apps.googleusercontent.com',
-    iosClientId: '353946571533-q47i75ail4f4p2bq01k0gj331rae5h29.apps.googleusercontent.com',
+    androidClientId:
+        '353946571533-aeevc7u3rh5l91jueeepfm4q6btgts52.apps.googleusercontent.com',
+    iosClientId:
+        '353946571533-q47i75ail4f4p2bq01k0gj331rae5h29.apps.googleusercontent.com',
     iosBundleId: 'com.example.appTcareer',
   );
 
@@ -91,9 +99,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '353946571533',
     projectId: 'tcareer-4fa7d',
     authDomain: 'tcareer-4fa7d.firebaseapp.com',
-    databaseURL: 'https://tcareer-4fa7d-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://tcareer-4fa7d-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'tcareer-4fa7d.appspot.com',
     measurementId: 'G-DYV36E6MF5',
   );
-
 }

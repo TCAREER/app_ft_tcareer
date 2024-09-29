@@ -17,7 +17,6 @@ import 'engagement_widget.dart';
 import 'post_image_widget.dart';
 
 Widget sharedPostWidget({
-
   required void Function() onLike,
   required String userId,
   required String originUserId,
@@ -64,10 +63,8 @@ Widget sharedPostWidget({
                     child: Column(
                       children: [
                         GestureDetector(
-                          onTap: ()=>controller.goToProfile(
-                              userId: userId,
-                              context: context
-                          ),
+                          onTap: () => controller.goToProfile(
+                              userId: userId, context: context),
                           child: CircleAvatar(
                             radius: 18,
                             backgroundImage: NetworkImage(avatarUrl),
@@ -81,10 +78,8 @@ Widget sharedPostWidget({
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       GestureDetector(
-                        onTap: ()=>controller.goToProfile(
-                            userId: userId,
-                            context: context
-                        ),
+                        onTap: () => controller.goToProfile(
+                            userId: userId, context: context),
                         child: Text(
                           userName,
                           style: const TextStyle(
@@ -178,8 +173,8 @@ Widget sharedPostWidget({
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: Colors.grey.shade200, width: 1)),
                 child: postWidget(
-                  onLike: onLike,
-                  userId: originUserId,
+                    onLike: onLike,
+                    userId: originUserId,
                     mediaUrl: mediaUrl,
                     isShared: true,
                     context: context,
@@ -199,7 +194,7 @@ Widget sharedPostWidget({
             ),
             const SizedBox(height: 5),
             engagementWidget(
-              onLike: onLike,
+                onLike: onLike,
                 index: index,
                 liked: liked,
                 ref: ref,

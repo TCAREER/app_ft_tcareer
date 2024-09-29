@@ -72,15 +72,14 @@ class PostRepository {
     await api.postCreatePost(body: body);
   }
 
-  Future<PostsResponse> getPosts({required String personal,String? userId,int? page}) async {
+  Future<PostsResponse> getPosts(
+      {required String personal, String? userId, int? page}) async {
     final api = ref.watch(apiServiceProvider);
     final userUtils = ref.watch(userUtilsProvider);
     print(">>>>>>refreshToken: ${await userUtils.getRefreshToken()}");
-    return await api.getPosts(queries: PostRequest(
-      personal: personal,
-      profileUserId: userId,
-      page: page
-    ));
+    return await api.getPosts(
+        queries:
+            PostRequest(personal: personal, profileUserId: userId, page: page));
   }
 
   Future<void> postLikePost(String postId) async {
@@ -137,22 +136,20 @@ class PostRepository {
         body: SharePostRequest(postId: postId, privacy: privacy, body: body));
   }
 
-  Future<QuickSearchUserData>getQuickSearchUser(String query)async{
+  Future<QuickSearchUserData> getQuickSearchUser(String query) async {
     final api = ref.watch(apiServiceProvider);
     return await api.getQuickSearchUser(query: query);
   }
 
-  Future getSearch(String query)async{
+  Future getSearch(String query) async {
     final api = ref.watch(apiServiceProvider);
     return await api.getSearch(query: query);
   }
 
-  Future<UserLiked>getUserLiked({int? postId, int? commentId})async{
+  Future<UserLiked> getUserLiked({int? postId, int? commentId}) async {
     final api = ref.watch(apiServiceProvider);
-    return await api.getUserLiked(query: UserLikedRequest(
-      postId: postId,
-      commentId: commentId
-    ));
+    return await api.getUserLiked(
+        query: UserLikedRequest(postId: postId, commentId: commentId));
   }
 }
 

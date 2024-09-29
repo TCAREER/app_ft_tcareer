@@ -3,14 +3,15 @@ import 'package:app_tcareer/src/features/posts/data/repositories/post_repository
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SearchUseCase{
+class SearchUseCase {
   final PostRepository postRepository;
   SearchUseCase(this.postRepository);
 
-  Future<QuickSearchUserData>getQuickSearchUser(String query)async=>await postRepository.getQuickSearchUser(query);
+  Future<QuickSearchUserData> getQuickSearchUser(String query) async =>
+      await postRepository.getQuickSearchUser(query);
 
-  Future getSearch(String query)async=>await postRepository.getSearch(query);
+  Future getSearch(String query) async => await postRepository.getSearch(query);
 }
 
 final searchUseCaseProvider =
-Provider((ref) => SearchUseCase(ref.watch(postRepository)));
+    Provider((ref) => SearchUseCase(ref.watch(postRepository)));

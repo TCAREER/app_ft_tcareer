@@ -1,10 +1,11 @@
 class QuickSearchUserData {
   QuickSearchUserData({
-      List<Data>? data, 
-      Response? response,}){
+    List<Data>? data,
+    Response? response,
+  }) {
     _data = data;
     _response = response;
-}
+  }
 
   QuickSearchUserData.fromJson(dynamic json) {
     if (json['data'] != null) {
@@ -13,15 +14,19 @@ class QuickSearchUserData {
         _data?.add(Data.fromJson(v));
       });
     }
-    _response = json['response'] != null ? Response.fromJson(json['response']) : null;
+    _response =
+        json['response'] != null ? Response.fromJson(json['response']) : null;
   }
   List<Data>? _data;
   Response? _response;
-QuickSearchUserData copyWith({  List<Data>? data,
-  Response? response,
-}) => QuickSearchUserData(  data: data ?? _data,
-  response: response ?? _response,
-);
+  QuickSearchUserData copyWith({
+    List<Data>? data,
+    Response? response,
+  }) =>
+      QuickSearchUserData(
+        data: data ?? _data,
+        response: response ?? _response,
+      );
   List<Data>? get data => _data;
   Response? get response => _response;
 
@@ -35,18 +40,18 @@ QuickSearchUserData copyWith({  List<Data>? data,
     }
     return map;
   }
-
 }
 
 class Response {
   Response({
-      String? status, 
-      num? code, 
-      num? count,}){
+    String? status,
+    num? code,
+    num? count,
+  }) {
     _status = status;
     _code = code;
     _count = count;
-}
+  }
 
   Response.fromJson(dynamic json) {
     _status = json['status'];
@@ -56,13 +61,16 @@ class Response {
   String? _status;
   num? _code;
   num? _count;
-Response copyWith({  String? status,
-  num? code,
-  num? count,
-}) => Response(  status: status ?? _status,
-  code: code ?? _code,
-  count: count ?? _count,
-);
+  Response copyWith({
+    String? status,
+    num? code,
+    num? count,
+  }) =>
+      Response(
+        status: status ?? _status,
+        code: code ?? _code,
+        count: count ?? _count,
+      );
   String? get status => _status;
   num? get code => _code;
   num? get count => _count;
@@ -74,18 +82,18 @@ Response copyWith({  String? status,
     map['count'] = _count;
     return map;
   }
-
 }
 
 class Data {
   Data({
-      num? id, 
-      String? fullName, 
-      String? avatar,}){
+    num? id,
+    String? fullName,
+    String? avatar,
+  }) {
     _id = id;
     _fullName = fullName;
     _avatar = avatar;
-}
+  }
 
   Data.fromJson(dynamic json) {
     _id = json['id'];
@@ -95,13 +103,16 @@ class Data {
   num? _id;
   String? _fullName;
   String? _avatar;
-Data copyWith({  num? id,
-  String? fullName,
-  String? avatar,
-}) => Data(  id: id ?? _id,
-  fullName: fullName ?? _fullName,
-  avatar: avatar ?? _avatar,
-);
+  Data copyWith({
+    num? id,
+    String? fullName,
+    String? avatar,
+  }) =>
+      Data(
+        id: id ?? _id,
+        fullName: fullName ?? _fullName,
+        avatar: avatar ?? _avatar,
+      );
   num? get id => _id;
   String? get fullName => _fullName;
   String? get avatar => _avatar;
@@ -113,5 +124,4 @@ Data copyWith({  num? id,
     map['avatar'] = _avatar;
     return map;
   }
-
 }

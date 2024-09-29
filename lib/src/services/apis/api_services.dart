@@ -77,8 +77,6 @@ abstract class ApiServices {
 
   @GET('api/auth/post/{id}')
   Future<PostsDetailResponse> getPostById({@Path('id') required String postId});
-  
-
 
   @POST('api/auth/share_post')
   Future postSharePost({@Body() required SharePostRequest body});
@@ -97,7 +95,7 @@ abstract class ApiServices {
   Future getSearch({@Query('q') required String query});
 
   @GET('api/auth/search_post')
-  Future<PostsResponse>getSearchPost({@Query('q') required String query});
+  Future<PostsResponse> getSearchPost({@Query('q') required String query});
 
   @POST('api/auth/follow/{id}')
   Future postFollow({@Path('id') required String userId});
@@ -112,9 +110,5 @@ abstract class ApiServices {
   Future postDeclineFriend({@Path('id') required String userId});
 
   @GET('api/auth/get_like')
-  Future<UserLiked>getUserLiked({@Queries() required UserLikedRequest query });
-
-
-
-
+  Future<UserLiked> getUserLiked({@Queries() required UserLikedRequest query});
 }

@@ -61,7 +61,7 @@ class SharePage extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                       userController.userData?.data?.fullName ?? "",
+                        userController.userData?.data?.fullName ?? "",
                         style: const TextStyle(
                             fontSize: 15, fontWeight: FontWeight.bold),
                       ),

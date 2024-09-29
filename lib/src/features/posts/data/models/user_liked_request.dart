@@ -1,10 +1,11 @@
 class UserLikedRequest {
   UserLikedRequest({
-      num? postId, 
-      num? commentId,}){
+    num? postId,
+    num? commentId,
+  }) {
     _postId = postId;
     _commentId = commentId;
-}
+  }
 
   UserLikedRequest.fromJson(dynamic json) {
     _postId = json['post_id'];
@@ -12,11 +13,14 @@ class UserLikedRequest {
   }
   num? _postId;
   num? _commentId;
-UserLikedRequest copyWith({  num? postId,
-  num? commentId,
-}) => UserLikedRequest(  postId: postId ?? _postId,
-  commentId: commentId ?? _commentId,
-);
+  UserLikedRequest copyWith({
+    num? postId,
+    num? commentId,
+  }) =>
+      UserLikedRequest(
+        postId: postId ?? _postId,
+        commentId: commentId ?? _commentId,
+      );
   num? get postId => _postId;
   num? get commentId => _commentId;
 
@@ -26,5 +30,4 @@ UserLikedRequest copyWith({  num? postId,
     map['comment_id'] = _commentId;
     return map;
   }
-
 }

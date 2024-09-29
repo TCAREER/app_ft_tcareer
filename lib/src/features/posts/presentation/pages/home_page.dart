@@ -37,12 +37,12 @@ class _HomePageState extends ConsumerState<HomePage> {
     super.didChangeDependencies();
     final extra = GoRouterState.of(context).extra;
 
-    if(extra=="reload"){
-      Future.microtask((){
+    if (extra == "reload") {
+      Future.microtask(() {
         ref.read(postControllerProvider).refresh();
       });
     }
-    if(extra=="scrollTop"){
+    if (extra == "scrollTop") {
       Future.microtask(() {
         ref.read(postControllerProvider).scrollToTop();
       });
@@ -100,9 +100,12 @@ class _HomePageState extends ConsumerState<HomePage> {
                 padding: const EdgeInsets.symmetric(vertical: 15),
                 child: Visibility(
                   replacement: sharedPostWidget(
-                    onLike: () async=>await controller.postLikePost(index: index, postId: post.id.toString(),),
-                    originUserId: sharedPost?.userId.toString()??"",
-                    userId: post.userId.toString(),
+                      onLike: () async => await controller.postLikePost(
+                            index: index,
+                            postId: post.id.toString(),
+                          ),
+                      originUserId: sharedPost?.userId.toString() ?? "",
+                      userId: post.userId.toString(),
                       originCreatedAt: sharedPost?.createdAt ?? "",
                       originPostId: sharedPost?.id.toString() ?? "",
                       mediaUrl: sharedPost?.mediaUrl,
@@ -126,7 +129,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                       index: index),
                   visible: post.sharedPostId == null,
                   child: postWidget(
-                    onLike: () async=>await controller.postLikePost(index: index, postId: post.id.toString(),),
+                    onLike: () async => await controller.postLikePost(
+                      index: index,
+                      postId: post.id.toString(),
+                    ),
                     userId: post.userId.toString(),
                     index: index,
                     liked: post.liked ?? false,
@@ -160,7 +166,6 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   Widget sliverAppBar(WidgetRef ref) {
-
     final postingController = ref.watch(postingControllerProvider);
 
     return SliverAppBar(
@@ -187,7 +192,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: GestureDetector(
-            onTap: ()=>context.goNamed('search'),
+            onTap: () => context.goNamed('search'),
             child: const PhosphorIcon(
               PhosphorIconsBold.magnifyingGlass,
               color: Colors.black,

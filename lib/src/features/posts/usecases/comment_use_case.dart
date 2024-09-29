@@ -17,7 +17,7 @@ class CommentUseCase {
   Stream<DatabaseEvent> listenToLikeComment(String postId) =>
       postRepository.listenToLikeComments(postId);
 
-  Future<UserLiked>getUserLikeComment(int commentId)async{
+  Future<UserLiked> getUserLikeComment(int commentId) async {
     return postRepository.getUserLiked(commentId: commentId);
   }
 }

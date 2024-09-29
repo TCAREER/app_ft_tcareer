@@ -14,9 +14,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Widget engagementWidget(
-    {
-      required void Function() onLike,
-      required WidgetRef ref,
+    {required void Function() onLike,
+    required WidgetRef ref,
     required int index,
     required bool liked,
     required String postId,
@@ -118,7 +117,8 @@ Widget engagementWidget(
                         String id = originPostId ?? postId;
                         controller.shareLink(
                             title: "Bài viết",
-                            url: "https://tcareer.thiendev.shop/home/detail/$id");
+                            url:
+                                "https://tcareer.thiendev.shop/home/detail/$id");
                       },
                       child: const ListTile(
                         title: Text("Thêm"),
@@ -151,12 +151,17 @@ Widget engagementWidget(
             ),
           ],
         ),
-        const SizedBox(height: 5,),
+        const SizedBox(
+          height: 5,
+        ),
         Visibility(
-          visible: likeCount!="0",
+          visible: likeCount != "0",
           child: GestureDetector(
-            onTap: () => controller.showUserLiked(context,int.parse(postId)),
-            child: Text("Xem lượt thích",style: TextStyle(fontSize: 11,fontWeight: FontWeight.w600),),
+            onTap: () => controller.showUserLiked(context, int.parse(postId)),
+            child: Text(
+              "Xem lượt thích",
+              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+            ),
           ),
         )
       ],

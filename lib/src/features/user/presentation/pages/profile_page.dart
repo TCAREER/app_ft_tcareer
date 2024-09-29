@@ -17,7 +17,8 @@ class ProfilePage extends ConsumerStatefulWidget {
   ConsumerState<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProviderStateMixin {
+class _ProfilePageState extends ConsumerState<ProfilePage>
+    with SingleTickerProviderStateMixin {
   ScrollController scrollController = ScrollController();
 
   @override
@@ -30,17 +31,15 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
     });
   }
 
-
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     String? reload = GoRouterState.of(context).extra as String?;
-    if(reload!=null){
+    if (reload != null) {
       scrollController.jumpTo(0);
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -57,25 +56,29 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
               headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return [
                   SliverAppBar(
-
                     toolbarHeight: 30,
                     centerTitle: false,
-
                     actions: [
                       PopupMenuButton(
                         color: Colors.white,
-                        icon: const Icon(Icons.menu,color: Colors.black,),
+                        icon: const Icon(
+                          Icons.menu,
+                          color: Colors.black,
+                        ),
                         itemBuilder: (context) {
                           return [
-                             PopupMenuItem(
-                              onTap: () async=> await controller.logout(context) ,
+                            PopupMenuItem(
+                              onTap: () async =>
+                                  await controller.logout(context),
                               child: const ListTile(
-                                leading: Icon(Icons.logout,color: Colors.red,),
+                                leading: Icon(
+                                  Icons.logout,
+                                  color: Colors.red,
+                                ),
                                 title: Text("Đăng xuất"),
                               ),
                             )
                           ];
-
                         },
                       )
                     ],
@@ -86,8 +89,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
                   SliverPersistentHeader(
                     pinned: true,
                     delegate: _SliverAppBarDelegate(
-                       TabBar(
-                        overlayColor: MaterialStateProperty.all(Colors.transparent),
+                      TabBar(
+                        overlayColor:
+                            MaterialStateProperty.all(Colors.transparent),
                         indicatorWeight: 2,
                         dividerColor: Colors.transparent,
                         indicatorColor: Colors.black,
@@ -103,11 +107,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
                 ];
               },
               body: TabBarView(
-                children: [
-                  postList(),
-                  Text("Ảnh"),
-                  Text("Video")
-                ],
+                children: [postList(), Text("Ảnh"), Text("Video")],
               ),
             ),
           ),
@@ -120,16 +120,16 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
     final controller = ref.watch(userControllerProvider);
     final user = controller.userData?.data;
     return Visibility(
-      visible: controller.userData!=null,
+      visible: controller.userData != null,
       replacement: informationLoading(),
       child: information(
-        friends: user?.friendCount.toString(),
-          fullName: user?.fullName??"",
-        avatar: user?.avatar,
-        follows: user?.followerCount.toString()
-      ),
+          friends: user?.friendCount.toString(),
+          fullName: user?.fullName ?? "",
+          avatar: user?.avatar,
+          follows: user?.followerCount.toString()),
     );
   }
+
   Widget postList() {
     final controller = ref.watch(userControllerProvider);
     return Visibility(
@@ -141,7 +141,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
         child: NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification scrollInfo) {
             // Kiểm tra xem đã cuộn đến cuối danh sách chưa
-            if (scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent - 50) {
+            if (scrollInfo.metrics.pixels >=
+                scrollInfo.metrics.maxScrollExtent - 50) {
               // Gọi hàm tải thêm bài viết
               controller.loadMore();
             }
@@ -162,7 +163,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
                         padding: const EdgeInsets.symmetric(vertical: 15),
                         child: Visibility(
                           replacement: sharedPostWidget(
-                            onLike: () async => await controller.postLikePost(index: index, postId: post.id.toString()),
+                            onLike: () async => await controller.postLikePost(
+                                index: index, postId: post.id.toString()),
                             originUserId: sharedPost?.userId.toString() ?? "",
                             userId: post.userId.toString(),
                             originCreatedAt: sharedPost?.createdAt ?? "",
@@ -170,10 +172,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
                             mediaUrl: sharedPost?.mediaUrl,
                             context: context,
                             ref: ref,
-                            avatarUrl: post.avatar ?? "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
+                            avatarUrl: post.avatar ??
+                                "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
                             userName: post.fullName ?? "",
                             userNameOrigin: sharedPost?.fullName ?? "",
-                            avatarUrlOrigin: sharedPost?.avatar ?? "https://ui-avatars.com/api/?name=${sharedPost?.fullName}&background=random",
+                            avatarUrlOrigin: sharedPost?.avatar ??
+                                "https://ui-avatars.com/api/?name=${sharedPost?.fullName}&background=random",
                             createdAt: post.createdAt ?? "",
                             content: post.body ?? "",
                             contentOrigin: sharedPost?.body ?? "",
@@ -187,7 +191,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
                           ),
                           visible: post.sharedPostId == null,
                           child: postWidget(
-                            onLike: () async => await controller.postLikePost(index: index, postId: post.id.toString()),
+                            onLike: () async => await controller.postLikePost(
+                                index: index, postId: post.id.toString()),
                             userId: post.userId.toString(),
                             index: index,
                             liked: post.liked ?? false,
@@ -195,7 +200,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
                             postId: post.id.toString(),
                             ref: ref,
                             context: context,
-                            avatarUrl: post.avatar ?? "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
+                            avatarUrl: post.avatar ??
+                                "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
                             userName: post.fullName ?? "",
                             createdAt: post.createdAt ?? "",
                             content: post.body ?? "",
@@ -243,7 +249,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
                     ),
                   ),
                   onPressed: () {},
-                  child: const Text("Theo dõi", style: TextStyle(color: Colors.white)),
+                  child: const Text("Theo dõi",
+                      style: TextStyle(color: Colors.white)),
                 ),
               ),
             ],
@@ -264,7 +271,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
                     ),
                   ),
                   onPressed: () {},
-                  child: const Text("Nhắn tin", style: TextStyle(color: Colors.black)),
+                  child: const Text("Nhắn tin",
+                      style: TextStyle(color: Colors.black)),
                 ),
               ),
             ],
@@ -274,8 +282,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> with SingleTickerProv
     );
   }
 }
-
-
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   final TabBar tabBar;
@@ -289,11 +295,11 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => tabBar.preferredSize.height;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Material(
       color: Colors.white,
       elevation: 0.0,
-
       child: tabBar,
     );
   }

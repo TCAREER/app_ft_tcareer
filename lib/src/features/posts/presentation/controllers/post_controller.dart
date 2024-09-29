@@ -31,7 +31,6 @@ class PostController extends ChangeNotifier {
   PostController(this.postUseCase, this.ref) {
     scrollController.addListener(() {
       loadMore();
-
     });
   }
   post_model.PostsResponse? postData;
@@ -44,7 +43,6 @@ class PostController extends ChangeNotifier {
     scrollController.removeListener(loadMore);
     scrollController.dispose();
     super.dispose();
-
   }
 
   void setIsLoading(bool value) {
@@ -76,14 +74,11 @@ class PostController extends ChangeNotifier {
     notifyListeners();
   }
 
-
-
-
-
   Future<void> postLikePost(
       {required int index, required String postId}) async {
     // setLikePost(index);
-    await postUseCase.postLikePost(postId: postId,index: index,postCache: postCache);
+    await postUseCase.postLikePost(
+        postId: postId, index: index, postCache: postCache);
 
     notifyListeners();
   }
@@ -92,7 +87,6 @@ class PostController extends ChangeNotifier {
   List<post_model.Data> postCache = [];
   bool isDisposed = false;
   Future<void> getPost() async {
-
     postData = await postUseCase.getPost(personal: "n");
     if (postData?.data != null) {
       final newPosts = postData?.data
@@ -103,8 +97,6 @@ class PostController extends ChangeNotifier {
       if (isDisposed) return;
       notifyListeners();
     }
-
-
   }
 
   Future<void> loadMore() async {
@@ -157,16 +149,20 @@ class PostController extends ChangeNotifier {
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: SharePage(postId),
       ),
-    ).whenComplete(() => index.setBottomNavigationBarVisibility(true),);
+    ).whenComplete(
+      () => index.setBottomNavigationBarVisibility(true),
+    );
   }
+
   UserLiked? userLiked;
 
-  Future<void>getUserLikePost(int postId)async{
+  Future<void> getUserLikePost(int postId) async {
     userLiked = null;
     notifyListeners();
     userLiked = await postUseCase.getUserLikePost(postId);
     notifyListeners();
   }
+
   Future<void> showUserLiked(BuildContext context, int postId) async {
     final index = ref.watch(indexControllerProvider.notifier);
     // index.showBottomSheet(
@@ -178,10 +174,14 @@ class PostController extends ChangeNotifier {
       isScrollControlled: true,
       context: context,
       builder: (context) => SizedBox(
-        height: ScreenUtil().screenHeight*.7,
-        child: UserLikedPage(postId: postId,),
+        height: ScreenUtil().screenHeight * .7,
+        child: UserLikedPage(
+          postId: postId,
+        ),
       ),
-    ).whenComplete(() => index.setBottomNavigationBarVisibility(true),);
+    ).whenComplete(
+      () => index.setBottomNavigationBarVisibility(true),
+    );
   }
 
   TextEditingController shareContentController = TextEditingController();
@@ -198,15 +198,13 @@ class PostController extends ChangeNotifier {
     scrollController.jumpTo(0);
     await refresh();
   }
-  
-  void goToProfile({required String userId,required BuildContext context}){
-    final user = ref.watch(userControllerProvider);
-    if(user.isCurrentUser(int.parse(userId))==true){
 
-       context.replaceNamed('user');
-    }
-    else{
-      context.pushNamed('profile',queryParameters: {"userId":userId});
+  void goToProfile({required String userId, required BuildContext context}) {
+    final user = ref.watch(userControllerProvider);
+    if (user.isCurrentUser(int.parse(userId)) == true) {
+      context.replaceNamed('user');
+    } else {
+      context.pushNamed('profile', queryParameters: {"userId": userId});
     }
   }
 }

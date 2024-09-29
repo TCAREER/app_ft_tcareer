@@ -15,13 +15,14 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class AnotherProfilePage extends ConsumerStatefulWidget {
   final String userId;
-  const AnotherProfilePage({super.key,required this.userId});
+  const AnotherProfilePage({super.key, required this.userId});
 
   @override
   ConsumerState<AnotherProfilePage> createState() => _AnotherProfilePageState();
 }
 
-class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with SingleTickerProviderStateMixin {
+class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -33,8 +34,6 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
       ref.read(anotherUserControllerProvider).getPost(widget.userId);
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -49,18 +48,18 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
               return [
                 SliverAppBar(
                   automaticallyImplyLeading: false,
-                  leading: GestureDetector(onTap: ()=>context.pop(), child: const Icon(Icons.arrow_back)),
+                  leading: GestureDetector(
+                      onTap: () => context.pop(),
+                      child: const Icon(Icons.arrow_back)),
                   centerTitle: false,
                   toolbarHeight: 30,
                   actions: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: GestureDetector(
-                        onTap: ()=>controller.showMenu(context),
+                        onTap: () => controller.showMenu(context),
                         child: PhosphorIcon(
-
                           PhosphorIconsRegular.dotsThreeCircle,
-
                         ),
                       ),
                     )
@@ -73,7 +72,8 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
                   pinned: true,
                   delegate: _SliverAppBarDelegate(
                     TabBar(
-                      overlayColor: MaterialStateProperty.all(Colors.transparent),
+                      overlayColor:
+                          MaterialStateProperty.all(Colors.transparent),
                       dividerColor: Colors.transparent,
                       indicatorWeight: 2,
                       indicatorColor: Colors.black,
@@ -89,11 +89,7 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
               ];
             },
             body: TabBarView(
-              children: [
-                postList(),
-                Text("Ảnh"),
-                Text("Video")
-              ],
+              children: [postList(), Text("Ảnh"), Text("Video")],
             ),
           ),
         ),
@@ -105,16 +101,16 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
     final controller = ref.watch(anotherUserControllerProvider);
     final user = controller.anotherUserData?.data;
     return Visibility(
-      visible: controller.anotherUserData!=null,
+      visible: controller.anotherUserData != null,
       replacement: informationLoading(),
       child: information(
           friends: user?.friendCount.toString(),
-          fullName: user?.fullName??"",
+          fullName: user?.fullName ?? "",
           avatar: user?.avatar,
-          follows: user?.followerCount.toString()
-      ),
+          follows: user?.followerCount.toString()),
     );
   }
+
   Widget postList() {
     final controller = ref.watch(anotherUserControllerProvider);
     return Visibility(
@@ -126,7 +122,8 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
         child: NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification scrollInfo) {
             // Kiểm tra xem đã cuộn đến cuối danh sách chưa
-            if (scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent - 50) {
+            if (scrollInfo.metrics.pixels >=
+                scrollInfo.metrics.maxScrollExtent - 50) {
               // Gọi hàm tải thêm bài viết
               controller.loadMore();
             }
@@ -147,7 +144,8 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
                         padding: const EdgeInsets.symmetric(vertical: 15),
                         child: Visibility(
                           replacement: sharedPostWidget(
-                            onLike: () async => await controller.postLikePost(index: index, postId: post.id.toString()),
+                            onLike: () async => await controller.postLikePost(
+                                index: index, postId: post.id.toString()),
                             originUserId: sharedPost?.userId.toString() ?? "",
                             userId: post.userId.toString(),
                             originCreatedAt: sharedPost?.createdAt ?? "",
@@ -155,10 +153,12 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
                             mediaUrl: sharedPost?.mediaUrl,
                             context: context,
                             ref: ref,
-                            avatarUrl: post.avatar ?? "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
+                            avatarUrl: post.avatar ??
+                                "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
                             userName: post.fullName ?? "",
                             userNameOrigin: sharedPost?.fullName ?? "",
-                            avatarUrlOrigin: sharedPost?.avatar ?? "https://ui-avatars.com/api/?name=${sharedPost?.fullName}&background=random",
+                            avatarUrlOrigin: sharedPost?.avatar ??
+                                "https://ui-avatars.com/api/?name=${sharedPost?.fullName}&background=random",
                             createdAt: post.createdAt ?? "",
                             content: post.body ?? "",
                             contentOrigin: sharedPost?.body ?? "",
@@ -172,7 +172,8 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
                           ),
                           visible: post.sharedPostId == null,
                           child: postWidget(
-                            onLike: () async => await controller.postLikePost(index: index, postId: post.id.toString()),
+                            onLike: () async => await controller.postLikePost(
+                                index: index, postId: post.id.toString()),
                             userId: post.userId.toString(),
                             index: index,
                             liked: post.liked ?? false,
@@ -180,7 +181,8 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
                             postId: post.id.toString(),
                             ref: ref,
                             context: context,
-                            avatarUrl: post.avatar ?? "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
+                            avatarUrl: post.avatar ??
+                                "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
                             userName: post.fullName ?? "",
                             createdAt: post.createdAt ?? "",
                             content: post.body ?? "",
@@ -210,10 +212,11 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
       ),
     );
   }
+
   Widget buttonFollowAndMessage() {
     final controller = ref.watch(anotherUserControllerProvider);
     final connectionController = ref.watch(userConnectionControllerProvider);
-    String userId = controller.anotherUserData?.data?.id.toString()??"";
+    String userId = controller.anotherUserData?.data?.id.toString() ?? "";
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
@@ -231,8 +234,10 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    onPressed: ()async=>await connectionController.postFollow(userId),
-                    child: const Text("Theo dõi", style: TextStyle(color: Colors.white)),
+                    onPressed: () async =>
+                        await connectionController.postFollow(userId),
+                    child: const Text("Theo dõi",
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ],
@@ -253,7 +258,8 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
                       ),
                     ),
                     onPressed: () {},
-                    child: const Text("Nhắn tin", style: TextStyle(color: Colors.black)),
+                    child: const Text("Nhắn tin",
+                        style: TextStyle(color: Colors.black)),
                   ),
                 ),
               ],
@@ -264,8 +270,6 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage> with Si
     );
   }
 }
-
-
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   final TabBar tabBar;
@@ -279,7 +283,8 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => tabBar.preferredSize.height;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Material(
       color: Colors.white,
       elevation: 0.0,

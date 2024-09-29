@@ -39,11 +39,10 @@ final commentControllerProvider = ChangeNotifierProvider((ref) {
   return CommentController(postUseCase, ref, commentUseCase, mediaUseCase);
 });
 
-final searchPostControllerProvider = ChangeNotifierProvider((ref){
-  
+final searchPostControllerProvider = ChangeNotifierProvider((ref) {
   final searchUseCase = ref.watch(searchUseCaseProvider);
   final postUseCase = ref.read(postUseCaseProvider);
-  return SearchPostController(searchUseCase,postUseCase);
+  return SearchPostController(searchUseCase, postUseCase);
 });
 // Provider để lấy loại ảnh
 final imageOrientationProvider =

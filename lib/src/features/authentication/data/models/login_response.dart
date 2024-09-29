@@ -1,14 +1,15 @@
 class LoginResponse {
   LoginResponse({
-      String? accessToken, 
-      String? refreshToken, 
-      String? tokenType, 
-      num? expiresIn,}){
+    String? accessToken,
+    String? refreshToken,
+    String? tokenType,
+    num? expiresIn,
+  }) {
     _accessToken = accessToken;
     _refreshToken = refreshToken;
     _tokenType = tokenType;
     _expiresIn = expiresIn;
-}
+  }
 
   LoginResponse.fromJson(dynamic json) {
     _accessToken = json['access_token'];
@@ -20,15 +21,18 @@ class LoginResponse {
   String? _refreshToken;
   String? _tokenType;
   num? _expiresIn;
-LoginResponse copyWith({  String? accessToken,
-  String? refreshToken,
-  String? tokenType,
-  num? expiresIn,
-}) => LoginResponse(  accessToken: accessToken ?? _accessToken,
-  refreshToken: refreshToken ?? _refreshToken,
-  tokenType: tokenType ?? _tokenType,
-  expiresIn: expiresIn ?? _expiresIn,
-);
+  LoginResponse copyWith({
+    String? accessToken,
+    String? refreshToken,
+    String? tokenType,
+    num? expiresIn,
+  }) =>
+      LoginResponse(
+        accessToken: accessToken ?? _accessToken,
+        refreshToken: refreshToken ?? _refreshToken,
+        tokenType: tokenType ?? _tokenType,
+        expiresIn: expiresIn ?? _expiresIn,
+      );
   String? get accessToken => _accessToken;
   String? get refreshToken => _refreshToken;
   String? get tokenType => _tokenType;
@@ -42,5 +46,4 @@ LoginResponse copyWith({  String? accessToken,
     map['expires_in'] = _expiresIn;
     return map;
   }
-
 }

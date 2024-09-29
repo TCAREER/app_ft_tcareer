@@ -1,10 +1,11 @@
 class UserLiked {
   UserLiked({
-      List<Data>? data, 
-      Response? response,}){
+    List<Data>? data,
+    Response? response,
+  }) {
     _data = data;
     _response = response;
-}
+  }
 
   UserLiked.fromJson(dynamic json) {
     if (json['data'] != null) {
@@ -13,15 +14,19 @@ class UserLiked {
         _data?.add(Data.fromJson(v));
       });
     }
-    _response = json['response'] != null ? Response.fromJson(json['response']) : null;
+    _response =
+        json['response'] != null ? Response.fromJson(json['response']) : null;
   }
   List<Data>? _data;
   Response? _response;
-UserLiked copyWith({  List<Data>? data,
-  Response? response,
-}) => UserLiked(  data: data ?? _data,
-  response: response ?? _response,
-);
+  UserLiked copyWith({
+    List<Data>? data,
+    Response? response,
+  }) =>
+      UserLiked(
+        data: data ?? _data,
+        response: response ?? _response,
+      );
   List<Data>? get data => _data;
   Response? get response => _response;
 
@@ -35,18 +40,18 @@ UserLiked copyWith({  List<Data>? data,
     }
     return map;
   }
-
 }
 
 class Response {
   Response({
-      String? status, 
-      num? code, 
-      num? count,}){
+    String? status,
+    num? code,
+    num? count,
+  }) {
     _status = status;
     _code = code;
     _count = count;
-}
+  }
 
   Response.fromJson(dynamic json) {
     _status = json['status'];
@@ -56,13 +61,16 @@ class Response {
   String? _status;
   num? _code;
   num? _count;
-Response copyWith({  String? status,
-  num? code,
-  num? count,
-}) => Response(  status: status ?? _status,
-  code: code ?? _code,
-  count: count ?? _count,
-);
+  Response copyWith({
+    String? status,
+    num? code,
+    num? count,
+  }) =>
+      Response(
+        status: status ?? _status,
+        code: code ?? _code,
+        count: count ?? _count,
+      );
   String? get status => _status;
   num? get code => _code;
   num? get count => _count;
@@ -74,20 +82,20 @@ Response copyWith({  String? status,
     map['count'] = _count;
     return map;
   }
-
 }
 
 class Data {
   Data({
-      num? id, 
-      String? firstName, 
-      String? lastName, 
-      String? shortName, 
-      String? fullName, 
-      String? avatar, 
-      String? email, 
-      num? followerCount, 
-      num? friendCount,}){
+    num? id,
+    String? firstName,
+    String? lastName,
+    String? shortName,
+    String? fullName,
+    String? avatar,
+    String? email,
+    num? followerCount,
+    num? friendCount,
+  }) {
     _id = id;
     _firstName = firstName;
     _lastName = lastName;
@@ -97,7 +105,7 @@ class Data {
     _email = email;
     _followerCount = followerCount;
     _friendCount = friendCount;
-}
+  }
 
   Data.fromJson(dynamic json) {
     _id = json['id'];
@@ -119,25 +127,28 @@ class Data {
   String? _email;
   num? _followerCount;
   num? _friendCount;
-Data copyWith({  num? id,
-  String? firstName,
-  String? lastName,
-  String? shortName,
-  String? fullName,
-  String? avatar,
-  String? email,
-  num? followerCount,
-  num? friendCount,
-}) => Data(  id: id ?? _id,
-  firstName: firstName ?? _firstName,
-  lastName: lastName ?? _lastName,
-  shortName: shortName ?? _shortName,
-  fullName: fullName ?? _fullName,
-  avatar: avatar ?? _avatar,
-  email: email ?? _email,
-  followerCount: followerCount ?? _followerCount,
-  friendCount: friendCount ?? _friendCount,
-);
+  Data copyWith({
+    num? id,
+    String? firstName,
+    String? lastName,
+    String? shortName,
+    String? fullName,
+    String? avatar,
+    String? email,
+    num? followerCount,
+    num? friendCount,
+  }) =>
+      Data(
+        id: id ?? _id,
+        firstName: firstName ?? _firstName,
+        lastName: lastName ?? _lastName,
+        shortName: shortName ?? _shortName,
+        fullName: fullName ?? _fullName,
+        avatar: avatar ?? _avatar,
+        email: email ?? _email,
+        followerCount: followerCount ?? _followerCount,
+        friendCount: friendCount ?? _friendCount,
+      );
   num? get id => _id;
   String? get firstName => _firstName;
   String? get lastName => _lastName;
@@ -161,5 +172,4 @@ Data copyWith({  num? id,
     map['friend_count'] = _friendCount;
     return map;
   }
-
 }

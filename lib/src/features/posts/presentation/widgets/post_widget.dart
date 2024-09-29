@@ -57,10 +57,8 @@ Widget postWidget({
                     child: Column(
                       children: [
                         GestureDetector(
-                          onTap: ()=>controller.goToProfile(
-                            userId: userId,
-                            context: context
-                          ),
+                          onTap: () => controller.goToProfile(
+                              userId: userId, context: context),
                           child: CircleAvatar(
                             radius: 18,
                             backgroundImage: NetworkImage(avatarUrl),
@@ -74,10 +72,8 @@ Widget postWidget({
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       GestureDetector(
-                        onTap: ()=>controller.goToProfile(
-                            userId: userId,
-                            context: context
-                        ),
+                        onTap: () => controller.goToProfile(
+                            userId: userId, context: context),
                         child: Text(
                           userName,
                           style: const TextStyle(

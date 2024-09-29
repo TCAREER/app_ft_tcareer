@@ -19,18 +19,18 @@ class SearchResultPage extends ConsumerStatefulWidget {
 }
 
 class _SearchResultPageState extends ConsumerState<SearchResultPage> {
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.microtask((){
+    Future.microtask(() {
       ref.read(searchPostControllerProvider).search(widget.query);
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    final controller= ref.watch(searchPostControllerProvider);
+    final controller = ref.watch(searchPostControllerProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -41,37 +41,37 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
           readOnly: true,
           onTap: () => context.pushReplacementNamed("search"),
           controller: controller.queryController,
-
-
         ),
-        leading:GestureDetector(
-          onTap: ()=>context.pop(),
-          child: const Icon(Icons.arrow_back,color: Colors.black,),
+        leading: GestureDetector(
+          onTap: () => context.pop(),
+          child: const Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+          ),
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: ()async=>await controller.search(widget.query),
+        onRefresh: () async => await controller.search(widget.query),
         child: Visibility(
           visible: !controller.isLoading,
-            replacement: circularLoadingWidget(),
+          replacement: circularLoadingWidget(),
           child: Visibility(
             visible: controller.users.isNotEmpty || controller.posts.isNotEmpty,
             replacement: emptyWidget("Không tìm thấy dữ liệu"),
             child: ListView(
               padding: EdgeInsets.symmetric(vertical: 10),
               children: [
-
                 userList(),
-                 Visibility(
-                   visible: controller.users.isNotEmpty && controller.posts.isNotEmpty,
-                   child:  Container(
-                     margin: EdgeInsets.symmetric(vertical: 10),
-                     width: ScreenUtil().scaleWidth,
-                     color: Colors.grey.shade200,
-                     height: 10,
-                   )),
+                Visibility(
+                    visible: controller.users.isNotEmpty &&
+                        controller.posts.isNotEmpty,
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 10),
+                      width: ScreenUtil().scaleWidth,
+                      color: Colors.grey.shade200,
+                      height: 10,
+                    )),
                 postList()
-            
               ],
             ),
           ),
@@ -80,7 +80,7 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
     );
   }
 
-  Widget userList(){
+  Widget userList() {
     final controller = ref.watch(searchPostControllerProvider);
     return Visibility(
       visible: controller.users.isNotEmpty,
@@ -89,32 +89,38 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
         children: [
           const Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Text("Mọi người",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+            child: Text(
+              "Mọi người",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
           ),
-          const SizedBox(height: 10,),
+          const SizedBox(
+            height: 10,
+          ),
           Column(
-            children: controller.users.map((user){
+            children: controller.users.map((user) {
               return ListTile(
                 tileColor: Colors.white,
-                onTap: () => context.pushNamed('profile',queryParameters: {"userId":user.id.toString()}),
+                onTap: () => context.pushNamed('profile',
+                    queryParameters: {"userId": user.id.toString()}),
                 leading: CircleAvatar(
-                  backgroundImage: NetworkImage(user.avatar??"https://ui-avatars.com/api/?name=${user.fullName}&background=random"),
+                  backgroundImage: NetworkImage(user.avatar ??
+                      "https://ui-avatars.com/api/?name=${user.fullName}&background=random"),
                 ),
-                title: Text(user.fullName??""),
+                title: Text(user.fullName ?? ""),
                 trailing: IconButton(
-                  onPressed: (){},
+                  onPressed: () {},
                   icon: PhosphorIcon(PhosphorIconsLight.userCirclePlus),
                 ),
               );
             }).toList(),
           )
-
         ],
       ),
     );
   }
 
-  Widget postList(){
+  Widget postList() {
     final controller = ref.watch(searchPostControllerProvider);
     return Visibility(
       visible: controller.posts.isNotEmpty,
@@ -123,22 +129,28 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Text("Bài đăng",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+            child: Text(
+              "Bài đăng",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
           ),
-          const SizedBox(height: 10,),
+          const SizedBox(
+            height: 10,
+          ),
           Column(
-            children: controller.posts.asMap().entries.map((entry){
+            children: controller.posts.asMap().entries.map((entry) {
               final post = entry.value;
               final index = entry.key;
-              final sharedPost =post.sharedPost;
+              final sharedPost = post.sharedPost;
               return Column(
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     child: Visibility(
                       replacement: sharedPostWidget(
-                          onLike: ()async=>await controller.postLikePost(index: index,postId: post.id.toString()),
-                          originUserId: sharedPost?.userId.toString()??"",
+                          onLike: () async => await controller.postLikePost(
+                              index: index, postId: post.id.toString()),
+                          originUserId: sharedPost?.userId.toString() ?? "",
                           userId: post.userId.toString(),
                           originCreatedAt: sharedPost?.createdAt ?? "",
                           originPostId: sharedPost?.id.toString() ?? "",
@@ -163,7 +175,8 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
                           index: index),
                       visible: post.sharedPostId == null,
                       child: postWidget(
-                        onLike: ()async=>await controller.postLikePost(index: index,postId: post.id.toString()),
+                        onLike: () async => await controller.postLikePost(
+                            index: index, postId: post.id.toString()),
                         userId: post.userId.toString(),
                         index: index,
                         liked: post.liked ?? false,
@@ -192,7 +205,6 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
               );
             }).toList(),
           )
-
         ],
       ),
     );

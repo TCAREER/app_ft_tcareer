@@ -1,16 +1,20 @@
 class PostsDetailResponse {
   PostsDetailResponse({
-      Data? data,}){
+    Data? data,
+  }) {
     _data = data;
-}
+  }
 
   PostsDetailResponse.fromJson(dynamic json) {
     _data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
   Data? _data;
-PostsDetailResponse copyWith({  Data? data,
-}) => PostsDetailResponse(  data: data ?? _data,
-);
+  PostsDetailResponse copyWith({
+    Data? data,
+  }) =>
+      PostsDetailResponse(
+        data: data ?? _data,
+      );
   Data? get data => _data;
 
   Map<String, dynamic> toJson() {
@@ -20,31 +24,31 @@ PostsDetailResponse copyWith({  Data? data,
     }
     return map;
   }
-
 }
 
 class Data {
   Data({
-      num? id, 
-      num? userId, 
-      String? firstName, 
-      String? lastName, 
-      String? fullName, 
-      dynamic avatar, 
-      dynamic title, 
-      String? body, 
-      String? privacy, 
-      bool? liked, 
-      num? likeCount, 
-      num? commentCount, 
-      num? shareCount, 
-      List<String>? mediaUrl, 
-      dynamic status, 
-      dynamic sharedPostId, 
-      dynamic sharedPost, 
-      String? createdAt, 
-      String? updatedAt, 
-      dynamic deletedAt,}){
+    num? id,
+    num? userId,
+    String? firstName,
+    String? lastName,
+    String? fullName,
+    dynamic avatar,
+    dynamic title,
+    String? body,
+    String? privacy,
+    bool? liked,
+    num? likeCount,
+    num? commentCount,
+    num? shareCount,
+    List<String>? mediaUrl,
+    dynamic status,
+    dynamic sharedPostId,
+    dynamic sharedPost,
+    String? createdAt,
+    String? updatedAt,
+    dynamic deletedAt,
+  }) {
     _id = id;
     _userId = userId;
     _firstName = firstName;
@@ -65,7 +69,7 @@ class Data {
     _createdAt = createdAt;
     _updatedAt = updatedAt;
     _deletedAt = deletedAt;
-}
+  }
 
   Data.fromJson(dynamic json) {
     _id = json['id'];
@@ -81,7 +85,8 @@ class Data {
     _likeCount = json['like_count'];
     _commentCount = json['comment_count'];
     _shareCount = json['share_count'];
-    _mediaUrl = json['media_url'] != null ? json['media_url'].cast<String>() : [];
+    _mediaUrl =
+        json['media_url'] != null ? json['media_url'].cast<String>() : [];
     _status = json['status'];
     _sharedPostId = json['shared_post_id'];
     _sharedPost = json['shared_post'];
@@ -109,47 +114,50 @@ class Data {
   String? _createdAt;
   String? _updatedAt;
   dynamic _deletedAt;
-Data copyWith({  num? id,
-  num? userId,
-  String? firstName,
-  String? lastName,
-  String? fullName,
-  dynamic avatar,
-  dynamic title,
-  String? body,
-  String? privacy,
-  bool? liked,
-  num? likeCount,
-  num? commentCount,
-  num? shareCount,
-  List<String>? mediaUrl,
-  dynamic status,
-  dynamic sharedPostId,
-  dynamic sharedPost,
-  String? createdAt,
-  String? updatedAt,
-  dynamic deletedAt,
-}) => Data(  id: id ?? _id,
-  userId: userId ?? _userId,
-  firstName: firstName ?? _firstName,
-  lastName: lastName ?? _lastName,
-  fullName: fullName ?? _fullName,
-  avatar: avatar ?? _avatar,
-  title: title ?? _title,
-  body: body ?? _body,
-  privacy: privacy ?? _privacy,
-  liked: liked ?? _liked,
-  likeCount: likeCount ?? _likeCount,
-  commentCount: commentCount ?? _commentCount,
-  shareCount: shareCount ?? _shareCount,
-  mediaUrl: mediaUrl ?? _mediaUrl,
-  status: status ?? _status,
-  sharedPostId: sharedPostId ?? _sharedPostId,
-  sharedPost: sharedPost ?? _sharedPost,
-  createdAt: createdAt ?? _createdAt,
-  updatedAt: updatedAt ?? _updatedAt,
-  deletedAt: deletedAt ?? _deletedAt,
-);
+  Data copyWith({
+    num? id,
+    num? userId,
+    String? firstName,
+    String? lastName,
+    String? fullName,
+    dynamic avatar,
+    dynamic title,
+    String? body,
+    String? privacy,
+    bool? liked,
+    num? likeCount,
+    num? commentCount,
+    num? shareCount,
+    List<String>? mediaUrl,
+    dynamic status,
+    dynamic sharedPostId,
+    dynamic sharedPost,
+    String? createdAt,
+    String? updatedAt,
+    dynamic deletedAt,
+  }) =>
+      Data(
+        id: id ?? _id,
+        userId: userId ?? _userId,
+        firstName: firstName ?? _firstName,
+        lastName: lastName ?? _lastName,
+        fullName: fullName ?? _fullName,
+        avatar: avatar ?? _avatar,
+        title: title ?? _title,
+        body: body ?? _body,
+        privacy: privacy ?? _privacy,
+        liked: liked ?? _liked,
+        likeCount: likeCount ?? _likeCount,
+        commentCount: commentCount ?? _commentCount,
+        shareCount: shareCount ?? _shareCount,
+        mediaUrl: mediaUrl ?? _mediaUrl,
+        status: status ?? _status,
+        sharedPostId: sharedPostId ?? _sharedPostId,
+        sharedPost: sharedPost ?? _sharedPost,
+        createdAt: createdAt ?? _createdAt,
+        updatedAt: updatedAt ?? _updatedAt,
+        deletedAt: deletedAt ?? _deletedAt,
+      );
   num? get id => _id;
   num? get userId => _userId;
   String? get firstName => _firstName;
@@ -195,5 +203,4 @@ Data copyWith({  num? id,
     map['deleted_at'] = _deletedAt;
     return map;
   }
-
 }

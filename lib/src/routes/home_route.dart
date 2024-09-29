@@ -29,7 +29,6 @@ class HomeRoute {
         return PhotoViewGalleryPage(data.images, postId, data.onPageChanged);
       },
     ),
-
     GoRoute(
       path: "search",
       name: "search",
@@ -37,28 +36,26 @@ class HomeRoute {
         return const SearchPage();
       },
     ),
-
     GoRoute(
       path: "searchResult",
       name: "searchResult",
       builder: (context, state) {
-        final query = state.uri.queryParameters['q']??"";
+        final query = state.uri.queryParameters['q'] ?? "";
         return SearchResultPage(query);
       },
     ),
-
-
     GoRoute(
       path: "profile",
       name: "profile",
       pageBuilder: (context, state) {
-        final userId = state.uri.queryParameters["userId"]??"";
+        final userId = state.uri.queryParameters["userId"] ?? "";
         return CustomTransitionPage(
             key: state.pageKey,
-            child: AnotherProfilePage(userId: userId,),
+            child: AnotherProfilePage(
+              userId: userId,
+            ),
             transitionsBuilder: fadeTransitionBuilder);
       },
     ),
-
   ];
 }
