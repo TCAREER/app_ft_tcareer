@@ -1,4 +1,5 @@
 import 'package:app_tcareer/src/configs/app_colors.dart';
+import 'package:app_tcareer/src/features/posts/data/models/user_liked.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +8,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 class UserLikedPage extends ConsumerStatefulWidget {
- final  int postId;
-  const UserLikedPage(this.postId, {super.key});
+ final int? postId;
+
+ final int? commentId;
+
+  const UserLikedPage( {this.postId,  this.commentId,super.key});
 
   @override
   ConsumerState<UserLikedPage> createState() => _UserLikedPageState();
@@ -20,40 +24,64 @@ class _UserLikedPageState extends ConsumerState<UserLikedPage> {
     // TODO: implement initState
     super.initState();
     Future.microtask((){
-      ref.read(postControllerProvider).getUserLikePost(widget.postId);
+      if(widget.postId!=null){
+        ref.read(postControllerProvider).getUserLikePost(widget.postId!);
+      }
+      if(widget.commentId!=null){
+        ref.read(commentControllerProvider).getUserLikeComment(widget.commentId!);
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final controller = ref.watch(postControllerProvider);
+    final postController = ref.watch(postControllerProvider);
+    final commentController = ref.watch(commentControllerProvider);
+    final postId = widget.postId;
+    final users = postId!=null?postController.userLiked?.data:commentController.userLiked?.data;
     return ClipRRect(
       borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20), topRight: Radius.circular(20)),
       child: ListView(
         children: [
           AppBar(
-            toolbarHeight: 30,
+            // toolbarHeight: 30,
             centerTitle: true,
             automaticallyImplyLeading: false,
-            title: Container(
-              decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.circular(5)),
-              width: 30,
-              height: 4,
+            title: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 10),
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(5)),
+                  width: 30,
+                  height: 4,
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  "Lượt thích",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
+
+          ),
+          Divider(
+            // thickness: 0.1,
+            color: Colors.grey.shade200,
           ),
           Visibility(
-            visible: controller.userLiked!=null,
+            visible: users!=null,
             replacement: circularLoadingWidget(),
             child: ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               padding: const EdgeInsets.symmetric(vertical: 10),
-              itemCount: controller.userLiked?.data?.length??0,
+              itemCount: users?.length??0,
               itemBuilder: (context, index) {
-                final user = controller.userLiked?.data?[index];
+                final user = users?[index];
                 return ListTile(
                   onTap: () => context.pushNamed('profile',queryParameters: {"userId":user?.id.toString()}),
                   leading: CircleAvatar(

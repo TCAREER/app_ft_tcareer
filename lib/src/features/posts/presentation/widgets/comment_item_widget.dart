@@ -183,9 +183,12 @@ Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
             ),
             Visibility(
                 visible: likeCount != 0,
-                child: Text(
-                  "$likeCount",
-                  style: TextStyle(fontSize: 11),
+                child: InkWell(
+                  onTap: () => controller.showUserLiked(context,commentId),
+                  child: Text(
+                    "$likeCount",
+                    style: TextStyle(fontSize: 12),
+                  ),
                 ))
           ],
         ),

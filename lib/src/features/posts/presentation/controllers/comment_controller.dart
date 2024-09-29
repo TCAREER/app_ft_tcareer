@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:app_tcareer/src/configs/app_constants.dart';
+import 'package:app_tcareer/src/features/index/index_controller.dart';
+import 'package:app_tcareer/src/features/posts/data/models/user_liked.dart';
+import 'package:app_tcareer/src/features/posts/presentation/pages/user_liked_page.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/features/posts/usecases/comment_use_case.dart';
 import 'package:app_tcareer/src/features/posts/usecases/media_use_case.dart';
@@ -11,6 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:uuid/uuid.dart';
 
 class CommentController extends ChangeNotifier {
@@ -116,7 +120,7 @@ class CommentController extends ChangeNotifier {
 
         print(">>>>>>>>>>>>>>data: $commentMap"); // Kiểm tra dữ liệu
 
-        // Sắp xếp bình luận
+
         final sortedComments = commentMap.entries.toList()
           ..sort((a, b) {
             final createdA = DateTime.tryParse(a.value['created_at']);
@@ -125,7 +129,7 @@ class CommentController extends ChangeNotifier {
                 .compareTo(createdA ?? DateTime.now());
           });
 
-        // Tạo bản đồ đã sắp xếp
+
         return {for (var e in sortedComments) e.key: e.value};
       } else {
         return {};
@@ -201,6 +205,29 @@ class CommentController extends ChangeNotifier {
         return {};
       }
     });
+  }
+  UserLiked? userLiked;
+  Future<void>getUserLikeComment(int commentId)async{
+    userLiked = null;
+    notifyListeners();
+    userLiked = await commentUseCase.getUserLikeComment(commentId);
+    notifyListeners();
+  }
+  Future<void> showUserLiked(BuildContext context, int commentId) async {
+    final index = ref.watch(indexControllerProvider.notifier);
+    // index.showBottomSheet(
+    //     context: context, builder: (scrollController) => SharePage());
+    // await getUserLikePost(postId);
+    index.setBottomNavigationBarVisibility(false);
+    showModalBottomSheet(
+      backgroundColor: Colors.white,
+      isScrollControlled: true,
+      context: context,
+      builder: (context) => SizedBox(
+        height: ScreenUtil().screenHeight*.7,
+        child: UserLikedPage(commentId: commentId,),
+      ),
+    ).whenComplete(() => index.setBottomNavigationBarVisibility(true),);
   }
 }
 

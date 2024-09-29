@@ -171,15 +171,15 @@ class PostController extends ChangeNotifier {
     final index = ref.watch(indexControllerProvider.notifier);
     // index.showBottomSheet(
     //     context: context, builder: (scrollController) => SharePage());
+    // await getUserLikePost(postId);
     index.setBottomNavigationBarVisibility(false);
-
     showModalBottomSheet(
       backgroundColor: Colors.white,
       isScrollControlled: true,
       context: context,
       builder: (context) => SizedBox(
-        height: ScreenUtil().screenHeight*.6,
-        child: UserLikedPage(postId),
+        height: ScreenUtil().screenHeight*.7,
+        child: UserLikedPage(postId: postId,),
       ),
     ).whenComplete(() => index.setBottomNavigationBarVisibility(true),);
   }
