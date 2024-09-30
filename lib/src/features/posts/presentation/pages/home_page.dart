@@ -26,29 +26,28 @@ class _HomePageState extends ConsumerState<HomePage> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      ref.read(postControllerProvider).scrollToTop();
       ref.read(postControllerProvider).getPost();
       ref.read(userControllerProvider).getUserInfo();
     });
   }
 
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-    final extra = GoRouterState.of(context).extra;
-
-    if (extra == "reload") {
-      Future.microtask(() {
-        ref.read(postControllerProvider).refresh();
-      });
-    }
-    if (extra == "scrollTop") {
-      Future.microtask(() {
-        ref.read(postControllerProvider).scrollToTop();
-      });
-    }
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   // TODO: implement didChangeDependencies
+  //   super.didChangeDependencies();
+  //   final extra = GoRouterState.of(context).extra;
+  //
+  //   if (extra == "reload") {
+  //     Future.microtask(() {
+  //       ref.read(postControllerProvider).refresh();
+  //     });
+  //   }
+  //   if (extra == "scrollTop") {
+  //     Future.microtask(() {
+  //       ref.read(postControllerProvider).scrollToTop();
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

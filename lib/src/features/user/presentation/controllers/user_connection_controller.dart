@@ -21,15 +21,30 @@ class UserConnectionController extends ChangeNotifier {
     anotherUser.anotherUserData = updateUser;
     context.pop();
     if (currentUser.data?.followed != true) {
-      showSnackBar("Bạn đã theo dõi ${currentUser.data?.fullName}");
+      showSnackBar(
+          "Bạn đã theo dõi ${anotherUser.anotherUserData?.data?.fullName}");
     }
-
     notifyListeners();
   }
 
   Future<void> postAddFriend(String userId) async {
-    await connectionUseCase.postAddFriend(userId);
+    final anotherUser = ref.watch(anotherUserControllerProvider.notifier);
 
+    await connectionUseCase.postAddFriend(userId: userId);
+    await anotherUser.getUserById(userId);
+    showSnackBar(
+        "Đã gửi lời mời kết bạn đến ${anotherUser.anotherUserData?.data?.fullName}");
+    notifyListeners();
+  }
+
+  Future<void> postAcceptFriend(String userId) async {
+    final anotherUser = ref.watch(anotherUserControllerProvider.notifier);
+    final currentUser = anotherUser.anotherUserData;
+    await connectionUseCase.postAcceptFriend(
+      userId: userId,
+    );
+    await anotherUser.getUserById(userId);
+    showSnackBar("Bạn đã đồng ý kết bạn với ${currentUser?.data?.fullName}");
     notifyListeners();
   }
 }

@@ -69,7 +69,8 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage>
                 ),
                 SliverToBoxAdapter(child: userInfo()),
                 SliverToBoxAdapter(
-                    child: buttonFollowAndMessage(user?.followed ?? false)),
+                    child: buttonFollowAndMessage(
+                        user?.friendStatus ?? "default")),
                 const SliverToBoxAdapter(child: SizedBox(height: 5)),
                 SliverPersistentHeader(
                   pinned: true,
@@ -216,41 +217,47 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage>
     );
   }
 
-  Widget buttonFollowAndMessage(bool followed) {
+  Widget buttonFollowAndMessage(String? friendStatus) {
     final controller = ref.watch(anotherUserControllerProvider);
     final connectionController = ref.watch(userConnectionControllerProvider);
     String userId = controller.anotherUserData?.data?.id.toString() ?? "";
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Row(
-        children: [
-          connectButton(
-              friendStatus: controller.anotherUserData?.data?.friendStatus,
+    return Visibility(
+      visible: controller.anotherUserData != null,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            connectButton(
+              friendStatus: friendStatus ?? "default",
               onConnect: () async =>
-                  await connectionController.postAddFriend(userId)),
-          Expanded(
-            child: Column(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .45,
-                  height: 35,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      side: BorderSide(color: Colors.grey.shade100),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: const Text("Nhắn tin",
-                        style: TextStyle(color: Colors.black)),
-                  ),
-                ),
-              ],
+                  await connectionController.postAddFriend(userId),
+              onAccept: () async =>
+                  await connectionController.postAcceptFriend(userId),
+              onDecline: () {},
             ),
-          ),
-        ],
+            const SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: SizedBox(
+                height: 35,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    side: BorderSide(color: Colors.grey.shade200, width: 1.2),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  onPressed: () {},
+                  child: const Text("Nhắn tin",
+                      style: TextStyle(color: Colors.black)),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

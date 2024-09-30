@@ -12,11 +12,11 @@ void showSnackBar(String message) {
             color: Colors.green,
           ),
           const SizedBox(
-            width: 10,
+            width: 5,
           ),
           Text(
             message,
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black, fontSize: 14),
           ),
         ],
       ),
@@ -32,11 +32,11 @@ void showSnackBarError(String message) {
             color: Colors.red,
           ),
           const SizedBox(
-            width: 10,
+            width: 5,
           ),
           Text(
             message,
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black, fontSize: 14),
           ),
         ],
       ),

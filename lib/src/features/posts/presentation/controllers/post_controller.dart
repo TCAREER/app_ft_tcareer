@@ -94,8 +94,7 @@ class PostController extends ChangeNotifier {
               !postCache.any((cachedPost) => cachedPost.id == newPost.id))
           .toList();
       postCache.addAll(newPosts as Iterable<post_model.Data>);
-      if (isDisposed) return;
-      notifyListeners();
+      if (!isDisposed) notifyListeners();
     }
   }
 
@@ -201,6 +200,8 @@ class PostController extends ChangeNotifier {
 
   void goToProfile({required String userId, required BuildContext context}) {
     final user = ref.watch(userControllerProvider);
+    final index = ref.watch(indexControllerProvider.notifier);
+    index.setBottomNavigationBarVisibility(true);
     if (user.isCurrentUser(int.parse(userId)) == true) {
       context.replaceNamed('user');
     } else {

@@ -23,11 +23,24 @@ class UserConnectionUseCase {
     return user;
   }
 
-  Future<void> postAddFriend(String userId) async =>
-      await userRepository.postAddFriend(userId);
+  Future<void> postAddFriend({required String userId}) async {
+    // final updateUser = updatedFriendStatus(user, "send_request");
+    await userRepository.postAddFriend(userId);
+    // return updateUser;
+  }
 
-  Future<void> postAcceptFriend(String userId) async =>
-      await userRepository.postAcceptFriend(userId);
+  Future<void> postAcceptFriend({required String userId}) async {
+    await userRepository.postAcceptFriend(userId);
+  }
+
+  Users updatedFriendStatus(Users user, String status) {
+    final currentUser = user.data;
+    if (currentUser != null) {
+      final updatedUserData = currentUser.copyWith(friendStatus: status);
+      user = user.copyWith(data: updatedUserData);
+    }
+    return user;
+  }
 
   Future<void> postDeclineFriend(String userId) async =>
       await userRepository.postDeclineFriend(userId);
