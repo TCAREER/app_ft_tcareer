@@ -1,6 +1,7 @@
 import 'package:app_tcareer/src/features/user/presentation/controllers/another_user_controller.dart';
 import 'package:app_tcareer/src/features/user/usercases/user_connection_use_case.dart';
 import 'package:app_tcareer/src/utils/snackbar_utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -46,6 +47,62 @@ class UserConnectionController extends ChangeNotifier {
     await anotherUser.getUserById(userId);
     showSnackBar("Bạn đã đồng ý kết bạn với ${currentUser?.data?.fullName}");
     notifyListeners();
+  }
+
+  Future<void> postDeclineFriend(String userId) async {
+    final anotherUser = ref.watch(anotherUserControllerProvider.notifier);
+    final currentUser = anotherUser.anotherUserData;
+    await connectionUseCase.postDeclineFriend(
+      userId,
+    );
+    await anotherUser.getUserById(userId);
+    showSnackBar("Đã hủy kết bạn với ${currentUser?.data?.fullName}");
+    notifyListeners();
+  }
+
+  Future<void> showModalDeleteFriend(
+      {required BuildContext context, required String userId}) async {
+    final anotherUser = ref.watch(anotherUserControllerProvider.notifier);
+    final currentUser = anotherUser.anotherUserData?.data;
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoActionSheet(
+          title: Column(
+            children: [
+              CircleAvatar(
+                radius: 25,
+                backgroundImage: NetworkImage(currentUser?.avatar ??
+                    "https://ui-avatars.com/api/?name=${currentUser?.fullName}&background=random"),
+              ),
+            ],
+          ),
+          message: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: Text(
+              'Hủy kết bạn với ${currentUser?.fullName}',
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+                isDestructiveAction: true,
+                onPressed: () async {},
+                child: const Text(
+                  'Hủy kết bạn',
+                  style: TextStyle(fontSize: 12),
+                )),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+              isDefaultAction: true,
+              child: const Text(
+                'Quay lại',
+                style: TextStyle(color: Colors.black, fontSize: 12),
+              ),
+              onPressed: () => context.pop()),
+        );
+      },
+    );
   }
 }
 

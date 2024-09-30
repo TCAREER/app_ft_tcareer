@@ -31,23 +31,22 @@ class _HomePageState extends ConsumerState<HomePage> {
     });
   }
 
-  // @override
-  // void didChangeDependencies() {
-  //   // TODO: implement didChangeDependencies
-  //   super.didChangeDependencies();
-  //   final extra = GoRouterState.of(context).extra;
-  //
-  //   if (extra == "reload") {
-  //     Future.microtask(() {
-  //       ref.read(postControllerProvider).refresh();
-  //     });
-  //   }
-  //   if (extra == "scrollTop") {
-  //     Future.microtask(() {
-  //       ref.read(postControllerProvider).scrollToTop();
-  //     });
-  //   }
-  // }
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    final extra = GoRouterState.of(context).extra;
+
+    if (extra == "reload") {
+      Future.microtask(() {
+        ref.read(postControllerProvider).refresh();
+      });
+    }
+
+    Future.microtask(() {
+      ref.read(postControllerProvider).scrollToTop();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -69,7 +69,7 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage>
                 ),
                 SliverToBoxAdapter(child: userInfo()),
                 SliverToBoxAdapter(
-                    child: buttonFollowAndMessage(
+                    child: buttonConnectAndMessage(
                         user?.friendStatus ?? "default")),
                 const SliverToBoxAdapter(child: SizedBox(height: 5)),
                 SliverPersistentHeader(
@@ -217,7 +217,7 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage>
     );
   }
 
-  Widget buttonFollowAndMessage(String? friendStatus) {
+  Widget buttonConnectAndMessage(String? friendStatus) {
     final controller = ref.watch(anotherUserControllerProvider);
     final connectionController = ref.watch(userConnectionControllerProvider);
     String userId = controller.anotherUserData?.data?.id.toString() ?? "";
@@ -234,7 +234,8 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage>
                   await connectionController.postAddFriend(userId),
               onAccept: () async =>
                   await connectionController.postAcceptFriend(userId),
-              onDecline: () {},
+              onDecline: () async => await connectionController
+                  .showModalDeleteFriend(context: context, userId: userId),
             ),
             const SizedBox(
               width: 10,

@@ -32,7 +32,7 @@ Widget connectButton(
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          onPressed: onConnect,
+          onPressed: onDecline,
           child: Text(friendStatusMap[friendStatus],
               style: const TextStyle(color: Colors.black)),
         ),
