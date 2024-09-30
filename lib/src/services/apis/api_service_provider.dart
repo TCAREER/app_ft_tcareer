@@ -4,6 +4,7 @@ import 'package:app_tcareer/app.dart';
 import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/login_response.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/refresh_token_request.dart';
+import 'package:app_tcareer/src/routes/app_router.dart';
 import 'package:app_tcareer/src/utils/user_utils.dart';
 
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
@@ -50,22 +51,33 @@ final apiServiceProvider = Provider<ApiServices>((ref) {
     final userUtils = ref.read(userUtilsProvider);
     if (error.response?.statusCode == 401 &&
         await userUtils.getAuthToken() != null) {
-      // final refreshToken = await userUtils.getRefreshToken();
-      //
-      // final response =
-      //     await refreshAccessToken(refreshToken: refreshToken, ref: ref);
-      // await userUtils.saveAuthToken(
-      //     authToken: response?.accessToken ?? "", refreshToken: refreshToken);
-      // final authToken = await userUtils.getAuthToken();
-      // final options = error.requestOptions;
-      // options.headers["Authorization"] = "Bearer $authToken";
-      //
-      // return handler.resolve(await dio.fetch(options));
+      try {
+        final refreshToken = await userUtils.getRefreshToken();
+        final response =
+            await refreshAccessToken(refreshToken: refreshToken, ref: ref);
+        if (response != null) {
+          await userUtils.saveAuthToken(
+              authToken: response.accessToken ?? "",
+              refreshToken: refreshToken);
+          final authToken = await userUtils.getAuthToken();
+          final options = error.requestOptions;
+          options.headers["Authorization"] = "Bearer $authToken";
 
-      final refreshTokenNotifier =
-          ref.watch(refreshTokenStateProvider.notifier);
-      refreshTokenNotifier.setTokenExpired(true);
-      await userUtils.clearToken();
+          return handler.resolve(await dio.fetch(options));
+        }
+      } catch (e) {
+        print(">>>>>>>>>>>lỗi");
+        final refreshTokenNotifier =
+            ref.watch(refreshTokenStateProvider.notifier);
+        userUtils.clearToken();
+
+        refreshTokenNotifier.setTokenExpired(true);
+      }
+
+      // final refreshTokenNotifier =
+      //     ref.watch(refreshTokenStateProvider.notifier);
+      // refreshTokenNotifier.setTokenExpired(true);
+      // await userUtils.clearToken();
     } else {
       handler.reject(error);
     }
@@ -84,7 +96,7 @@ Future<LoginResponse?> refreshAccessToken(
     {required String refreshToken, required ProviderRef ref}) async {
   final LoginResponse? data;
   final dio = Dio();
-  final refreshTokenNotifier = ref.watch(refreshTokenStateProvider.notifier);
+
   try {
     dio.options.baseUrl = AppConstants.baseUrl;
     dio.interceptors.add(CurlLoggerDioInterceptor(printOnSuccess: true));
@@ -104,11 +116,7 @@ Future<LoginResponse?> refreshAccessToken(
     data = LoginResponse.fromJson(response.data);
     return data;
   } on DioException catch (err) {
-    final userUtils = ref.read(userUtilsProvider);
-    if (err.response?.statusCode == 400) {
-      userUtils.clearToken();
-      refreshTokenNotifier.setTokenExpired(true);
-    }
+    return Future.error(err);
   }
   return null;
 }
