@@ -5,6 +5,7 @@ import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/login_response.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/refresh_token_request.dart';
 import 'package:app_tcareer/src/routes/app_router.dart';
+import 'package:app_tcareer/src/utils/snackbar_utils.dart';
 import 'package:app_tcareer/src/utils/user_utils.dart';
 
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
@@ -66,11 +67,10 @@ final apiServiceProvider = Provider<ApiServices>((ref) {
           return handler.resolve(await dio.fetch(options));
         }
       } catch (e) {
-        print(">>>>>>>>>>>lỗi");
+        showSnackBarError("Phiên đăng nhập hết hạn!");
         final refreshTokenNotifier =
             ref.watch(refreshTokenStateProvider.notifier);
         userUtils.clearToken();
-
         refreshTokenNotifier.setTokenExpired(true);
       }
 

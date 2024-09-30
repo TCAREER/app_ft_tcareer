@@ -3,12 +3,14 @@ import 'package:app_tcareer/src/features/authentication/data/models/forgot_passw
 import 'package:app_tcareer/src/features/authentication/data/models/forgot_password_verify_request.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/login_google_request.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/login_request.dart';
+import 'package:app_tcareer/src/features/authentication/data/models/logout_request.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/register_request.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/reset_password_request.dart';
 import 'package:app_tcareer/src/utils/user_utils.dart';
 
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -66,6 +68,17 @@ class AuthRepository {
     } on DioException catch (e) {
       rethrow;
     }
+  }
+
+  Future<void> logout() async {
+    final fireBaseAuth = ref.watch(firebaseAuthServiceProvider);
+    final apiServices = ref.watch(apiServiceProvider);
+    final userUtil = ref.watch(userUtilsProvider);
+    String refreshToken = await userUtil.getRefreshToken();
+    await apiServices.postLogout(
+        body: LogoutRequest(refreshToken: refreshToken));
+    await fireBaseAuth.signOut();
+    await userUtil.clearToken();
   }
 
   Future<void> forgotPassword(ForgotPasswordRequest body) async {

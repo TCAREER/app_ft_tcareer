@@ -1,13 +1,16 @@
+import 'package:app_tcareer/src/features/authentication/usecases/login_use_case.dart';
 import 'package:app_tcareer/src/features/index/index_controller.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart'
     as post_model;
 import 'package:app_tcareer/src/features/posts/usecases/post_use_case.dart';
 import 'package:app_tcareer/src/features/user/data/models/users.dart';
 import 'package:app_tcareer/src/features/user/usercases/user_use_case.dart';
+import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:app_tcareer/src/utils/user_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class UserController extends ChangeNotifier {
   final UserUseCase userUseCase;
@@ -92,8 +95,11 @@ class UserController extends ChangeNotifier {
   }
 
   Future<void> logout(BuildContext context) async {
-    final userUtils = ref.watch(userUtilsProvider);
-    await userUtils.logout(context);
+    AppUtils.loadingApi(() async {
+      final auth = ref.watch(loginUseCase);
+      await auth.logout();
+      context.replaceNamed("login");
+    }, context);
   }
 
   bool isCurrentUser(int userId) {
