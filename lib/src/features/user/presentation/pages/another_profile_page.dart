@@ -108,6 +108,9 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage>
       visible: controller.anotherUserData != null,
       replacement: informationLoading(),
       child: information(
+          userId: user?.id.toString(),
+          ref: ref,
+          context: context,
           friends: user?.friendCount.toString(),
           fullName: user?.fullName ?? "",
           avatar: user?.avatar,

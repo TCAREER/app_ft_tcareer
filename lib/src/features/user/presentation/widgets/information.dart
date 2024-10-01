@@ -1,11 +1,17 @@
+import 'package:app_tcareer/src/features/user/presentation/controllers/user_connection_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 Widget information(
     {required String fullName,
+    required WidgetRef ref,
+    required BuildContext context,
+    String? userId,
     String? expertise,
     String? follows,
     String? avatar,
     String? friends}) {
+  final connectionController = ref.watch(userConnectionControllerProvider);
   return ListTile(
     title: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -23,9 +29,13 @@ Widget information(
     ),
     subtitle: Row(
       children: [
-        Text(
-          follows != null ? "$follows người theo dõi" : "0 người theo dõi",
-          style: const TextStyle(fontSize: 12, color: Colors.black54),
+        InkWell(
+          onTap: () =>
+              connectionController.showUserFollowed(context, userId ?? ""),
+          child: Text(
+            follows != null ? "$follows người theo dõi" : "0 người theo dõi",
+            style: const TextStyle(fontSize: 12, color: Colors.black54),
+          ),
         ),
         const SizedBox(
           width: 15,

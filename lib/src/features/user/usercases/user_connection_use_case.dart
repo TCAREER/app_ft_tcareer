@@ -44,6 +44,9 @@ class UserConnectionUseCase {
 
   Future<void> postDeclineFriend(String userId) async =>
       await userRepository.postDeclineFriend(userId);
+
+  Future getFollowers(String userId) async =>
+      await userRepository.getFollower(userId);
 }
 
 final userUseCaseProvider =

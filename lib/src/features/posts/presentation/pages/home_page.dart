@@ -43,9 +43,11 @@ class _HomePageState extends ConsumerState<HomePage> {
       });
     }
 
-    Future.microtask(() {
-      ref.read(postControllerProvider).scrollToTop();
-    });
+    if (extra == "create") {
+      Future.microtask(() {
+        ref.read(postControllerProvider).scrollToTop();
+      });
+    }
   }
 
   @override

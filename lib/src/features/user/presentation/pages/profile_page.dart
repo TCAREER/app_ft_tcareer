@@ -9,6 +9,7 @@ import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
@@ -49,64 +50,70 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
         length: 3,
         child: Scaffold(
           backgroundColor: Colors.white,
-          body: RefreshIndicator(
-            onRefresh: () => controller.getPost(),
-            child: NestedScrollView(
-              controller: scrollController,
-              headerSliverBuilder: (context, innerBoxIsScrolled) {
-                return [
-                  SliverAppBar(
-                    toolbarHeight: 30,
-                    centerTitle: false,
-                    actions: [
-                      PopupMenuButton(
-                        color: Colors.white,
-                        icon: const Icon(
-                          Icons.menu,
-                          color: Colors.black,
-                        ),
-                        itemBuilder: (context) {
-                          return [
-                            PopupMenuItem(
-                              onTap: () async =>
-                                  await controller.logout(context),
-                              child: const ListTile(
-                                leading: Icon(
-                                  Icons.logout,
-                                  color: Colors.red,
-                                ),
-                                title: Text("Đăng xuất"),
-                              ),
-                            )
-                          ];
-                        },
-                      )
-                    ],
-                  ),
-                  SliverToBoxAdapter(child: userInfo()),
-                  // SliverToBoxAdapter(child: buttonFollowAndMessage()),
-                  const SliverToBoxAdapter(child: SizedBox(height: 10)),
-                  SliverPersistentHeader(
-                    pinned: true,
-                    delegate: _SliverAppBarDelegate(
-                      TabBar(
-                        overlayColor:
-                            MaterialStateProperty.all(Colors.transparent),
-                        indicatorWeight: 2,
-                        dividerColor: Colors.transparent,
-                        indicatorColor: Colors.black,
-                        labelStyle: const TextStyle(color: Colors.black),
-                        tabs: [
-                          Tab(text: "Bài viết"),
-                          Tab(text: "Ảnh"),
-                          Tab(text: "Video"),
-                        ],
+          body: NestedScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  toolbarHeight: 30,
+                  centerTitle: false,
+                  actions: [
+                    PopupMenuButton(
+                      color: Colors.white,
+                      icon: const Icon(
+                        Icons.menu,
+                        color: Colors.black,
                       ),
+                      itemBuilder: (context) {
+                        return [
+                          PopupMenuItem(
+                            onTap: () async => await controller.logout(context),
+                            child: const ListTile(
+                              leading: Icon(
+                                Icons.logout,
+                                color: Colors.red,
+                              ),
+                              title: Text("Đăng xuất"),
+                            ),
+                          )
+                        ];
+                      },
+                    )
+                  ],
+                ),
+                SliverToBoxAdapter(child: userInfo()),
+                // SliverToBoxAdapter(child: buttonFollowAndMessage()),
+                const SliverToBoxAdapter(child: SizedBox(height: 10)),
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: _SliverAppBarDelegate(
+                    TabBar(
+                      overlayColor:
+                          MaterialStateProperty.all(Colors.transparent),
+                      indicatorWeight: 2,
+                      dividerColor: Colors.transparent,
+                      indicatorColor: Colors.black,
+                      labelStyle: const TextStyle(color: Colors.black),
+                      tabs: [
+                        Tab(text: "Bài viết"),
+                        Tab(text: "Ảnh"),
+                        Tab(text: "Video"),
+                      ],
                     ),
                   ),
-                ];
-              },
-              body: TabBarView(
+                ),
+              ];
+            },
+            body: SmartRefresher(
+              // enablePullDown: true,
+              enablePullUp: true,
+
+              header: const MaterialClassicHeader(
+                color: Colors.black,
+              ),
+              controller: controller.refreshController,
+              onRefresh: () => controller.onRefresh(),
+              child: TabBarView(
                 children: [postList(), Text("Ảnh"), Text("Video")],
               ),
             ),
@@ -123,6 +130,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
       visible: controller.userData != null,
       replacement: informationLoading(),
       child: information(
+          ref: ref,
+          context: context,
+          userId: user?.id.toString(),
           friends: user?.friendCount.toString(),
           fullName: user?.fullName ?? "",
           avatar: user?.avatar,
@@ -149,6 +159,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
             return true; // Ngăn chặn việc lan truyền thêm
           },
           child: ListView(
+            physics: const NeverScrollableScrollPhysics(),
             children: [
               ListView.builder(
                 shrinkWrap: true,

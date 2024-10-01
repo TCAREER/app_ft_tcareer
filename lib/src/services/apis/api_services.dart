@@ -115,4 +115,7 @@ abstract class ApiServices {
 
   @GET('api/auth/get_like')
   Future<UserLiked> getUserLiked({@Queries() required UserLikedRequest query});
+
+  @GET('api/auth/follow/{userId}/view')
+  Future getFollowers({@Path('userId') required String userId});
 }

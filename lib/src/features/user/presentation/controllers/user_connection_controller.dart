@@ -1,9 +1,14 @@
+import 'package:app_tcareer/src/features/index/index_controller.dart';
+import 'package:app_tcareer/src/features/user/data/models/users.dart';
 import 'package:app_tcareer/src/features/user/presentation/controllers/another_user_controller.dart';
+import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
+import 'package:app_tcareer/src/features/user/presentation/pages/user_list_page.dart';
 import 'package:app_tcareer/src/features/user/usercases/user_connection_use_case.dart';
 import 'package:app_tcareer/src/utils/snackbar_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 class UserConnectionController extends ChangeNotifier {
@@ -102,6 +107,45 @@ class UserConnectionController extends ChangeNotifier {
               onPressed: () => context.pop()),
         );
       },
+    );
+  }
+
+  List<Data> followers = [];
+  Future<void> getFollowers(String userId) async {
+    followers.clear();
+    notifyListeners();
+    final data = await connectionUseCase.getFollowers(userId);
+    List<dynamic> followerJson = data['data'];
+    await mapFollowerFromJson(followerJson);
+    notifyListeners();
+  }
+
+  Future<void> mapFollowerFromJson(List<dynamic> followerJson) async {
+    followers = followerJson
+        .whereType<Map<String, dynamic>>()
+        .map((item) => Data.fromJson(item))
+        .toList();
+  }
+
+  Future<void> showUserFollowed(BuildContext context, String userId) async {
+    final index = ref.watch(indexControllerProvider.notifier);
+    final user = ref.watch(userControllerProvider);
+    // index.showBottomSheet(
+    //     context: context, builder: (scrollController) => SharePage());
+    // await getUserLikePost(postId);
+    index.setBottomNavigationBarVisibility(false);
+    showModalBottomSheet(
+      backgroundColor: Colors.white,
+      isScrollControlled: true,
+      context: context,
+      builder: (context) => SizedBox(
+        height: ScreenUtil().screenHeight * .7,
+        child: UserListPage(
+          userId: userId,
+        ),
+      ),
+    ).whenComplete(
+      () => index.setBottomNavigationBarVisibility(true),
     );
   }
 }

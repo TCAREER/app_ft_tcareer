@@ -105,6 +105,7 @@ dependencies:
   awesome_notifications: ^0.9.3+1
   package_info_plus: ^8.0.2
   device_info_plus: ^10.1.2
+  pull_to_refresh: ^2.0.0
 
 dev_dependencies:
   flutter_test:

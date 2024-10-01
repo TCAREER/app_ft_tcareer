@@ -35,6 +35,11 @@ class UserRepository {
     final api = ref.watch(apiServiceProvider);
     return await api.postDeclineFriend(userId: userId);
   }
+
+  Future getFollower(String userId) async {
+    final api = ref.watch(apiServiceProvider);
+    return await api.getFollowers(userId: userId);
+  }
 }
 
 final userRepositoryProvider = Provider((ref) => UserRepository(ref));
