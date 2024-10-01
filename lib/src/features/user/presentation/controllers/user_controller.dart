@@ -91,8 +91,8 @@ class UserController extends ChangeNotifier {
 
   Future<void> onRefresh() async {
     page = 1;
-    postData?.data?.clear();
-    postCache.clear();
+    // postData?.data?.clear();
+    // postCache.clear();
 
     notifyListeners();
     await getUserInfo();

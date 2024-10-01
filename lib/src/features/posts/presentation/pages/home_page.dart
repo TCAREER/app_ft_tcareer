@@ -11,6 +11,7 @@ import 'package:app_tcareer/src/features/user/presentation/controllers/user_cont
 import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -22,10 +23,13 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
+  bool hasRefreshed = false;
   @override
   void initState() {
     super.initState();
+
     Future.microtask(() {
+      ref.read(postControllerProvider).postCache.clear();
       ref.read(postControllerProvider).getPost();
       ref.read(userControllerProvider).getUserInfo();
     });
@@ -35,19 +39,23 @@ class _HomePageState extends ConsumerState<HomePage> {
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    final extra = GoRouterState.of(context).extra;
-
-    if (extra == "reload") {
+    var extra = GoRouterState.of(context).extra;
+    if (extra == "reload" && !hasRefreshed) {
+      print(">>>>>>>>>>>B");
       Future.microtask(() {
-        ref.read(postControllerProvider).refresh();
+        ref.watch(postControllerProvider).scrollToTop();
       });
+      hasRefreshed = true;
     }
 
-    if (extra == "create") {
-      Future.microtask(() {
-        ref.read(postControllerProvider).scrollToTop();
-      });
-    }
+    //
+
+    //
+    // if (extra == "create") {
+    //   Future.microtask(()
+    //     ref.read(postControllerProvider).scrollToTop();
+    //   });
+    // }
   }
 
   @override
@@ -63,6 +71,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         body: RefreshIndicator(
           onRefresh: () async => await controller.refresh(),
           child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             controller: controller.scrollController,
             slivers: [
               sliverAppBar(ref),

@@ -86,8 +86,8 @@ class IndexPage extends ConsumerWidget {
                   String currentRoute =
                       router.routeInformationProvider.value.uri.toString();
                   String route = items[index]['route'];
-
-                  context.goNamed(route, extra: 'reload');
+                  print(">>>>>>>>>>>>>>>>A");
+                  context.goNamed(route, extra: "reload");
                 } else {
                   shell.goBranch(index);
                 }
