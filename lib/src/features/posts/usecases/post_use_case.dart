@@ -84,6 +84,7 @@ class PostUseCase {
       required int index,
       required List<post.Data> postCache}) async {
     await setLikePost(index: index, postId: postId, postCache: postCache);
+    Future.delayed(Duration(milliseconds: 1000));
     await postRepository.postLikePost(postId);
   }
 

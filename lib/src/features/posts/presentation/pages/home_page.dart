@@ -185,6 +185,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       //     ),
       //   ],
       // ),
+      automaticallyImplyLeading: false,
       centerTitle: false,
       backgroundColor: Colors.white,
       floating: true,
