@@ -106,6 +106,7 @@ dependencies:
   package_info_plus: ^8.0.2
   device_info_plus: ^10.1.2
   pull_to_refresh: ^2.0.0
+  chewie: ^1.8.5
 
 dev_dependencies:
   flutter_test:

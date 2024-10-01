@@ -9,7 +9,6 @@ import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
@@ -104,14 +103,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                 ),
               ];
             },
-            body: SmartRefresher(
+            body: RefreshIndicator(
               // enablePullDown: true,
-              enablePullUp: true,
 
-              header: const MaterialClassicHeader(
-                color: Colors.black,
-              ),
-              controller: controller.refreshController,
               onRefresh: () => controller.onRefresh(),
               child: TabBarView(
                 children: [postList(), Text("Ảnh"), Text("Video")],

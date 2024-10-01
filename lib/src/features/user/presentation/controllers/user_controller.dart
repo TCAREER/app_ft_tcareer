@@ -97,7 +97,6 @@ class UserController extends ChangeNotifier {
     notifyListeners();
     await getUserInfo();
     await getPost();
-    refreshController.refreshCompleted();
   }
 
   Future<void> logout(BuildContext context) async {
