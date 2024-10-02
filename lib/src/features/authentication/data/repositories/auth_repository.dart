@@ -75,8 +75,8 @@ class AuthRepository {
     final apiServices = ref.watch(apiServiceProvider);
     final userUtil = ref.watch(userUtilsProvider);
     String refreshToken = await userUtil.getRefreshToken();
-    await apiServices.postLogout(
-        body: LogoutRequest(refreshToken: refreshToken));
+    // await apiServices.postLogout(
+    //     body: LogoutRequest(refreshToken: refreshToken));
     await fireBaseAuth.signOut();
     await userUtil.clearToken();
   }

@@ -28,16 +28,23 @@ class NotificationService {
   }
 
   Future<void> displayNotification(RemoteMessage message) async {
+    String image = message.notification?.android?.imageUrl ?? "";
+    // String postId = message.data["id"];
     int notificationId =
         DateTime.now().millisecondsSinceEpoch.remainder(100000);
     if (message.notification != null) {
       AwesomeNotifications().createNotification(
           content: NotificationContent(
+              displayOnForeground: true,
+              displayOnBackground: true,
+              roundedLargeIcon: false,
+              wakeUpScreen: true,
+              largeIcon: image,
               id: notificationId,
               channelKey: 'basic_channel',
               title: message.notification?.title,
               body: message.notification?.body,
-              notificationLayout: NotificationLayout.Default));
+              notificationLayout: NotificationLayout.BigText));
       await AwesomeNotifications().shouldShowRationaleToRequest();
     }
   }

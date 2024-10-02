@@ -7,6 +7,7 @@ import 'package:app_tcareer/src/utils/validator.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart' as firebase_ui;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,7 +20,10 @@ class LoginPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.watch(loginControllerProvider);
-
+    if (kDebugMode) {
+      controller.phoneController.text = "0776506112";
+      controller.passController.text = "12345678aA@";
+    }
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(

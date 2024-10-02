@@ -1,11 +1,13 @@
 import 'package:app_tcareer/src/configs/app_colors.dart';
 import 'package:app_tcareer/src/features/index/index_controller.dart';
+import 'package:app_tcareer/src/features/notifications/presentation/controllers/notification_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/routes/index_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:badges/badges.dart' as badges;
 
 class IndexPage extends ConsumerWidget {
   const IndexPage({super.key, required this.shell});
@@ -34,7 +36,7 @@ class IndexPage extends ConsumerWidget {
       },
       {
         'icon': PhosphorIconsThin.bell,
-        'activeIcon': PhosphorIconsFill.bell,
+        'activeIcon': PhosphorIconsThin.bell,
         'route': 'nofications',
         "label": "Thông báo"
       },
@@ -96,13 +98,48 @@ class IndexPage extends ConsumerWidget {
               }
             },
             currentIndex: shell.currentIndex,
-            items: items.map((item) {
+            items: items.asMap().entries.map((entry) {
+              final item = entry.value;
+              final index = entry.key;
               return BottomNavigationBarItem(
-                  icon: PhosphorIcon(item['icon']),
-                  activeIcon: PhosphorIcon(item['activeIcon']),
+                  icon: Visibility(
+                      visible: index != 3,
+                      replacement: notificationIcon(ref),
+                      child: PhosphorIcon(item['icon'])),
+                  activeIcon: Visibility(
+                      visible: index != 3,
+                      replacement: notificationIcon(ref, active: true),
+                      child: PhosphorIcon(item['activeIcon'])),
                   label: item['label']);
             }).toList()),
       ),
     );
+  }
+
+  Widget notificationIcon(WidgetRef ref, {bool active = false}) {
+    final notificationController = ref.watch(notificationControllerProvider);
+    return StreamBuilder<List<Map<String, dynamic>>>(
+        stream: notificationController.notificationsStream(),
+        builder: (context, snapshot) {
+          return badges.Badge(
+            position: badges.BadgePosition.topEnd(top: -10, end: -8),
+            showBadge: true,
+            ignorePointer: false,
+            badgeContent: Text(
+              snapshot.data?.length.toString() ?? "",
+              style: const TextStyle(color: Colors.white),
+            ),
+            badgeStyle: const badges.BadgeStyle(badgeColor: Colors.blue),
+            child: Visibility(
+              visible: active != true,
+              replacement: PhosphorIcon(
+                PhosphorIconsFill.bell,
+              ),
+              child: PhosphorIcon(
+                PhosphorIconsThin.bell,
+              ),
+            ),
+          );
+        });
   }
 }
