@@ -127,7 +127,7 @@ class IndexPage extends ConsumerWidget {
             ignorePointer: false,
             badgeContent: Text(
               snapshot.data?.length.toString() ?? "",
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white, fontSize: 10),
             ),
             badgeStyle: const badges.BadgeStyle(badgeColor: Colors.blue),
             child: Visibility(

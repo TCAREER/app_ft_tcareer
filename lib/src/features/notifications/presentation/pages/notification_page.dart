@@ -51,8 +51,9 @@ class NotificationPage extends ConsumerWidget {
   }
 
   Widget item(Map<String, dynamic> notification, BuildContext context) {
+    String fullName = notification['full_name'];
     String avatar = notification['avatar'] ??
-        "https://ui-avatars.com/api/?name=test&background=random";
+        "https://ui-avatars.com/api/?name=$fullName&background=random";
     String content = notification['content'];
     String updatedAt = AppUtils.formatTime(notification['updated_at']);
     int postId = notification['post_id'];

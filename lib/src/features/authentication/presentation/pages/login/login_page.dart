@@ -21,7 +21,7 @@ class LoginPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.watch(loginControllerProvider);
     if (kDebugMode) {
-      controller.phoneController.text = "0776506112";
+      controller.phoneController.text = "0771234567";
       controller.passController.text = "12345678aA@";
     }
     return Scaffold(

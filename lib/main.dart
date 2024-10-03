@@ -12,6 +12,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:universal_io/io.dart';
 
+final navigatorKeyProvider = Provider<GlobalKey<NavigatorState>>((ref) {
+  return GlobalKey<NavigatorState>();
+});
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   usePathUrlStrategy();
@@ -37,7 +42,10 @@ void main() async {
       rethrow;
     }
   }
-
+  runApp(ProviderScope(
+      overrides: [navigatorKeyProvider.overrideWithValue(navigatorKey)],
+      child: App(
+        navigatorKey: navigatorKey,
+      )));
   container.read(notificationProvider).initializeNotificationServices();
-  runApp(const ProviderScope(child: App()));
 }

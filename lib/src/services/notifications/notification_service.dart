@@ -1,8 +1,15 @@
+import 'package:app_tcareer/main.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../app.dart';
 
 class NotificationService {
+  GlobalKey<NavigatorState> navigatorKey;
+  NotificationService(this.navigatorKey);
   void initialize() async {
     AwesomeNotifications().initialize(null, [
       NotificationChannel(
@@ -28,14 +35,17 @@ class NotificationService {
   }
 
   Future<void> displayNotification(RemoteMessage message) async {
-    String image = message.notification?.android?.imageUrl ?? "";
     print(">>>>>>>>>>>data = ${message.data}");
+    String fullName = message.data['full_name'];
+    String image = message.notification?.android?.imageUrl ??
+        "https://ui-avatars.com/api/?name=$fullName&background=random";
     // String postId = message.data["id"];
     int notificationId =
         DateTime.now().millisecondsSinceEpoch.remainder(100000);
     if (message.notification != null) {
       AwesomeNotifications().createNotification(
           content: NotificationContent(
+              payload: {"post_id": message.data["post_id"]},
               displayOnForeground: true,
               displayOnBackground: true,
               roundedLargeIcon: false,
@@ -47,10 +57,35 @@ class NotificationService {
               body: message.notification?.body,
               notificationLayout: NotificationLayout.BigText));
       await AwesomeNotifications().shouldShowRationaleToRequest();
+      await AwesomeNotifications()
+          .setListeners(onActionReceivedMethod: onActionReceivedMethod);
+    }
+  }
+
+  Future<void> onActionReceivedMethod(ReceivedAction receivedAction) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      directToPage(receivedAction);
+    });
+  }
+
+  void directToPage(ReceivedAction receivedAction) {
+    print(">>>>>>>123");
+    print(">>>>>>>>>>>>>payload: ${receivedAction.payload}");
+
+    if (receivedAction.payload?["post_id"] != null) {
+      String postId = receivedAction.payload!["post_id"]!;
+      if (navigatorKey.currentState?.context != null) {
+        navigatorKey.currentState!.context
+            .pushNamed("detail", pathParameters: {"id": postId});
+      } else {
+        print("Navigator context is null");
+      }
     }
   }
 }
 
 final notificationServiceProvider = Provider<NotificationService>((ref) {
-  return NotificationService();
+  final navigatorKey = ref.watch(navigatorKeyProvider);
+
+  return NotificationService(navigatorKey);
 });
