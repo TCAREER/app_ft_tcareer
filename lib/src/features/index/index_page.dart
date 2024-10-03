@@ -123,7 +123,7 @@ class IndexPage extends ConsumerWidget {
         builder: (context, snapshot) {
           return badges.Badge(
             position: badges.BadgePosition.topEnd(top: -10, end: -8),
-            showBadge: true,
+            showBadge: snapshot.data?.isNotEmpty == true ? true : false,
             ignorePointer: false,
             badgeContent: Text(
               snapshot.data?.length.toString() ?? "",

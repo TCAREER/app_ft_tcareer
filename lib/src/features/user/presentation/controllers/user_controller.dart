@@ -100,16 +100,25 @@ class UserController extends ChangeNotifier {
   }
 
   Future<void> logout(BuildContext context) async {
+    var providers = ref.container.getAllProviderElements();
     AppUtils.loadingApi(() async {
       final auth = ref.watch(loginUseCase);
       await auth.logout();
-      context.replaceNamed("login");
+      for (var element in providers) {
+        element.invalidateSelf();
+      }
     }, context);
   }
 
   bool isCurrentUser(int userId) {
     print(">>>>>>>>>>>isCurrent: ${userData?.data?.id == userId}");
     return userData?.data?.id == userId;
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 }
 

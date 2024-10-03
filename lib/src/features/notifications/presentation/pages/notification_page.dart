@@ -1,4 +1,5 @@
 import 'package:app_tcareer/src/features/notifications/presentation/controllers/notification_controller.dart';
+import 'package:app_tcareer/src/features/posts/presentation/widgets/empty_widget.dart';
 import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,9 @@ class NotificationPage extends ConsumerWidget {
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return circularLoadingWidget();
+          }
+          if (snapshot.data?.isEmpty == true) {
+            return emptyWidget("Không có thông báo nào!");
           }
           final notifications = snapshot.data;
           return ListView.separated(

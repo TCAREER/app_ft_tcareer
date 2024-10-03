@@ -10,7 +10,9 @@ import 'package:app_tcareer/src/utils/user_utils.dart';
 
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -72,13 +74,18 @@ class AuthRepository {
 
   Future<void> logout() async {
     final fireBaseAuth = ref.watch(firebaseAuthServiceProvider);
-    final apiServices = ref.watch(apiServiceProvider);
     final userUtil = ref.watch(userUtilsProvider);
+    final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+    await firebaseMessaging.deleteToken();
+    String? deviceToken = await firebaseMessaging.getToken();
+    await userUtil.saveDeviceToken(deviceToken: deviceToken ?? "");
+    final apiServices = ref.watch(apiServiceProvider);
     String refreshToken = await userUtil.getRefreshToken();
-    // await apiServices.postLogout(
-    //     body: LogoutRequest(refreshToken: refreshToken));
+    await apiServices.postLogout(
+        body: LogoutRequest(refreshToken: refreshToken));
     await fireBaseAuth.signOut();
     await userUtil.clearToken();
+    await DefaultCacheManager().emptyCache();
   }
 
   Future<void> forgotPassword(ForgotPasswordRequest body) async {

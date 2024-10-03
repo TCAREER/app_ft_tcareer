@@ -42,6 +42,10 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
     if (reload != null) {
       scrollController.jumpTo(0);
     }
+    Future.microtask(() {
+      ref.read(userControllerProvider).getUserInfo();
+      ref.read(userControllerProvider).getPost();
+    });
   }
 
   @override
