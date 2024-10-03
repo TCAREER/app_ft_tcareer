@@ -3,6 +3,7 @@ import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class NotificationPage extends ConsumerWidget {
   const NotificationPage({super.key});
@@ -39,61 +40,67 @@ class NotificationPage extends ConsumerWidget {
             itemCount: notifications?.length ?? 0,
             itemBuilder: (context, index) {
               final notification = notifications?[index];
-              return item(notification!);
+              return item(notification!, context);
             },
           );
         });
   }
 
-  Widget item(Map<String, dynamic> notification) {
-    String avatar = notification['avatar'];
+  Widget item(Map<String, dynamic> notification, BuildContext context) {
+    String avatar = notification['avatar'] ??
+        "https://ui-avatars.com/api/?name=test&background=random";
     String content = notification['content'];
     String updatedAt = AppUtils.formatTime(notification['updated_at']);
+    int postId = notification['post_id'];
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: 1,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(avatar),
-                ),
-              ],
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+      child: GestureDetector(
+        onTap: () => context
+            .pushNamed("detail", pathParameters: {"id": postId.toString()}),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 1,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundImage: NetworkImage(avatar),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            flex: 4,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  content,
-                  style: const TextStyle(
-                      fontSize: 15, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  updatedAt,
-                  style: const TextStyle(color: Colors.grey, fontSize: 10),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Divider(
-                  height: 1,
-                  color: Colors.grey.shade100,
-                ),
-              ],
+            Expanded(
+              flex: 4,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    content,
+                    style: const TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    updatedAt,
+                    style: const TextStyle(color: Colors.grey, fontSize: 10),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Divider(
+                    height: 1,
+                    color: Colors.grey.shade100,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

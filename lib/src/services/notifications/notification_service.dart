@@ -29,6 +29,7 @@ class NotificationService {
 
   Future<void> displayNotification(RemoteMessage message) async {
     String image = message.notification?.android?.imageUrl ?? "";
+    print(">>>>>>>>>>>data = ${message.data}");
     // String postId = message.data["id"];
     int notificationId =
         DateTime.now().millisecondsSinceEpoch.remainder(100000);

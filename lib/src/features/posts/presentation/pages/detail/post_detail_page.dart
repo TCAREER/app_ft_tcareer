@@ -20,6 +20,7 @@ class PostDetailPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final postRes = ref.watch(getPostByIdProvider(postId));
     return Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 1.1,
@@ -29,7 +30,7 @@ class PostDetailPage extends ConsumerWidget {
           titleTextStyle:
               const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
           leading: IconButton(
-              onPressed: () => context.goNamed('home'),
+              onPressed: () => context.pop(),
               icon: const Icon(Icons.arrow_back)),
         ),
         body: postRes.when(
