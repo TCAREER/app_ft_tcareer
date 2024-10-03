@@ -50,7 +50,7 @@ class PhotoViewGalleryPage extends ConsumerWidget {
             ),
             onPressed: () {
               final currentIndex = controller.activeIndexMap[postId] ?? 0;
-              context.pop(currentIndex);
+              context.pop();
             },
           ),
           automaticallyImplyLeading: false,

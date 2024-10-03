@@ -79,6 +79,8 @@ class PostUseCase {
     }
   }
 
+  Future<void> postLikePostDetail(String postId) async =>
+      await postRepository.postLikePost(postId);
   Future<void> postLikePost(
       {required String postId,
       required int index,

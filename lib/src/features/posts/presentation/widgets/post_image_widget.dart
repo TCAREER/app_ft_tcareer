@@ -70,7 +70,7 @@ class _PostImageWidgetState extends ConsumerState<PostImageWidget> {
                             );
                           });
                         });
-                    context.goNamed("photoView",
+                    context.pushNamed("photoView",
                         queryParameters: {"postId": widget.postId},
                         extra: data);
                   },

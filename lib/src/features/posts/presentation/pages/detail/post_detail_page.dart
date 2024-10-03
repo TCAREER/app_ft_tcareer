@@ -1,4 +1,5 @@
 import 'package:app_tcareer/src/features/posts/data/models/posts_detail_response.dart';
+import 'package:app_tcareer/src/features/posts/presentation/controllers/post_detail_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/post_widget.dart';
 import 'package:app_tcareer/src/features/posts/usecases/post_use_case.dart';
 import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
@@ -12,13 +13,29 @@ final getPostByIdProvider =
   return postUseCase.getPostById(postId);
 });
 
-class PostDetailPage extends ConsumerWidget {
+class PostDetailPage extends ConsumerStatefulWidget {
   final String postId;
   const PostDetailPage(this.postId, {super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final postRes = ref.watch(getPostByIdProvider(postId));
+  ConsumerState<PostDetailPage> createState() => _PostDetailPageState();
+}
+
+class _PostDetailPageState extends ConsumerState<PostDetailPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.microtask(() {
+      ref.read(postDetailControllerProvider).getPostById(widget.postId);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = ref.watch(postDetailControllerProvider);
+    final post = controller.postData;
+
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -33,13 +50,16 @@ class PostDetailPage extends ConsumerWidget {
               onPressed: () => context.pop(),
               icon: const Icon(Icons.arrow_back)),
         ),
-        body: postRes.when(
-          data: (postData) {
-            final post = postData.data;
-            return ListView(
-              children: [
-                postWidget(
-                    onLike: () {},
+        body: RefreshIndicator(
+          onRefresh: () => controller.getPostById(widget.postId),
+          child: ListView(
+            padding: EdgeInsets.symmetric(vertical: 5),
+            children: [
+              Visibility(
+                visible: post != null,
+                replacement: circularLoadingWidget(),
+                child: postWidget(
+                    onLike: () async => controller.likePostById(widget.postId),
                     userId: post?.userId.toString() ?? "",
                     index: 0,
                     liked: post?.liked ?? false,
@@ -60,11 +80,9 @@ class PostDetailPage extends ConsumerWidget {
                         : "0",
                     shares:
                         post?.shareCount != null ? "${post?.shareCount}" : "0"),
-              ],
-            );
-          },
-          error: (error, stackTrace) {},
-          loading: () => circularLoadingWidget(),
+              ),
+            ],
+          ),
         ));
   }
 }
