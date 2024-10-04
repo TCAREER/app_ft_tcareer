@@ -63,29 +63,30 @@ class NotificationService {
   }
 
   Future<void> onActionReceivedMethod(ReceivedAction receivedAction) async {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      directToPage(receivedAction);
-    });
+    directToPage(receivedAction);
   }
 
   void directToPage(ReceivedAction receivedAction) {
     print(">>>>>>>123");
     print(">>>>>>>>>>>>>payload: ${receivedAction.payload}");
+    print(">>>>>>>>>>>>>navigatorKey: $navigatorKey");
 
-    if (receivedAction.payload?["post_id"] != null) {
-      String postId = receivedAction.payload!["post_id"]!;
-      if (navigatorKey.currentState?.context != null) {
-        navigatorKey.currentState!.context
-            .pushNamed("detail", pathParameters: {"id": postId});
-      } else {
-        print("Navigator context is null");
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (receivedAction.payload?["post_id"] != null) {
+        String postId = receivedAction.payload!["post_id"]!;
+        if (navigatorKey.currentContext != null) {
+          navigatorKey.currentContext
+              ?.pushNamed("detail", pathParameters: {"id": postId});
+        } else {
+          print("Navigator context is null");
+        }
       }
-    }
+    });
   }
 }
 
-final notificationServiceProvider = Provider<NotificationService>((ref) {
-  final navigatorKey = ref.watch(navigatorKeyProvider);
-
+final notificationServiceProvider =
+    Provider.family<NotificationService, GlobalKey<NavigatorState>>(
+        (ref, navigatorKey) {
   return NotificationService(navigatorKey);
 });

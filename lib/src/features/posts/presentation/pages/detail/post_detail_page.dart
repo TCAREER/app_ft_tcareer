@@ -1,6 +1,7 @@
 import 'package:app_tcareer/src/features/posts/data/models/posts_detail_response.dart';
 import 'package:app_tcareer/src/features/posts/presentation/controllers/post_detail_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/post_widget.dart';
+import 'package:app_tcareer/src/features/posts/presentation/widgets/shared_post_widget.dart';
 import 'package:app_tcareer/src/features/posts/usecases/post_use_case.dart';
 import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,7 @@ class _PostDetailPageState extends ConsumerState<PostDetailPage> {
   Widget build(BuildContext context) {
     final controller = ref.watch(postDetailControllerProvider);
     final post = controller.postData;
+    final sharedPost = post?.sharedPost;
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -56,8 +58,32 @@ class _PostDetailPageState extends ConsumerState<PostDetailPage> {
             padding: EdgeInsets.symmetric(vertical: 5),
             children: [
               Visibility(
-                visible: post != null,
-                replacement: circularLoadingWidget(),
+                replacement: sharedPostWidget(
+                    onLike: () async => await controller.setLikePost(),
+                    originUserId: sharedPost?.userId.toString() ?? "",
+                    userId: post?.userId.toString() ?? "",
+                    originCreatedAt: sharedPost?.createdAt ?? "",
+                    originPostId: sharedPost?.id.toString() ?? "",
+                    mediaUrl: sharedPost?.mediaUrl,
+                    context: context,
+                    ref: ref,
+                    avatarUrl: post?.avatar ??
+                        "https://ui-avatars.com/api/?name=${post?.fullName}&background=random",
+                    userName: post?.fullName ?? "",
+                    userNameOrigin: sharedPost?.fullName ?? "",
+                    avatarUrlOrigin: sharedPost?.avatar ??
+                        "https://ui-avatars.com/api/?name=${sharedPost?.fullName}&background=random",
+                    createdAt: post?.createdAt ?? "",
+                    content: post?.body ?? "",
+                    contentOrigin: sharedPost?.body ?? "",
+                    liked: post?.liked ?? false,
+                    likes: post?.likeCount?.toString() ?? "0",
+                    comments: post?.commentCount?.toString() ?? "0",
+                    shares: post?.shareCount?.toString() ?? "0",
+                    privacy: post?.privacy ?? "",
+                    postId: post?.id.toString() ?? "",
+                    index: 0),
+                visible: post?.sharedPostId == null,
                 child: postWidget(
                     onLike: () async => controller.likePostById(widget.postId),
                     userId: post?.userId.toString() ?? "",
@@ -80,7 +106,7 @@ class _PostDetailPageState extends ConsumerState<PostDetailPage> {
                         : "0",
                     shares:
                         post?.shareCount != null ? "${post?.shareCount}" : "0"),
-              ),
+              )
             ],
           ),
         ));

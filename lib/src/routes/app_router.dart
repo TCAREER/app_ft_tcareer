@@ -1,3 +1,4 @@
+import 'package:app_tcareer/main.dart';
 import 'package:app_tcareer/src/features/authentication/data/repositories/auth_repository.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/pages/forgot_password/forgot_password_page.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/pages/forgot_password/reset_password_page.dart';
@@ -34,13 +35,13 @@ enum RouteNames {
 }
 
 class AppRouter {
-  static final navigatorKey = GlobalKey<NavigatorState>();
-
-  static GoRouter router(WidgetRef ref) {
+  static GoRouter router(
+      WidgetRef ref, GlobalKey<NavigatorState> navigatorKey) {
     final refreshTokenProvider = ref.watch(refreshTokenStateProvider);
+    // final navigatorKey = ref.watch(navigatorKeyProvider);
     return GoRouter(
-        debugLogDiagnostics: true,
         navigatorKey: navigatorKey,
+        debugLogDiagnostics: true,
         initialLocation: "/home",
         redirect: (context, state) async {
           final userUtils = ref.watch(userUtilsProvider);

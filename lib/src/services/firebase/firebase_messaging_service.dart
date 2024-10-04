@@ -3,6 +3,7 @@ import 'package:app_tcareer/main.dart';
 import 'package:app_tcareer/src/services/notifications/notification_service.dart';
 import 'package:app_tcareer/src/utils/user_utils.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -48,7 +49,6 @@ class FirebaseMessagingService {
   }
 
   void directToPage(RemoteMessage? message) {
-    final navigatorKey = ref.watch(navigatorKeyProvider);
     final context = navigatorKey.currentContext;
     if (message != null) {
       if (message.data["post_id"] != null) {
@@ -60,8 +60,10 @@ class FirebaseMessagingService {
 }
 
 final firebaseMessagingServiceProvider =
-    Provider<FirebaseMessagingService>((ref) {
-  final notificationService = ref.watch(notificationServiceProvider);
+    Provider.family<FirebaseMessagingService, GlobalKey<NavigatorState>>(
+        (ref, navigatorKey) {
+  final notificationService =
+      ref.watch(notificationServiceProvider(navigatorKey));
   final userUtils = ref.watch(userUtilsProvider);
   return FirebaseMessagingService(notificationService, userUtils, ref);
 });

@@ -3,21 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:flutter/foundation.dart'; // Import kIsWeb
-import 'main.dart';
 import 'src/configs/app_colors.dart';
 import 'package:universal_io/io.dart';
 
 class App extends StatelessWidget {
   final GlobalKey<NavigatorState> navigatorKey;
-
-  const App({Key? key, required this.navigatorKey}) : super(key: key);
+  const App({
+    required this.navigatorKey,
+    Key? key,
+  }) : super(
+          key: key,
+        );
 
   @override
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final router = AppRouter.router(ref);
+        final router = AppRouter.router(ref, navigatorKey);
 
         return ScreenUtilInit(
           designSize: const Size(360, 690),

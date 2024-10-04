@@ -43,8 +43,8 @@ class Data {
     num? shareCount,
     List<String>? mediaUrl,
     dynamic status,
-    dynamic sharedPostId,
-    dynamic sharedPost,
+    num? sharedPostId,
+    SharedPost? sharedPost,
     String? createdAt,
     String? updatedAt,
     dynamic deletedAt,
@@ -89,7 +89,9 @@ class Data {
         json['media_url'] != null ? json['media_url'].cast<String>() : [];
     _status = json['status'];
     _sharedPostId = json['shared_post_id'];
-    _sharedPost = json['shared_post'];
+    _sharedPost = json['shared_post'] != null
+        ? SharedPost.fromJson(json['shared_post'])
+        : null;
     _createdAt = json['created_at'];
     _updatedAt = json['updated_at'];
     _deletedAt = json['deleted_at'];
@@ -109,8 +111,8 @@ class Data {
   num? _shareCount;
   List<String>? _mediaUrl;
   dynamic _status;
-  dynamic _sharedPostId;
-  dynamic _sharedPost;
+  num? _sharedPostId;
+  SharedPost? _sharedPost;
   String? _createdAt;
   String? _updatedAt;
   dynamic _deletedAt;
@@ -130,8 +132,8 @@ class Data {
     num? shareCount,
     List<String>? mediaUrl,
     dynamic status,
-    dynamic sharedPostId,
-    dynamic sharedPost,
+    num? sharedPostId,
+    SharedPost? sharedPost,
     String? createdAt,
     String? updatedAt,
     dynamic deletedAt,
@@ -173,8 +175,8 @@ class Data {
   num? get shareCount => _shareCount;
   List<String>? get mediaUrl => _mediaUrl;
   dynamic get status => _status;
-  dynamic get sharedPostId => _sharedPostId;
-  dynamic get sharedPost => _sharedPost;
+  num? get sharedPostId => _sharedPostId;
+  SharedPost? get sharedPost => _sharedPost;
   String? get createdAt => _createdAt;
   String? get updatedAt => _updatedAt;
   dynamic get deletedAt => _deletedAt;
@@ -197,10 +199,111 @@ class Data {
     map['media_url'] = _mediaUrl;
     map['status'] = _status;
     map['shared_post_id'] = _sharedPostId;
-    map['shared_post'] = _sharedPost;
+    if (_sharedPost != null) {
+      map['shared_post'] = _sharedPost?.toJson();
+    }
     map['created_at'] = _createdAt;
     map['updated_at'] = _updatedAt;
     map['deleted_at'] = _deletedAt;
+    return map;
+  }
+}
+
+class SharedPost {
+  SharedPost({
+    num? id,
+    String? body,
+    String? privacy,
+    List<String>? mediaUrl,
+    num? userId,
+    String? firstName,
+    String? lastName,
+    String? fullName,
+    String? avatar,
+    String? createdAt,
+  }) {
+    _id = id;
+    _body = body;
+    _privacy = privacy;
+    _mediaUrl = mediaUrl;
+    _userId = userId;
+    _firstName = firstName;
+    _lastName = lastName;
+    _fullName = fullName;
+    _avatar = avatar;
+    _createdAt = createdAt;
+  }
+
+  SharedPost.fromJson(dynamic json) {
+    _id = json['id'];
+    _body = json['body'];
+    _privacy = json['privacy'];
+    _mediaUrl =
+        json['media_url'] != null ? json['media_url'].cast<String>() : [];
+    _userId = json['user_id'];
+    _firstName = json['first_name'];
+    _lastName = json['last_name'];
+    _fullName = json['full_name'];
+    _avatar = json['avatar'];
+    _createdAt = json['created_at'];
+  }
+  num? _id;
+  String? _body;
+  String? _privacy;
+  List<String>? _mediaUrl;
+  num? _userId;
+  String? _firstName;
+  String? _lastName;
+  String? _fullName;
+  String? _avatar;
+  String? _createdAt;
+  SharedPost copyWith({
+    num? id,
+    String? body,
+    String? privacy,
+    List<String>? mediaUrl,
+    num? userId,
+    String? firstName,
+    String? lastName,
+    String? fullName,
+    String? avatar,
+    String? createdAt,
+  }) =>
+      SharedPost(
+        id: id ?? _id,
+        body: body ?? _body,
+        privacy: privacy ?? _privacy,
+        mediaUrl: mediaUrl ?? _mediaUrl,
+        userId: userId ?? _userId,
+        firstName: firstName ?? _firstName,
+        lastName: lastName ?? _lastName,
+        fullName: fullName ?? _fullName,
+        avatar: avatar ?? _avatar,
+        createdAt: createdAt ?? _createdAt,
+      );
+  num? get id => _id;
+  String? get body => _body;
+  String? get privacy => _privacy;
+  List<String>? get mediaUrl => _mediaUrl;
+  num? get userId => _userId;
+  String? get firstName => _firstName;
+  String? get lastName => _lastName;
+  String? get fullName => _fullName;
+  String? get avatar => _avatar;
+  String? get createdAt => _createdAt;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['id'] = _id;
+    map['body'] = _body;
+    map['privacy'] = _privacy;
+    map['media_url'] = _mediaUrl;
+    map['user_id'] = _userId;
+    map['first_name'] = _firstName;
+    map['last_name'] = _lastName;
+    map['full_name'] = _fullName;
+    map['avatar'] = _avatar;
+    map['created_at'] = _createdAt;
     return map;
   }
 }
