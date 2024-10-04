@@ -7,12 +7,15 @@ class NotificationUseCase {
   NotificationUseCase(this.notificationRepository);
 
   Stream<List<Map<String, dynamic>>> listenToNotificationsByUserId(int userId) {
+    final data = notificationRepository.listenToNotifications();
+
     return notificationRepository.listenToNotifications().map((event) {
       final data = Map<String, dynamic>.from(event.snapshot.value as Map);
       final notifications = data.entries
           .where((entry) => entry.value['user_id'] == userId)
           .map((entry) => Map<String, dynamic>.from(entry.value))
           .toList();
+
       return notifications;
     });
   }

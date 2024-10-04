@@ -30,6 +30,7 @@ class NotificationPage extends ConsumerWidget {
     return StreamBuilder<List<Map<String, dynamic>>>(
         stream: controller.notificationsStream(),
         builder: (context, snapshot) {
+          print(">>>>>>>>>>data: ${snapshot.data}");
           if (!snapshot.hasData) {
             return circularLoadingWidget();
           }
@@ -44,6 +45,7 @@ class NotificationPage extends ConsumerWidget {
             itemCount: notifications?.length ?? 0,
             itemBuilder: (context, index) {
               final notification = notifications?[index];
+
               return item(notification!, context);
             },
           );
@@ -85,7 +87,7 @@ class NotificationPage extends ConsumerWidget {
                   Text(
                     content,
                     style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.bold),
+                        fontSize: 15, fontWeight: FontWeight.normal),
                   ),
                   const SizedBox(
                     height: 5,

@@ -10,7 +10,9 @@ class NotificationRepository {
   Stream<DatabaseEvent> listenToNotifications() {
     final database = ref.watch(firebaseDatabaseServiceProvider);
     String path = "notification";
-    return database.listenToData(path);
+    final data = database.listenToData(path);
+
+    return data;
   }
 }
 

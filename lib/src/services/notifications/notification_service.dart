@@ -71,17 +71,15 @@ class NotificationService {
     print(">>>>>>>>>>>>>payload: ${receivedAction.payload}");
     print(">>>>>>>>>>>>>navigatorKey: $navigatorKey");
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (receivedAction.payload?["post_id"] != null) {
-        String postId = receivedAction.payload!["post_id"]!;
-        if (navigatorKey.currentContext != null) {
-          navigatorKey.currentContext
-              ?.pushNamed("detail", pathParameters: {"id": postId});
-        } else {
-          print("Navigator context is null");
-        }
+    if (receivedAction.payload?["post_id"] != null) {
+      String postId = receivedAction.payload!["post_id"]!;
+      if (navigatorKey.currentContext != null) {
+        navigatorKey.currentContext
+            ?.pushNamed("detail", pathParameters: {"id": postId});
+      } else {
+        print("Navigator context is null");
       }
-    });
+    }
   }
 }
 

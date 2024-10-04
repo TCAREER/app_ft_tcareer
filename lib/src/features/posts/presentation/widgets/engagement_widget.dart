@@ -38,10 +38,10 @@ Widget engagementWidget(
               onTap: onLike,
               child: Row(
                 children: [
-                  PhosphorIcon(
+                  Icon(
                     liked != true
-                        ? PhosphorIconsBold.heart
-                        : PhosphorIconsFill.heart,
+                        ? Icons.favorite_border_sharp
+                        : Icons.favorite,
                     color: liked != true ? Colors.grey : Colors.red,
                     size: sizeButton,
                   ),

@@ -80,14 +80,14 @@ class PostUseCase {
   }
 
   Future<void> postLikePostDetail(String postId) async =>
-      await postRepository.postLikePost(postId);
+      postRepository.postLikePost(postId);
   Future<void> postLikePost(
       {required String postId,
       required int index,
       required List<post.Data> postCache}) async {
     await setLikePost(index: index, postId: postId, postCache: postCache);
     Future.delayed(Duration(milliseconds: 1000));
-    await postRepository.postLikePost(postId);
+    postRepository.postLikePost(postId);
   }
 
   Future<PostsDetailResponse> getPostById(String postId) async =>

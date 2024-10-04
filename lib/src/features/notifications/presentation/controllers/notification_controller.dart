@@ -11,7 +11,10 @@ class NotificationController extends ChangeNotifier {
     final userController = ref.watch(userControllerProvider);
     final user = userController.userData?.data;
     int userId = user?.id?.toInt() ?? 0;
-    return notificationUseCase.listenToNotificationsByUserId(userId);
+
+    final data = notificationUseCase.listenToNotificationsByUserId(userId);
+
+    return data;
   }
 }
 

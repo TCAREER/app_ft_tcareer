@@ -55,7 +55,7 @@ class FirebaseMessagingService {
 
     if (message.data["post_id"] != null) {
       String postId = message.data["post_id"];
-      context?.pushNamed("detail", pathParameters: {"postId": postId});
+      context?.pushNamed("detail", pathParameters: {"id": postId});
     }
   }
 }
@@ -75,6 +75,6 @@ Future<void> backgroundHandler(RemoteMessage message) async {
 
   if (message.data["post_id"] != null) {
     String postId = message.data["post_id"];
-    context?.pushNamed("detail", pathParameters: {"postId": postId});
+    context?.pushNamed("detail", pathParameters: {"id": postId});
   }
 }
