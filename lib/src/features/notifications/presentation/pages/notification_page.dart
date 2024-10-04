@@ -58,7 +58,7 @@ class NotificationPage extends ConsumerWidget {
         "https://ui-avatars.com/api/?name=$fullName&background=random";
     String content = notification['content'];
     String updatedAt = AppUtils.formatTime(notification['updated_at']);
-    int postId = notification['post_id'];
+    int postId = notification['post_id'] ?? 0;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
       child: GestureDetector(
