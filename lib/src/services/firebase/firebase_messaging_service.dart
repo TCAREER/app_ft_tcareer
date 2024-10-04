@@ -11,16 +11,18 @@ class FirebaseMessagingService {
   final NotificationService notificationService;
   final UserUtils userUtils;
   final Ref ref;
-  FirebaseMessagingService(this.notificationService, this.userUtils, this.ref);
+  final GlobalKey<NavigatorState> navigatorKey;
+  FirebaseMessagingService(
+      this.notificationService, this.userUtils, this.ref, this.navigatorKey);
   FirebaseMessaging fcm = FirebaseMessaging.instance;
   void configureFirebaseMessaging() async {
     String? deviceToken = await fcm.getToken();
     await userUtils.saveDeviceToken(deviceToken: deviceToken ?? "");
     print(">>>>>>>>>>deviceToken: $deviceToken");
     fcm.subscribeToTopic("tcareer");
-    fcm.getInitialMessage().then((RemoteMessage? message) {
-      directToPage(message);
-    });
+    // fcm.getInitialMessage().then((RemoteMessage? message) {
+    //   // directToPage(message);
+    // });
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
       directToPage(message);
     });
@@ -48,13 +50,12 @@ class FirebaseMessagingService {
     });
   }
 
-  void directToPage(RemoteMessage? message) {
+  Future<void> directToPage(RemoteMessage message) async {
     final context = navigatorKey.currentContext;
-    if (message != null) {
-      if (message.data["post_id"] != null) {
-        String postId = message.data["post_id"];
-        context?.goNamed("detail/$postId");
-      }
+
+    if (message.data["post_id"] != null) {
+      String postId = message.data["post_id"];
+      context?.pushNamed("detail", pathParameters: {"postId": postId});
     }
   }
 }
@@ -65,5 +66,15 @@ final firebaseMessagingServiceProvider =
   final notificationService =
       ref.watch(notificationServiceProvider(navigatorKey));
   final userUtils = ref.watch(userUtilsProvider);
-  return FirebaseMessagingService(notificationService, userUtils, ref);
+  return FirebaseMessagingService(
+      notificationService, userUtils, ref, navigatorKey);
 });
+
+Future<void> backgroundHandler(RemoteMessage message) async {
+  final context = navigatorKey.currentContext;
+
+  if (message.data["post_id"] != null) {
+    String postId = message.data["post_id"];
+    context?.pushNamed("detail", pathParameters: {"postId": postId});
+  }
+}

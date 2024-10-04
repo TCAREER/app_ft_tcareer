@@ -32,7 +32,6 @@ class App extends StatelessWidget {
               return OverlaySupport.global(
                 child: MaterialApp.router(
                   debugShowCheckedModeBanner: false,
-                  key: navigatorKey,
                   routerConfig: router,
                   title: 'TCareer',
                   theme: ThemeData(

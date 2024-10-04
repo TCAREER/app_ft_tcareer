@@ -3,9 +3,11 @@ import 'package:app_tcareer/firebase_options.dart';
 import 'package:app_tcareer/src/routes/app_router.dart';
 import 'package:app_tcareer/src/services/apis/api_services.dart';
 import 'package:app_tcareer/src/services/device_info_service.dart';
+import 'package:app_tcareer/src/services/firebase/firebase_messaging_service.dart';
 import 'package:app_tcareer/src/services/notifications/notification_handler.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart';
@@ -44,6 +46,9 @@ void main() async {
   container
       .read(notificationProvider(navigatorKey))
       .initializeNotificationServices();
+  final fcmService =
+      container.read(firebaseMessagingServiceProvider(navigatorKey));
+  FirebaseMessaging.onBackgroundMessage(backgroundHandler);
   runApp(ProviderScope(
       // overrides: [navigatorKeyProvider.overrideWithValue(navigatorKey)],
       child: App(
