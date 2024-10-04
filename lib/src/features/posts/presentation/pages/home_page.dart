@@ -201,7 +201,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       pinned: false, // AppBar không cố định
       title: const Text(
         "tcareer",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
       ),
       // leadingWidth: 120,
       actions: [

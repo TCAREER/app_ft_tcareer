@@ -20,9 +20,11 @@ class FirebaseMessagingService {
     await userUtils.saveDeviceToken(deviceToken: deviceToken ?? "");
     print(">>>>>>>>>>deviceToken: $deviceToken");
     fcm.subscribeToTopic("tcareer");
-    // fcm.getInitialMessage().then((RemoteMessage? message) {
-    //   // directToPage(message);
-    // });
+    fcm.getInitialMessage().then((RemoteMessage? message) {
+      if (message != null) {
+        directToPage(message);
+      }
+    });
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
       directToPage(message);
     });
