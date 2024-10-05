@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class UserController extends ChangeNotifier {
   final UserUseCase userUseCase;
@@ -85,9 +84,6 @@ class UserController extends ChangeNotifier {
 
     notifyListeners();
   }
-
-  RefreshController refreshController =
-      RefreshController(initialRefresh: false);
 
   Future<void> onRefresh() async {
     page = 1;
