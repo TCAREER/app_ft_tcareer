@@ -52,25 +52,28 @@ class NotificationPage extends ConsumerWidget {
             itemBuilder: (context, index) {
               final notification = notifications?[index];
 
-              return item(notification!, context);
+              return item(notification!, context, ref);
             },
           );
         });
   }
 
-  Widget item(Map<String, dynamic> notification, BuildContext context) {
+  Widget item(
+      Map<String, dynamic> notification, BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(notificationControllerProvider);
     String fullName = notification['full_name'];
     String avatar = notification['avatar'] ??
         "https://ui-avatars.com/api/?name=$fullName&background=random";
     String content = notification['content'];
     String updatedAt = AppUtils.formatTime(notification['updated_at']);
-    int postId = notification['post_id'] ?? 0;
+    int? postId = notification['post_id'];
+    int? relatedUserId = notification['related_user_id'];
     String type = notification['type'];
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
       child: GestureDetector(
-        onTap: () => context
-            .pushNamed("detail", pathParameters: {"id": postId.toString()}),
+        onTap: () => controller.directToPage(
+            context: context, postId: postId, relatedUserId: relatedUserId),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -4,19 +4,35 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class NotificationUseCase {
   final NotificationRepository notificationRepository;
+
   NotificationUseCase(this.notificationRepository);
 
   Stream<List<Map<String, dynamic>>> listenToNotificationsByUserId(int userId) {
-    final data = notificationRepository.listenToNotifications();
-
     return notificationRepository.listenToNotifications().map((event) {
-      final data = Map<String, dynamic>.from(event.snapshot.value as Map);
-      final notifications = data.entries
-          .where((entry) => entry.value['user_id'] == userId)
-          .map((entry) => Map<String, dynamic>.from(entry.value))
-          .toList();
+      final rawData = event.snapshot.value;
 
-      return notifications;
+      print('Raw data: $rawData'); // Kiểm tra giá trị rawData
+
+      if (rawData is List) {
+        final notifications = rawData
+            .where((element) {
+              if (element == null) return false;
+
+              if (element is Map && element['user_id'] != null) {
+                print('Element: $element'); // Kiểm tra từng phần tử
+                return element['user_id'].toString() == userId.toString();
+              }
+              return false;
+            })
+            .map((element) => Map<String, dynamic>.from(element))
+            .toList();
+
+        print(
+            'Filtered notifications: $notifications'); // Kiểm tra thông báo đã lọc
+        return notifications;
+      } else {
+        return [];
+      }
     });
   }
 }

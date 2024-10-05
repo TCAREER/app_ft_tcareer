@@ -1,7 +1,9 @@
 import 'package:app_tcareer/src/features/notifications/usecases/notification_use_case.dart';
 import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class NotificationController extends ChangeNotifier {
   final NotificationUseCase notificationUseCase;
@@ -15,6 +17,19 @@ class NotificationController extends ChangeNotifier {
     final data = notificationUseCase.listenToNotificationsByUserId(userId);
 
     return data;
+  }
+
+  Future<void> directToPage(
+      {required BuildContext context, int? relatedUserId, int? postId}) async {
+    print(">>>>>>>>>>userId: $relatedUserId");
+    print(">>>>>>>>>>>>postId: $postId");
+    if (postId != null) {
+      context.pushNamed("detail", pathParameters: {"id": postId.toString()});
+    }
+    if (relatedUserId != null) {
+      context.pushNamed('profile',
+          queryParameters: {"userId": relatedUserId.toString()});
+    }
   }
 }
 
