@@ -45,7 +45,10 @@ class NotificationService {
     if (message.notification != null) {
       AwesomeNotifications().createNotification(
           content: NotificationContent(
-              payload: {"post_id": message.data["post_id"]},
+              payload: {
+            "post_id": message.data["post_id"],
+            "related_user_id": message.data['related_user_id']
+          },
               displayOnForeground: true,
               displayOnBackground: true,
               roundedLargeIcon: false,
@@ -72,13 +75,15 @@ class NotificationService {
     print(">>>>>>>>>>>>>navigatorKey: $navigatorKey");
 
     if (receivedAction.payload?["post_id"] != null) {
-      String postId = receivedAction.payload!["post_id"]!;
-      if (navigatorKey.currentContext != null) {
-        navigatorKey.currentContext
-            ?.pushNamed("detail", pathParameters: {"id": postId});
-      } else {
-        print("Navigator context is null");
-      }
+      String postId = receivedAction.payload?["post_id"].toString() ?? "";
+      navigatorKey.currentContext
+          ?.pushNamed("detail", pathParameters: {"id": postId});
+    }
+    if (receivedAction.payload?["related_user_id"] != null) {
+      String userId =
+          receivedAction.payload?['related_user_id'].toString() ?? "";
+      navigatorKey.currentContext?.pushNamed('profile',
+          queryParameters: {"userId": userId.toString()});
     }
   }
 }

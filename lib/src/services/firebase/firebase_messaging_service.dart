@@ -56,8 +56,13 @@ class FirebaseMessagingService {
     final context = navigatorKey.currentContext;
 
     if (message.data["post_id"] != null) {
-      String postId = message.data["post_id"];
+      String postId = message.data["post_id"].toString();
       context?.pushNamed("detail", pathParameters: {"id": postId});
+    }
+    if (message.data['related_user_id'] != null) {
+      String userId = message.data['related_user_id'].toString();
+      context?.pushNamed('profile',
+          queryParameters: {"userId": userId.toString()});
     }
   }
 }
@@ -76,7 +81,12 @@ Future<void> backgroundHandler(RemoteMessage message) async {
   final context = navigatorKey.currentContext;
 
   if (message.data["post_id"] != null) {
-    String postId = message.data["post_id"];
+    String postId = message.data["post_id"].toString();
     context?.pushNamed("detail", pathParameters: {"id": postId});
+  }
+  if (message.data['related_user_id'] != null) {
+    String userId = message.data['related_user_id'].toString();
+    context
+        ?.pushNamed('profile', queryParameters: {"userId": userId.toString()});
   }
 }

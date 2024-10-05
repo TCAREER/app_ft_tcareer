@@ -37,7 +37,7 @@ class IndexPage extends ConsumerWidget {
       {
         'icon': PhosphorIconsThin.bell,
         'activeIcon': PhosphorIconsThin.bell,
-        'route': 'nofications',
+        'route': 'notifications',
         "label": "Thông báo"
       },
       {
