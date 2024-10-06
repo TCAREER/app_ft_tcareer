@@ -210,7 +210,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           child: GestureDetector(
             onTap: () => context.goNamed('search'),
             child: const PhosphorIcon(
-              PhosphorIconsBold.magnifyingGlass,
+              PhosphorIconsRegular.magnifyingGlass,
               color: Colors.black,
               size: 20,
             ),
@@ -220,7 +220,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: GestureDetector(
             child: const PhosphorIcon(
-              PhosphorIconsBold.chat,
+              PhosphorIconsRegular.chatCenteredDots,
               color: Colors.black,
               size: 20,
             ),

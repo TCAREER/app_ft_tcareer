@@ -38,10 +38,10 @@ Widget engagementWidget(
               onTap: onLike,
               child: Row(
                 children: [
-                  Icon(
+                  PhosphorIcon(
                     liked != true
-                        ? Icons.favorite_border_sharp
-                        : Icons.favorite,
+                        ? PhosphorIconsRegular.heart
+                        : PhosphorIconsFill.heart,
                     color: liked != true ? Colors.grey : Colors.red,
                     size: sizeButton,
                   ),
@@ -77,7 +77,7 @@ Widget engagementWidget(
                       return Row(
                         children: [
                           PhosphorIcon(
-                            PhosphorIconsBold.chatCircle,
+                            PhosphorIconsRegular.chatCircleDots,
                             color: Colors.grey,
                             size: sizeButton,
                           ),
@@ -132,7 +132,7 @@ Widget engagementWidget(
               child: Row(
                 children: [
                   PhosphorIcon(
-                    PhosphorIconsBold.paperPlaneTilt,
+                    PhosphorIconsRegular.paperPlaneTilt,
                     color: Colors.grey,
                     size: sizeButton,
                   ),

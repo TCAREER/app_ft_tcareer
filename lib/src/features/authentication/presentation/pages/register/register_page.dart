@@ -34,7 +34,7 @@ class RegisterPage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "Sign up",
+                  "Tạo tài khoản",
                   style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -44,7 +44,7 @@ class RegisterPage extends ConsumerWidget {
                   height: 20,
                 ),
                 const Text(
-                  "Create an account to continue!",
+                  "Tạo tài khoản để tiếp tục!",
                   style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
                 const SizedBox(
@@ -57,22 +57,22 @@ class RegisterPage extends ConsumerWidget {
                         TextInputForm(
                           controller: controller.fullNameController,
                           // isRequired: true,
-                          title: "Full Name",
-                          hintText: "Enter full name",
+                          title: "Họ tên",
+                          hintText: "Nhập họ tên",
                           validator: Validator.fullname,
                         ),
                         TextInputForm(
                           controller: controller.emailController,
                           // isRequired: true,
                           title: "Email",
-                          hintText: "Enter email",
+                          hintText: "Nhập email",
                           validator: Validator.emailCanEmpty,
                         ),
                         TextInputForm(
                           controller: controller.phoneController,
                           // isRequired: true,
-                          title: "Phone",
-                          hintText: "Enter phone number",
+                          title: "Điện thoại",
+                          hintText: "Nhập số điện thoại",
                           validator: Validator.phone,
                         ),
                         TextInputForm(
@@ -80,8 +80,8 @@ class RegisterPage extends ConsumerWidget {
                           controller: controller.passController,
                           // isRequired: true,
                           isSecurity: true,
-                          title: "Password",
-                          hintText: "Enter password",
+                          title: "Mật khẩu",
+                          hintText: "Nhập mật khẩu",
                         ),
 
                         const SizedBox(
@@ -90,7 +90,7 @@ class RegisterPage extends ConsumerWidget {
                         authButtonWidget(
                             context: context,
                             onPressed: () async => controller.onCreate(context),
-                            title: "Register"),
+                            title: "Tiếp tục"),
 
                         const SizedBox(
                           height: 20,

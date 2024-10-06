@@ -3,7 +3,7 @@ class AppConstants {
   static const baseUrl = "https://tcareer.tuanthanhdev.id.vn/";
   static const uploadUrl = "http://upload.thiendev202.id.vn/";
   static const introContent =
-      "Explore all the most exciting job roles\nbased on your interest and study major.";
+      "Khám phá tất cả các công việc thú vị nhất\ndựa trên sở thích và chuyên ngành học của bạn.";
   static const clientId =
       "119121456339-h1j2c85f7gsskcfphgptm8btf3qqlu9s.apps.googleusercontent.com";
   static const authToken = "authToken";

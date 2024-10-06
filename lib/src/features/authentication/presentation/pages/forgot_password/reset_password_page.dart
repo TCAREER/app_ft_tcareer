@@ -26,7 +26,7 @@ class ResetPasswordPage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "Set a new password",
+                  "Đặt mật khẩu mới",
                   style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -36,7 +36,7 @@ class ResetPasswordPage extends ConsumerWidget {
                   height: 20,
                 ),
                 const Text(
-                  "Create a new password. Ensure it differs from previous ones for security",
+                  "Tạo mật khẩu mới. Đảm bảo mật khẩu này khác với mật khẩu trước đó để đảm bảo an toàn",
                   style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
                 const SizedBox(
@@ -50,16 +50,16 @@ class ResetPasswordPage extends ConsumerWidget {
                         isSecurity: true,
                         controller: controller.passwordController,
                         // isRequired: true,
-                        title: "Password",
-                        hintText: "Enter password",
+                        title: "Mật khẩu",
+                        hintText: "Nhập mật khẩu",
                         validator: Validator.password,
                       ),
                       TextInputForm(
                         isSecurity: true,
                         controller: controller.confirmPasswordController,
                         // isRequired: true,
-                        title: "Confirm Password",
-                        hintText: "Re-enter password",
+                        title: "Xác nhận mật khẩu",
+                        hintText: "Nhập lại mật khẩu",
                         validator: (val) {
                           return Validator.rePassword(
                               val, controller.passwordController.text);
@@ -72,7 +72,7 @@ class ResetPasswordPage extends ConsumerWidget {
                           context: context,
                           onPressed: () async =>
                               await controller.resetPassword(context),
-                          title: "Update password"),
+                          title: "Cập nhật mật khẩu"),
                       const SizedBox(
                         height: 20,
                       ),

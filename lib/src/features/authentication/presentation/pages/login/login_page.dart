@@ -38,7 +38,7 @@ class LoginPage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Sign in to your\nAccount",
+                  "Đăng nhập vào\nTài khoản của bạn",
                   style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -48,7 +48,7 @@ class LoginPage extends ConsumerWidget {
                   height: 20,
                 ),
                 const Text(
-                  "Enter your email and password to log in ",
+                  "Nhập số điện thoại và mật khẩu để đăng nhập",
                   style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
                 const SizedBox(
@@ -61,8 +61,8 @@ class LoginPage extends ConsumerWidget {
                       TextInputForm(
                         controller: controller.phoneController,
                         // isRequired: true,
-                        title: "Phone",
-                        hintText: "Enter phone number",
+                        title: "Điện thoại",
+                        hintText: "Nhập số điện thoại",
                         validator: Validator.phone,
                       ),
                       TextInputForm(
@@ -70,15 +70,15 @@ class LoginPage extends ConsumerWidget {
                         controller: controller.passController,
                         // isRequired: true,
                         isSecurity: true,
-                        title: "Password",
-                        hintText: "Enter password",
+                        title: "Mật khẩu",
+                        hintText: "Nhập mật khẩu",
                       ),
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
                             onPressed: () => context.push('/forgotPassword'),
                             child: const Text(
-                              "Forgot Password ?",
+                              "Quên mật khẩu ?",
                               style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
@@ -92,7 +92,7 @@ class LoginPage extends ConsumerWidget {
                           context: context,
                           onPressed: () async => controller.onLogin(context),
                           // onPressed:()=>context.goNamed('home'),
-                          title: "Continue"),
+                          title: "Tiếp tục"),
                       const SizedBox(
                         height: 20,
                       ),
@@ -100,6 +100,7 @@ class LoginPage extends ConsumerWidget {
                         width: MediaQuery.of(context).size.width,
                         height: 50,
                         child: SignInButton(Buttons.google,
+                            text: "Đăng nhập với Google",
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(6)),
                             onPressed: () =>
@@ -110,7 +111,7 @@ class LoginPage extends ConsumerWidget {
                       ),
                       TextButton(
                           onPressed: () => context.push('/register'),
-                          child: const Text("Create new account",
+                          child: const Text("Tạo tài khoản",
                               style: TextStyle(
                                   fontSize: 14,
                                   color: Color(

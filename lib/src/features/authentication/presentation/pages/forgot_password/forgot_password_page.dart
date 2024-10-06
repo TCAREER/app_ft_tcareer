@@ -27,7 +27,7 @@ class ForgotPasswordPage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "Forgot Password",
+                  "Quên mật khẩu",
                   style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -37,7 +37,7 @@ class ForgotPasswordPage extends ConsumerWidget {
                   height: 20,
                 ),
                 const Text(
-                  "Please enter your email to reset the password ",
+                  "Vui lòng nhập email của bạn để đặt lại mật khẩu ",
                   style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
                 const SizedBox(
@@ -50,8 +50,8 @@ class ForgotPasswordPage extends ConsumerWidget {
                       TextInputForm(
                         controller: controller.textInputController,
                         // isRequired: true,
-                        title: "Email or phone",
-                        hintText: "Enter email or phone",
+                        title: "Email",
+                        hintText: "Nhập email",
                         validator: Validator.email,
                       ),
                       const SizedBox(
@@ -61,7 +61,7 @@ class ForgotPasswordPage extends ConsumerWidget {
                           context: context,
                           onPressed: () async =>
                               controller.forgotPassword(context),
-                          title: "Send Verification"),
+                          title: "Gửi mã xác thực"),
                       const SizedBox(
                         height: 20,
                       ),

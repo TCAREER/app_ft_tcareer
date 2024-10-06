@@ -26,7 +26,7 @@ class VerifyPage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "OTP Verification",
+                  "Mã xác thực OTP",
                   style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -36,7 +36,7 @@ class VerifyPage extends ConsumerWidget {
                   height: 20,
                 ),
                 Text(
-                  "Enter the verification code we just sent to your email ${controller.textInputController.text}",
+                  "Nhập mã xác minh mà chúng tôi vừa gửi đến email của bạn ${controller.textInputController.text}",
                   style: const TextStyle(
                       fontSize: 12, color: Colors.grey, letterSpacing: 1),
                 ),
@@ -55,13 +55,13 @@ class VerifyPage extends ConsumerWidget {
                       authButtonWidget(
                           context: context,
                           onPressed: () async => controller.verifyOtp(context),
-                          title: "Verify code"),
+                          title: "Xác nhận"),
                       const SizedBox(
                         height: 10,
                       ),
                       RichText(
                           text: TextSpan(
-                              text: "Didn’t receive a code? ",
+                              text: "Không nhận được mã? ",
                               style: TextStyle(
                                   color: Colors.black54, fontSize: 12),
                               children: [
@@ -70,7 +70,7 @@ class VerifyPage extends ConsumerWidget {
                                 child: InkWell(
                                   onTap: () {},
                                   child: const Text(
-                                    "Resend",
+                                    "Gửi lại",
                                     style: TextStyle(
                                         color: Colors.blue,
                                         fontWeight: FontWeight.bold,
