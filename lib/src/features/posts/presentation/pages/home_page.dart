@@ -43,7 +43,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     if (extra == "reload" && !hasRefreshed) {
       print(">>>>>>>>>>>B");
       Future.microtask(() {
-        ref.watch(postControllerProvider).scrollToTop();
+        ref.watch(postControllerProvider).refresh();
       });
       hasRefreshed = true;
     }

@@ -61,6 +61,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
                 SliverAppBar(
+                  automaticallyImplyLeading: false,
                   toolbarHeight: 30,
                   centerTitle: false,
                   actions: [

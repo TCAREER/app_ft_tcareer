@@ -137,14 +137,15 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
 
   Widget userList() {
     final controller = ref.watch(searchPostControllerProvider);
+    final postController = ref.watch(postControllerProvider);
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (BuildContext context, int index) {
           final user = controller.users[index];
           return ListTile(
             tileColor: Colors.white,
-            onTap: () => context.pushNamed('profile',
-                queryParameters: {"userId": user.id.toString()}),
+            onTap: () => postController.goToProfile(
+                context: context, userId: user.id.toString()),
             leading: CircleAvatar(
               backgroundImage: NetworkImage(user.avatar ??
                   "https://ui-avatars.com/api/?name=${user.fullName}&background=random"),

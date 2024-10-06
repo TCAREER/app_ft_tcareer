@@ -202,7 +202,7 @@ class PostController extends ChangeNotifier {
     final index = ref.watch(indexControllerProvider.notifier);
     index.setBottomNavigationBarVisibility(true);
     if (user.isCurrentUser(int.parse(userId)) == true) {
-      context.replaceNamed('user');
+      context.goNamed('user');
     } else {
       context.pushNamed('profile', queryParameters: {"userId": userId});
     }
