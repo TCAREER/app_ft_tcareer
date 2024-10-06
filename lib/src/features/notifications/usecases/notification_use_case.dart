@@ -30,8 +30,8 @@ class NotificationUseCase {
           final updatedB = b['updated_at'];
 
           // Log giá trị trước khi phân tích
-          print("updatedA: $updatedA");
-          print("updatedB: $updatedB");
+          // print("updatedA: $updatedA");
+          // print("updatedB: $updatedB");
 
           if (updatedA == null || updatedB == null) {
             print("Một trong hai giá trị là null");
@@ -41,7 +41,7 @@ class NotificationUseCase {
           try {
             DateTime dateA =
                 DateTime.parse(AppUtils.convertToISOFormat(updatedA));
-            print(">>>>>>>>>>dateA: $dateA");
+            // print(">>>>>>>>>>dateA: $dateA");
             DateTime dateB =
                 DateTime.parse(AppUtils.convertToISOFormat(updatedB));
             return dateB.compareTo(dateA);

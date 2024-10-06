@@ -1,5 +1,7 @@
+import 'package:app_tcareer/src/features/index/index_controller.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_detail_response.dart';
 import 'package:app_tcareer/src/features/posts/presentation/controllers/post_detail_controller.dart';
+import 'package:app_tcareer/src/features/posts/presentation/pages/comments_page.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/post_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/shared_post_widget.dart';
 import 'package:app_tcareer/src/features/posts/usecases/post_use_case.dart';
@@ -16,7 +18,8 @@ final getPostByIdProvider =
 
 class PostDetailPage extends ConsumerStatefulWidget {
   final String postId;
-  const PostDetailPage(this.postId, {super.key});
+  final String? notificationType;
+  const PostDetailPage(this.postId, {super.key, this.notificationType});
 
   @override
   ConsumerState<PostDetailPage> createState() => _PostDetailPageState();
@@ -29,6 +32,16 @@ class _PostDetailPageState extends ConsumerState<PostDetailPage> {
     super.initState();
     Future.microtask(() {
       ref.read(postDetailControllerProvider).getPostById(widget.postId);
+      print(">>>>>>>>>>>>>>>type1: ${widget.notificationType}");
+      if (widget.notificationType == "COMMENT") {
+        final indexController = ref.watch(indexControllerProvider.notifier);
+        indexController.showBottomSheet(
+            context: context,
+            builder: (scrollController) => CommentsPage(
+                  postId: int.parse(widget.postId),
+                  scrollController: scrollController,
+                ));
+      }
     });
   }
 

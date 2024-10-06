@@ -1,4 +1,6 @@
+import 'package:app_tcareer/src/features/index/index_controller.dart';
 import 'package:app_tcareer/src/features/notifications/usecases/notification_use_case.dart';
+import 'package:app_tcareer/src/features/posts/presentation/pages/comments_page.dart';
 import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +22,10 @@ class NotificationController extends ChangeNotifier {
   }
 
   Future<void> directToPage(
-      {required BuildContext context, int? relatedUserId, int? postId}) async {
+      {required BuildContext context,
+      int? relatedUserId,
+      int? postId,
+      String? type}) async {
     print(">>>>>>>>>>userId: $relatedUserId");
     print(">>>>>>>>>>>>postId: $postId");
     if (postId != null) {
@@ -29,6 +34,11 @@ class NotificationController extends ChangeNotifier {
     if (relatedUserId != null) {
       context.pushNamed('profile',
           queryParameters: {"userId": relatedUserId.toString()});
+    }
+    if (type == "COMMENT" && postId != null) {
+      context.pushNamed("detail",
+          pathParameters: {"id": postId.toString()},
+          queryParameters: {"notificationType": type});
     }
   }
 }

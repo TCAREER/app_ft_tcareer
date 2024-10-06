@@ -70,10 +70,6 @@ class NotificationService {
   }
 
   void directToPage(ReceivedAction receivedAction) {
-    print(">>>>>>>123");
-    print(">>>>>>>>>>>>>payload: ${receivedAction.payload}");
-    print(">>>>>>>>>>>>>navigatorKey: $navigatorKey");
-
     if (receivedAction.payload?["post_id"] != null) {
       String postId = receivedAction.payload?["post_id"].toString() ?? "";
       navigatorKey.currentContext
