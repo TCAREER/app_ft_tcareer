@@ -1,4 +1,5 @@
 import 'package:app_tcareer/src/features/notifications/data/repositories/notification_repository.dart';
+import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -24,8 +25,34 @@ class NotificationUseCase {
             .map((element) => Map<String, dynamic>.from(element))
             .toList();
 
-        // print(
-        //     'Filtered notifications: $notifications'); // Kiểm tra thông báo đã lọc
+        notifications.sort((a, b) {
+          final updatedA = a['updated_at'];
+          final updatedB = b['updated_at'];
+
+          // Log giá trị trước khi phân tích
+          print("updatedA: $updatedA");
+          print("updatedB: $updatedB");
+
+          if (updatedA == null || updatedB == null) {
+            print("Một trong hai giá trị là null");
+            return 0; // Hoặc xử lý theo cách bạn muốn
+          }
+
+          try {
+            DateTime dateA =
+                DateTime.parse(AppUtils.convertToISOFormat(updatedA));
+            print(">>>>>>>>>>dateA: $dateA");
+            DateTime dateB =
+                DateTime.parse(AppUtils.convertToISOFormat(updatedB));
+            return dateB.compareTo(dateA);
+          } catch (e) {
+            print("Lỗi khi phân tích dateA hoặc dateB: $e");
+            return 0; // Để chúng ở vị trí hiện tại nếu có lỗi
+          }
+        });
+
+        print(
+            'Filtered notifications: $notifications'); // Kiểm tra thông báo đã lọc
         return notifications;
       } else {
         return [];

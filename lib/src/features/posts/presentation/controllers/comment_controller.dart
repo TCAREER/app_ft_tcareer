@@ -125,10 +125,11 @@ class CommentController extends ChangeNotifier {
 
         final sortedComments = commentMap.entries.toList()
           ..sort((a, b) {
-            final createdA = DateTime.tryParse(a.value['created_at']);
-            final createdB = DateTime.tryParse(b.value['created_at']);
-            return (createdB ?? DateTime.now())
-                .compareTo(createdA ?? DateTime.now());
+            final createdA = DateTime.parse(
+                AppUtils.convertToISOFormat(a.value['created_at']));
+            final createdB = DateTime.parse(
+                AppUtils.convertToISOFormat(b.value['created_at']));
+            return (createdB).compareTo(createdA);
           });
 
         return {for (var e in sortedComments) e.key: e.value};

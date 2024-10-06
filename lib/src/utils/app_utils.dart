@@ -204,4 +204,9 @@ class AppUtils {
       return DateFormat('dd/MM/yyyy').format(dateTime);
     }
   }
+
+  static String convertToISOFormat(String dateString) {
+    // Thay '/' bằng '-' và thêm 'T' giữa ngày và giờ
+    return dateString.replaceAll('/', '-').replaceFirst(' ', 'T');
+  }
 }
