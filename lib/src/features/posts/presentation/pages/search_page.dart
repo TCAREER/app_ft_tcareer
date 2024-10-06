@@ -10,6 +10,9 @@ class SearchPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.watch(searchPostControllerProvider);
+    Future.microtask(() {
+      controller.loadSearchHistory();
+    });
     return PopScope(
       onPopInvoked: (didPop) {
         controller.quickSearchData.data?.clear();
@@ -34,7 +37,10 @@ class SearchPage extends ConsumerWidget {
             ),
           ),
         ),
-        body: userList(ref, context),
+        body: Visibility(
+            visible: controller.quickSearchData.data?.isNotEmpty == true,
+            replacement: searchHistory(ref),
+            child: userList(ref, context)),
       ),
     );
   }
@@ -66,6 +72,55 @@ class SearchPage extends ConsumerWidget {
         separatorBuilder: (context, index) => const SizedBox(
           height: 10,
         ),
+      ),
+    );
+  }
+
+  Widget searchHistory(WidgetRef ref) {
+    final controller = ref.watch(searchPostControllerProvider);
+    return Visibility(
+      visible: controller.searchHistory.isNotEmpty,
+      child: ListView(
+        children: [
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: controller.searchHistory.length,
+            itemBuilder: (context, index) {
+              final query = controller.searchHistory[index];
+              return ListTile(
+                leading: Icon(
+                  Icons.history,
+                  color: Colors.grey,
+                ),
+                title: Text(query),
+                trailing: GestureDetector(
+                  onTap: () => controller.removeSearchHistory(index),
+                  child: Icon(
+                    Icons.close,
+                    color: Colors.grey,
+                    size: 15,
+                  ),
+                ),
+              );
+            },
+            separatorBuilder: (context, index) => const SizedBox(
+              height: 10,
+            ),
+          ),
+          Visibility(
+            visible: controller.searchHistory.length >= 5,
+            child: Center(
+              child: GestureDetector(
+                onTap: () => controller.clearSearchHistory(),
+                child: Text(
+                  "Xóa tất cả",
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }

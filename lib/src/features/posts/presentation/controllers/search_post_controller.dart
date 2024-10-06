@@ -7,12 +7,15 @@ import 'package:app_tcareer/src/features/posts/data/models/quick_search_user_dat
 import 'package:app_tcareer/src/features/posts/usecases/post_use_case.dart';
 import 'package:app_tcareer/src/features/posts/usecases/search_use_case.dart';
 import 'package:app_tcareer/src/features/user/data/models/users.dart' as user;
+import 'package:app_tcareer/src/utils/user_utils.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SearchPostController extends ChangeNotifier {
   final SearchUseCase searchUseCase;
   final PostUseCase postUseCase;
-  SearchPostController(this.searchUseCase, this.postUseCase) {
+  final UserUtils userUtils;
+  SearchPostController(this.searchUseCase, this.postUseCase, this.userUtils) {
     scrollController.addListener(() {
       loadMore();
     });
@@ -25,6 +28,7 @@ class SearchPostController extends ChangeNotifier {
   Future<void> quickSearchUser() async {
     quickSearchData =
         await searchUseCase.getQuickSearchUser(queryController.text);
+
     notifyListeners();
   }
 
@@ -58,8 +62,8 @@ class SearchPostController extends ChangeNotifier {
     List<dynamic> userJson = data['users']['data'];
     mapUserFromJson(userJson);
     await searchPost();
-
     setIsLoading(false);
+    setSearchHistory();
   }
 
   List<user.Data> users = [];
@@ -123,6 +127,38 @@ class SearchPostController extends ChangeNotifier {
     posts.clear();
     notifyListeners();
     await searchPost();
+  }
+
+  Future<void> setSearchHistory() async {
+    userUtils.removeCache("searchHistory");
+    searchHistory.add(queryController.text);
+    await userUtils.saveCacheList(
+        key: "searchHistory", value: searchHistory.cast<String>());
+  }
+
+  List<String> searchHistory = []; // Đảm bảo kiểu dữ liệu là List<String>
+  Future<void> loadSearchHistory() async {
+    List<String>? loadedHistory =
+        await userUtils.loadCacheList("searchHistory");
+
+    if (loadedHistory != null) {
+      searchHistory =
+          loadedHistory.reversed.toList(); // Đảo ngược danh sách nếu muốn
+      notifyListeners(); // Cập nhật UI sau khi tải lịch sử
+    }
+  }
+
+  Future<void> removeSearchHistory(int index) async {
+    searchHistory.removeAt(index);
+    await userUtils.saveCacheList(key: "searchHistory", value: searchHistory);
+    notifyListeners();
+    await loadSearchHistory();
+  }
+
+  Future<void> clearSearchHistory() async {
+    searchHistory.clear();
+    notifyListeners();
+    await userUtils.removeCache("searchHistory");
   }
 
   @override

@@ -11,6 +11,7 @@ import 'package:app_tcareer/src/features/posts/usecases/comment_use_case.dart';
 import 'package:app_tcareer/src/features/posts/usecases/media_use_case.dart';
 import 'package:app_tcareer/src/features/posts/usecases/post_use_case.dart';
 import 'package:app_tcareer/src/features/posts/usecases/search_use_case.dart';
+import 'package:app_tcareer/src/utils/user_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -42,7 +43,8 @@ final commentControllerProvider = ChangeNotifierProvider((ref) {
 final searchPostControllerProvider = ChangeNotifierProvider((ref) {
   final searchUseCase = ref.watch(searchUseCaseProvider);
   final postUseCase = ref.read(postUseCaseProvider);
-  return SearchPostController(searchUseCase, postUseCase);
+  final userUtils = ref.read(userUtilsProvider);
+  return SearchPostController(searchUseCase, postUseCase, userUtils);
 });
 // Provider để lấy loại ảnh
 final imageOrientationProvider =
