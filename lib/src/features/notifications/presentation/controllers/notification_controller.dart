@@ -35,7 +35,7 @@ class NotificationController extends ChangeNotifier {
       context.pushNamed('profile',
           queryParameters: {"userId": relatedUserId.toString()});
     }
-    if (type == "COMMENT" && postId != null) {
+    if (type?.contains("COMMENT") == true && postId != null) {
       context.pushNamed("detail",
           pathParameters: {"id": postId.toString()},
           queryParameters: {"notificationType": type});

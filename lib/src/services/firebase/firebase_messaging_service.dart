@@ -54,7 +54,7 @@ class FirebaseMessagingService {
 
   Future<void> directToPage(RemoteMessage message) async {
     final context = navigatorKey.currentContext;
-
+    String type = message.data['type'];
     if (message.data["post_id"] != null) {
       String postId = message.data["post_id"].toString();
       context?.pushNamed("detail", pathParameters: {"id": postId});
@@ -63,6 +63,12 @@ class FirebaseMessagingService {
       String userId = message.data['related_user_id'].toString();
       context?.pushNamed('profile',
           queryParameters: {"userId": userId.toString()});
+    }
+    if (type.contains("COMMENT")) {
+      String postId = message.data["post_id"].toString();
+      context?.pushNamed("detail",
+          pathParameters: {"id": postId},
+          queryParameters: {"notificationType": type});
     }
   }
 }
@@ -79,7 +85,7 @@ final firebaseMessagingServiceProvider =
 
 Future<void> backgroundHandler(RemoteMessage message) async {
   final context = navigatorKey.currentContext;
-
+  String type = message.data['type'];
   if (message.data["post_id"] != null) {
     String postId = message.data["post_id"].toString();
     context?.pushNamed("detail", pathParameters: {"id": postId});
@@ -88,5 +94,11 @@ Future<void> backgroundHandler(RemoteMessage message) async {
     String userId = message.data['related_user_id'].toString();
     context
         ?.pushNamed('profile', queryParameters: {"userId": userId.toString()});
+  }
+  if (type.contains("COMMENT")) {
+    String postId = message.data["post_id"].toString();
+    context?.pushNamed("detail",
+        pathParameters: {"id": postId},
+        queryParameters: {"notificationType": type});
   }
 }

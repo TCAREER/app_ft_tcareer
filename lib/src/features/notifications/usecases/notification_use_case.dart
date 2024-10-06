@@ -46,13 +46,10 @@ class NotificationUseCase {
                 DateTime.parse(AppUtils.convertToISOFormat(updatedB));
             return dateB.compareTo(dateA);
           } catch (e) {
-            print("Lỗi khi phân tích dateA hoặc dateB: $e");
             return 0; // Để chúng ở vị trí hiện tại nếu có lỗi
           }
         });
 
-        print(
-            'Filtered notifications: $notifications'); // Kiểm tra thông báo đã lọc
         return notifications;
       } else {
         return [];

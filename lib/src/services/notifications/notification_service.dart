@@ -42,12 +42,14 @@ class NotificationService {
     // String postId = message.data["id"];
     int notificationId =
         DateTime.now().millisecondsSinceEpoch.remainder(100000);
+
     if (message.notification != null) {
       AwesomeNotifications().createNotification(
           content: NotificationContent(
               payload: {
             "post_id": message.data["post_id"],
-            "related_user_id": message.data['related_user_id']
+            "related_user_id": message.data['related_user_id'],
+            "type": message.data['type']
           },
               displayOnForeground: true,
               displayOnBackground: true,
@@ -80,6 +82,13 @@ class NotificationService {
           receivedAction.payload?['related_user_id'].toString() ?? "";
       navigatorKey.currentContext?.pushNamed('profile',
           queryParameters: {"userId": userId.toString()});
+    }
+    if (receivedAction.payload?['type']?.contains("COMMENT") == true) {
+      String postId = receivedAction.payload?["post_id"].toString() ?? "";
+      String type = receivedAction.payload?['type'].toString() ?? "";
+      navigatorKey.currentContext?.pushNamed("detail",
+          pathParameters: {"id": postId.toString()},
+          queryParameters: {"notificationType": type});
     }
   }
 }

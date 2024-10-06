@@ -33,7 +33,7 @@ class _PostDetailPageState extends ConsumerState<PostDetailPage> {
     Future.microtask(() {
       ref.read(postDetailControllerProvider).getPostById(widget.postId);
       print(">>>>>>>>>>>>>>>type1: ${widget.notificationType}");
-      if (widget.notificationType == "COMMENT") {
+      if (widget.notificationType?.contains("COMMENT") == true) {
         final indexController = ref.watch(indexControllerProvider.notifier);
         indexController.showBottomSheet(
             context: context,
