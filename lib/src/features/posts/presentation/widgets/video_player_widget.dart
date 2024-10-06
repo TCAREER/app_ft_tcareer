@@ -37,6 +37,7 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
       // Chỉ tạo ChewieController sau khi videoPlayerController được khởi tạo thành công
       _chewieController = ChewieController(
           videoPlayerController: _videoPlayerController,
+          autoInitialize: false,
           aspectRatio: _videoPlayerController.value.aspectRatio,
           autoPlay: false,
           looping: false,
@@ -92,7 +93,7 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
       onVisibilityChanged: (info) {
         if (_isVideoInitialized) {
           if (info.visibleFraction > 0.8) {
-            _videoPlayerController.play();
+            // _videoPlayerController.play();
           } else {
             _videoPlayerController.pause();
           }

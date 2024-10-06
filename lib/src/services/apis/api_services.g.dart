@@ -542,9 +542,16 @@ class _ApiServices implements ApiServices {
   }
 
   @override
-  Future<PostsResponse> getSearchPost({required String query}) async {
+  Future<PostsResponse> getSearchPost({
+    required String query,
+    int? page,
+  }) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'q': query};
+    final queryParameters = <String, dynamic>{
+      r'q': query,
+      r'page': page,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
     final _result = await _dio

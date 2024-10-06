@@ -99,7 +99,8 @@ abstract class ApiServices {
   Future getSearch({@Query('q') required String query});
 
   @GET('api/auth/search_post')
-  Future<PostsResponse> getSearchPost({@Query('q') required String query});
+  Future<PostsResponse> getSearchPost(
+      {@Query('q') required String query, @Query('page') int? page});
 
   @POST('api/auth/follow/{id}')
   Future postFollow({@Path('id') required String userId});

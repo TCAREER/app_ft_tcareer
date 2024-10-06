@@ -12,7 +12,11 @@ import 'package:flutter/cupertino.dart';
 class SearchPostController extends ChangeNotifier {
   final SearchUseCase searchUseCase;
   final PostUseCase postUseCase;
-  SearchPostController(this.searchUseCase, this.postUseCase);
+  SearchPostController(this.searchUseCase, this.postUseCase) {
+    scrollController.addListener(() {
+      loadMore();
+    });
+  }
 
   QuickSearchUserData quickSearchData = QuickSearchUserData();
   TextEditingController queryController = TextEditingController();
@@ -35,7 +39,7 @@ class SearchPostController extends ChangeNotifier {
     });
   }
 
-  post.PostsResponse postData = post.PostsResponse();
+  post.PostsResponse? postData;
 
   bool isLoading = false;
   void setIsLoading(bool value) {
@@ -43,23 +47,19 @@ class SearchPostController extends ChangeNotifier {
     notifyListeners();
   }
 
+  String? queryCache;
   Future<void> search(String query) async {
+    postData = null;
+    posts.clear();
+    page = 1;
+    queryCache = query;
     setIsLoading(true);
     final data = await searchUseCase.getSearch(query);
     List<dynamic> userJson = data['users']['data'];
-    await mapUserFromJson(userJson);
+    mapUserFromJson(userJson);
+    await searchPost();
 
-    List<dynamic> postJson = data['posts']['data'];
-    await mapPostFromJson(postJson);
     setIsLoading(false);
-    notifyListeners();
-  }
-
-  Future<void> postLikePost(
-      {required int index, required String postId}) async {
-    await postUseCase.postLikePost(
-        postId: postId, index: index, postCache: posts);
-    notifyListeners();
   }
 
   List<user.Data> users = [];
@@ -70,18 +70,67 @@ class SearchPostController extends ChangeNotifier {
         .toList();
   }
 
-  Future<void> mapPostFromJson(List<dynamic> postJson) async {
-    posts = postJson
-        .whereType<Map<String, dynamic>>()
-        .map((item) => post.Data.fromJson(item))
-        .toList();
+  List<post.Data> posts = [];
+  int page = 1;
+  Future<void> searchPost() async {
+    postData =
+        await searchUseCase.getSearchPost(query: queryCache ?? "", page: page);
+    if (postData?.data != null) {
+      final newPosts = postData?.data
+          ?.where((newPost) =>
+              !posts.any((cachedPost) => cachedPost.id == newPost.id))
+          .toList();
+      posts.addAll(newPosts as Iterable<post.Data>);
+      notifyListeners();
+    }
   }
 
-  List<post.Data> posts = [];
+  bool isLoadingMore = false;
+  final ScrollController scrollController = ScrollController();
+  Future<void> loadMore() async {
+    if (scrollController.position.maxScrollExtent == scrollController.offset) {
+      if (!isLoadingMore && posts.length < (postData?.meta?.total ?? 0)) {
+        isLoadingMore = true;
+        try {
+          page += 1;
+          notifyListeners();
+          await searchPost();
+        } finally {
+          isLoadingMore = false;
+        }
+      }
+      await searchPost();
+    }
+  }
+
+  // Future<void> mapPostFromJson(List<dynamic> postJson) async {
+  //   posts = postJson
+  //       .whereType<Map<String, dynamic>>()
+  //       .map((item) => post.Data.fromJson(item))
+  //       .toList();
+  // }
+
+  Future<void> postLikePost(
+      {required int index, required String postId}) async {
+    await postUseCase.postLikePost(
+        postId: postId, index: index, postCache: posts);
+    notifyListeners();
+  }
+
+  Future<void> refresh() async {
+    page = 1;
+    search(queryCache ?? "");
+    posts.clear();
+    notifyListeners();
+    await searchPost();
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+    scrollController.removeListener(loadMore);
+    scrollController.dispose();
     queryController.dispose();
   }
 }

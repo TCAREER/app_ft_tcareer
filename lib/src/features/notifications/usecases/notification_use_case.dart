@@ -10,16 +10,13 @@ class NotificationUseCase {
   Stream<List<Map<String, dynamic>>> listenToNotificationsByUserId(int userId) {
     return notificationRepository.listenToNotifications().map((event) {
       final rawData = event.snapshot.value;
-
-      print('Raw data: $rawData'); // Kiểm tra giá trị rawData
-
       if (rawData is List) {
         final notifications = rawData
             .where((element) {
               if (element == null) return false;
 
               if (element is Map && element['user_id'] != null) {
-                print('Element: $element'); // Kiểm tra từng phần tử
+                // print('Element: $element'); // Kiểm tra từng phần tử
                 return element['user_id'].toString() == userId.toString();
               }
               return false;
@@ -27,8 +24,8 @@ class NotificationUseCase {
             .map((element) => Map<String, dynamic>.from(element))
             .toList();
 
-        print(
-            'Filtered notifications: $notifications'); // Kiểm tra thông báo đã lọc
+        // print(
+        //     'Filtered notifications: $notifications'); // Kiểm tra thông báo đã lọc
         return notifications;
       } else {
         return [];

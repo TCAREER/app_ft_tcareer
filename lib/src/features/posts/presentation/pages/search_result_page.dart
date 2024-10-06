@@ -58,21 +58,76 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
           child: Visibility(
             visible: controller.users.isNotEmpty || controller.posts.isNotEmpty,
             replacement: emptyWidget("Không tìm thấy dữ liệu"),
-            child: ListView(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              children: [
-                userList(),
-                Visibility(
-                    visible: controller.users.isNotEmpty &&
-                        controller.posts.isNotEmpty,
-                    child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 10),
-                      width: ScreenUtil().scaleWidth,
-                      color: Colors.grey.shade200,
-                      height: 10,
-                    )),
-                postList()
-              ],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: RefreshIndicator(
+                onRefresh: () async => await controller.refresh(),
+                child: CustomScrollView(
+                  controller: controller.scrollController,
+                  slivers: [
+                    SliverVisibility(
+                      visible: controller.users.isNotEmpty,
+                      sliver: const SliverToBoxAdapter(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 15),
+                              child: Text(
+                                "Mọi người",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                          ],
+                        ),
+                      ),
+                    ),
+                    userList(),
+                    SliverVisibility(
+                      visible: controller.users.isNotEmpty,
+                      sliver: SliverToBoxAdapter(
+                          child: Container(
+                        margin: EdgeInsets.symmetric(vertical: 10),
+                        width: ScreenUtil().scaleWidth,
+                        color: Colors.grey.shade200,
+                        height: 10,
+                      )),
+                    ),
+                    SliverVisibility(
+                      visible: controller.posts.isNotEmpty,
+                      sliver: const SliverToBoxAdapter(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 15),
+                              child: Text(
+                                "Bài viết",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                          ],
+                        ),
+                      ),
+                    ),
+                    postList(),
+                    SliverToBoxAdapter(
+                      child: Visibility(
+                        visible: controller.isLoadingMore,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: circularLoadingWidget(),
+                        ),
+                      ),
+                    )
+                    // postList()
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -82,131 +137,98 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
 
   Widget userList() {
     final controller = ref.watch(searchPostControllerProvider);
-    return Visibility(
-      visible: controller.users.isNotEmpty,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Text(
-              "Mọi người",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (BuildContext context, int index) {
+          final user = controller.users[index];
+          return ListTile(
+            tileColor: Colors.white,
+            onTap: () => context.pushNamed('profile',
+                queryParameters: {"userId": user.id.toString()}),
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage(user.avatar ??
+                  "https://ui-avatars.com/api/?name=${user.fullName}&background=random"),
             ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Column(
-            children: controller.users.map((user) {
-              return ListTile(
-                tileColor: Colors.white,
-                onTap: () => context.pushNamed('profile',
-                    queryParameters: {"userId": user.id.toString()}),
-                leading: CircleAvatar(
-                  backgroundImage: NetworkImage(user.avatar ??
-                      "https://ui-avatars.com/api/?name=${user.fullName}&background=random"),
-                ),
-                title: Text(user.fullName ?? ""),
-                trailing: IconButton(
-                  onPressed: () {},
-                  icon: PhosphorIcon(PhosphorIconsLight.userCirclePlus),
-                ),
-              );
-            }).toList(),
-          )
-        ],
+            title: Text(user.fullName ?? ""),
+            trailing: IconButton(
+              onPressed: () {},
+              icon: const PhosphorIcon(PhosphorIconsLight.userCirclePlus),
+            ),
+          );
+        },
+        childCount: controller.users.length, // Số lượng người dùng
       ),
     );
   }
 
   Widget postList() {
     final controller = ref.watch(searchPostControllerProvider);
-    return Visibility(
-      visible: controller.posts.isNotEmpty,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Text(
-              "Bài đăng",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    return SliverList(
+      delegate: SliverChildBuilderDelegate((context, index) {
+        final post = controller.posts[index];
+        final sharedPost = post.sharedPost;
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              child: Visibility(
+                replacement: sharedPostWidget(
+                    onLike: () async => await controller.postLikePost(
+                        index: index, postId: post.id.toString()),
+                    originUserId: sharedPost?.userId.toString() ?? "",
+                    userId: post.userId.toString(),
+                    originCreatedAt: sharedPost?.createdAt ?? "",
+                    originPostId: sharedPost?.id.toString() ?? "",
+                    mediaUrl: sharedPost?.mediaUrl,
+                    context: context,
+                    ref: ref,
+                    avatarUrl: post.avatar ??
+                        "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
+                    userName: post.fullName ?? "",
+                    userNameOrigin: sharedPost?.fullName ?? "",
+                    avatarUrlOrigin: sharedPost?.avatar ??
+                        "https://ui-avatars.com/api/?name=${sharedPost?.fullName}&background=random",
+                    createdAt: post.createdAt ?? "",
+                    content: post.body ?? "",
+                    contentOrigin: sharedPost?.body ?? "",
+                    liked: post.liked ?? false,
+                    likes: post.likeCount?.toString() ?? "0",
+                    comments: post.commentCount?.toString() ?? "0",
+                    shares: post.shareCount?.toString() ?? "0",
+                    privacy: post.privacy ?? "",
+                    postId: post.id.toString(),
+                    index: index),
+                visible: post.sharedPostId == null,
+                child: postWidget(
+                  onLike: () async => await controller.postLikePost(
+                      index: index, postId: post.id.toString()),
+                  userId: post.userId.toString(),
+                  index: index,
+                  liked: post.liked ?? false,
+                  privacy: post.privacy ?? "",
+                  postId: post.id.toString(),
+                  ref: ref,
+                  context: context,
+                  avatarUrl: post.avatar ??
+                      "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
+                  userName: post.fullName ?? "",
+                  createdAt: post.createdAt ?? "",
+                  content: post.body ?? "",
+                  mediaUrl: post.mediaUrl,
+                  likes: post.likeCount?.toString() ?? "0",
+                  comments: post.commentCount?.toString() ?? "0",
+                  shares: post.shareCount?.toString() ?? "0",
+                ),
+              ),
             ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Column(
-            children: controller.posts.asMap().entries.map((entry) {
-              final post = entry.value;
-              final index = entry.key;
-              final sharedPost = post.sharedPost;
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    child: Visibility(
-                      replacement: sharedPostWidget(
-                          onLike: () async => await controller.postLikePost(
-                              index: index, postId: post.id.toString()),
-                          originUserId: sharedPost?.userId.toString() ?? "",
-                          userId: post.userId.toString(),
-                          originCreatedAt: sharedPost?.createdAt ?? "",
-                          originPostId: sharedPost?.id.toString() ?? "",
-                          mediaUrl: sharedPost?.mediaUrl,
-                          context: context,
-                          ref: ref,
-                          avatarUrl: post.avatar ??
-                              "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
-                          userName: post.fullName ?? "",
-                          userNameOrigin: sharedPost?.fullName ?? "",
-                          avatarUrlOrigin: sharedPost?.avatar ??
-                              "https://ui-avatars.com/api/?name=${sharedPost?.fullName}&background=random",
-                          createdAt: post.createdAt ?? "",
-                          content: post.body ?? "",
-                          contentOrigin: sharedPost?.body ?? "",
-                          liked: post.liked ?? false,
-                          likes: post.likeCount?.toString() ?? "0",
-                          comments: post.commentCount?.toString() ?? "0",
-                          shares: post.shareCount?.toString() ?? "0",
-                          privacy: post.privacy ?? "",
-                          postId: post.id.toString(),
-                          index: index),
-                      visible: post.sharedPostId == null,
-                      child: postWidget(
-                        onLike: () async => await controller.postLikePost(
-                            index: index, postId: post.id.toString()),
-                        userId: post.userId.toString(),
-                        index: index,
-                        liked: post.liked ?? false,
-                        privacy: post.privacy ?? "",
-                        postId: post.id.toString(),
-                        ref: ref,
-                        context: context,
-                        avatarUrl: post.avatar ??
-                            "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
-                        userName: post.fullName ?? "",
-                        createdAt: post.createdAt ?? "",
-                        content: post.body ?? "",
-                        mediaUrl: post.mediaUrl,
-                        likes: post.likeCount?.toString() ?? "0",
-                        comments: post.commentCount?.toString() ?? "0",
-                        shares: post.shareCount?.toString() ?? "0",
-                      ),
-                    ),
-                  ),
-                  if (index < controller.posts.length - 1)
-                    Divider(
-                      height: 1,
-                      color: Colors.grey.shade100,
-                    ),
-                ],
-              );
-            }).toList(),
-          )
-        ],
-      ),
+            if (index < controller.posts.length - 1)
+              Divider(
+                height: 1,
+                color: Colors.grey.shade100,
+              ),
+          ],
+        );
+      }, childCount: controller.posts.length),
     );
   }
 }

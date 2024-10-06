@@ -146,6 +146,12 @@ class PostRepository {
     return await api.getSearch(query: query);
   }
 
+  Future<PostsResponse> getSearchPost(
+      {required String query, int? page}) async {
+    final api = ref.watch(apiServiceProvider);
+    return await api.getSearchPost(query: query, page: page);
+  }
+
   Future<UserLiked> getUserLiked({int? postId, int? commentId}) async {
     final api = ref.watch(apiServiceProvider);
     return await api.getUserLiked(
