@@ -238,9 +238,11 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage>
               friendStatus: friendStatus ?? "default",
               onConnect: () async =>
                   await connectionController.postAddFriend(userId),
-              onAccept: () async =>
-                  await connectionController.postAcceptFriend(userId),
-              onDecline: () async => await connectionController
+              onConfirm: () async => await connectionController
+                  .showModalConfirmRequest(context: context, userId: userId),
+              onCancelRequest: () async =>
+                  await connectionController.cancelRequest(userId),
+              onDelete: () async => await connectionController
                   .showModalDeleteFriend(context: context, userId: userId),
             ),
             const SizedBox(

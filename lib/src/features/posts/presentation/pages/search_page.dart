@@ -89,6 +89,11 @@ class SearchPage extends ConsumerWidget {
             itemBuilder: (context, index) {
               final query = controller.searchHistory[index];
               return ListTile(
+                onTap: () {
+                  controller.queryController.text = query;
+                  context.goNamed("searchResult",
+                      queryParameters: {"q": controller.queryController.text});
+                },
                 leading: Icon(
                   Icons.history,
                   color: Colors.grey,

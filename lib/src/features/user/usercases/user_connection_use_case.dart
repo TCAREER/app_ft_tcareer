@@ -1,14 +1,16 @@
 import 'package:app_tcareer/src/features/user/data/models/users.dart';
+import 'package:app_tcareer/src/features/user/data/repositories/connection_respository.dart';
 import 'package:app_tcareer/src/features/user/data/repositories/user_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class UserConnectionUseCase {
   final UserRepository userRepository;
-  UserConnectionUseCase(this.userRepository);
+  final ConnectionRepository connectionRepository;
+  UserConnectionUseCase(this.userRepository, this.connectionRepository);
   Future<Users> postFollow(
       {required String userId, required Users user}) async {
     final updatedUser = setFollowed(user);
-    userRepository.postFollow(userId);
+    connectionRepository.postFollow(userId);
     return updatedUser;
   }
 
@@ -25,12 +27,12 @@ class UserConnectionUseCase {
 
   Future<void> postAddFriend({required String userId}) async {
     // final updateUser = updatedFriendStatus(user, "send_request");
-    await userRepository.postAddFriend(userId);
+    await connectionRepository.postAddFriend(userId);
     // return updateUser;
   }
 
   Future<void> postAcceptFriend({required String userId}) async {
-    await userRepository.postAcceptFriend(userId);
+    await connectionRepository.postAcceptFriend(userId);
   }
 
   Users updatedFriendStatus(Users user, String status) {
@@ -43,11 +45,14 @@ class UserConnectionUseCase {
   }
 
   Future<void> postDeclineFriend(String userId) async =>
-      await userRepository.postDeclineFriend(userId);
+      await connectionRepository.postDeclineFriend(userId);
 
-  Future getFollowers(String userId) async =>
-      await userRepository.getFollower(userId);
+  Future<void> deleteCancelRequest(String userId) async =>
+      await connectionRepository.deleteCancelRequest(userId);
+  Future<void> deleteUnFriend(String userId) async =>
+      await connectionRepository.deleteUnFriend(userId);
 }
 
-final userUseCaseProvider =
-    Provider((ref) => UserConnectionUseCase(ref.watch(userRepositoryProvider)));
+final userConnectionUseCaseProvider = Provider((ref) => UserConnectionUseCase(
+    ref.watch(userRepositoryProvider),
+    ref.watch(connectionRepositoryProvider)));

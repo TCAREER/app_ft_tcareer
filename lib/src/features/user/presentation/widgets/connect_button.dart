@@ -1,22 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Widget connectButton(
     {required String friendStatus,
     void Function()? onConnect,
-    void Function()? onDecline,
-    void Function()? onAccept}) {
+    void Function()? onConfirm,
+    void Function()? onDelete,
+    void Function()? onCancelRequest}) {
   Map<String, dynamic> friendStatusMap = {
     "is_friend": "Bạn bè",
     "sent_request": "Hủy yêu cầu",
-    "received_request": "Đồng ý kết bạn",
+    "received_request": "Phản hồi",
     "default": "Thêm bạn bè"
   };
   Map<String, dynamic> connectCallBack = {
-    "is_friend": onDecline,
-    "sent_request": () {},
-    "received_request": onAccept,
+    "is_friend": onDelete,
+    "sent_request": onCancelRequest,
+    "received_request": onConfirm,
     "default": onConnect
   };
   return Expanded(
@@ -32,7 +32,7 @@ Widget connectButton(
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          onPressed: onDecline,
+          onPressed: onDelete,
           child: Text(friendStatusMap[friendStatus],
               style: const TextStyle(color: Colors.black)),
         ),

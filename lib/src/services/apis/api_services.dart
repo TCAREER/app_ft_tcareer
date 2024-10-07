@@ -119,4 +119,10 @@ abstract class ApiServices {
 
   @GET('api/auth/follow/{userId}/view')
   Future getFollowers({@Path('userId') required String userId});
+
+  @DELETE('api/auth/friend/{userId}/cancel-request')
+  Future deleteCancelRequest({@Path('userId') required String userId});
+
+  @DELETE('api/auth/friend/{userId}/unfriend')
+  Future deleteUnFriend({@Path('userId') required String userId});
 }
