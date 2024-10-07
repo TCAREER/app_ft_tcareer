@@ -85,6 +85,7 @@ class AuthRepository {
         body: LogoutRequest(refreshToken: refreshToken));
     await fireBaseAuth.signOut();
     await userUtil.clearToken();
+    await userUtil.removeCache("searchHistory");
     await DefaultCacheManager().emptyCache();
   }
 

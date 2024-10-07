@@ -7,14 +7,17 @@ import 'package:app_tcareer/src/features/posts/data/models/quick_search_user_dat
 import 'package:app_tcareer/src/features/posts/usecases/post_use_case.dart';
 import 'package:app_tcareer/src/features/posts/usecases/search_use_case.dart';
 import 'package:app_tcareer/src/features/user/data/models/users.dart' as user;
+import 'package:app_tcareer/src/features/user/presentation/controllers/user_connection_controller.dart';
 import 'package:app_tcareer/src/utils/user_utils.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SearchPostController extends ChangeNotifier {
   final SearchUseCase searchUseCase;
   final PostUseCase postUseCase;
   final UserUtils userUtils;
+
   SearchPostController(this.searchUseCase, this.postUseCase, this.userUtils) {
     scrollController.addListener(() {
       loadMore();
@@ -146,6 +149,11 @@ class SearchPostController extends ChangeNotifier {
       notifyListeners(); // Cập nhật UI sau khi tải lịch sử
     }
   }
+
+  // Future<void>addFriend(String userId)async{
+  //   final connectionController = ref.watch(userConnectionControllerProvider);
+  //   await connectionController.postAddFriend(userId);
+  // }
 
   Future<void> removeSearchHistory(int index) async {
     searchHistory.removeAt(index);

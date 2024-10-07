@@ -97,6 +97,7 @@ class UserController extends ChangeNotifier {
 
   Future<void> logout(BuildContext context) async {
     var providers = ref.container.getAllProviderElements();
+
     AppUtils.loadingApi(() async {
       final auth = ref.watch(loginUseCase);
       await auth.logout();

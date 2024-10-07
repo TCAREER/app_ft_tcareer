@@ -142,19 +142,19 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
         (BuildContext context, int index) {
           final user = controller.users[index];
           return ListTile(
-            tileColor: Colors.white,
-            onTap: () => postController.goToProfile(
-                context: context, userId: user.id.toString()),
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(user.avatar ??
-                  "https://ui-avatars.com/api/?name=${user.fullName}&background=random"),
-            ),
-            title: Text(user.fullName ?? ""),
-            trailing: IconButton(
-              onPressed: () {},
-              icon: const PhosphorIcon(PhosphorIconsLight.userCirclePlus),
-            ),
-          );
+              tileColor: Colors.white,
+              onTap: () => postController.goToProfile(
+                  context: context, userId: user.id.toString()),
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(user.avatar ??
+                    "https://ui-avatars.com/api/?name=${user.fullName}&background=random"),
+              ),
+              title: Text(user.fullName ?? ""),
+              trailing: Icon(
+                size: 20,
+                Icons.arrow_forward_ios_outlined,
+                color: Colors.black,
+              ));
         },
         childCount: controller.users.length, // Số lượng người dùng
       ),
