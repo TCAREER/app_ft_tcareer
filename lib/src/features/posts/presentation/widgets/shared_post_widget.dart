@@ -11,7 +11,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:readmore/readmore.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 import 'engagement_widget.dart';
 import 'post_image_widget.dart';
@@ -147,7 +146,10 @@ Widget sharedPostWidget({
             ),
             // Hiển thị video hoặc ảnh
             Visibility(
-              visible: content != null,
+              visible: content != "",
+              replacement: const SizedBox(
+                height: 10,
+              ),
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -168,28 +170,31 @@ Widget sharedPostWidget({
                   .goNamed("detail", pathParameters: {"id": originPostId}),
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 10),
-                padding: const EdgeInsets.symmetric(vertical: 10),
+                // padding: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: Colors.grey.shade200, width: 1)),
-                child: postWidget(
-                    onLike: onLike,
-                    userId: originUserId,
-                    mediaUrl: mediaUrl,
-                    isShared: true,
-                    context: context,
-                    ref: ref,
-                    avatarUrl: avatarUrlOrigin,
-                    userName: userNameOrigin,
-                    createdAt: originCreatedAt,
-                    content: contentOrigin,
-                    liked: liked,
-                    likes: likes,
-                    comments: comments,
-                    shares: shares,
-                    postId: postId,
-                    index: index,
-                    privacy: privacy),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: postWidget(
+                      onLike: onLike,
+                      userId: originUserId,
+                      mediaUrl: mediaUrl,
+                      isShared: true,
+                      context: context,
+                      ref: ref,
+                      avatarUrl: avatarUrlOrigin,
+                      userName: userNameOrigin,
+                      createdAt: originCreatedAt,
+                      content: contentOrigin,
+                      liked: liked,
+                      likes: likes,
+                      comments: comments,
+                      shares: shares,
+                      postId: postId,
+                      index: index,
+                      privacy: privacy),
+                ),
               ),
             ),
             const SizedBox(height: 5),

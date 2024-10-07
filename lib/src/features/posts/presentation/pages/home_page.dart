@@ -23,7 +23,7 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
-  bool hasRefreshed = false;
+  // bool hasRefreshed = false;
   @override
   void initState() {
     super.initState();
@@ -40,12 +40,15 @@ class _HomePageState extends ConsumerState<HomePage> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     var extra = GoRouterState.of(context).extra;
-    if (extra == "reload" && !hasRefreshed) {
+    if (extra == "reload") {
       print(">>>>>>>>>>>B");
       Future.microtask(() {
+        ref.read(postControllerProvider).scrollToTop();
         ref.watch(postControllerProvider).refresh();
+        extra = null;
       });
-      hasRefreshed = true;
+
+      // hasRefreshed = true;
     }
 
     //
