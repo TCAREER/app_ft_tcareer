@@ -8,10 +8,12 @@ import 'package:app_tcareer/src/widgets/cached_image_widget.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
     WidgetRef ref, BuildContext context, String postId) {
   final controller = ref.watch(commentControllerProvider);
+  final postController = ref.watch(postControllerProvider);
 
   String userName = comment['full_name'];
   String content = comment['content'];
@@ -20,6 +22,7 @@ Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
   String? parentName = comment['parent_name'];
   String userId =
       ref.watch(userControllerProvider).userData?.data?.id.toString() ?? "";
+  int commentUserId = comment['user_id'] ?? 0;
   int likeCount = comment['like_count'];
   List<String> mediaUrl =
       (comment['media_url'] as List?)?.whereType<String>().toList() ?? [];
@@ -31,11 +34,18 @@ Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
         flex: 1,
         child: Column(
           children: [
-            CircleAvatar(
-              radius: 15,
-              backgroundImage: NetworkImage(avatar != null
-                  ? avatar
-                  : "https://ui-avatars.com/api/?name=$userName&background=random"),
+            InkWell(
+              onTap: () {
+                context.pop();
+                postController.goToProfile(
+                    userId: commentUserId.toString(), context: context);
+              },
+              child: CircleAvatar(
+                radius: 15,
+                backgroundImage: NetworkImage(avatar != null
+                    ? avatar
+                    : "https://ui-avatars.com/api/?name=$userName&background=random"),
+              ),
             ),
           ],
         ),
@@ -45,44 +55,51 @@ Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Visibility(
-              visible: parentName != null,
-              replacement: Text(
-                userName,
-                style:
-                    const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
-              ),
-              child: Row(
-                children: [
-                  Text(
-                    userName,
-                    style: const TextStyle(
-                        fontSize: 11, fontWeight: FontWeight.bold),
-                  ),
-                  Visibility(
-                    visible: parentName != userName,
-                    replacement: Text(" • "),
-                    child: const Icon(
-                      Icons.arrow_right_outlined,
-                      size: 11,
-                    ),
-                  ),
-                  Visibility(
-                    visible: parentName != userName,
-                    replacement: const Text(
-                      "Tác giả",
-                      style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue),
-                    ),
-                    child: Text(
-                      "$parentName",
+            InkWell(
+              onTap: () {
+                context.pop();
+                postController.goToProfile(
+                    userId: commentUserId.toString(), context: context);
+              },
+              child: Visibility(
+                visible: parentName != null,
+                replacement: Text(
+                  userName,
+                  style: const TextStyle(
+                      fontSize: 11, fontWeight: FontWeight.bold),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      userName,
                       style: const TextStyle(
                           fontSize: 11, fontWeight: FontWeight.bold),
                     ),
-                  ),
-                ],
+                    Visibility(
+                      visible: parentName != userName,
+                      replacement: Text(" • "),
+                      child: const Icon(
+                        Icons.arrow_right_outlined,
+                        size: 11,
+                      ),
+                    ),
+                    Visibility(
+                      visible: parentName != userName,
+                      replacement: const Text(
+                        "Tác giả",
+                        style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue),
+                      ),
+                      child: Text(
+                        "$parentName",
+                        style: const TextStyle(
+                            fontSize: 11, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             Text(
