@@ -53,8 +53,8 @@ class SearchPostController extends ChangeNotifier {
 
   String? queryCache;
   Future<void> search(String query) async {
-    postData = null;
-    posts.clear();
+    // postData = null;
+    // posts.clear();
     page = 1;
     queryCache = query;
     setIsLoading(true);
@@ -124,8 +124,7 @@ class SearchPostController extends ChangeNotifier {
   Future<void> refresh() async {
     page = 1;
     search(queryCache ?? "");
-    posts.clear();
-    notifyListeners();
+    // posts.clear();
     await searchPost();
   }
 

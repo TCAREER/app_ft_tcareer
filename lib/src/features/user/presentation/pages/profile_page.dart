@@ -8,6 +8,7 @@ import 'package:app_tcareer/src/features/user/presentation/controllers/user_cont
 import 'package:app_tcareer/src/features/user/presentation/widgets/information.dart';
 import 'package:app_tcareer/src/features/user/presentation/widgets/information_loading.dart';
 import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -43,6 +44,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
       scrollController.jumpTo(0);
     }
     Future.microtask(() {
+      ref.read(userControllerProvider).page = 1;
       ref.read(userControllerProvider).getUserInfo();
       ref.read(userControllerProvider).getPost();
     });
@@ -142,9 +144,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
     return Visibility(
       visible: controller.postData != null,
       replacement: postLoadingListViewWidget(context),
-      child: Visibility(
-        visible: controller.postCache.isNotEmpty,
-        replacement: emptyWidget("Không có bài viết nào"),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height, // Đảm bảo chiều cao
         child: NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification scrollInfo) {
             // Kiểm tra xem đã cuộn đến cuối danh sách chưa
@@ -153,18 +154,22 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
               // Gọi hàm tải thêm bài viết
               controller.loadMore();
             }
-            return true; // Ngăn chặn việc lan truyền thêm
+            return false; // Cho phép sự kiện cuộn tiếp tục
           },
-          child: RefreshIndicator(
-            onRefresh: () => controller.onRefresh(),
-            child: ListView(
-              // physics: const NeverScrollableScrollPhysics(),
-              children: [
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: controller.postCache.length,
-                  itemBuilder: (context, index) {
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              CupertinoSliverRefreshControl(
+                onRefresh: () async => await controller.refresh(),
+              ),
+              SliverVisibility(
+                  visible: controller.postCache.isEmpty,
+                  sliver: SliverToBoxAdapter(
+                    child: emptyWidget("Không có bài viết nào"),
+                  )),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
                     final post = controller.postCache[index];
                     final sharedPost = post.sharedPost;
                     return Column(
@@ -227,16 +232,17 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                       ],
                     );
                   },
+                  childCount: controller.postCache.length,
                 ),
-                Visibility(
-                  visible: controller.isLoadingMore,
+              ),
+              if (controller.isLoadingMore)
+                SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: circularLoadingWidget(),
                   ),
                 ),
-              ],
-            ),
+            ],
           ),
         ),
       ),

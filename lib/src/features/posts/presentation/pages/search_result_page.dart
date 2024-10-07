@@ -4,6 +4,7 @@ import 'package:app_tcareer/src/features/posts/presentation/widgets/post_widget.
 import 'package:app_tcareer/src/features/posts/presentation/widgets/search_bar_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/shared_post_widget.dart';
 import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -50,84 +51,82 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
           ),
         ),
       ),
-      body: RefreshIndicator(
-        onRefresh: () async => await controller.search(widget.query),
+      body: Visibility(
+        visible: !controller.isLoading,
+        replacement: circularLoadingWidget(),
         child: Visibility(
-          visible: !controller.isLoading,
-          replacement: circularLoadingWidget(),
-          child: Visibility(
-            visible: controller.users.isNotEmpty || controller.posts.isNotEmpty,
-            replacement: emptyWidget("Không tìm thấy dữ liệu"),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: RefreshIndicator(
-                onRefresh: () async => await controller.refresh(),
-                child: CustomScrollView(
-                  controller: controller.scrollController,
-                  slivers: [
-                    SliverVisibility(
-                      visible: controller.users.isNotEmpty,
-                      sliver: const SliverToBoxAdapter(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 15),
-                              child: Text(
-                                "Mọi người",
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                          ],
-                        ),
-                      ),
-                    ),
-                    userList(),
-                    SliverVisibility(
-                      visible: controller.users.isNotEmpty,
-                      sliver: SliverToBoxAdapter(
-                          child: Container(
-                        margin: EdgeInsets.symmetric(vertical: 10),
-                        width: ScreenUtil().scaleWidth,
-                        color: Colors.grey.shade200,
-                        height: 10,
-                      )),
-                    ),
-                    SliverVisibility(
-                      visible: controller.posts.isNotEmpty,
-                      sliver: const SliverToBoxAdapter(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 15),
-                              child: Text(
-                                "Bài viết",
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                          ],
-                        ),
-                      ),
-                    ),
-                    postList(),
-                    SliverToBoxAdapter(
-                      child: Visibility(
-                        visible: controller.isLoadingMore,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: circularLoadingWidget(),
-                        ),
-                      ),
-                    )
-                    // postList()
-                  ],
+          visible: controller.users.isNotEmpty || controller.posts.isNotEmpty,
+          replacement: emptyWidget("Không tìm thấy dữ liệu"),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              controller: controller.scrollController,
+              slivers: [
+                CupertinoSliverRefreshControl(
+                  onRefresh: () async => await controller.refresh(),
                 ),
-              ),
+                SliverVisibility(
+                  visible: controller.users.isNotEmpty,
+                  sliver: const SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 15),
+                          child: Text(
+                            "Mọi người",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
+                  ),
+                ),
+                userList(),
+                SliverVisibility(
+                  visible: controller.users.isNotEmpty,
+                  sliver: SliverToBoxAdapter(
+                      child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 10),
+                    width: ScreenUtil().scaleWidth,
+                    color: Colors.grey.shade200,
+                    height: 10,
+                  )),
+                ),
+                SliverVisibility(
+                  visible: controller.posts.isNotEmpty,
+                  sliver: const SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 15),
+                          child: Text(
+                            "Bài viết",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
+                  ),
+                ),
+                postList(),
+                SliverToBoxAdapter(
+                  child: Visibility(
+                    visible: controller.isLoadingMore,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: circularLoadingWidget(),
+                    ),
+                  ),
+                )
+                // postList()
+              ],
             ),
           ),
         ),

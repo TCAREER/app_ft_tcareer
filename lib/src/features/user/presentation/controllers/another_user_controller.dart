@@ -80,7 +80,7 @@ class AnotherUserController extends ChangeNotifier {
   Future<void> refresh() async {
     // postData?.data?.clear();
     // postCache.clear();
-
+    page = 1;
     // notifyListeners();
     await getUserById(anotherUserData?.data?.id.toString() ?? "");
     await getPost(anotherUserData?.data?.id.toString() ?? "");

@@ -9,6 +9,7 @@ import 'package:app_tcareer/src/features/posts/presentation/widgets/shared_post_
 import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
 
 import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -71,35 +72,35 @@ class _HomePageState extends ConsumerState<HomePage> {
       top: true,
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: RefreshIndicator(
-          onRefresh: () async => await controller.refresh(),
-          child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            controller: controller.scrollController,
-            slivers: [
-              sliverAppBar(ref),
-              SliverVisibility(
-                  visible: controller.postData != null,
-                  replacementSliver: postLoadingWidget(context),
-                  sliver: SliverVisibility(
-                      visible: controller.postData?.data?.isNotEmpty == true,
-                      replacementSliver: SliverFillRemaining(
-                        child: emptyWidget("Không có bài viết nào"),
-                      ),
-                      sliver: sliverPost(ref))),
-              SliverToBoxAdapter(
-                child: Visibility(
-                  visible: hasData &&
-                      controller.postCache.length !=
-                          controller.postData?.meta?.total,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: circularLoadingWidget(),
-                  ),
+        body: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          controller: controller.scrollController,
+          slivers: [
+            CupertinoSliverRefreshControl(
+              onRefresh: () async => await controller.refresh(),
+            ),
+            sliverAppBar(ref),
+            SliverVisibility(
+                visible: controller.postData != null,
+                replacementSliver: postLoadingWidget(context),
+                sliver: SliverVisibility(
+                    visible: controller.postData?.data?.isNotEmpty == true,
+                    replacementSliver: SliverFillRemaining(
+                      child: emptyWidget("Không có bài viết nào"),
+                    ),
+                    sliver: sliverPost(ref))),
+            SliverToBoxAdapter(
+              child: Visibility(
+                visible: hasData &&
+                    controller.postCache.length !=
+                        controller.postData?.meta?.total,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: circularLoadingWidget(),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
