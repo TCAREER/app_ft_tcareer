@@ -44,6 +44,20 @@ Widget sharedPostWidget({
   final firstMediaUrl = hasMediaUrl ? mediaUrl.first : "";
   final controller = ref.read(postControllerProvider);
   return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+    margin: const EdgeInsets.symmetric(horizontal: 10),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(12),
+      color: Colors.white,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.3),
+          spreadRadius: 2,
+          blurRadius: 4,
+          offset: const Offset(0, 1), // changes position of shadow
+        ),
+      ],
+    ),
     width: ScreenUtil().screenWidth,
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -169,8 +183,8 @@ Widget sharedPostWidget({
               onTap: () => context
                   .goNamed("detail", pathParameters: {"id": originPostId}),
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                // padding: const EdgeInsets.symmetric(vertical: 10),
+                margin: const EdgeInsets.symmetric(horizontal: 5),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: Colors.grey.shade200, width: 1)),

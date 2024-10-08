@@ -137,15 +137,18 @@ class _PostingPageState extends ConsumerState<PostingPage> {
         ),
       ),
       backgroundColor: Colors.white,
-      leading: IconButton(
-        onPressed: onPop,
-        icon: const Icon(
+      leading: InkWell(
+        onTap: onPop,
+        child: const Icon(
           Icons.close,
           color: Colors.black,
         ),
       ),
-      centerTitle: true,
-      title: const Text("Tạo bài viết"),
+      centerTitle: false,
+      title: Text(
+        "Tạo bài viết",
+        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+      ),
       titleTextStyle: const TextStyle(
         color: Colors.black,
         fontSize: 20,

@@ -170,7 +170,7 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
         return Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15),
+              padding: const EdgeInsets.symmetric(vertical: 8),
               child: Visibility(
                 replacement: sharedPostWidget(
                     onLike: () async => await controller.postLikePost(
@@ -221,11 +221,11 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
                 ),
               ),
             ),
-            if (index < controller.posts.length - 1)
-              Divider(
-                height: 1,
-                color: Colors.grey.shade100,
-              ),
+            // if (index < controller.posts.length - 1)
+            //   Divider(
+            //     height: 1,
+            //     color: Colors.grey.shade100,
+            //   ),
           ],
         );
       }, childCount: controller.posts.length),

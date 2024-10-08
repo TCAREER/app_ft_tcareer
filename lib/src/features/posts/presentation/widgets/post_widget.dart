@@ -39,6 +39,24 @@ Widget postWidget({
   final firstMediaUrl = hasMediaUrl ? mediaUrl.first : "";
   final controller = ref.read(postControllerProvider);
   return Container(
+    padding: !isShared
+        ? const EdgeInsets.symmetric(horizontal: 10, vertical: 15)
+        : null,
+    margin: !isShared ? const EdgeInsets.symmetric(horizontal: 10) : null,
+    decoration: !isShared
+        ? BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.3),
+                spreadRadius: 2,
+                blurRadius: 4,
+                offset: const Offset(0, 1), // changes position of shadow
+              ),
+            ],
+          )
+        : null,
     width: ScreenUtil().screenWidth,
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,

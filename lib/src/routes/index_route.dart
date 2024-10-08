@@ -1,4 +1,5 @@
 import 'package:app_tcareer/src/features/index/index_page.dart';
+import 'package:app_tcareer/src/features/jobs/presentation/pages/job_page.dart';
 import 'package:app_tcareer/src/features/messages/presentation/pages/message_page.dart';
 import 'package:app_tcareer/src/features/notifications/presentation/pages/notification_page.dart';
 import 'package:app_tcareer/src/features/posts/presentation/pages/home_page.dart';
@@ -34,7 +35,7 @@ class Index {
             name: RouteNames.jobs.name,
             pageBuilder: (context, state) => CustomTransitionPage(
                 key: state.pageKey,
-                child: const Text("Jobs"),
+                child: const JobPage(),
                 transitionsBuilder: fadeTransitionBuilder),
           ),
         ]),

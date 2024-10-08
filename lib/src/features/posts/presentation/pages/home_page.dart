@@ -116,7 +116,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 15),
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Visibility(
                   replacement: sharedPostWidget(
                       onLike: () async => await controller.postLikePost(
@@ -171,11 +171,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                 ),
               ),
-              if (index < controller.postCache.length - 1)
-                Divider(
-                  height: 1,
-                  color: Colors.grey.shade100,
-                ),
+              // if (index < controller.postCache.length - 1)
+              //   Divider(
+              //     height: 1,
+              //     color: Colors.grey.shade100,
+              //   ),
             ],
           );
         },
@@ -204,7 +204,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       floating: true,
       pinned: false, // AppBar không cố định
       title: const Text(
-        "tcareer",
+        "Bài đăng",
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
       ),
       // leadingWidth: 120,

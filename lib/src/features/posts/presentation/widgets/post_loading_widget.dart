@@ -8,7 +8,21 @@ Widget postLoadingWidget(BuildContext context) {
   return SliverList(
     delegate: SliverChildBuilderDelegate((context, index) {
       return Container(
-        color: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 2,
+              blurRadius: 4,
+              offset: const Offset(0, 1), // changes position of shadow
+            ),
+          ],
+        ),
+
         // padding: const EdgeInsets.all(4),
         width: ScreenUtil().screenWidth,
         child: Column(

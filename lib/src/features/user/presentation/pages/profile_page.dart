@@ -141,109 +141,115 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
 
   Widget postList() {
     final controller = ref.watch(userControllerProvider);
-    return Visibility(
-      visible: controller.postData != null,
-      replacement: postLoadingListViewWidget(context),
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height, // Đảm bảo chiều cao
-        child: NotificationListener<ScrollNotification>(
-          onNotification: (ScrollNotification scrollInfo) {
-            // Kiểm tra xem đã cuộn đến cuối danh sách chưa
-            if (scrollInfo.metrics.pixels >=
-                scrollInfo.metrics.maxScrollExtent - 50) {
-              // Gọi hàm tải thêm bài viết
-              controller.loadMore();
-            }
-            return false; // Cho phép sự kiện cuộn tiếp tục
-          },
-          child: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              CupertinoSliverRefreshControl(
-                onRefresh: () async => await controller.refresh(),
-              ),
-              SliverVisibility(
-                  visible: controller.postCache.isEmpty,
-                  sliver: SliverToBoxAdapter(
-                    child: emptyWidget("Không có bài viết nào"),
-                  )),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final post = controller.postCache[index];
-                    final sharedPost = post.sharedPost;
-                    return Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          child: Visibility(
-                            replacement: sharedPostWidget(
-                              onLike: () async => await controller.postLikePost(
-                                  index: index, postId: post.id.toString()),
-                              originUserId: sharedPost?.userId.toString() ?? "",
-                              userId: post.userId.toString(),
-                              originCreatedAt: sharedPost?.createdAt ?? "",
-                              originPostId: sharedPost?.id.toString() ?? "",
-                              mediaUrl: sharedPost?.mediaUrl,
-                              context: context,
-                              ref: ref,
-                              avatarUrl: post.avatar ??
-                                  "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
-                              userName: post.fullName ?? "",
-                              userNameOrigin: sharedPost?.fullName ?? "",
-                              avatarUrlOrigin: sharedPost?.avatar ??
-                                  "https://ui-avatars.com/api/?name=${sharedPost?.fullName}&background=random",
-                              createdAt: post.createdAt ?? "",
-                              content: post.body ?? "",
-                              contentOrigin: sharedPost?.body ?? "",
-                              liked: post.liked ?? false,
-                              likes: post.likeCount?.toString() ?? "0",
-                              comments: post.commentCount?.toString() ?? "0",
-                              shares: post.shareCount?.toString() ?? "0",
-                              privacy: post.privacy ?? "",
-                              postId: post.id.toString(),
-                              index: index,
-                            ),
-                            visible: post.sharedPostId == null,
-                            child: postWidget(
-                              onLike: () async => await controller.postLikePost(
-                                  index: index, postId: post.id.toString()),
-                              userId: post.userId.toString(),
-                              index: index,
-                              liked: post.liked ?? false,
-                              privacy: post.privacy ?? "",
-                              postId: post.id.toString(),
-                              ref: ref,
-                              context: context,
-                              avatarUrl: post.avatar ??
-                                  "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
-                              userName: post.fullName ?? "",
-                              createdAt: post.createdAt ?? "",
-                              content: post.body ?? "",
-                              mediaUrl: post.mediaUrl,
-                              likes: post.likeCount?.toString() ?? "0",
-                              comments: post.commentCount?.toString() ?? "0",
-                              shares: post.shareCount?.toString() ?? "0",
+    return SizedBox(
+      height: MediaQuery.of(context).size.height, // Đảm bảo chiều cao
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (ScrollNotification scrollInfo) {
+          // Kiểm tra xem đã cuộn đến cuối danh sách chưa
+          if (scrollInfo.metrics.pixels >=
+              scrollInfo.metrics.maxScrollExtent - 50) {
+            // Gọi hàm tải thêm bài viết
+            controller.loadMore();
+          }
+          return false; // Cho phép sự kiện cuộn tiếp tục
+        },
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            CupertinoSliverRefreshControl(
+              onRefresh: () async => await controller.refresh(),
+            ),
+            SliverVisibility(
+              visible: controller.postData != null,
+              replacementSliver: postLoadingWidget(context),
+              sliver: SliverVisibility(
+                visible: controller.postCache.isNotEmpty,
+                replacementSliver: SliverToBoxAdapter(
+                  child: emptyWidget("Không có bài viết nào"),
+                ),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final post = controller.postCache[index];
+                      final sharedPost = post.sharedPost;
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Visibility(
+                              replacement: sharedPostWidget(
+                                onLike: () async =>
+                                    await controller.postLikePost(
+                                        index: index,
+                                        postId: post.id.toString()),
+                                originUserId:
+                                    sharedPost?.userId.toString() ?? "",
+                                userId: post.userId.toString(),
+                                originCreatedAt: sharedPost?.createdAt ?? "",
+                                originPostId: sharedPost?.id.toString() ?? "",
+                                mediaUrl: sharedPost?.mediaUrl,
+                                context: context,
+                                ref: ref,
+                                avatarUrl: post.avatar ??
+                                    "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
+                                userName: post.fullName ?? "",
+                                userNameOrigin: sharedPost?.fullName ?? "",
+                                avatarUrlOrigin: sharedPost?.avatar ??
+                                    "https://ui-avatars.com/api/?name=${sharedPost?.fullName}&background=random",
+                                createdAt: post.createdAt ?? "",
+                                content: post.body ?? "",
+                                contentOrigin: sharedPost?.body ?? "",
+                                liked: post.liked ?? false,
+                                likes: post.likeCount?.toString() ?? "0",
+                                comments: post.commentCount?.toString() ?? "0",
+                                shares: post.shareCount?.toString() ?? "0",
+                                privacy: post.privacy ?? "",
+                                postId: post.id.toString(),
+                                index: index,
+                              ),
+                              visible: post.sharedPostId == null,
+                              child: postWidget(
+                                onLike: () async =>
+                                    await controller.postLikePost(
+                                        index: index,
+                                        postId: post.id.toString()),
+                                userId: post.userId.toString(),
+                                index: index,
+                                liked: post.liked ?? false,
+                                privacy: post.privacy ?? "",
+                                postId: post.id.toString(),
+                                ref: ref,
+                                context: context,
+                                avatarUrl: post.avatar ??
+                                    "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
+                                userName: post.fullName ?? "",
+                                createdAt: post.createdAt ?? "",
+                                content: post.body ?? "",
+                                mediaUrl: post.mediaUrl,
+                                likes: post.likeCount?.toString() ?? "0",
+                                comments: post.commentCount?.toString() ?? "0",
+                                shares: post.shareCount?.toString() ?? "0",
+                              ),
                             ),
                           ),
-                        ),
-                        if (index < controller.postCache.length - 1)
-                          Divider(height: 1, color: Colors.grey.shade100),
-                      ],
-                    );
-                  },
-                  childCount: controller.postCache.length,
-                ),
-              ),
-              if (controller.isLoadingMore)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: circularLoadingWidget(),
+                          // if (index < controller.postCache.length - 1)
+                          //   Divider(height: 1, color: Colors.grey.shade100),
+                        ],
+                      );
+                    },
+                    childCount: controller.postCache.length,
                   ),
                 ),
-            ],
-          ),
+              ),
+            ),
+            if (controller.isLoadingMore)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: circularLoadingWidget(),
+                ),
+              ),
+          ],
         ),
       ),
     );

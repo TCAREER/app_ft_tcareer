@@ -25,7 +25,7 @@ class NotificationPage extends ConsumerWidget {
         centerTitle: false,
         title: Text(
           "Thông báo",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
         ),
       ),
       body: notifications(ref),

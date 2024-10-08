@@ -27,7 +27,7 @@ Widget engagementWidget(
   final controller = ref.watch(postControllerProvider.notifier);
   double sizeButton = 22;
   return Padding(
-    padding: EdgeInsets.only(left: 10, right: 10, top: 5),
+    padding: EdgeInsets.only(left: 8, right: 8, top: 5),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

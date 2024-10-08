@@ -55,20 +55,20 @@ class _PostDetailPageState extends ConsumerState<PostDetailPage> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
-          centerTitle: true,
+          centerTitle: false,
           automaticallyImplyLeading: false,
           title: const Text("Bài viết"),
           titleTextStyle: const TextStyle(
-              fontWeight: FontWeight.bold, color: Colors.black, fontSize: 20),
+              fontWeight: FontWeight.bold, color: Colors.black, fontSize: 25),
           leading: IconButton(
               onPressed: () => context.pop(),
               icon: const Icon(Icons.arrow_back)),
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(5),
-            child: Divider(
-              color: Colors.grey.shade200,
-            ),
-          ),
+          // bottom: PreferredSize(
+          //   preferredSize: const Size.fromHeight(5),
+          //   child: Divider(
+          //     color: Colors.grey.shade200,
+          //   ),
+          // ),
         ),
         body: RefreshIndicator(
           onRefresh: () => controller.getPostById(widget.postId),
