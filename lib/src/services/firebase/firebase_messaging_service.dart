@@ -3,9 +3,11 @@ import 'package:app_tcareer/main.dart';
 import 'package:app_tcareer/src/services/notifications/notification_service.dart';
 import 'package:app_tcareer/src/utils/user_utils.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 class FirebaseMessagingService {
   final NotificationService notificationService;
@@ -48,7 +50,32 @@ class FirebaseMessagingService {
 
   void handleForegroundMessage() {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      notificationService.displayNotification(message);
+      if (kIsWeb) {
+        String fullName = message.data['full_name'];
+        String image = message.notification?.android?.imageUrl ??
+            "https://ui-avatars.com/api/?name=$fullName&background=random";
+        showSimpleNotification(
+          background: Colors.white,
+          duration: Duration(seconds: 5),
+          ListTile(
+            onTap: () async => await directToPage(message),
+            leading: Image.network(
+              image,
+              fit: BoxFit.cover,
+            ),
+            title: Text(
+              message.notification?.title ?? "",
+              style: TextStyle(color: Colors.black),
+            ),
+            subtitle: Text(
+              message.notification?.body ?? "",
+              style: TextStyle(color: Colors.black45),
+            ),
+          ),
+        );
+      } else {
+        notificationService.displayNotification(message);
+      }
     });
   }
 
