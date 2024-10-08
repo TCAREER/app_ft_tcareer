@@ -1,21 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-    <base href="$FLUTTER_BASE_HREF" />
-
     <meta charset="UTF-8" />
     <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
     <meta name="description" content="Mạng xã hội tìm việc" />
@@ -35,26 +20,28 @@
 
     <title>Tcareer</title>
     <link rel="manifest" href="manifest.json" />
+    <base href="$FLUTTER_BASE_HREF" />
 
-    <!-- <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-firestore.js"></script>
-
+    <!-- Thêm đoạn mã yêu cầu quyền thông báo -->
     <script>
-      const firebaseConfig = {
-        apiKey: "AIzaSyBa2suLLiuvDmkTisxPg1oxxYojKx40zhw",
-        authDomain: "tcareer-4fa7d.firebaseapp.com",
-        projectId: "tcareer-4fa7d",
-        storageBucket: "tcareer-4fa7d.appspot.com",
-        messagingSenderId: "353946571533",
-        appId: "1:353946571533:web:f540d00c325bb1d272d644",
-        measurementId: "G-JRVZ98QJCR",
-      };
-
-      firebase.initializeApp(firebaseConfig);
-    </script> -->
+      // Kiểm tra nếu trình duyệt hỗ trợ Notification API
+      if ("Notification" in window) {
+        // Yêu cầu quyền thông báo khi ứng dụng tải
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            console.log("Notification permission granted.");
+          } else {
+            console.error("Unable to get permission to notify.");
+          }
+        });
+      } else {
+        console.error("Notification API is not supported in this browser.");
+      }
+    </script>
   </head>
   <body>
+    <!-- Nội dung ứng dụng Flutter -->
     <script src="flutter_bootstrap.js" async></script>
+    <script src="main.dart.js" type="application/javascript"></script>
   </body>
 </html>

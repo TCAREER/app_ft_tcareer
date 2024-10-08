@@ -22,13 +22,13 @@ class App extends StatelessWidget {
         final router = AppRouter.router(ref, navigatorKey);
 
         return ScreenUtilInit(
-          designSize: const Size(360, 690),
-          minTextAdapt: true,
-          builder: (context, child) {
-            ScreenUtil.init(context);
+            designSize: const Size(360, 690),
+            minTextAdapt: true,
+            builder: (context, child) {
+              ScreenUtil.init(context);
 
-            // Kiểm tra nếu ứng dụng đang chạy trên Web
-            if (Platform.isAndroid || Platform.isIOS) {
+              // Kiểm tra nếu ứng dụng đang chạy trên Web
+              // if (Platform.isAndroid || Platform.isIOS) {
               return OverlaySupport.global(
                 child: MaterialApp.router(
                   debugShowCheckedModeBanner: false,
@@ -71,12 +71,12 @@ class App extends StatelessWidget {
                 ),
               );
             }
-            return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              home: const UnsupportedPlatformPage(), // Trang thông báo
+            //   return MaterialApp(
+            //     debugShowCheckedModeBanner: false,
+            //     home: const UnsupportedPlatformPage(), // Trang thông báo
+            //   );
+            // },
             );
-          },
-        );
       },
     );
   }
