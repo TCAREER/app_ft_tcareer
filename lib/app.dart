@@ -31,8 +31,8 @@ class App extends StatelessWidget {
               // if (Platform.isAndroid || Platform.isIOS) {
               return OverlaySupport.global(
                 child: MaterialApp.router(
-                  debugShowCheckedModeBanner: false,
                   routerConfig: router,
+                  debugShowCheckedModeBanner: false,
                   title: 'TCareer',
                   theme: ThemeData(
                     progressIndicatorTheme:
