@@ -14,13 +14,10 @@ import 'package:app_tcareer/src/features/user/presentation/pages/another_profile
 import 'package:app_tcareer/src/routes/index_route.dart';
 import 'package:app_tcareer/src/routes/transition_builder.dart';
 import 'package:app_tcareer/src/services/apis/api_service_provider.dart';
-
 import 'package:app_tcareer/src/utils/user_utils.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../features/posts/presentation/pages/search_page.dart';
 
 enum RouteNames {
   splash,
@@ -31,131 +28,161 @@ enum RouteNames {
   verify,
   resetPassword,
   posting,
-  photoManager
+  photoManager,
 }
+
+// FutureProvider lưu trữ trạng thái xác thực bất đồng bộ
+class AuthStateNotifier extends StateNotifier<bool> {
+  final UserUtils
+      userUtils; // Sử dụng UserUtils để kiểm tra trạng thái xác thực
+
+  AuthStateNotifier(this.userUtils) : super(false);
+
+  // Hàm để cập nhật trạng thái xác thực
+  Future<void> checkAuthentication() async {
+    final isAuthenticated = await userUtils.isAuthenticated();
+    state = isAuthenticated; // Cập nhật trạng thái
+  }
+}
+
+final authStateProvider = StateNotifierProvider<AuthStateNotifier, bool>((ref) {
+  final userUtils = ref.watch(userUtilsProvider);
+  return AuthStateNotifier(userUtils);
+});
 
 class AppRouter {
   static GoRouter router(
       WidgetRef ref, GlobalKey<NavigatorState> navigatorKey) {
-    final refreshTokenProvider = ref.watch(refreshTokenStateProvider);
-    // final navigatorKey = ref.watch(navigatorKeyProvider);
     return GoRouter(
-        navigatorKey: navigatorKey,
-        debugLogDiagnostics: true,
-        initialLocation: "/home",
-        redirect: (context, state) async {
-          final userUtils = ref.watch(userUtilsProvider);
-          final isAuthenticated = await userUtils.isAuthenticated();
-          final Map<String, String> routeRedirectMap = {
-            '/register': '/register',
-            '/forgotPassword': '/forgotPassword',
-            '/forgotPassword/verify': '/forgotPassword/verify',
-            '/forgotPassword/resetPassword': '/forgotPassword/resetPassword',
-            '/login': '/login',
-            '/intro': '/intro',
-          };
+      navigatorKey: navigatorKey,
+      debugLogDiagnostics: true,
+      initialLocation: "/home",
+      redirect: (context, state) {
+        // Lấy trạng thái xác thực và refresh token
+        ref.read(authStateProvider.notifier).checkAuthentication();
+        final isAuthenticated = ref.watch(authStateProvider);
+        final refreshTokenProvider = ref.watch(refreshTokenStateProvider);
+        print("Is authenticated: $isAuthenticated");
+        print(
+            "Is refresh token expired: ${refreshTokenProvider.isRefreshTokenExpired}");
+        // Tạo một map để định nghĩa các route redirect
 
-          if (isAuthenticated != true ||
-              refreshTokenProvider.isRefreshTokenExpired == true) {
-            if (routeRedirectMap.containsKey(state.fullPath)) {
-              return routeRedirectMap[state.fullPath];
-            }
-            return "/intro";
+        // Kiểm tra trạng thái xác thực
+        final Map<String, String> routeRedirectMap = {
+          '/register': '/register',
+          '/forgotPassword': '/forgotPassword',
+          '/forgotPassword/verify': '/forgotPassword/verify',
+          '/forgotPassword/resetPassword': '/forgotPassword/resetPassword',
+          '/login': '/login',
+          '/intro': '/intro',
+        };
+
+        if (isAuthenticated != true ||
+            refreshTokenProvider.isRefreshTokenExpired == true) {
+          if (routeRedirectMap.containsKey(state.fullPath)) {
+            return routeRedirectMap[state.fullPath];
           }
-          return null;
-        },
-        routes: [
-          Index.router,
-          GoRoute(
-            path: "/${RouteNames.splash.name}",
-            name: RouteNames.splash.name,
-            pageBuilder: (context, state) => CustomTransitionPage(
-                key: state.pageKey,
-                child: const SplashPage(),
-                transitionsBuilder: fadeTransitionBuilder),
+          return "/intro";
+        }
+        return null;
+      },
+      routes: [
+        Index.router,
+        GoRoute(
+          path: "/${RouteNames.splash.name}",
+          name: RouteNames.splash.name,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            key: state.pageKey,
+            child: const SplashPage(),
+            transitionsBuilder: fadeTransitionBuilder,
           ),
-          GoRoute(
-            path: "/${RouteNames.intro.name}",
-            name: RouteNames.intro.name,
-            pageBuilder: (context, state) => CustomTransitionPage(
-                key: state.pageKey,
-                child: const IntroPage(),
-                transitionsBuilder: fadeTransitionBuilder),
+        ),
+        GoRoute(
+          path: "/${RouteNames.intro.name}",
+          name: RouteNames.intro.name,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            key: state.pageKey,
+            child: const IntroPage(),
+            transitionsBuilder: fadeTransitionBuilder,
           ),
-          GoRoute(
-            path: "/${RouteNames.login.name}",
-            name: RouteNames.login.name,
-            pageBuilder: (context, state) => CustomTransitionPage(
-                key: state.pageKey,
-                child: const LoginPage(),
-                transitionsBuilder: fadeTransitionBuilder),
+        ),
+        GoRoute(
+          path: "/${RouteNames.login.name}",
+          name: RouteNames.login.name,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            key: state.pageKey,
+            child: const LoginPage(),
+            transitionsBuilder: fadeTransitionBuilder,
           ),
-          GoRoute(
-            path: "/${RouteNames.register.name}",
-            name: RouteNames.register.name,
-            pageBuilder: (context, state) => CustomTransitionPage(
-                key: state.pageKey,
-                child: const RegisterPage(),
-                transitionsBuilder: fadeTransitionBuilder),
+        ),
+        GoRoute(
+          path: "/${RouteNames.register.name}",
+          name: RouteNames.register.name,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            key: state.pageKey,
+            child: const RegisterPage(),
+            transitionsBuilder: fadeTransitionBuilder,
           ),
-          GoRoute(
-              path: "/${RouteNames.forgotPassword.name}",
-              name: RouteNames.forgotPassword.name,
+        ),
+        GoRoute(
+          path: "/${RouteNames.forgotPassword.name}",
+          name: RouteNames.forgotPassword.name,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            key: state.pageKey,
+            child: const ForgotPasswordPage(),
+            transitionsBuilder: fadeTransitionBuilder,
+          ),
+          routes: [
+            GoRoute(
+              path: RouteNames.verify.name,
+              name: RouteNames.verify.name,
               pageBuilder: (context, state) => CustomTransitionPage(
-                  key: state.pageKey,
-                  child: const ForgotPasswordPage(),
-                  transitionsBuilder: fadeTransitionBuilder),
-              routes: [
-                GoRoute(
-                    path: RouteNames.verify.name,
-                    name: RouteNames.verify.name,
-                    pageBuilder: (context, state) => CustomTransitionPage(
-                        key: state.pageKey,
-                        child: const VerifyPage(),
-                        transitionsBuilder: fadeTransitionBuilder),
-                    routes: []),
-                GoRoute(
-                    path: RouteNames.resetPassword.name,
-                    name: RouteNames.resetPassword.name,
-                    pageBuilder: (context, state) => CustomTransitionPage(
-                        key: state.pageKey,
-                        child: const ResetPasswordPage(),
-                        transitionsBuilder: fadeTransitionBuilder),
-                    routes: []),
-              ]),
-          GoRoute(
-            path: "/${RouteNames.posting.name}",
-            name: RouteNames.posting.name,
-            pageBuilder: (context, state) => CustomTransitionPage(
                 key: state.pageKey,
-                child: const PostingPage(),
-                transitionsBuilder: slideUpTransitionBuilder),
+                child: const VerifyPage(),
+                transitionsBuilder: fadeTransitionBuilder,
+              ),
+            ),
+            GoRoute(
+              path: RouteNames.resetPassword.name,
+              name: RouteNames.resetPassword.name,
+              pageBuilder: (context, state) => CustomTransitionPage(
+                key: state.pageKey,
+                child: const ResetPasswordPage(),
+                transitionsBuilder: fadeTransitionBuilder,
+              ),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: "/${RouteNames.posting.name}",
+          name: RouteNames.posting.name,
+          pageBuilder: (context, state) => CustomTransitionPage(
+            key: state.pageKey,
+            child: const PostingPage(),
+            transitionsBuilder: slideUpTransitionBuilder,
           ),
-          GoRoute(
-            path: "/${RouteNames.photoManager.name}",
-            name: RouteNames.photoManager.name,
-            pageBuilder: (context, state) {
-              String isCommentString =
-                  state.uri.queryParameters["isComment"] ?? "false";
-              bool isComment = bool.parse(isCommentString);
-              return CustomTransitionPage(
-                  key: state.pageKey,
-                  child: MediaPage(
-                    isComment: isComment,
-                  ),
-                  transitionsBuilder: slideUpTransitionBuilder);
-            },
-          ),
-        ],
-        refreshListenable: GoRouterRefreshStream());
+        ),
+        GoRoute(
+          path: "/${RouteNames.photoManager.name}",
+          name: RouteNames.photoManager.name,
+          pageBuilder: (context, state) {
+            String isCommentString =
+                state.uri.queryParameters["isComment"] ?? "false";
+            bool isComment = bool.parse(isCommentString);
+            return CustomTransitionPage(
+              key: state.pageKey,
+              child: MediaPage(isComment: isComment),
+              transitionsBuilder: slideUpTransitionBuilder,
+            );
+          },
+        ),
+      ],
+      refreshListenable: GoRouterRefreshStream(),
+    );
   }
 }
 
 class GoRouterRefreshStream extends ChangeNotifier {
-  GoRouterRefreshStream() {
-    // Không cần truyền tham số
-  }
-
   @override
   void notifyListeners() {
     super.notifyListeners();

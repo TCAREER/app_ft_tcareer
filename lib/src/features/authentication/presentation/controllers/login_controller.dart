@@ -10,9 +10,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class LoginController extends StateNotifier<void> {
+class LoginController extends ChangeNotifier {
   final LoginUseCase loginUseCaseProvider;
-  LoginController(this.loginUseCaseProvider) : super(null);
+  LoginController(this.loginUseCaseProvider);
   TextEditingController phoneController = TextEditingController();
   TextEditingController passController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -23,7 +23,7 @@ class LoginController extends StateNotifier<void> {
           phone: phone ?? phoneController.text,
           password: password ?? passController.text);
 
-      // context.go("/home");
+      // context.goNamed("home");
     }, context);
   }
 
@@ -35,6 +35,7 @@ class LoginController extends StateNotifier<void> {
 
   Future<void> signInWithGoogle(BuildContext context) async {
     await loginUseCaseProvider.loginWithGoogle();
-    context.go("/home");
+
+    // context.goNamed("home");
   }
 }

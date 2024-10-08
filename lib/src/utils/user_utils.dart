@@ -1,5 +1,6 @@
 import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/configs/shared_preferences_provider.dart';
+import 'package:app_tcareer/src/routes/app_router.dart';
 import 'package:app_tcareer/src/services/apis/api_service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,6 +32,7 @@ class UserUtils {
     // if (authToken != null) {
     //   ref.read(isAuthenticatedProvider.notifier).update((state) => true);
     // }
+
     return authToken != null; // Trả về true nếu token tồn tại, false nếu không
   }
 

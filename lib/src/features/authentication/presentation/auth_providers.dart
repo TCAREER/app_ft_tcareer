@@ -6,7 +6,7 @@ import 'package:app_tcareer/src/features/authentication/presentation/controllers
 import 'package:app_tcareer/src/features/authentication/usecases/register_use_case.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final loginControllerProvider = Provider<LoginController>((ref) {
+final loginControllerProvider = ChangeNotifierProvider<LoginController>((ref) {
   final loginUseCaseProvider = ref.watch(loginUseCase);
   return LoginController(loginUseCaseProvider);
 });
