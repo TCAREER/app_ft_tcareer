@@ -23,13 +23,6 @@ firebase.initializeApp({
 });
 
 const messaging = firebase.messaging();
-Notification.requestPermission().then((permission) => {
-  if (permission === "granted") {
-    console.log("Notification permission granted.");
-  } else {
-    console.error("Unable to get permission to notify.");
-  }
-});
 
 // Optional:
 messaging.onBackgroundMessage((payload) => {
