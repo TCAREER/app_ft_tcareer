@@ -11,33 +11,27 @@ class NotificationUseCase {
   Stream<List<Map<String, dynamic>>> listenToNotificationsByUserId(int userId) {
     return notificationRepository.listenToNotifications().map((event) {
       final rawData = event.snapshot.value;
+      if (rawData is List) {
+        final notifications = rawData
+            .where((element) {
+              if (element == null) return false;
 
-      // Log rawData trước khi xử lý
-      print("Raw data: $rawData");
-
-      if (rawData is Map) {
-        final notifications = rawData.entries.where((entry) {
-          final element = entry.value;
-          if (element == null) return false;
-
-          if (element is Map && element['user_id'] != null) {
-            return element['user_id'].toString() == userId.toString();
-          }
-          return false;
-        }).map((entry) {
-          final notificationId = entry.key; // Lấy ID từ key của map
-          final updatedElement = Map<String, dynamic>.from(entry.value);
-          updatedElement['notification_id'] =
-              notificationId; // Thêm notification_id
-          return updatedElement;
-        }).toList();
-
-        // Log notifications sau khi được chuyển đổi
-        print("Notifications: $notifications");
+              if (element is Map && element['user_id'] != null) {
+                // print('Element: $element'); // Kiểm tra từng phần tử
+                return element['user_id'].toString() == userId.toString();
+              }
+              return false;
+            })
+            .map((element) => Map<String, dynamic>.from(element))
+            .toList();
 
         notifications.sort((a, b) {
           final updatedA = a['updated_at'];
           final updatedB = b['updated_at'];
+
+          // Log giá trị trước khi phân tích
+          // print("updatedA: $updatedA");
+          // print("updatedB: $updatedB");
 
           if (updatedA == null || updatedB == null) {
             print("Một trong hai giá trị là null");
@@ -47,6 +41,7 @@ class NotificationUseCase {
           try {
             DateTime dateA =
                 DateTime.parse(AppUtils.convertToISOFormat(updatedA));
+            // print(">>>>>>>>>>dateA: $dateA");
             DateTime dateB =
                 DateTime.parse(AppUtils.convertToISOFormat(updatedB));
             return dateB.compareTo(dateA);
@@ -57,7 +52,6 @@ class NotificationUseCase {
 
         return notifications;
       } else {
-        print("Dữ liệu không phải là Map");
         return [];
       }
     });
