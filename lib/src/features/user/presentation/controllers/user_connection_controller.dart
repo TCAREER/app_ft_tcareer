@@ -86,7 +86,7 @@ class UserConnectionController extends ChangeNotifier {
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: Text(
               'Hủy kết bạn với ${currentUser?.fullName}',
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(fontSize: 16, color: Colors.black),
             ),
           ),
           actions: <Widget>[
@@ -95,14 +95,14 @@ class UserConnectionController extends ChangeNotifier {
                 onPressed: () async => await unFriend(context, userId),
                 child: const Text(
                   'Hủy kết bạn',
-                  style: TextStyle(fontSize: 12),
+                  style: TextStyle(fontSize: 16),
                 )),
           ],
           cancelButton: CupertinoActionSheetAction(
               isDefaultAction: true,
               child: const Text(
                 'Quay lại',
-                style: TextStyle(color: Colors.black, fontSize: 12),
+                style: TextStyle(fontSize: 16, color: Colors.black),
               ),
               onPressed: () => context.pop()),
         );
@@ -130,7 +130,7 @@ class UserConnectionController extends ChangeNotifier {
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: Text(
               'Kết bạn với ${currentUser?.fullName}',
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(fontSize: 16, color: Colors.black),
             ),
           ),
           actions: <Widget>[
@@ -139,14 +139,14 @@ class UserConnectionController extends ChangeNotifier {
                 onPressed: () async => await postAcceptFriend(context, userId),
                 child: const Text(
                   'Xác nhận',
-                  style: TextStyle(color: Colors.black, fontSize: 12),
+                  style: TextStyle(fontSize: 16, color: Colors.black),
                 )),
           ],
           cancelButton: CupertinoActionSheetAction(
               isDestructiveAction: true,
               child: const Text(
                 'Hủy',
-                style: TextStyle(fontSize: 12),
+                style: TextStyle(fontSize: 16),
               ),
               onPressed: () async => await postDeclineFriend(context, userId)),
         );

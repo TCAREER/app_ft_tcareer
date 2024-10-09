@@ -157,6 +157,24 @@ class PostRepository {
     return await api.getUserLiked(
         query: UserLikedRequest(postId: postId, commentId: commentId));
   }
+
+  Future<void> deleteComment(String commentId) async {
+    final api = ref.watch(apiServiceProvider);
+    return await api.deleteComment(commentId: commentId);
+  }
+
+  Future<void> putUpdateComment(
+      {required String commentId,
+      required String postId,
+      required String content}) async {
+    final api = ref.watch(apiServiceProvider);
+    return await api.putUpdateComment(
+        body: CreateCommentRequest(
+            commentId: int.parse(commentId),
+            postId: int.parse(postId),
+            content: content),
+        commentId: commentId);
+  }
 }
 
 final postRepository = Provider((ref) => PostRepository(ref));

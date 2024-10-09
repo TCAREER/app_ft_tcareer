@@ -84,7 +84,7 @@ class SharePage extends ConsumerWidget {
               Align(
                 alignment: Alignment.centerRight,
                 child: SizedBox(
-                  height: 30,
+                  height: 35,
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(

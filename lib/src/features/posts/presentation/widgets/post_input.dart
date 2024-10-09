@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 
 Widget postInput(TextEditingController controller,
-    {int? minLines, int? maxLines}) {
+    {int? minLines,
+    int? maxLines,
+    String? hintText,
+    void Function(String)? onChanged}) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 10),
     child: TextField(
+      onChanged: onChanged,
       textInputAction: TextInputAction.done,
       autofocus: true,
       minLines: minLines,
@@ -12,8 +16,8 @@ Widget postInput(TextEditingController controller,
       controller: controller,
       // Gán focusNode vào TextField
       keyboardType: TextInputType.multiline,
-      decoration: const InputDecoration(
-          hintText: "Hôm nay bạn muốn chia sẻ điều gì?",
+      decoration: InputDecoration(
+          hintText: hintText ?? "Hôm nay bạn muốn chia sẻ điều gì?",
           border: InputBorder.none,
           errorBorder: InputBorder.none,
           enabledBorder: InputBorder.none,

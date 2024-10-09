@@ -20,6 +20,15 @@ class CommentUseCase {
   Future<UserLiked> getUserLikeComment(int commentId) async {
     return postRepository.getUserLiked(commentId: commentId);
   }
+
+  Future<void> deleteComment(String commentId) async =>
+      await postRepository.deleteComment(commentId);
+  Future<void> putUpdateComment(
+          {required String commentId,
+          required String postId,
+          required String content}) async =>
+      await postRepository.putUpdateComment(
+          commentId: commentId, postId: postId, content: content);
 }
 
 final commentUseCaseProvider =

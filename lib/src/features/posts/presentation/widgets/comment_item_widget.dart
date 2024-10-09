@@ -27,190 +27,208 @@ Widget commentItemWidget(int commentId, Map<dynamic, dynamic> comment,
   List<String> mediaUrl =
       (comment['media_url'] as List?)?.whereType<String>().toList() ?? [];
 
-  return Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Expanded(
-        flex: 1,
-        child: Column(
-          children: [
-            InkWell(
-              onTap: () {
-                context.pop();
-                postController.goToProfile(
-                    userId: commentUserId.toString(), context: context);
-              },
-              child: CircleAvatar(
-                radius: 15,
-                backgroundImage: NetworkImage(avatar != null
-                    ? avatar
-                    : "https://ui-avatars.com/api/?name=$userName&background=random"),
-              ),
-            ),
-          ],
-        ),
-      ),
-      Expanded(
-        flex: 5,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            InkWell(
-              onTap: () {
-                context.pop();
-                postController.goToProfile(
-                    userId: commentUserId.toString(), context: context);
-              },
-              child: Visibility(
-                visible: parentName != null,
-                replacement: Text(
-                  userName,
-                  style: const TextStyle(
-                      fontSize: 11, fontWeight: FontWeight.bold),
-                ),
-                child: Row(
-                  children: [
-                    Text(
-                      userName,
-                      style: const TextStyle(
-                          fontSize: 11, fontWeight: FontWeight.bold),
-                    ),
-                    Visibility(
-                      visible: parentName != userName,
-                      replacement: Text(" • "),
-                      child: const Icon(
-                        Icons.arrow_right_outlined,
-                        size: 11,
-                      ),
-                    ),
-                    Visibility(
-                      visible: parentName != userName,
-                      replacement: const Text(
-                        "Tác giả",
-                        style: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue),
-                      ),
-                      child: Text(
-                        "$parentName",
-                        style: const TextStyle(
-                            fontSize: 11, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Text(
-              content,
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Visibility(
-              visible: mediaUrl.isNotEmpty,
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: mediaUrl.map((image) {
-                    return Visibility(
-                      visible: !mediaUrl.hasVideos,
-                      replacement: CommentVideoPlayerWidget(image),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: cachedImageWidget(
-                            imageUrl: image,
-                            fit: BoxFit.cover,
-                            height: 100,
-                            width: 100),
-                      ),
-                    );
-                  }).toList()),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+  return InkWell(
+    onLongPress: () => controller.showModalComment(
+      postId: postId,
+      userId: userId,
+      commentUserId: commentUserId.toString(),
+      content: content,
+      context: context,
+      commentId: commentId,
+      fullName: userName.toString(),
+    ),
+    child: Container(
+      padding: EdgeInsets.all(5),
+      alignment: Alignment.center,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 1,
+            child: Column(
               children: [
-                Text(
-                  createdAt,
-                  style: const TextStyle(color: Colors.black38, fontSize: 10),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                GestureDetector(
+                InkWell(
                   onTap: () {
-                    FocusScope.of(context).requestFocus();
-
-                    controller.setRepComment(
-                        fullName: userName.toString(), commentId: commentId);
+                    context.pop();
+                    postController.goToProfile(
+                        userId: commentUserId.toString(), context: context);
                   },
-                  child: const Text(
-                    "Trả lời",
-                    style: TextStyle(color: Colors.black54, fontSize: 12),
+                  child: CircleAvatar(
+                    radius: 15,
+                    backgroundImage: NetworkImage(avatar != null
+                        ? avatar
+                        : "https://ui-avatars.com/api/?name=$userName&background=random"),
                   ),
                 ),
               ],
             ),
-            const SizedBox(
-              height: 20,
-            ),
-          ],
-        ),
-      ),
-      Expanded(
-        flex: 1,
-        child: Column(
-          children: [
-            StreamBuilder(
-              stream: controller.likeCommentsStream(postId),
-              builder: (context, snapshot) {
-                final likesCommentData = snapshot.data?.entries.toList();
-
-                Map<dynamic, dynamic>? userLikesEntry =
-                    likesCommentData?.map((entry) {
-                  if (entry.key == commentId.toString()) {
-                    return entry.value['user_likes'];
-                  }
-                }).firstWhere((value) => value != null, orElse: () => null);
-
-                bool hasLiked = userLikesEntry != null
-                    ? userLikesEntry.containsKey(userId)
-                    : false;
-
-                return GestureDetector(
-                    onTap: () async =>
-                        await controller.postLikeComment(commentId.toString()),
-                    child: Visibility(
-                      visible: hasLiked,
-                      replacement: const Icon(
-                        Icons.favorite_outline,
-                        size: 20,
-                        color: Colors.grey,
-                      ),
-                      child: const Icon(
-                        Icons.favorite,
-                        size: 20,
-                        color: Colors.red,
-                      ),
-                    ));
-              },
-            ),
-            Visibility(
-                visible: likeCount != 0,
-                child: InkWell(
-                  onTap: () => controller.showUserLiked(context, commentId),
-                  child: Text(
-                    "$likeCount",
-                    style: TextStyle(fontSize: 12),
+          ),
+          Expanded(
+            flex: 5,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InkWell(
+                  onTap: () {
+                    context.pop();
+                    postController.goToProfile(
+                        userId: commentUserId.toString(), context: context);
+                  },
+                  child: Visibility(
+                    visible: parentName != null,
+                    replacement: Text(
+                      userName,
+                      style: const TextStyle(
+                          fontSize: 11, fontWeight: FontWeight.bold),
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          userName,
+                          style: const TextStyle(
+                              fontSize: 11, fontWeight: FontWeight.bold),
+                        ),
+                        Visibility(
+                          visible: parentName != userName,
+                          replacement: Text(" • "),
+                          child: const Icon(
+                            Icons.arrow_right_outlined,
+                            size: 11,
+                          ),
+                        ),
+                        Visibility(
+                          visible: parentName != userName,
+                          replacement: const Text(
+                            "Tác giả",
+                            style: const TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue),
+                          ),
+                          child: Text(
+                            "$parentName",
+                            style: const TextStyle(
+                                fontSize: 11, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ))
-          ],
-        ),
+                ),
+                Text(
+                  content,
+                  style: const TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.w400),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Visibility(
+                  visible: mediaUrl.isNotEmpty,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: mediaUrl.map((image) {
+                        return Visibility(
+                          visible: !mediaUrl.hasVideos,
+                          replacement: CommentVideoPlayerWidget(image),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: cachedImageWidget(
+                                imageUrl: image,
+                                fit: BoxFit.cover,
+                                height: 100,
+                                width: 100),
+                          ),
+                        );
+                      }).toList()),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      createdAt,
+                      style:
+                          const TextStyle(color: Colors.black38, fontSize: 10),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        FocusScope.of(context).requestFocus();
+
+                        controller.setRepComment(
+                            fullName: userName.toString(),
+                            commentId: commentId);
+                      },
+                      child: const Text(
+                        "Trả lời",
+                        style: TextStyle(color: Colors.black54, fontSize: 12),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Column(
+              children: [
+                StreamBuilder(
+                  stream: controller.likeCommentsStream(postId),
+                  builder: (context, snapshot) {
+                    final likesCommentData = snapshot.data?.entries.toList();
+
+                    Map<dynamic, dynamic>? userLikesEntry =
+                        likesCommentData?.map((entry) {
+                      if (entry.key == commentId.toString()) {
+                        return entry.value['user_likes'];
+                      }
+                    }).firstWhere((value) => value != null, orElse: () => null);
+
+                    bool hasLiked = userLikesEntry != null
+                        ? userLikesEntry.containsKey(userId)
+                        : false;
+
+                    return GestureDetector(
+                        onTap: () async => await controller
+                            .postLikeComment(commentId.toString()),
+                        child: Visibility(
+                          visible: hasLiked,
+                          replacement: const Icon(
+                            Icons.favorite_outline,
+                            size: 20,
+                            color: Colors.grey,
+                          ),
+                          child: const Icon(
+                            Icons.favorite,
+                            size: 20,
+                            color: Colors.red,
+                          ),
+                        ));
+                  },
+                ),
+                Visibility(
+                    visible: likeCount != 0,
+                    child: InkWell(
+                      onTap: () => controller.showUserLiked(context, commentId),
+                      child: Text(
+                        "$likeCount",
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ))
+              ],
+            ),
+          ),
+        ],
       ),
-    ],
+    ),
   );
 }
