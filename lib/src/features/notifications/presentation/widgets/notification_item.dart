@@ -3,8 +3,8 @@ import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-Widget notificationItem(
-    Map<String, dynamic> notification, BuildContext context, WidgetRef ref) {
+Widget notificationItem(Map<String, dynamic> notification, BuildContext context,
+    WidgetRef ref, String notificationId) {
   final controller = ref.watch(notificationControllerProvider);
   String fullName = notification['full_name'];
   String avatar = notification['avatar'] ??
@@ -19,6 +19,7 @@ Widget notificationItem(
     padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
     child: GestureDetector(
       onTap: () => controller.directToPage(
+          notificationId: notificationId,
           context: context,
           postId: postId,
           relatedUserId: relatedUserId,

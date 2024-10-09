@@ -28,6 +28,16 @@ class FirebaseDatabaseService {
     DatabaseReference ref = database.ref(path);
     return ref.onValue;
   }
+
+  Future<void> updateValue(String path, String key, dynamic value) async {
+    try {
+      DatabaseReference ref = database.ref(path);
+      await ref.update({key: value});
+    } catch (e) {
+      print("$e");
+      rethrow;
+    }
+  }
 }
 
 final firebaseDatabaseServiceProvider =

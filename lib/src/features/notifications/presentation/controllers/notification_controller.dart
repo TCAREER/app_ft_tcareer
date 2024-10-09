@@ -23,11 +23,13 @@ class NotificationController extends ChangeNotifier {
 
   Future<void> directToPage(
       {required BuildContext context,
+      required String notificationId,
       int? relatedUserId,
       int? postId,
       String? type}) async {
     print(">>>>>>>>>>userId: $relatedUserId");
     print(">>>>>>>>>>>>postId: $postId");
+    await readNotification(notificationId);
     if (postId != null) {
       context.pushNamed("detail", pathParameters: {"id": postId.toString()});
     }
@@ -40,6 +42,10 @@ class NotificationController extends ChangeNotifier {
           pathParameters: {"id": postId.toString()},
           queryParameters: {"notificationType": type});
     }
+  }
+
+  Future<void> readNotification(String notificationId) async {
+    await notificationUseCase.readNotification(notificationId);
   }
 }
 
