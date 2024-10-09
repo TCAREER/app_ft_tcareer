@@ -29,10 +29,6 @@ class UserUtils {
   Future<bool> isAuthenticated() async {
     final sharedRef = await ref.read(sharedPreferencesProvider.future);
     final authToken = sharedRef.getString(AppConstants.authToken);
-    // if (authToken != null) {
-    //   ref.read(isAuthenticatedProvider.notifier).update((state) => true);
-    // }
-
     return authToken != null; // Trả về true nếu token tồn tại, false nếu không
   }
 

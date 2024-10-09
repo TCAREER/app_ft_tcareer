@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 FadeTransition fadeTransitionBuilder(
@@ -7,6 +8,20 @@ FadeTransition fadeTransitionBuilder(
     Widget child) {
   return FadeTransition(
     opacity: CurveTween(curve: Curves.easeInOutCirc).animate(animation),
+    child: child,
+  );
+}
+
+CupertinoPageTransition cupertinoTransitionBuilder(
+  BuildContext context,
+  Animation<double> animation,
+  Animation<double> secondaryAnimation,
+  Widget child,
+) {
+  return CupertinoPageTransition(
+    primaryRouteAnimation: animation,
+    secondaryRouteAnimation: secondaryAnimation,
+    linearTransition: true,
     child: child,
   );
 }

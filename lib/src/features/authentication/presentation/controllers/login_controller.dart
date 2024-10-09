@@ -22,7 +22,7 @@ class LoginController extends ChangeNotifier {
       await loginUseCaseProvider.login(
           phone: phone ?? phoneController.text,
           password: password ?? passController.text);
-
+      context.replaceNamed("login");
       // context.goNamed("home");
     }, context);
   }
@@ -35,6 +35,7 @@ class LoginController extends ChangeNotifier {
 
   Future<void> signInWithGoogle(BuildContext context) async {
     await loginUseCaseProvider.loginWithGoogle();
+    context.replaceNamed("login");
 
     // context.goNamed("home");
   }

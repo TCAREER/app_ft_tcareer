@@ -90,7 +90,7 @@ class LoginPage extends ConsumerWidget {
                       ),
                       authButtonWidget(
                           context: context,
-                          onPressed: () async => controller.onLogin(context),
+                          onPressed: () => controller.onLogin(context),
                           // onPressed:()=>context.goNamed('home'),
                           title: "Tiếp tục"),
                       const SizedBox(

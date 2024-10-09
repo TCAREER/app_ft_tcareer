@@ -125,4 +125,20 @@ abstract class ApiServices {
 
   @DELETE('api/auth/friend/{userId}/unfriend')
   Future deleteUnFriend({@Path('userId') required String userId});
+
+  @DELETE('api/auth/post/{id}/delete')
+  Future deletePost({@Path('id') required String postId});
+
+  @DELETE('api/auth/comment/{id}/delete')
+  Future deleteComment({@Path('id') required String commentId});
+
+  @PUT('api/auth/post/{id}/update')
+  Future putUpdatePost(
+      {@Body() required CreatePostRequest body,
+      @Path('id') required String postId});
+
+  @PUT('api/auth/comment/{id}/update')
+  Future putUpdateComment(
+      {@Body() required CreateCommentRequest body,
+      @Path('id') required String commentId});
 }

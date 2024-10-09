@@ -47,6 +47,7 @@ void main() async {
       .read(notificationProvider(navigatorKey))
       .initializeNotificationServices();
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
+
   runApp(ProviderScope(
       // overrides: [navigatorKeyProvider.overrideWithValue(navigatorKey)],
       child: App(

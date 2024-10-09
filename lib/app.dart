@@ -19,6 +19,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
+        ref.read(authStateProvider.notifier).checkAuthentication();
         final router = AppRouter.router(ref, navigatorKey);
 
         return ScreenUtilInit(

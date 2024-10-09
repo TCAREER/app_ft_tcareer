@@ -41,6 +41,7 @@ class AuthStateNotifier extends StateNotifier<bool> {
   // Hàm để cập nhật trạng thái xác thực
   Future<void> checkAuthentication() async {
     final isAuthenticated = await userUtils.isAuthenticated();
+    print(">>>>>>>>>isAuthenticated: $isAuthenticated");
     state = isAuthenticated; // Cập nhật trạng thái
   }
 }
@@ -103,7 +104,7 @@ class AppRouter {
           pageBuilder: (context, state) => CustomTransitionPage(
             key: state.pageKey,
             child: const IntroPage(),
-            transitionsBuilder: fadeTransitionBuilder,
+            transitionsBuilder: cupertinoTransitionBuilder,
           ),
         ),
         GoRoute(

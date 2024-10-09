@@ -1,0 +1,12 @@
+net.jonhanson.flutter_native_splash-core-1.6.0-0 /home/thiendev/.gradle/caches/transforms-3/1227bb32d338e358eff4c5bf5b08270c/transformed/core-1.6.0/res
+net.jonhanson.flutter_native_splash-jetified-window-1.0.0-beta04-1 /home/thiendev/.gradle/caches/transforms-3/1f063c91a907141588f51f373b1f5f4a/transformed/jetified-window-1.0.0-beta04/res
+net.jonhanson.flutter_native_splash-jetified-window-java-1.0.0-beta04-2 /home/thiendev/.gradle/caches/transforms-3/6d2f8042b989e9f02a2914d91ea7c64c/transformed/jetified-window-java-1.0.0-beta04/res
+net.jonhanson.flutter_native_splash-jetified-annotation-experimental-1.1.0-3 /home/thiendev/.gradle/caches/transforms-3/a15c6353ebee292a754ca976f2ce177d/transformed/jetified-annotation-experimental-1.1.0/res
+net.jonhanson.flutter_native_splash-main-4 /home/thiendev/.pub-cache/hosted/pub.dev/flutter_native_splash-2.4.1/android/src/main/res
+net.jonhanson.flutter_native_splash-release-5 /home/thiendev/.pub-cache/hosted/pub.dev/flutter_native_splash-2.4.1/android/src/release/res
+net.jonhanson.flutter_native_splash-pngs-6 /home/thiendev/Documents/dev/ctut/app_ft_tcareer/build/flutter_native_splash/generated/res/pngs/release
+net.jonhanson.flutter_native_splash-resValues-7 /home/thiendev/Documents/dev/ctut/app_ft_tcareer/build/flutter_native_splash/generated/res/resValues/release
+net.jonhanson.flutter_native_splash-rs-8 /home/thiendev/Documents/dev/ctut/app_ft_tcareer/build/flutter_native_splash/generated/res/rs/release
+net.jonhanson.flutter_native_splash-mergeReleaseResources-9 /home/thiendev/Documents/dev/ctut/app_ft_tcareer/build/flutter_native_splash/intermediates/incremental/release/mergeReleaseResources/merged.dir
+net.jonhanson.flutter_native_splash-mergeReleaseResources-10 /home/thiendev/Documents/dev/ctut/app_ft_tcareer/build/flutter_native_splash/intermediates/incremental/release/mergeReleaseResources/stripped.dir
+net.jonhanson.flutter_native_splash-merged_res-11 /home/thiendev/Documents/dev/ctut/app_ft_tcareer/build/flutter_native_splash/intermediates/merged_res/release
