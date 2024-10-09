@@ -104,6 +104,7 @@ class UserController extends ChangeNotifier {
       for (var element in providers) {
         element.invalidateSelf();
       }
+      // context.goNamed("login");
     }, context);
   }
 

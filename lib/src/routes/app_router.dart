@@ -58,17 +58,13 @@ class AppRouter {
       navigatorKey: navigatorKey,
       debugLogDiagnostics: true,
       initialLocation: "/home",
-      redirect: (context, state) {
+      redirect: (context, state) async {
         // Lấy trạng thái xác thực và refresh token
-        ref.read(authStateProvider.notifier).checkAuthentication();
-        final isAuthenticated = ref.watch(authStateProvider);
+        // ref.read(authStateProvider.notifier).checkAuthentication();
+        // final isAuthenticated = ref.watch(authStateProvider);
         final refreshTokenProvider = ref.watch(refreshTokenStateProvider);
-        print("Is authenticated: $isAuthenticated");
-        print(
-            "Is refresh token expired: ${refreshTokenProvider.isRefreshTokenExpired}");
-        // Tạo một map để định nghĩa các route redirect
-
-        // Kiểm tra trạng thái xác thực
+        final userUtils = ref.watch(userUtilsProvider);
+        final isAuthenticated = await userUtils.isAuthenticated();
         final Map<String, String> routeRedirectMap = {
           '/register': '/register',
           '/forgotPassword': '/forgotPassword',
