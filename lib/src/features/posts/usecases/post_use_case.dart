@@ -69,26 +69,24 @@ class PostUseCase {
           liked: !(postCache[index].liked ?? false),
           likeCount: isLiked ? likeCount - 1 : likeCount + 1);
       postCache[index] = updatedPost;
-      final itemList = postCache;
-
-      final itemIndex =
-          itemList.indexWhere((post) => post.id == updatedPost.id);
-      if (itemIndex != -1) {
-        itemList[itemIndex] = updatedPost;
-      }
+      await Future.delayed(Duration(milliseconds: 500));
+      postRepository
+          .postLikePost(postId, updatedPost.likeCount?.toInt() ?? 0)
+          .catchError((e) {
+        postCache[index] = currentPost;
+      });
     }
   }
 
-  Future<void> postLikePostDetail(String postId) async =>
-      postRepository.postLikePost(postId);
   Future<void> postLikePost(
       {required String postId,
       required int index,
       required List<post.Data> postCache}) async {
     await setLikePost(index: index, postId: postId, postCache: postCache);
-    Future.delayed(Duration(milliseconds: 1000));
-    postRepository.postLikePost(postId);
   }
+
+  Future<void> postLikePostDetail(String postId) async =>
+      await postRepository.postLikePost(postId, 1);
 
   Future<PostsDetailResponse> getPostById(String postId) async =>
       await postRepository.getPostById(postId);

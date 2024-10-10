@@ -118,7 +118,9 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> {
                 postList(),
                 SliverToBoxAdapter(
                   child: Visibility(
-                    visible: controller.isLoadingMore,
+                    visible: controller.posts.isNotEmpty &&
+                        controller.posts.length !=
+                            controller.postData?.meta?.total,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       child: circularLoadingWidget(),

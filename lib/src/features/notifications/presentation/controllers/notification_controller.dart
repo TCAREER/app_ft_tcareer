@@ -44,7 +44,7 @@ class NotificationController extends ChangeNotifier {
       String? type}) async {
     print(">>>>>>>>>>userId: $relatedUserId");
     print(">>>>>>>>>>>>postId: $postId");
-    await readNotification(notificationId);
+    readNotification(notificationId);
     if (postId != null) {
       context.pushNamed("detail", pathParameters: {"id": postId.toString()});
     }

@@ -82,9 +82,10 @@ class PostRepository {
             PostRequest(personal: personal, profileUserId: userId, page: page));
   }
 
-  Future<void> postLikePost(String postId) async {
+  Future<void> postLikePost(String postId, int likeCount) async {
     final api = ref.watch(apiServiceProvider);
-    return api.postLikePost(body: LikePostRequest(postId: postId));
+    return api.postLikePost(
+        body: LikePostRequest(postId: postId, likeCount: likeCount));
   }
 
   Future<PostsDetailResponse> getPostById(String postId) async {

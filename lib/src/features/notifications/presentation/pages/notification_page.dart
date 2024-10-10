@@ -54,7 +54,7 @@ class NotificationPage extends ConsumerWidget {
               print(">>>>>>>notification: $notifications");
               final notification = notifications?[index];
 
-              return notificationItem(notification!, context, ref);
+              return notificationItem(notification ?? {}, context, ref);
             },
           );
         });

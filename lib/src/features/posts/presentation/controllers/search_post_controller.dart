@@ -98,6 +98,7 @@ class SearchPostController extends ChangeNotifier {
     if (scrollController.position.maxScrollExtent == scrollController.offset) {
       if (!isLoadingMore && posts.length < (postData?.meta?.total ?? 0)) {
         isLoadingMore = true;
+
         try {
           page += 1;
           notifyListeners();
