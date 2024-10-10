@@ -6,6 +6,7 @@ import 'package:app_tcareer/src/features/posts/presentation/widgets/post_widget.
 import 'package:app_tcareer/src/features/posts/presentation/widgets/shared_post_widget.dart';
 import 'package:app_tcareer/src/features/posts/usecases/post_use_case.dart';
 import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -70,65 +71,90 @@ class _PostDetailPageState extends ConsumerState<PostDetailPage> {
           //   ),
           // ),
         ),
-        body: RefreshIndicator(
-          onRefresh: () => controller.getPostById(widget.postId),
-          child: ListView(
-            padding: EdgeInsets.symmetric(vertical: 5),
-            children: [
-              Visibility(
+        body: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              CupertinoSliverRefreshControl(
+                onRefresh: () => controller.getPostById(widget.postId),
+              ),
+              SliverVisibility(
                 visible: post != null,
-                replacement: circularLoadingWidget(),
-                child: Visibility(
-                  replacement: sharedPostWidget(
-                      onLike: () async => await controller.setLikePost(),
-                      originUserId: sharedPost?.userId.toString() ?? "",
-                      userId: post?.userId.toString() ?? "",
-                      originCreatedAt: sharedPost?.createdAt ?? "",
-                      originPostId: sharedPost?.id.toString() ?? "",
-                      mediaUrl: sharedPost?.mediaUrl,
-                      context: context,
-                      ref: ref,
-                      avatarUrl: post?.avatar ??
-                          "https://ui-avatars.com/api/?name=${post?.fullName}&background=random",
-                      userName: post?.fullName ?? "",
-                      userNameOrigin: sharedPost?.fullName ?? "",
-                      avatarUrlOrigin: sharedPost?.avatar ??
-                          "https://ui-avatars.com/api/?name=${sharedPost?.fullName}&background=random",
-                      createdAt: post?.createdAt ?? "",
-                      content: post?.body ?? "",
-                      contentOrigin: sharedPost?.body ?? "",
-                      liked: post?.liked ?? false,
-                      likes: post?.likeCount?.toString() ?? "0",
-                      comments: post?.commentCount?.toString() ?? "0",
-                      shares: post?.shareCount?.toString() ?? "0",
-                      privacy: post?.privacy ?? "",
-                      postId: post?.id.toString() ?? "",
-                      index: 0),
-                  visible: post?.sharedPostId == null,
-                  child: postWidget(
-                      onLike: () async =>
-                          controller.likePostById(widget.postId),
-                      userId: post?.userId.toString() ?? "",
-                      index: 0,
-                      liked: post?.liked ?? false,
-                      privacy: post?.privacy ?? "",
-                      postId: post?.id.toString() ?? "",
-                      ref: ref,
-                      context: context,
-                      avatarUrl: post?.avatar ??
-                          "https://ui-avatars.com/api/?name=${post?.fullName}&background=random",
-                      userName: post?.fullName ?? "",
-                      createdAt: post?.createdAt ?? "",
-                      content: post?.body ?? "",
-                      mediaUrl: post?.mediaUrl ?? [],
-                      likes:
-                          post?.likeCount != null ? "${post?.likeCount}" : "0",
-                      comments: post?.commentCount != null
-                          ? "${post?.commentCount}"
-                          : "0",
-                      shares: post?.shareCount != null
-                          ? "${post?.shareCount}"
-                          : "0"),
+                replacementSliver: SliverToBoxAdapter(
+                  child: circularLoadingWidget(),
+                ),
+                sliver: SliverVisibility(
+                    visible: post?.sharedPostId == null,
+                    replacementSliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        childCount: 1,
+                        (context, index) {
+                          return sharedPostWidget(
+                              onLike: () async =>
+                                  controller.likePostById(widget.postId),
+                              originUserId: sharedPost?.userId.toString() ?? "",
+                              userId: post?.userId.toString() ?? "",
+                              originCreatedAt: sharedPost?.createdAt ?? "",
+                              originPostId: sharedPost?.id.toString() ?? "",
+                              mediaUrl: sharedPost?.mediaUrl,
+                              context: context,
+                              ref: ref,
+                              avatarUrl: post?.avatar ??
+                                  "https://ui-avatars.com/api/?name=${post?.fullName}&background=random",
+                              userName: post?.fullName ?? "",
+                              userNameOrigin: sharedPost?.fullName ?? "",
+                              avatarUrlOrigin: sharedPost?.avatar ??
+                                  "https://ui-avatars.com/api/?name=${sharedPost?.fullName}&background=random",
+                              createdAt: post?.createdAt ?? "",
+                              content: post?.body ?? "",
+                              contentOrigin: sharedPost?.body ?? "",
+                              liked: post?.liked ?? false,
+                              likes: post?.likeCount?.toString() ?? "0",
+                              comments: post?.commentCount?.toString() ?? "0",
+                              shares: post?.shareCount?.toString() ?? "0",
+                              privacy: post?.privacy ?? "",
+                              postId: post?.id.toString() ?? "",
+                              index: 0);
+                        },
+                      ),
+                    ),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        childCount: 1,
+                        (context, index) {
+                          return postWidget(
+                              onLike: () async =>
+                                  controller.likePostById(widget.postId),
+                              userId: post?.userId.toString() ?? "",
+                              index: 0,
+                              liked: post?.liked ?? false,
+                              privacy: post?.privacy ?? "",
+                              postId: post?.id.toString() ?? "",
+                              ref: ref,
+                              context: context,
+                              avatarUrl: post?.avatar ??
+                                  "https://ui-avatars.com/api/?name=${post?.fullName}&background=random",
+                              userName: post?.fullName ?? "",
+                              createdAt: post?.createdAt ?? "",
+                              content: post?.body ?? "",
+                              mediaUrl: post?.mediaUrl ?? [],
+                              likes: post?.likeCount != null
+                                  ? "${post?.likeCount}"
+                                  : "0",
+                              comments: post?.commentCount != null
+                                  ? "${post?.commentCount}"
+                                  : "0",
+                              shares: post?.shareCount != null
+                                  ? "${post?.shareCount}"
+                                  : "0");
+                        },
+                      ),
+                    )),
+              ),
+              SliverToBoxAdapter(
+                child: const SizedBox(
+                  height: 40,
                 ),
               )
             ],

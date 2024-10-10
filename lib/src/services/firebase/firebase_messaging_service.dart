@@ -81,21 +81,28 @@ class FirebaseMessagingService {
 
   Future<void> directToPage(RemoteMessage message) async {
     final context = navigatorKey.currentContext;
-    String type = message.data['type'];
-    if (message.data["post_id"] != null) {
-      String postId = message.data["post_id"].toString();
-      context?.pushNamed("detail", pathParameters: {"id": postId});
-    }
-    if (message.data['related_user_id'] != null) {
-      String userId = message.data['related_user_id'].toString();
-      context?.pushNamed('profile',
-          queryParameters: {"userId": userId.toString()});
-    }
-    if (type.contains("COMMENT")) {
-      String postId = message.data["post_id"].toString();
-      context?.pushNamed("detail",
-          pathParameters: {"id": postId},
-          queryParameters: {"notificationType": type});
+    final data = message.data;
+
+    final postId = data["post_id"]?.toString();
+    final userId = data['related_user_id']?.toString();
+    final type = data['type']?.toString();
+
+    if (postId != null && type?.contains("COMMENT") == true) {
+      context?.pushNamed(
+        "detail",
+        pathParameters: {"id": postId},
+        queryParameters: {"notificationType": type},
+      );
+    } else if (postId != null) {
+      context?.pushNamed(
+        "detail",
+        pathParameters: {"id": postId},
+      );
+    } else if (userId != null) {
+      context?.pushNamed(
+        'profile',
+        queryParameters: {"userId": userId},
+      );
     }
   }
 }
@@ -112,20 +119,27 @@ final firebaseMessagingServiceProvider =
 
 Future<void> backgroundHandler(RemoteMessage message) async {
   final context = navigatorKey.currentContext;
-  String type = message.data['type'];
-  if (message.data["post_id"] != null) {
-    String postId = message.data["post_id"].toString();
-    context?.pushNamed("detail", pathParameters: {"id": postId});
-  }
-  if (message.data['related_user_id'] != null) {
-    String userId = message.data['related_user_id'].toString();
-    context
-        ?.pushNamed('profile', queryParameters: {"userId": userId.toString()});
-  }
-  if (type.contains("COMMENT")) {
-    String postId = message.data["post_id"].toString();
-    context?.pushNamed("detail",
-        pathParameters: {"id": postId},
-        queryParameters: {"notificationType": type});
+  final data = message.data;
+
+  final postId = data["post_id"]?.toString();
+  final userId = data['related_user_id']?.toString();
+  final type = data['type']?.toString();
+
+  if (postId != null && type?.contains("COMMENT") == true) {
+    context?.pushNamed(
+      "detail",
+      pathParameters: {"id": postId},
+      queryParameters: {"notificationType": type},
+    );
+  } else if (postId != null) {
+    context?.pushNamed(
+      "detail",
+      pathParameters: {"id": postId},
+    );
+  } else if (userId != null) {
+    context?.pushNamed(
+      'profile',
+      queryParameters: {"userId": userId},
+    );
   }
 }

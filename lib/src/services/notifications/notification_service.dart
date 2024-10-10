@@ -72,23 +72,31 @@ class NotificationService {
   }
 
   void directToPage(ReceivedAction receivedAction) {
-    if (receivedAction.payload?["post_id"] != null) {
-      String postId = receivedAction.payload?["post_id"].toString() ?? "";
-      navigatorKey.currentContext
-          ?.pushNamed("detail", pathParameters: {"id": postId});
-    }
-    if (receivedAction.payload?["related_user_id"] != null) {
-      String userId =
-          receivedAction.payload?['related_user_id'].toString() ?? "";
-      navigatorKey.currentContext?.pushNamed('profile',
-          queryParameters: {"userId": userId.toString()});
-    }
-    if (receivedAction.payload?['type']?.contains("COMMENT") == true) {
-      String postId = receivedAction.payload?["post_id"].toString() ?? "";
-      String type = receivedAction.payload?['type'].toString() ?? "";
-      navigatorKey.currentContext?.pushNamed("detail",
-          pathParameters: {"id": postId.toString()},
-          queryParameters: {"notificationType": type});
+    final payload = receivedAction.payload ?? {};
+
+    final postId = payload["post_id"]?.toString();
+    final userId = payload["related_user_id"]?.toString();
+    final type = payload['type']?.toString();
+
+    if (postId != null && type?.contains("COMMENT") == true) {
+      // Điều hướng đến chi tiết bài viết với type là COMMENT
+
+      navigatorKey.currentContext?.pushNamed(
+        "detail",
+        pathParameters: {"id": postId},
+        queryParameters: {"notificationType": type},
+      );
+    } else if (postId != null) {
+      navigatorKey.currentContext?.pushNamed(
+        "detail",
+        pathParameters: {"id": postId},
+      );
+    } else if (userId != null) {
+      print(">>>>>>>>>>>2");
+      navigatorKey.currentContext?.pushNamed(
+        'profile',
+        queryParameters: {"userId": userId},
+      );
     }
   }
 }
