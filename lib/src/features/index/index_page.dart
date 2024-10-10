@@ -119,7 +119,7 @@ class IndexPage extends ConsumerWidget {
   Widget notificationIcon(WidgetRef ref, {bool active = false}) {
     final notificationController = ref.watch(notificationControllerProvider);
     return StreamBuilder<List<Map<String, dynamic>>>(
-        stream: notificationController.notificationsStream(),
+        stream: notificationController.unReadNotificationsStream(),
         builder: (context, snapshot) {
           return badges.Badge(
             position: badges.BadgePosition.topEnd(top: -10, end: -8),

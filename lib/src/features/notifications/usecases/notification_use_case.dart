@@ -11,13 +11,54 @@ class NotificationUseCase {
   Stream<List<Map<String, dynamic>>> listenToNotificationsByUserId(int userId) {
     return notificationRepository.listenToNotifications().map((event) {
       final rawData = event.snapshot.value;
-      if (rawData is List) {
+
+      // Kiểm tra nếu rawData là Map thay vì List
+      if (rawData is Map) {
+        // Chuyển đổi Map thành List, trong đó mỗi phần tử là một Map với key là `notification_id`
+        final notifications = rawData.entries.where((entry) {
+          final element = entry.value;
+          if (element == null) return false;
+
+          if (element is Map && element['user_id'] != null) {
+            return element['user_id'].toString() == userId.toString();
+          }
+          return false;
+        }).map((entry) {
+          final element = Map<String, dynamic>.from(entry.value);
+          element['notification_id'] =
+              entry.key; // Thêm key vào như là notification_id
+          return element;
+        }).toList();
+
+        // Sắp xếp các thông báo theo `updated_at`
+        notifications.sort((a, b) {
+          final updatedA = a['updated_at'];
+          final updatedB = b['updated_at'];
+
+          if (updatedA == null || updatedB == null) {
+            print("Một trong hai giá trị là null");
+            return 0; // Hoặc xử lý theo cách bạn muốn
+          }
+
+          try {
+            DateTime dateA =
+                DateTime.parse(AppUtils.convertToISOFormat(updatedA));
+            DateTime dateB =
+                DateTime.parse(AppUtils.convertToISOFormat(updatedB));
+            return dateB.compareTo(dateA);
+          } catch (e) {
+            return 0; // Để chúng ở vị trí hiện tại nếu có lỗi
+          }
+        });
+
+        return notifications;
+      } else if (rawData is List) {
+        // Nếu dữ liệu là List thì xử lý như bạn đã làm trước đó
         final notifications = rawData
             .where((element) {
               if (element == null) return false;
 
               if (element is Map && element['user_id'] != null) {
-                // print('Element: $element'); // Kiểm tra từng phần tử
                 return element['user_id'].toString() == userId.toString();
               }
               return false;
@@ -29,10 +70,6 @@ class NotificationUseCase {
           final updatedA = a['updated_at'];
           final updatedB = b['updated_at'];
 
-          // Log giá trị trước khi phân tích
-          // print("updatedA: $updatedA");
-          // print("updatedB: $updatedB");
-
           if (updatedA == null || updatedB == null) {
             print("Một trong hai giá trị là null");
             return 0; // Hoặc xử lý theo cách bạn muốn
@@ -41,7 +78,6 @@ class NotificationUseCase {
           try {
             DateTime dateA =
                 DateTime.parse(AppUtils.convertToISOFormat(updatedA));
-            // print(">>>>>>>>>>dateA: $dateA");
             DateTime dateB =
                 DateTime.parse(AppUtils.convertToISOFormat(updatedB));
             return dateB.compareTo(dateA);

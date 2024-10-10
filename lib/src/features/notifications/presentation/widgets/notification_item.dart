@@ -3,8 +3,8 @@ import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-Widget notificationItem(Map<String, dynamic> notification, BuildContext context,
-    WidgetRef ref, String notificationId) {
+Widget notificationItem(
+    Map<String, dynamic> notification, BuildContext context, WidgetRef ref) {
   final controller = ref.watch(notificationControllerProvider);
   String fullName = notification['full_name'];
   String avatar = notification['avatar'] ??
@@ -14,16 +14,20 @@ Widget notificationItem(Map<String, dynamic> notification, BuildContext context,
   int? postId = notification['post_id'];
   int? relatedUserId = notification['related_user_id'];
   String? type = notification['type'];
+  String notificationId = notification['notification_id'];
+  bool? isRead = notification['is_read'] ?? false;
 
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-    child: GestureDetector(
-      onTap: () => controller.directToPage(
-          notificationId: notificationId,
-          context: context,
-          postId: postId,
-          relatedUserId: relatedUserId,
-          type: type),
+  return GestureDetector(
+    onTap: () => controller.directToPage(
+        notificationId: notificationId,
+        context: context,
+        postId: postId,
+        relatedUserId: relatedUserId,
+        type: type),
+    child: Container(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      color:
+          isRead != true ? Colors.blue.shade300.withOpacity(0.2) : Colors.white,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -56,13 +60,13 @@ Widget notificationItem(Map<String, dynamic> notification, BuildContext context,
                   updatedAt,
                   style: const TextStyle(color: Colors.grey, fontSize: 10),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Divider(
-                  height: 1,
-                  color: Colors.grey.shade100,
-                ),
+                // const SizedBox(
+                //   height: 10,
+                // ),
+                // Divider(
+                //   height: 1,
+                //   color: Colors.grey.shade100,
+                // ),
               ],
             ),
           ),

@@ -21,6 +21,21 @@ class NotificationController extends ChangeNotifier {
     return data;
   }
 
+  Stream<List<Map<String, dynamic>>> unReadNotificationsStream() {
+    final userController = ref.watch(userControllerProvider);
+    final user = userController.userData?.data;
+    int userId = user?.id?.toInt() ?? 0;
+
+    final data = notificationUseCase.listenToNotificationsByUserId(userId);
+
+    return data.map((notifications) {
+      return notifications.where((notification) {
+        final isRead = notification['is_read'];
+        return isRead == false || isRead == null;
+      }).toList();
+    });
+  }
+
   Future<void> directToPage(
       {required BuildContext context,
       required String notificationId,

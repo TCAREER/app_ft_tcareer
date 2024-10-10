@@ -18,7 +18,7 @@ class NotificationRepository {
   Future<void> readNotification(String notificationId) async {
     final database = ref.watch(firebaseDatabaseServiceProvider);
     return await database.updateValue(
-        "notification/$notificationId", "is_read", false);
+        "notification/$notificationId", "is_read", true);
   }
 }
 

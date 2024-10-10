@@ -37,7 +37,7 @@ class NotificationPage extends ConsumerWidget {
     return StreamBuilder<List<Map<String, dynamic>>>(
         stream: controller.notificationsStream(),
         builder: (context, snapshot) {
-          print(">>>>>>>>>>data: ${snapshot.data}");
+          print(">>>>>>>>>>data1: ${snapshot.data}");
           if (!snapshot.hasData) {
             return circularLoadingWidget();
           }
@@ -45,16 +45,16 @@ class NotificationPage extends ConsumerWidget {
             return emptyWidget("Không có thông báo nào!");
           }
           final notifications = snapshot.data;
-          return ListView.separated(
-            separatorBuilder: (context, index) => const SizedBox(
-              height: 10,
-            ),
+          return ListView.builder(
+            // separatorBuilder: (context, index) => const SizedBox(
+            //   height: 10,
+            // ),
             itemCount: notifications?.length ?? 0,
             itemBuilder: (context, index) {
               print(">>>>>>>notification: $notifications");
               final notification = notifications?[index];
 
-              return notificationItem(notification!, context, ref, "1");
+              return notificationItem(notification!, context, ref);
             },
           );
         });
