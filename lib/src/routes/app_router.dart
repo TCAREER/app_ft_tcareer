@@ -5,6 +5,7 @@ import 'package:app_tcareer/src/features/authentication/presentation/pages/forgo
 import 'package:app_tcareer/src/features/authentication/presentation/pages/login/login_page.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/pages/register/register_page.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/pages/verify/verify_page.dart';
+import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/features/posts/presentation/pages/media/media_page.dart';
 import 'package:app_tcareer/src/features/posts/presentation/pages/posting_page.dart';
 import 'package:app_tcareer/src/features/posts/presentation/pages/search_page.dart';
@@ -151,14 +152,20 @@ class AppRouter {
           ],
         ),
         GoRoute(
-          path: "/${RouteNames.posting.name}",
-          name: RouteNames.posting.name,
-          pageBuilder: (context, state) => CustomTransitionPage(
-            key: state.pageKey,
-            child: const PostingPage(),
-            transitionsBuilder: slideUpTransitionBuilder,
-          ),
-        ),
+            path: "/${RouteNames.posting.name}",
+            name: RouteNames.posting.name,
+            pageBuilder: (context, state) {
+              CreatePostRequest? body = state.extra as CreatePostRequest?;
+              String? postId = state.uri.queryParameters['postId'].toString();
+              return CustomTransitionPage(
+                key: state.pageKey,
+                child: PostingPage(
+                  body: body,
+                  postId: postId,
+                ),
+                transitionsBuilder: slideUpTransitionBuilder,
+              );
+            }),
         GoRoute(
           path: "/${RouteNames.photoManager.name}",
           name: RouteNames.photoManager.name,

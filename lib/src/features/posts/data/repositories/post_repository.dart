@@ -176,6 +176,12 @@ class PostRepository {
             content: content),
         commentId: commentId);
   }
+
+  Future<void> putUpdatePost(
+      {required String postId, required CreatePostRequest body}) async {
+    final api = ref.watch(apiServiceProvider);
+    return await api.putUpdatePost(body: body, postId: postId);
+  }
 }
 
 final postRepository = Provider((ref) => PostRepository(ref));

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:app_tcareer/src/configs/app_colors.dart';
+import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/features/posts/presentation/controllers/media_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/controllers/posting_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
@@ -21,7 +22,9 @@ import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class PostingPage extends ConsumerStatefulWidget {
-  const PostingPage({super.key});
+  final CreatePostRequest? body;
+  final String? postId;
+  const PostingPage({super.key, this.body, this.postId});
 
   @override
   ConsumerState<PostingPage> createState() => _PostingPageState();
@@ -35,8 +38,10 @@ class _PostingPageState extends ConsumerState<PostingPage> {
     super.initState();
     Future.microtask(() {
       final controller = ref.watch(postingControllerProvider);
-
       controller.loadPostCache();
+      if (widget.body != null) {
+        controller.setPostEdit(body: widget.body!, postId: widget.postId ?? "");
+      }
     });
 
     scrollController.addListener(() {

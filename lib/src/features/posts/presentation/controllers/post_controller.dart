@@ -1,4 +1,5 @@
 import 'package:app_tcareer/src/features/index/index_controller.dart';
+import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/post_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/post_state.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart'

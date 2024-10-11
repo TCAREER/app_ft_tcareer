@@ -329,4 +329,89 @@ class PostingController extends ChangeNotifier {
   Future<void> uploadVideoFromUint8List() async {
     mediaUrl.add(videoUrlWeb!);
   }
+
+  Future<void> updatePost(
+      {required String postId, required CreatePostRequest body}) async {
+    await postUseCase.putUpdatePost(postId: postId, body: body);
+  }
+
+  Future<void> setPostEdit(
+      {required CreatePostRequest body, required String postId}) async {
+    final mediaController = ref.watch(mediaControllerProvider);
+    selectedPrivacy = body.privacy ?? "";
+    contentController.text = body.body ?? "";
+    mediaController.imagePaths = body.mediaUrl ?? [];
+    print(">>>>>>>>>>>mediaUrl: $mediaUrl");
+    postId = postId;
+    notifyListeners();
+  }
+
+  String? postId;
+  Future<void> showModalPost(
+      {required String postId,
+      required BuildContext context,
+      required String userId,
+      required CreatePostRequest body}) async {
+    // bool currentUser = userId == commentUserId;
+
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoActionSheet(
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+                onPressed: () {
+                  context.pop();
+                  context.pushNamed("posting",
+                      extra: body, queryParameters: {"postId": postId});
+                },
+                child: const Text(
+                  'Chỉnh sửa bài viết',
+                  style: TextStyle(fontSize: 16, color: Colors.black),
+                )),
+            Visibility(
+              // visible: currentUser,
+              child: CupertinoActionSheetAction(
+                  onPressed: () {
+                    context.pop();
+                    // showEditPage(
+                    //     context, postId, commentId.toString(), content);
+                  },
+                  child: const Text(
+                    'Chỉnh sửa quyền riêng tư',
+                    style: TextStyle(fontSize: 16, color: Colors.black),
+                  )),
+            ),
+            Visibility(
+              // visible: currentUser,
+              child: CupertinoActionSheetAction(
+                  isDestructiveAction: true,
+                  onPressed: () async {
+                    context.pop();
+                    // await showDialogDeleteComment(
+                    //     context, commentId.toString());
+                  },
+                  child: const Text(
+                    'Xóa',
+                    style: TextStyle(fontSize: 16),
+                  )),
+            ),
+            // CupertinoActionSheetAction(
+            //     onPressed: (){},
+            //     child: const Text(
+            //       'Sao chép',
+            //       style: TextStyle(fontSize: 16, color: Colors.black),
+            //     )),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+              isDefaultAction: true,
+              child: const Text(
+                'Hủy',
+                style: TextStyle(color: Colors.black, fontSize: 16),
+              ),
+              onPressed: () => context.pop()),
+        );
+      },
+    );
+  }
 }

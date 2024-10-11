@@ -1,3 +1,4 @@
+import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/post_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/video_player_widget.dart';
@@ -43,6 +44,7 @@ Widget sharedPostWidget({
   final hasMediaUrl = mediaUrl != null && mediaUrl.isNotEmpty;
   final firstMediaUrl = hasMediaUrl ? mediaUrl.first : "";
   final controller = ref.read(postControllerProvider);
+  final postingController = ref.watch(postingControllerProvider);
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
     margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -125,32 +127,22 @@ Widget sharedPostWidget({
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        // SizedBox(
-                        //   height: 25,
-                        //   child: ElevatedButton(
-                        //     onPressed: () {},
-                        //     style: ElevatedButton.styleFrom(
-                        //       padding:
-                        //           const EdgeInsets.symmetric(horizontal: 10),
-                        //       shape: RoundedRectangleBorder(
-                        //           borderRadius: BorderRadius.circular(20),
-                        //           side:
-                        //               BorderSide(color: Colors.grey.shade100)),
-                        //       backgroundColor: Colors.white,
-                        //     ),
-                        //     child: const Text(
-                        //       "Theo dõi",
-                        //       style: TextStyle(
-                        //           color: Colors.black,
-                        //           fontSize: 12,
-                        //           fontWeight: FontWeight.normal),
-                        //     ),
-                        //   ),
-                        // ),
-                        // const SizedBox(width: 10),
-                        const PhosphorIcon(
-                          PhosphorIconsLight.dotsThreeCircle,
-                          color: Colors.grey,
+                        InkWell(
+                          onTap: () {
+                            final body = CreatePostRequest(
+                                body: content,
+                                mediaUrl: mediaUrl,
+                                privacy: privacy);
+                            postingController.showModalPost(
+                                postId: postId,
+                                context: context,
+                                userId: userId,
+                                body: body);
+                          },
+                          child: const PhosphorIcon(
+                            PhosphorIconsLight.dotsThreeCircle,
+                            color: Colors.grey,
+                          ),
                         ),
                       ],
                     ),

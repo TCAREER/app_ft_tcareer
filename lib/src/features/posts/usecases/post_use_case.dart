@@ -112,6 +112,10 @@ class PostUseCase {
   Future<UserLiked> getUserLikePost(int postId) async {
     return postRepository.getUserLiked(postId: postId);
   }
+
+  Future<void> putUpdatePost(
+          {required String postId, required CreatePostRequest body}) async =>
+      await postRepository.putUpdatePost(postId: postId, body: body);
 }
 
 final postUseCaseProvider =
