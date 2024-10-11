@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:app_tcareer/src/extensions/image_extension.dart';
 import 'package:app_tcareer/src/features/posts/data/models/media_state.dart';
 import 'package:app_tcareer/src/features/posts/presentation/controllers/comment_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/controllers/post_controller.dart';
@@ -100,7 +101,7 @@ class MediaController extends ChangeNotifier {
     await userUtils.removeCache("selectedAsset");
     await userUtils.removeCache("imageCache");
 
-    imagePaths.clear();
+    imagePaths.removeWhere((path) => !path.isImageNetWork);
     // Clear videoPaths as well
 
     for (AssetEntity asset in selectedAsset) {

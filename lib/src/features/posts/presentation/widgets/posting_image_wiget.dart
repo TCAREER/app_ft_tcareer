@@ -9,8 +9,10 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // Sử dụng provider có sẵn để lấy hướng ảnh
-Widget postingImageWidget(
-    {required List<String> mediaUrl, required WidgetRef ref}) {
+Widget postingImageWidget({
+  required List<String> mediaUrl,
+  required WidgetRef ref,
+}) {
   final controller = ref.watch(postingControllerProvider);
 
   // Kiểm tra mediaUrl không rỗng trước khi truy cập phần tử đầu tiên
@@ -18,54 +20,47 @@ Widget postingImageWidget(
     return const SizedBox(); // Trả về một widget trống nếu mediaUrl rỗng
   }
 
-  // Dùng hàm getImageOrientation cho cả file và network để xác định hướng ảnh
-  return FutureBuilder<ImageOrientation>(
-    future: getImageOrientation(mediaUrl.first),
-    builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return _buildCarousel(mediaUrl, ref, aspectRatio: 16 / 9);
-      } else if (snapshot.hasError) {
-        return _buildCarousel(mediaUrl, ref, aspectRatio: 16 / 9);
-      } else if (snapshot.hasData) {
-        final orientation = snapshot.data;
-        final aspectRatio =
-            orientation == ImageOrientation.landscape ? 1.91 : 4 / 5;
-        return _buildCarousel(mediaUrl, ref, aspectRatio: aspectRatio);
-      } else {
-        return const SizedBox(); // Trả về widget trống trong trường hợp lỗi
-      }
-    },
-  );
-}
-
-Widget _buildCarousel(List<String> images, WidgetRef ref,
-    {double aspectRatio = 1.91}) {
-  final controller = ref.watch(postingControllerProvider);
-  final mediaController = ref.watch(mediaControllerProvider);
-
   return Column(
     children: [
       CarouselSlider.builder(
-        itemCount: images.length,
+        itemCount: mediaUrl.length,
         itemBuilder: (context, index, realIndex) {
-          String image = images[index];
+          String image = mediaUrl[index];
+
           return Stack(
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: image.isImageNetWork
-                      ? Image.network(
-                          image,
-                          width: ScreenUtil().screenWidth,
-                          fit: BoxFit.cover,
-                        )
-                      : Image.file(
-                          File(image),
-                          width: ScreenUtil().screenWidth,
-                          fit: BoxFit.cover,
-                        ),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      // Tính chiều cao dựa trên aspect ratio
+                      double aspectRatio =
+                          ref.watch(imageOrientationProvider(image)).when(
+                                data: (orientation) =>
+                                    orientation == ImageOrientation.landscape
+                                        ? 1.91
+                                        : 4 / 5,
+                                loading: () => 16 / 9,
+                                error: (error, stack) => 16 / 9,
+                              );
+
+                      return image.isImageNetWork
+                          ? Image.network(
+                              image,
+                              width: constraints.maxWidth,
+                              height: constraints.maxWidth / aspectRatio,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.file(
+                              File(image),
+                              width: constraints.maxWidth,
+                              height: constraints.maxWidth / aspectRatio,
+                              fit: BoxFit.cover,
+                            );
+                    },
+                  ),
                 ),
               ),
               Positioned(
@@ -73,7 +68,7 @@ Widget _buildCarousel(List<String> images, WidgetRef ref,
                 top: 5,
                 child: GestureDetector(
                   onTap: () {
-                    mediaController.removeImage(index);
+                    ref.read(mediaControllerProvider).removeImage(index);
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -94,14 +89,19 @@ Widget _buildCarousel(List<String> images, WidgetRef ref,
         options: CarouselOptions(
           enableInfiniteScroll: false,
           viewportFraction: 1,
-          aspectRatio: aspectRatio,
+          aspectRatio: ref.watch(imageOrientationProvider(mediaUrl[0])).when(
+                data: (orientation) =>
+                    orientation == ImageOrientation.landscape ? 1.91 : 4 / 5,
+                loading: () => 16 / 9, // Giá trị mặc định khi chưa tải xong
+                error: (error, stack) => 16 / 9, // Giá trị mặc định khi có lỗi
+              ), // Sử dụng aspect ratio đã tính toán
           onPageChanged: (index, reason) => controller.setActiveIndex(index),
         ),
       ),
       const SizedBox(height: 10),
       Center(
         child: AnimatedSmoothIndicator(
-          count: images.length,
+          count: mediaUrl.length,
           activeIndex: controller.activeIndex,
           effect: const ScrollingDotsEffect(
             dotWidth: 5,

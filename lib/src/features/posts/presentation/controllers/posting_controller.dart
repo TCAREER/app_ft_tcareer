@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/extensions/file_type_extension.dart';
+import 'package:app_tcareer/src/extensions/image_extension.dart';
 import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/post_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/post_state.dart';
@@ -186,7 +187,7 @@ class PostingController extends ChangeNotifier {
     AppUtils.futureApi(() async {
       if (mediaController.imagePaths.isNotEmpty ||
           imagesWeb.isNotEmpty == true) {
-        await uploadImage();
+        await uploadImageFile();
       }
       if (mediaController.videoPaths != null) {
         await uploadVideo();
@@ -214,25 +215,27 @@ class PostingController extends ChangeNotifier {
     final uuid = Uuid();
     final id = uuid.v4();
     for (String asset in mediaController.imagePaths) {
-      String? assetPath = await AppUtils.compressImage(asset);
-      // String url = await postUseCase.uploadImage(
-      //     file: File(assetPath ?? ""), folderPath: path);
-      String url = await postUseCase.uploadFileFireBase(
-          file: File(assetPath ?? ""), folderPath: "Posts/$id");
-      mediaUrl.add(url);
+      if (!asset.isImageNetWork) {
+        String? assetPath = await AppUtils.compressImage(asset);
+        // String url = await postUseCase.uploadImage(
+        //     file: File(assetPath ?? ""), folderPath: path);
+        String url = await postUseCase.uploadFileFireBase(
+            file: File(assetPath ?? ""), folderPath: "Posts/$id");
+        mediaUrl.add(url);
+      }
     }
     // notifyListeners();
   }
 
-  Future<void> uploadImage() async {
-    final mediaController = ref.watch(mediaControllerProvider);
-    if (mediaController.imagePaths.isNotEmpty) {
-      await uploadImageFile();
-    }
-    if (imagesWeb.isNotEmpty == true) {
-      await uploadImageFromUint8List();
-    }
-  }
+  // Future<void> uploadImage() async {
+  //   final mediaController = ref.watch(mediaControllerProvider);
+  //   // if (mediaController.imagePaths.isNotEmpty) {
+  //     await uploadImageFile();
+  //   // }
+  //   // if (imagesWeb.isNotEmpty == true) {
+  //   //   await uploadImageFromUint8List();
+  //   // }
+  // }
 
   Future<void> uploadVideo() async {
     mediaUrl.clear();
