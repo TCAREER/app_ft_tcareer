@@ -1,38 +1,45 @@
 import 'dart:io';
-import 'dart:typed_data';
+import 'package:app_tcareer/src/extensions/image_extension.dart';
+import 'package:app_tcareer/src/features/posts/get_image_orientation.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:app_tcareer/src/extensions/image_extension.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-Widget postingImageWidget({List<String>? mediaUrl, required WidgetRef ref}) {
-  // final controller = ref.watch(postingControllerProvider);
-  return _buildCarousel(mediaUrl!, ref);
-  // return Column(
-  //   children: [
-  //     // FutureBuilder<Size?>(
-  //     //   future: mediaUrl != null && mediaUrl.isNotEmpty
-  //     //       ? _getFileImageSize(File(mediaUrl.first))
-  //     //       : Future.value(null),
-  //     //   builder: (context, snapshot) {
-  //     //     double aspectRatio = 1.91; // Giá trị mặc định
-  //     //
-  //     //     if (snapshot.hasData && snapshot.data != null) {
-  //     //       final size = snapshot.data!;
-  //     //       aspectRatio = size.width > size.height ? 1.91 : 4 / 5;
-  //     //     }
-  //     //
-  //     //
-  //     //   },
-  //     // ),
-  //   ],
-  // );
+// Sử dụng provider có sẵn để lấy hướng ảnh
+Widget postingImageWidget(
+    {required List<String> mediaUrl, required WidgetRef ref}) {
+  final controller = ref.watch(postingControllerProvider);
+
+  // Kiểm tra mediaUrl không rỗng trước khi truy cập phần tử đầu tiên
+  if (mediaUrl.isEmpty) {
+    return const SizedBox(); // Trả về một widget trống nếu mediaUrl rỗng
+  }
+
+  // Dùng hàm getImageOrientation cho cả file và network để xác định hướng ảnh
+  return FutureBuilder<ImageOrientation>(
+    future: getImageOrientation(mediaUrl.first),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return _buildCarousel(mediaUrl, ref, aspectRatio: 16 / 9);
+      } else if (snapshot.hasError) {
+        return _buildCarousel(mediaUrl, ref, aspectRatio: 16 / 9);
+      } else if (snapshot.hasData) {
+        final orientation = snapshot.data;
+        final aspectRatio =
+            orientation == ImageOrientation.landscape ? 1.91 : 4 / 5;
+        return _buildCarousel(mediaUrl, ref, aspectRatio: aspectRatio);
+      } else {
+        return const SizedBox(); // Trả về widget trống trong trường hợp lỗi
+      }
+    },
+  );
 }
 
-Widget _buildCarousel(List<dynamic> images, WidgetRef ref) {
+Widget _buildCarousel(List<String> images, WidgetRef ref,
+    {double aspectRatio = 1.91}) {
   final controller = ref.watch(postingControllerProvider);
   final mediaController = ref.watch(mediaControllerProvider);
 
@@ -66,7 +73,6 @@ Widget _buildCarousel(List<dynamic> images, WidgetRef ref) {
                 top: 5,
                 child: GestureDetector(
                   onTap: () {
-                    // Gọi hàm để xóa ảnh tại index
                     mediaController.removeImage(index);
                   },
                   child: Container(
@@ -88,7 +94,7 @@ Widget _buildCarousel(List<dynamic> images, WidgetRef ref) {
         options: CarouselOptions(
           enableInfiniteScroll: false,
           viewportFraction: 1,
-          // aspectRatio: aspectRatio,
+          aspectRatio: aspectRatio,
           onPageChanged: (index, reason) => controller.setActiveIndex(index),
         ),
       ),
@@ -106,16 +112,4 @@ Widget _buildCarousel(List<dynamic> images, WidgetRef ref) {
       ),
     ],
   );
-}
-
-// Hàm tính kích thước ảnh từ File
-Future<Size> _getFileImageSize(File imageFile) async {
-  final image = await decodeImageFromList(imageFile.readAsBytesSync());
-  return Size(image.width.toDouble(), image.height.toDouble());
-}
-
-// Hàm tính kích thước ảnh từ Uint8List (imageWeb)
-Future<Size> _getImageSize(Uint8List imageBytes) async {
-  final image = await decodeImageFromList(imageBytes);
-  return Size(image.width.toDouble(), image.height.toDouble());
 }
