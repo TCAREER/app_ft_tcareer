@@ -187,6 +187,11 @@ class PostRepository {
     final api = ref.watch(apiServiceProvider);
     return await api.deletePost(postId: postId);
   }
+
+  Future<void> hiddenPost(String postId) async {
+    final api = ref.watch(apiServiceProvider);
+    return await api.postHiddenPost(postId: postId);
+  }
 }
 
 final postRepository = Provider((ref) => PostRepository(ref));

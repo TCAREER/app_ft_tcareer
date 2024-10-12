@@ -3,6 +3,7 @@ import 'package:app_tcareer/src/features/posts/data/models/post_edit.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/video_player_widget.dart';
 import 'package:app_tcareer/src/extensions/video_extension.dart';
+import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
 import 'package:app_tcareer/src/widgets/cached_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -41,6 +42,7 @@ Widget postWidget({
   final firstMediaUrl = hasMediaUrl ? mediaUrl.first : "";
   final controller = ref.read(postControllerProvider);
   final postingController = ref.watch(postingControllerProvider);
+  final userController = ref.watch(userControllerProvider);
   return Container(
     padding: !isShared
         ? const EdgeInsets.symmetric(horizontal: 10, vertical: 15)
@@ -125,7 +127,27 @@ Widget postWidget({
                   Expanded(
                     flex: 7,
                     child: Visibility(
-                      visible: !isShared,
+                      replacement: Visibility(
+                        visible: !isShared,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            InkWell(
+                              onTap: () async {
+                                await controller.showHiddenPostConfirm(
+                                    context: context, postId: postId);
+                              },
+                              child: const PhosphorIcon(
+                                PhosphorIconsLight.x,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      visible: !isShared &&
+                          userController.userData?.data?.id ==
+                              int.parse(userId),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [

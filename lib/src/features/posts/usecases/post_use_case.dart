@@ -119,6 +119,9 @@ class PostUseCase {
 
   Future<void> deletePost(String postId) async =>
       await postRepository.deletePost(postId);
+
+  Future<void> hiddenPost(String postId) async =>
+      await postRepository.hiddenPost(postId);
 }
 
 final postUseCaseProvider =

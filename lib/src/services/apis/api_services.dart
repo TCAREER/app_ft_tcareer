@@ -141,4 +141,7 @@ abstract class ApiServices {
   Future putUpdateComment(
       {@Body() required CreateCommentRequest body,
       @Path('id') required String commentId});
+
+  @POST('api/auth/post/{id}/hidden')
+  Future postHiddenPost({@Path('id') required String postId});
 }

@@ -14,6 +14,7 @@ import 'package:app_tcareer/src/features/posts/usecases/post_use_case.dart';
 import 'package:app_tcareer/src/features/user/data/models/users.dart';
 import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
 import 'package:app_tcareer/src/features/user/usercases/user_use_case.dart';
+import 'package:app_tcareer/src/utils/app_utils.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
@@ -207,5 +208,44 @@ class PostController extends ChangeNotifier {
     } else {
       context.pushNamed('profile', queryParameters: {"userId": userId});
     }
+  }
+
+  Future<void> showHiddenPostConfirm(
+      {required BuildContext context, required String postId}) async {
+    await showCupertinoModalPopup<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoActionSheet(
+          message: const Text('Bạn có chắc muốn ẩn bài viết này?'),
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+              isDestructiveAction: true,
+              child: const Text(
+                'Tiếp tục',
+              ),
+              onPressed: () async =>
+                  await hiddenPost(postId: postId, context: context),
+            ),
+            CupertinoActionSheetAction(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text(
+                'Quay lại',
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> hiddenPost(
+      {required BuildContext context, required String postId}) async {
+    AppUtils.futureApi(() async {
+      postCache.removeWhere((post) => post.id == int.parse(postId));
+      notifyListeners();
+      context.pop();
+      await postUseCase.hiddenPost(postId);
+    }, context, (val) {});
   }
 }

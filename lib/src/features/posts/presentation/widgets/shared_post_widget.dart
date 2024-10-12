@@ -4,6 +4,7 @@ import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart'
 import 'package:app_tcareer/src/features/posts/presentation/widgets/post_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/video_player_widget.dart';
 import 'package:app_tcareer/src/extensions/video_extension.dart';
+import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
 import 'package:app_tcareer/src/widgets/cached_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -46,6 +47,7 @@ Widget sharedPostWidget(
   final firstMediaUrl = hasMediaUrl ? mediaUrl.first : "";
   final controller = ref.read(postControllerProvider);
   final postingController = ref.watch(postingControllerProvider);
+  final userController = ref.watch(userControllerProvider);
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
     margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -128,30 +130,44 @@ Widget sharedPostWidget(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        InkWell(
-                          onTap: () {
-                            final post = CreatePostRequest(
-                                body: content, privacy: privacy);
+                        Visibility(
+                          visible: userController.userData?.data?.id ==
+                              int.parse(userId),
+                          replacement: InkWell(
+                            onTap: () async {
+                              await controller.showHiddenPostConfirm(
+                                  context: context, postId: postId);
+                            },
+                            child: const PhosphorIcon(
+                              PhosphorIconsLight.x,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          child: InkWell(
+                            onTap: () {
+                              final post = CreatePostRequest(
+                                  body: content, privacy: privacy);
 
-                            final sharedPost = SharedPost(
-                                avatar: avatarUrlOrigin,
-                                fullName: userNameOrigin,
-                                mediaUrl: mediaUrl,
-                                privacy: privacy,
-                                createdAt: originCreatedAt,
-                                body: contentOrigin);
-                            final postEdit =
-                                PostEdit(post: post, sharedPost: sharedPost);
+                              final sharedPost = SharedPost(
+                                  avatar: avatarUrlOrigin,
+                                  fullName: userNameOrigin,
+                                  mediaUrl: mediaUrl,
+                                  privacy: privacy,
+                                  createdAt: originCreatedAt,
+                                  body: contentOrigin);
+                              final postEdit =
+                                  PostEdit(post: post, sharedPost: sharedPost);
 
-                            postingController.showModalPost(
-                                postId: postId,
-                                context: context,
-                                userId: userId,
-                                postEdit: postEdit);
-                          },
-                          child: const PhosphorIcon(
-                            PhosphorIconsLight.dotsThreeCircle,
-                            color: Colors.grey,
+                              postingController.showModalPost(
+                                  postId: postId,
+                                  context: context,
+                                  userId: userId,
+                                  postEdit: postEdit);
+                            },
+                            child: const PhosphorIcon(
+                              PhosphorIconsLight.dotsThreeCircle,
+                              color: Colors.grey,
+                            ),
                           ),
                         ),
                       ],
