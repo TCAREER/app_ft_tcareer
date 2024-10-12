@@ -389,27 +389,26 @@ class PostingController extends ChangeNotifier {
                   'Chỉnh sửa bài viết',
                   style: TextStyle(fontSize: 16, color: Colors.black),
                 )),
-            Visibility(
-              // visible: currentUser,
-              child: CupertinoActionSheetAction(
-                  onPressed: () {
-                    context.pop();
-                    // showEditPage(
-                    //     context, postId, commentId.toString(), content);
-                  },
-                  child: const Text(
-                    'Chỉnh sửa quyền riêng tư',
-                    style: TextStyle(fontSize: 16, color: Colors.black),
-                  )),
-            ),
+            // Visibility(
+            //   // visible: currentUser,
+            //   child: CupertinoActionSheetAction(
+            //       onPressed: () {
+            //         context.pop();
+            //         // showEditPage(
+            //         //     context, postId, commentId.toString(), content);
+            //       },
+            //       child: const Text(
+            //         'Chỉnh sửa quyền riêng tư',
+            //         style: TextStyle(fontSize: 16, color: Colors.black),
+            //       )),
+            // ),
             Visibility(
               // visible: currentUser,
               child: CupertinoActionSheetAction(
                   isDestructiveAction: true,
                   onPressed: () async {
                     context.pop();
-                    // await showDialogDeleteComment(
-                    //     context, commentId.toString());
+                    await showDeleteConfirm(context: context, postId: postId);
                   },
                   child: const Text(
                     'Xóa',
@@ -466,5 +465,46 @@ class PostingController extends ChangeNotifier {
   Future<void> setContent(value) async {
     content = value;
     notifyListeners();
+  }
+
+  Future<void> showDeleteConfirm(
+      {required BuildContext context, required String postId}) async {
+    await showCupertinoModalPopup<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoActionSheet(
+          message: const Text('Bạn có chắc muốn xóa bài viết này?'),
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+              isDestructiveAction: true,
+              child: const Text(
+                'Xóa',
+              ),
+              onPressed: () => deletePost(context: context, postId: postId),
+            ),
+            CupertinoActionSheetAction(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text(
+                'Quay lại',
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> deletePost(
+      {required BuildContext context, required String postId}) async {
+    final postController = ref.watch(postControllerProvider);
+
+    AppUtils.futureApi(() async {
+      postController.postCache
+          .removeWhere((post) => post.id == int.parse(postId));
+      notifyListeners();
+      context.pop();
+      await postUseCase.deletePost(postId);
+    }, context, (value) {});
   }
 }

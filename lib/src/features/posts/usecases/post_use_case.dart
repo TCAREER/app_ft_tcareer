@@ -116,6 +116,9 @@ class PostUseCase {
   Future<void> putUpdatePost(
           {required String postId, required CreatePostRequest body}) async =>
       await postRepository.putUpdatePost(postId: postId, body: body);
+
+  Future<void> deletePost(String postId) async =>
+      await postRepository.deletePost(postId);
 }
 
 final postUseCaseProvider =
