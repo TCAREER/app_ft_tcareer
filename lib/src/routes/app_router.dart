@@ -157,11 +157,13 @@ class AppRouter {
             pageBuilder: (context, state) {
               CreatePostRequest? body = state.extra as CreatePostRequest?;
               String? postId = state.uri.queryParameters['postId'].toString();
+              String? action = state.uri.queryParameters['action'].toString();
               return CustomTransitionPage(
                 key: state.pageKey,
                 child: PostingPage(
                   body: body,
                   postId: postId,
+                  action: action,
                 ),
                 transitionsBuilder: slideUpTransitionBuilder,
               );

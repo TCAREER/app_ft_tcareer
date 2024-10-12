@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-Widget postInput(TextEditingController controller,
+Widget postInput(
     {int? minLines,
+    TextEditingController? controller,
     int? maxLines,
     String? hintText,
     void Function(String)? onChanged}) {

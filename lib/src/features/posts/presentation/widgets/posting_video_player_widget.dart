@@ -1,17 +1,14 @@
 import 'dart:io';
-import 'package:app_tcareer/src/configs/app_constants.dart';
+import 'package:app_tcareer/src/extensions/video_extension.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
-import 'package:better_player/better_player.dart';
-import 'package:flick_video_player/flick_video_player.dart';
-import 'package:flutter/foundation.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:video_player/video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
 
 class PostingVideoPlayerWidget extends ConsumerStatefulWidget {
-  // Đường dẫn đến file video
-
   const PostingVideoPlayerWidget({Key? key}) : super(key: key);
 
   @override
@@ -21,67 +18,136 @@ class PostingVideoPlayerWidget extends ConsumerStatefulWidget {
 
 class _PostingVideoPlayerWidgetState
     extends ConsumerState<PostingVideoPlayerWidget> {
-  FlickManager? flickManager;
+  late VideoPlayerController _videoPlayerController;
+  ChewieController? _chewieController;
+  bool _isVideoInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    final controller = ref.read(mediaControllerProvider);
-    final postingController = ref.read(postingControllerProvider);
+    initVideo();
+  }
 
-    flickManager = FlickManager(
-        videoPlayerController: kIsWeb
-            ? VideoPlayerController.network(
-                "${postingController.videoUrlWeb}&${AppConstants.driveApiKey}")
-            : VideoPlayerController.file(File(controller.videoPaths ?? "")),
-        autoPlay: false,
-        autoInitialize: true);
+  Future<void> initVideo() async {
+    final controller = ref.read(mediaControllerProvider);
+
+    if (controller.videoPaths.isNotEmpty) {
+      // Chỉ khởi tạo controller nếu nó chưa được khởi tạo
+      if (!_isVideoInitialized) {
+        _videoPlayerController = controller.videoPaths.first.isVideo
+            ? VideoPlayerController.network(controller.videoPaths.first)
+            : VideoPlayerController.file(File(controller.videoPaths.first));
+
+        try {
+          await _videoPlayerController.initialize();
+          _chewieController = ChewieController(
+            videoPlayerController: _videoPlayerController,
+            autoInitialize: true,
+            aspectRatio: _videoPlayerController.value.aspectRatio,
+            autoPlay: false,
+            looping: false,
+            showControls: true,
+            showControlsOnInitialize: false,
+            showOptions: false,
+            zoomAndPan: true,
+            materialProgressColors: ChewieProgressColors(
+              playedColor: Colors.white,
+            ),
+          );
+
+          setState(() {
+            _isVideoInitialized = true;
+          });
+        } catch (e) {
+          debugPrint("Lỗi khởi tạo video: $e");
+        }
+
+        _videoPlayerController.addListener(() {
+          if (mounted) {
+            setState(() {});
+          }
+        });
+      }
+    }
   }
 
   @override
   void dispose() {
-    flickManager?.dispose();
+    _chewieController?.dispose();
+    _videoPlayerController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final mediaController = ref.watch(mediaControllerProvider);
-    return flickManager != null
-        ? Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Stack(
-              children: [
-                ClipRRect(
+    final controller = ref.watch(mediaControllerProvider);
+    return VisibilityDetector(
+      key: ValueKey(controller.videoPaths ?? ""),
+      child: _isVideoInitialized
+          ? Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Stack(
+                children: [
+                  ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: FlickVideoPlayer(flickManager: flickManager!)),
-                Positioned(
-                  right: 15,
-                  top: 5,
-                  child: GestureDetector(
-                    onTap: () {
-                      // Gọi hàm để xóa ảnh tại index
-                      mediaController.removeVideo();
-                    },
-                    child: Opacity(
-                      opacity: 0.5,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.black54,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Icon(
-                          Icons.close,
-                          color: Colors.white,
-                          size: 20,
+                    child: AspectRatio(
+                      aspectRatio: _chewieController!
+                          .videoPlayerController.value.aspectRatio,
+                      child: Chewie(controller: _chewieController!),
+                    ),
+                  ),
+                  Positioned(
+                    right: 15,
+                    top: 5,
+                    child: GestureDetector(
+                      onTap: () {
+                        // Gọi hàm để xóa video tại index
+                        ref.read(mediaControllerProvider).removeVideo();
+                      },
+                      child: Opacity(
+                        opacity: 0.5,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black54,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          )
-        : const Center(child: CircularProgressIndicator());
+                ],
+              ),
+            )
+          : videoPlaceholder(),
+      onVisibilityChanged: (info) {
+        if (_isVideoInitialized) {
+          if (info.visibleFraction > 0.8) {
+            _videoPlayerController.play();
+          } else {
+            _videoPlayerController.pause();
+          }
+        }
+      },
+    );
+  }
+
+  Widget videoPlaceholder() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: AspectRatio(
+        aspectRatio: 16 / 9,
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12), color: Colors.black),
+          child: circularLoadingWidget(),
+        ),
+      ),
+    );
   }
 }

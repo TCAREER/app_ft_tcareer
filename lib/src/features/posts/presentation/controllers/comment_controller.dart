@@ -159,15 +159,16 @@ class CommentController extends ChangeNotifier {
   Future<void> uploadVideo() async {
     mediaUrl.clear();
     final mediaController = ref.watch(mediaControllerProvider);
-    final uuid = const Uuid();
-    final id = uuid.v4();
-    String videoId = await postUseCase.uploadFile(
-      topic: "Comments",
-      folderName: id,
-      file: File(mediaController.videoPaths ?? ""),
-    );
-    String videoUrl = "${AppConstants.driveUrl}$videoId";
-    mediaUrl.add(videoUrl);
+
+    if (mediaController.videoPaths.isNotEmpty) {
+      String videoUrl = await postUseCase.uploadFile(
+        topic: "comment",
+        folderName: "video",
+        file: File(mediaController.videoPaths.first),
+      );
+
+      mediaUrl.add(videoUrl);
+    }
   }
 
   Future<void> uploadImageFile() async {

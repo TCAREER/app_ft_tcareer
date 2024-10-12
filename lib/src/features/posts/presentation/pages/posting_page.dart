@@ -24,7 +24,8 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 class PostingPage extends ConsumerStatefulWidget {
   final CreatePostRequest? body;
   final String? postId;
-  const PostingPage({super.key, this.body, this.postId});
+  final String? action;
+  const PostingPage({super.key, this.body, this.postId, this.action});
 
   @override
   ConsumerState<PostingPage> createState() => _PostingPageState();
@@ -38,6 +39,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
     super.initState();
     Future.microtask(() {
       final controller = ref.watch(postingControllerProvider);
+
       controller.loadPostCache();
       if (widget.body != null) {
         controller.setPostEdit(body: widget.body!, postId: widget.postId ?? "");
@@ -62,7 +64,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
         controller.imagesWeb.isNotEmpty == true ||
         controller.videoUrlWeb != null ||
         controller.videoPicked != null ||
-        mediaController.videoPaths != null;
+        mediaController.videoPaths.isNotEmpty == true;
     return BackButtonListener(
       onBackButtonPressed: () async {
         await controller.showDialog(context);
@@ -76,7 +78,14 @@ class _PostingPageState extends ConsumerState<PostingPage> {
             isLoading: controller.isLoading,
             context: context,
             onPop: () => controller.showDialog(context),
-            onPosting: () async => await controller.createPost(context)),
+            onPosting: () async {
+              if (widget.action == "edit") {
+                await controller.updatePost(
+                    postId: widget.postId ?? "", context: context);
+              } else {
+                await controller.createPost(context);
+              }
+            }),
         body: ListView(
           controller: scrollController,
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -112,13 +121,14 @@ class _PostingPageState extends ConsumerState<PostingPage> {
             const SizedBox(
               height: 5,
             ),
-            postInput(controller.contentController),
+            postInput(
+                controller: controller.contentController,
+                onChanged: controller.setContent),
             const SizedBox(
               height: 5,
             ),
             Visibility(
-                visible: mediaController.videoPaths != null ||
-                    controller.videoUrlWeb != null,
+                visible: mediaController.videoPaths.isNotEmpty,
                 child: const PostingVideoPlayerWidget()),
             postingImageWidget(mediaUrl: mediaController.imagePaths, ref: ref),
           ],
@@ -151,7 +161,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
       ),
       centerTitle: false,
       title: Text(
-        "Tạo bài viết",
+        widget.action != null ? "Chỉnh sửa bài viết" : "Tạo bài viết",
         style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
       ),
       titleTextStyle: const TextStyle(
@@ -171,8 +181,8 @@ class _PostingPageState extends ConsumerState<PostingPage> {
                         borderRadius: BorderRadius.circular(20)),
                     backgroundColor: AppColors.executeButton),
                 onPressed: isActive ? onPosting : null,
-                child: const Text(
-                  "Đăng",
+                child: Text(
+                  widget.action != null ? "Lưu" : "Đăng",
                   style: TextStyle(color: Colors.white, fontSize: 13),
                 )),
           ),
@@ -214,14 +224,14 @@ class _PostingPageState extends ConsumerState<PostingPage> {
               ),
             ),
 
-            IconButton(
-              onPressed: () {},
-              icon: const PhosphorIcon(
-                PhosphorIconsFill.link,
-                color: Colors.grey,
-                size: 25,
-              ),
-            ),
+            // IconButton(
+            //   onPressed: () {},
+            //   icon: const PhosphorIcon(
+            //     PhosphorIconsFill.link,
+            //     color: Colors.grey,
+            //     size: 25,
+            //   ),
+            // ),
 
             // IconButton(
             //   onPressed: () {},

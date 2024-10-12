@@ -85,7 +85,7 @@ class EditCommentPage extends ConsumerWidget {
               postInput(
                   onChanged: (val) => commentController.setHasContent(
                       commentController.editContentController.text),
-                  commentController.editContentController,
+                  controller: commentController.editContentController,
                   minLines: 3,
                   maxLines: 10),
               const SizedBox(

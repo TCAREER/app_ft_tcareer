@@ -32,15 +32,15 @@ class UploadFileService {
       "file": file != null
           ? await MultipartFile.fromFile(file.path)
           : MultipartFile.fromBytes(uint8List!, filename: "upload.mp4"),
-      "topic": topic,
-      "folderName": folderName
+      "folder": "$folderName/$topic",
+      "type": "video"
     });
     final response = await dio.post('upload',
         data: formData,
         options: Options(headers: {
           'Content-Type': 'application/json',
         }));
-    fileUrl = UploadData.fromJson(response.data).id ?? "";
+    fileUrl = UploadData.fromJson(response.data).secureUrl ?? "";
     return fileUrl;
   }
 }

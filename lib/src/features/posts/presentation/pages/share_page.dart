@@ -76,8 +76,10 @@ class SharePage extends ConsumerWidget {
               const SizedBox(
                 height: 5,
               ),
-              postInput(postController.shareContentController,
-                  minLines: 3, maxLines: 10),
+              postInput(
+                  controller: postController.shareContentController,
+                  minLines: 3,
+                  maxLines: 10),
               const SizedBox(
                 height: 10,
               ),

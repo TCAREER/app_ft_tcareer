@@ -13,7 +13,7 @@ class AppConstants {
   static const apiPostKey = "2e5574eee202493cab156cc3ef6b352d";
   static const driveParent = "18KYXb729bytijEE6dqDIJf2NWOAoruzE";
   static const keyUpload =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGNhcmVlciIsImlkIjo5MTkyMDI0fQ.b7zlBr-ZdM3w7nP2k5YfL8lQjXIKF2lB0vq0LmLIp7A";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MzU2NDU2MCIsIm5hbWUiOiJ0Y2FyZWVyIiwiaWF0IjoxNTE2MjM5MDIyfQ.Sq3pqtCFTKv-Pwr8nUY2cg_DzRm4zpOfDX93-sNI7o4";
   static const driveApiKey = "key=AIzaSyDbkwrxPX1NCrrbWp5m9uOdmsd3nAX-Rpg";
   static const driveUrl = "https://drive.google.com/uc?export=download&id=";
 }

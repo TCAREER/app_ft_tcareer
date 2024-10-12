@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/extensions/file_type_extension.dart';
 import 'package:app_tcareer/src/extensions/image_extension.dart';
+import 'package:app_tcareer/src/extensions/video_extension.dart';
 import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/post_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/post_state.dart';
@@ -49,9 +50,9 @@ class PostingController extends ChangeNotifier {
   Future<void> loadVideoCache() async {
     final userUtils = ref.watch(userUtilsProvider);
     final mediaController = ref.watch(mediaControllerProvider);
-    String? videoCache = await userUtils.loadCache("videoCache");
-    if (videoCache != null) {
-      mediaController.videoPaths = videoCache;
+    List<String>? videoCache = await userUtils.loadCacheList("videoCache");
+    if (videoCache?.isNotEmpty == true) {
+      mediaController.videoPaths = videoCache!;
       notifyListeners();
     }
   }
@@ -60,7 +61,7 @@ class PostingController extends ChangeNotifier {
     final userUtils = ref.watch(userUtilsProvider);
     String? contentCache = await userUtils.loadCache("postContent");
     if (contentCache != null) {
-      contentController.text = contentCache;
+      content = contentCache;
       userUtils.removeCache("postContent");
       notifyListeners();
     }
@@ -79,11 +80,11 @@ class PostingController extends ChangeNotifier {
     await userUtils.removeCache("selectedAsset");
     mediaController.selectedAsset.clear();
     mediaController.imagePaths.clear();
-    contentController.clear();
+    content = null;
     imagesWeb.clear();
     videoPicked?.clear();
 
-    mediaController.videoPaths = null;
+    mediaController.videoPaths.clear();
     mediaController.videoThumbnail = null;
     notifyListeners();
     context.goNamed("home");
@@ -99,16 +100,15 @@ class PostingController extends ChangeNotifier {
 
   Future<void> setCacheContent() async {
     final userUtils = ref.watch(userUtilsProvider);
-    await userUtils.saveCache(
-        key: "postContent", value: contentController.text);
+    await userUtils.saveCache(key: "postContent", value: content ?? "");
   }
 
   Future<void> setCacheVideo() async {
     final userUtils = ref.watch(userUtilsProvider);
     final mediaController = ref.read(mediaControllerProvider);
 
-    await userUtils.saveCache(
-        key: "videoCache", value: mediaController.videoPaths ?? "");
+    await userUtils.saveCacheList(
+        key: "videoCache", value: mediaController.videoPaths);
   }
 
   Future<void> setPostCache(BuildContext context) async {
@@ -159,14 +159,20 @@ class PostingController extends ChangeNotifier {
   TextEditingController contentController = TextEditingController();
   Future<void> showDialog(BuildContext context) async {
     final mediaController = ref.watch(mediaControllerProvider);
-
-    if (mediaController.imagePaths.isNotEmpty ||
-        mediaController.videoPaths != null) {
+    if (mediaController.imagePaths.any((image) => image.isImageNetWork) ||
+        mediaController.videoPaths.any((video) => video.isVideoNetWork)) {
+      print(">>>>>>>>2");
+      clearPostCache(context);
+      context.replaceNamed("home");
+    } else if (mediaController.imagePaths.isNotEmpty ||
+        mediaController.videoPaths.isNotEmpty && content != null) {
+      print(">>>>>>>>1");
       showModalPopup(
           context: context,
           onSave: () async => await setPostCache(context),
           onDiscard: () async => await clearPostCache(context));
     } else {
+      print(">>>>>>>>3");
       clearPostCache(context);
       context.goNamed("home");
     }
@@ -189,17 +195,13 @@ class PostingController extends ChangeNotifier {
           imagesWeb.isNotEmpty == true) {
         await uploadImageFile();
       }
-      if (mediaController.videoPaths != null) {
+      if (mediaController.videoPaths.isNotEmpty) {
         await uploadVideo();
       }
-      if (videoPicked != null) {
-        await uploadVideoFromUint8List();
-      }
+
       await postUseCase.createPost(
           body: CreatePostRequest(
-              body: contentController.text,
-              privacy: selectedPrivacy,
-              mediaUrl: mediaUrl));
+              body: content, privacy: selectedPrivacy, mediaUrl: mediaUrl));
 
       showSnackBar("Tạo bài viết thành công");
       clearPostCache(context);
@@ -221,7 +223,10 @@ class PostingController extends ChangeNotifier {
         //     file: File(assetPath ?? ""), folderPath: path);
         String url = await postUseCase.uploadFileFireBase(
             file: File(assetPath ?? ""), folderPath: "Posts/$id");
+
         mediaUrl.add(url);
+      } else {
+        mediaUrl.add(asset);
       }
     }
     // notifyListeners();
@@ -240,15 +245,19 @@ class PostingController extends ChangeNotifier {
   Future<void> uploadVideo() async {
     mediaUrl.clear();
     final mediaController = ref.watch(mediaControllerProvider);
-    final uuid = Uuid();
-    final id = uuid.v4();
-    String videoId = await postUseCase.uploadFile(
-      topic: "Posts",
-      folderName: id,
-      file: File(mediaController.videoPaths ?? ""),
-    );
-    String videoUrl = "${AppConstants.driveUrl}$videoId";
-    mediaUrl.add(videoUrl);
+    final videoPaths = mediaController.videoPaths;
+    if (mediaController.videoPaths.any((video) => !video.isVideo)) {
+      String? video = videoPaths.first;
+      String videoUrl = await postUseCase.uploadFile(
+        topic: "post",
+        folderName: "video",
+        file: File(video),
+      );
+      mediaUrl.add(videoUrl);
+    } else {
+      print(">>>>>>>>2");
+      mediaUrl.add(videoPaths.first);
+    }
   }
 
   List<String> mediaPreviewUrl = [];
@@ -333,17 +342,18 @@ class PostingController extends ChangeNotifier {
     mediaUrl.add(videoUrlWeb!);
   }
 
-  Future<void> updatePost(
-      {required String postId, required CreatePostRequest body}) async {
-    await postUseCase.putUpdatePost(postId: postId, body: body);
-  }
-
   Future<void> setPostEdit(
       {required CreatePostRequest body, required String postId}) async {
     final mediaController = ref.watch(mediaControllerProvider);
     selectedPrivacy = body.privacy ?? "";
     contentController.text = body.body ?? "";
-    mediaController.imagePaths = body.mediaUrl ?? [];
+    setContent(body.body ?? "");
+    if (body.mediaUrl?.isNotEmpty == true &&
+        body.mediaUrl?.any((media) => media.isVideo) == true) {
+      mediaController.videoPaths = body.mediaUrl ?? [];
+    } else {
+      mediaController.imagePaths = body.mediaUrl ?? [];
+    }
     print(">>>>>>>>>>>mediaUrl: $mediaUrl");
     postId = postId;
     notifyListeners();
@@ -366,7 +376,8 @@ class PostingController extends ChangeNotifier {
                 onPressed: () {
                   context.pop();
                   context.pushNamed("posting",
-                      extra: body, queryParameters: {"postId": postId});
+                      extra: body,
+                      queryParameters: {"postId": postId, "action": "edit"});
                 },
                 child: const Text(
                   'Chỉnh sửa bài viết',
@@ -416,5 +427,38 @@ class PostingController extends ChangeNotifier {
         );
       },
     );
+  }
+
+  Future<void> updatePost(
+      {required String postId, required BuildContext context}) async {
+    final mediaController = ref.watch(mediaControllerProvider);
+    final postController = ref.watch(postControllerProvider);
+
+    context.pushReplacementNamed("home");
+
+    AppUtils.futureApi(() async {
+      if (mediaController.imagePaths.isNotEmpty) {
+        await uploadImageFile();
+      }
+      if (mediaController.videoPaths.isNotEmpty) {
+        await uploadVideo();
+      }
+
+      await postUseCase.putUpdatePost(
+          postId: postId,
+          body: CreatePostRequest(
+              body: content, privacy: selectedPrivacy, mediaUrl: mediaUrl));
+
+      showSnackBar("Cập nhật bài viết thành công");
+      clearPostCache(context);
+      await postController.refresh();
+    }, context, setIsLoading);
+    notifyListeners();
+  }
+
+  String? content;
+  Future<void> setContent(value) async {
+    content = value;
+    notifyListeners();
   }
 }

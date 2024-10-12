@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:app_tcareer/src/extensions/image_extension.dart';
+import 'package:app_tcareer/src/extensions/video_extension.dart';
 import 'package:app_tcareer/src/features/posts/data/models/media_state.dart';
 import 'package:app_tcareer/src/features/posts/presentation/controllers/comment_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/controllers/post_controller.dart';
@@ -94,7 +95,7 @@ class MediaController extends ChangeNotifier {
   }
 
   List<String> imagePaths = [];
-  String? videoPaths;
+  List<String> videoPaths = [];
 
   Future<void> getAssetPaths(BuildContext context) async {
     final userUtils = ref.watch(userUtilsProvider);
@@ -110,8 +111,43 @@ class MediaController extends ChangeNotifier {
         if (asset.type == AssetType.image) {
           imagePaths.add(file.path);
         } else if (asset.type == AssetType.video) {
-          videoPaths = file.path;
-          await generateVideoThumbnail();
+          if (videoPaths.isNotEmpty && videoPaths.first.isVideo == true) {
+            print(">>>>>>>>>1");
+            bool? shouldReplace = await showCupertinoModalPopup<bool>(
+              context: context,
+              builder: (BuildContext context) {
+                return CupertinoActionSheet(
+                  message: const Text(
+                      'Bạn có muốn thay thế video bài viết hiện tại?'),
+                  actions: <Widget>[
+                    CupertinoActionSheetAction(
+                      isDestructiveAction: true,
+                      onPressed: () => Navigator.pop(context, false),
+                      child: const Text('Quay lại'),
+                    ),
+                    CupertinoActionSheetAction(
+                      child: const Text('Tiếp tục',
+                          style: TextStyle(color: Colors.blue)),
+                      onPressed: () => Navigator.pop(context, true),
+                    ),
+                  ],
+                );
+              },
+            );
+
+            if (shouldReplace == true) {
+              videoPaths.clear();
+              videoPaths.add(file.path);
+
+              await generateVideoThumbnail();
+            }
+          } else {
+            videoPaths.clear();
+
+            videoPaths.add(file.path);
+
+            await generateVideoThumbnail();
+          }
         }
       }
     }
@@ -119,7 +155,6 @@ class MediaController extends ChangeNotifier {
     notifyListeners();
     print("Image Paths: $imagePaths");
     print("Video Paths: $videoPaths");
-    isAutoPop = true;
     context.pop();
   }
 
@@ -161,15 +196,27 @@ class MediaController extends ChangeNotifier {
       showSnackBarError("Bạn chỉ có thể chọn tối đa 1 ảnh hoặc 1 video");
       return;
     }
+    if (imagePaths.any((image) => image.isImageNetWork) &&
+        asset.type == AssetType.video) {
+      showSnackBarError("Bạn chỉ được phép chọn thêm ảnh");
+      return;
+    }
 
     if (asset.type == AssetType.video &&
         selectedAsset.any((a) => a.type == AssetType.image)) {
       showSnackBarError("Bạn chỉ có thể chọn tối đa 10 ảnh hoặc 1 video");
       return;
     }
-    if (selectedAsset.any(
-        (a) => a.type == AssetType.video && !selectedAsset.contains(asset))) {
+    if (asset.type == AssetType.image &&
+        selectedAsset.any((a) =>
+            a.type == AssetType.video && !selectedAsset.contains(asset))) {
       showSnackBarError("Bạn đã chọn 1 video, không thể chọn thêm ảnh.");
+      return;
+    }
+    if (asset.type == AssetType.video &&
+        selectedAsset.any((a) =>
+            a.type == AssetType.video && !selectedAsset.contains(asset))) {
+      showSnackBarError("Bạn chỉ có thể chọn tối đa 1 video");
       return;
     }
     if (asset.type == AssetType.image) {
@@ -181,8 +228,8 @@ class MediaController extends ChangeNotifier {
       final videoFile = await asset.file; // Lấy file video
       if (videoFile != null) {
         final videoSize = await videoFile.length();
-        if (videoSize > 30 * 1024 * 1024) {
-          showSnackBarError("Video phải có kích thước dưới 30MB");
+        if (videoSize > 10 * 1024 * 1024) {
+          showSnackBarError("Video phải có kích thước dưới 10MB");
           return;
         }
       }
@@ -282,7 +329,7 @@ class MediaController extends ChangeNotifier {
 
   Future<void> removeAssets() async {
     imagePaths.clear();
-    videoPaths = null;
+    videoPaths.clear();
     videoThumbnail = null;
     selectedAsset.clear();
     notifyListeners();
@@ -290,11 +337,13 @@ class MediaController extends ChangeNotifier {
 
   String? videoThumbnail;
   Future<void> generateVideoThumbnail() async {
-    videoThumbnail = await VideoThumbnail.thumbnailFile(
-        video: videoPaths ?? "",
-        thumbnailPath: (await getTemporaryDirectory()).path,
-        imageFormat: ImageFormat.JPEG,
-        quality: 100);
+    if (videoPaths.isNotEmpty) {
+      videoThumbnail = await VideoThumbnail.thumbnailFile(
+          video: videoPaths.first,
+          thumbnailPath: (await getTemporaryDirectory()).path,
+          imageFormat: ImageFormat.JPEG,
+          quality: 100);
+    }
   }
 
   Future<void> removeImage(int index) async {
@@ -306,10 +355,17 @@ class MediaController extends ChangeNotifier {
   }
 
   Future<void> removeVideo() async {
-    videoPaths = null;
+    videoPaths.clear();
     videoThumbnail = null;
 
     selectedAsset.clear();
+    notifyListeners();
+  }
+
+  Future<void> deleteVideo() async {
+    videoPaths.clear();
+    videoThumbnail = null;
+
     notifyListeners();
   }
 
