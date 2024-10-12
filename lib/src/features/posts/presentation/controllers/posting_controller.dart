@@ -6,6 +6,7 @@ import 'package:app_tcareer/src/extensions/file_type_extension.dart';
 import 'package:app_tcareer/src/extensions/image_extension.dart';
 import 'package:app_tcareer/src/extensions/video_extension.dart';
 import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
+import 'package:app_tcareer/src/features/posts/data/models/post_edit.dart';
 import 'package:app_tcareer/src/features/posts/data/models/post_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/post_state.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart';
@@ -27,6 +28,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../data/models/shared_post.dart';
 
 class PostingController extends ChangeNotifier {
   final PostUseCase postUseCase;
@@ -343,16 +346,17 @@ class PostingController extends ChangeNotifier {
   }
 
   Future<void> setPostEdit(
-      {required CreatePostRequest body, required String postId}) async {
+      {required PostEdit postEdit, required String postId}) async {
     final mediaController = ref.watch(mediaControllerProvider);
-    selectedPrivacy = body.privacy ?? "";
-    contentController.text = body.body ?? "";
-    setContent(body.body ?? "");
-    if (body.mediaUrl?.isNotEmpty == true &&
-        body.mediaUrl?.any((media) => media.isVideo) == true) {
-      mediaController.videoPaths = body.mediaUrl ?? [];
+    final post = postEdit.post;
+    selectedPrivacy = post?.privacy ?? "";
+    contentController.text = post?.body ?? "";
+    setContent(post?.body ?? "");
+    if (post?.mediaUrl?.isNotEmpty == true &&
+        post?.mediaUrl?.any((media) => media.isVideo) == true) {
+      mediaController.videoPaths = post?.mediaUrl ?? [];
     } else {
-      mediaController.imagePaths = body.mediaUrl ?? [];
+      mediaController.imagePaths = post?.mediaUrl ?? [];
     }
     print(">>>>>>>>>>>mediaUrl: $mediaUrl");
     postId = postId;
@@ -360,11 +364,13 @@ class PostingController extends ChangeNotifier {
   }
 
   String? postId;
-  Future<void> showModalPost(
-      {required String postId,
-      required BuildContext context,
-      required String userId,
-      required CreatePostRequest body}) async {
+  Future<void> showModalPost({
+    bool isShared = false,
+    PostEdit? postEdit,
+    required String postId,
+    required BuildContext context,
+    required String userId,
+  }) async {
     // bool currentUser = userId == commentUserId;
 
     showCupertinoModalPopup(
@@ -376,7 +382,7 @@ class PostingController extends ChangeNotifier {
                 onPressed: () {
                   context.pop();
                   context.pushNamed("posting",
-                      extra: body,
+                      extra: postEdit,
                       queryParameters: {"postId": postId, "action": "edit"});
                 },
                 child: const Text(

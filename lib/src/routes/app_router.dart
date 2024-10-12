@@ -6,6 +6,8 @@ import 'package:app_tcareer/src/features/authentication/presentation/pages/login
 import 'package:app_tcareer/src/features/authentication/presentation/pages/register/register_page.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/pages/verify/verify_page.dart';
 import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
+import 'package:app_tcareer/src/features/posts/data/models/post_edit.dart';
+import 'package:app_tcareer/src/features/posts/data/models/shared_post.dart';
 import 'package:app_tcareer/src/features/posts/presentation/pages/media/media_page.dart';
 import 'package:app_tcareer/src/features/posts/presentation/pages/posting_page.dart';
 import 'package:app_tcareer/src/features/posts/presentation/pages/search_page.dart';
@@ -155,13 +157,13 @@ class AppRouter {
             path: "/${RouteNames.posting.name}",
             name: RouteNames.posting.name,
             pageBuilder: (context, state) {
-              CreatePostRequest? body = state.extra as CreatePostRequest?;
+              PostEdit? postEdit = state.extra as PostEdit?;
               String? postId = state.uri.queryParameters['postId'].toString();
               String? action = state.uri.queryParameters['action'].toString();
               return CustomTransitionPage(
                 key: state.pageKey,
                 child: PostingPage(
-                  body: body,
+                  postEdit: postEdit,
                   postId: postId,
                   action: action,
                 ),

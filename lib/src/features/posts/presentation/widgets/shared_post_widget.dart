@@ -1,4 +1,5 @@
 import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
+import 'package:app_tcareer/src/features/posts/data/models/post_edit.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/post_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/video_player_widget.dart';
@@ -12,35 +13,35 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:readmore/readmore.dart';
-
+import '../../data/models/shared_post.dart';
 import 'engagement_widget.dart';
 import 'post_image_widget.dart';
 
-Widget sharedPostWidget({
-  required void Function() onLike,
-  required String userId,
-  required String originUserId,
-  required BuildContext context,
-  required WidgetRef ref,
-  required String avatarUrl,
-  required String userName,
-  required String userNameOrigin,
-  required String avatarUrlOrigin,
-  String? subName,
-  required String createdAt,
-  required String originCreatedAt,
-  required String? content,
-  required String contentOrigin,
-  List<String>? mediaUrl,
-  required bool liked,
-  required String likes,
-  required String comments,
-  required String shares,
-  required String postId,
-  required String originPostId,
-  required int index,
-  required String privacy,
-}) {
+Widget sharedPostWidget(
+    {required void Function() onLike,
+    required String userId,
+    required String originUserId,
+    required BuildContext context,
+    required WidgetRef ref,
+    required String avatarUrl,
+    required String userName,
+    required String userNameOrigin,
+    required String avatarUrlOrigin,
+    String? subName,
+    required String createdAt,
+    required String originCreatedAt,
+    required String? content,
+    required String contentOrigin,
+    List<String>? mediaUrl,
+    required bool liked,
+    required String likes,
+    required String comments,
+    required String shares,
+    required String postId,
+    required String originPostId,
+    required int index,
+    required String privacy,
+    required String privacyOrigin}) {
   final hasMediaUrl = mediaUrl != null && mediaUrl.isNotEmpty;
   final firstMediaUrl = hasMediaUrl ? mediaUrl.first : "";
   final controller = ref.read(postControllerProvider);
@@ -129,15 +130,24 @@ Widget sharedPostWidget({
                       children: [
                         InkWell(
                           onTap: () {
-                            final body = CreatePostRequest(
-                                body: content,
+                            final post = CreatePostRequest(
+                                body: content, privacy: privacy);
+
+                            final sharedPost = SharedPost(
+                                avatar: avatarUrlOrigin,
+                                fullName: userNameOrigin,
                                 mediaUrl: mediaUrl,
-                                privacy: privacy);
+                                privacy: privacy,
+                                createdAt: originCreatedAt,
+                                body: contentOrigin);
+                            final postEdit =
+                                PostEdit(post: post, sharedPost: sharedPost);
+
                             postingController.showModalPost(
                                 postId: postId,
                                 context: context,
                                 userId: userId,
-                                body: body);
+                                postEdit: postEdit);
                           },
                           child: const PhosphorIcon(
                             PhosphorIconsLight.dotsThreeCircle,

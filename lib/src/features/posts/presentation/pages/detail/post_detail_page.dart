@@ -91,6 +91,7 @@ class _PostDetailPageState extends ConsumerState<PostDetailPage> {
                         childCount: 1,
                         (context, index) {
                           return sharedPostWidget(
+                              privacyOrigin: sharedPost?.privacy ?? "",
                               onLike: () async =>
                                   controller.likePostById(widget.postId),
                               originUserId: sharedPost?.userId.toString() ?? "",

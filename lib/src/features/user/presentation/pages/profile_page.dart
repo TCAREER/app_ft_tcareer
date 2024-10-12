@@ -178,6 +178,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                             padding: const EdgeInsets.symmetric(vertical: 8),
                             child: Visibility(
                               replacement: sharedPostWidget(
+                                privacyOrigin: sharedPost?.privacy ?? "",
                                 onLike: () async =>
                                     await controller.postLikePost(
                                         index: index,

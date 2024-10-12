@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:app_tcareer/src/configs/app_colors.dart';
 import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
+import 'package:app_tcareer/src/features/posts/data/models/post_edit.dart';
 import 'package:app_tcareer/src/features/posts/presentation/controllers/media_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/controllers/posting_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/post_input.dart';
+import 'package:app_tcareer/src/features/posts/presentation/widgets/post_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/posting_image_wiget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/posting_video_player_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/privacy_bottom_sheet_widget.dart';
@@ -21,11 +23,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import '../../data/models/shared_post.dart';
+
 class PostingPage extends ConsumerStatefulWidget {
-  final CreatePostRequest? body;
+  final PostEdit? postEdit;
   final String? postId;
   final String? action;
-  const PostingPage({super.key, this.body, this.postId, this.action});
+
+  const PostingPage({super.key, this.postEdit, this.postId, this.action});
 
   @override
   ConsumerState<PostingPage> createState() => _PostingPageState();
@@ -41,8 +46,9 @@ class _PostingPageState extends ConsumerState<PostingPage> {
       final controller = ref.watch(postingControllerProvider);
 
       controller.loadPostCache();
-      if (widget.body != null) {
-        controller.setPostEdit(body: widget.body!, postId: widget.postId ?? "");
+      if (widget.postEdit != null) {
+        controller.setPostEdit(
+            postEdit: widget.postEdit!, postId: widget.postId ?? "");
       }
     });
 
@@ -131,6 +137,9 @@ class _PostingPageState extends ConsumerState<PostingPage> {
                 visible: mediaController.videoPaths.isNotEmpty,
                 child: const PostingVideoPlayerWidget()),
             postingImageWidget(mediaUrl: mediaController.imagePaths, ref: ref),
+            Visibility(
+                visible: widget.postEdit?.sharedPost != null,
+                child: sharePost())
           ],
         ),
         bottomNavigationBar: bottomAppBar(context, ref),
@@ -201,48 +210,83 @@ class _PostingPageState extends ConsumerState<PostingPage> {
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeInOut,
       margin: EdgeInsets.only(bottom: keyboardHeight > 0 ? keyboardHeight : 0),
-      child: Container(
-        height: 48,
-        color: Colors.white,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            IconButton(
-              onPressed: () async {
-                if (!kIsWeb) {
-                  await mediaController.getAlbums();
-                  context.pushNamed("photoManager");
-                } else {
-                  await controller.pickMediaWeb(context);
-                }
-              },
-              icon: const PhosphorIcon(
-                PhosphorIconsFill.image,
-                color: Colors.grey,
-                size: 25,
+      child: Visibility(
+        visible: widget.postEdit?.sharedPost == null,
+        child: Container(
+          height: 48,
+          color: Colors.white,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              IconButton(
+                onPressed: () async {
+                  if (!kIsWeb) {
+                    await mediaController.getAlbums();
+                    context.pushNamed("photoManager");
+                  } else {
+                    await controller.pickMediaWeb(context);
+                  }
+                },
+                icon: const PhosphorIcon(
+                  PhosphorIconsFill.image,
+                  color: Colors.grey,
+                  size: 25,
+                ),
               ),
-            ),
 
-            // IconButton(
-            //   onPressed: () {},
-            //   icon: const PhosphorIcon(
-            //     PhosphorIconsFill.link,
-            //     color: Colors.grey,
-            //     size: 25,
-            //   ),
-            // ),
+              // IconButton(
+              //   onPressed: () {},
+              //   icon: const PhosphorIcon(
+              //     PhosphorIconsFill.link,
+              //     color: Colors.grey,
+              //     size: 25,
+              //   ),
+              // ),
 
-            // IconButton(
-            //   onPressed: () {},
-            //   icon: const PhosphorIcon(
-            //     PhosphorIconsBold.smiley,
-            //     color: Colors.grey,
-            //     size: 20,
-            //   ),
-            // ),
-          ],
+              // IconButton(
+              //   onPressed: () {},
+              //   icon: const PhosphorIcon(
+              //     PhosphorIconsBold.smiley,
+              //     color: Colors.grey,
+              //     size: 20,
+              //   ),
+              // ),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget sharePost() {
+    final sharedPost = widget.postEdit?.sharedPost;
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 5),
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade200, width: 1)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5),
+        child: postWidget(
+            onLike: () {},
+            userId: "",
+            mediaUrl: sharedPost?.mediaUrl ?? [],
+            isShared: true,
+            context: context,
+            ref: ref,
+            avatarUrl: sharedPost?.avatar ?? "",
+            userName: sharedPost?.fullName ?? "",
+            createdAt: sharedPost?.createdAt ?? "",
+            content: sharedPost?.body,
+            liked: true,
+            likes: "1",
+            comments: "1",
+            shares: "1",
+            postId: "1",
+            index: 1,
+            privacy: sharedPost?.privacy ?? ""),
       ),
     );
   }

@@ -125,13 +125,13 @@ class _PostingVideoPlayerWidgetState
             )
           : videoPlaceholder(),
       onVisibilityChanged: (info) {
-        if (_isVideoInitialized) {
-          if (info.visibleFraction > 0.8) {
-            _videoPlayerController.play();
-          } else {
-            _videoPlayerController.pause();
-          }
-        }
+        // if (_isVideoInitialized) {
+        //   if (info.visibleFraction > 0.8) {
+        //     _videoPlayerController.play();
+        //   } else {
+        //     _videoPlayerController.pause();
+        //   }
+        // }
       },
     );
   }
