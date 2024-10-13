@@ -265,7 +265,10 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage>
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () => context.pushNamed("chat", pathParameters: {
+                    "userId":
+                        controller.anotherUserData?.data?.id.toString() ?? ""
+                  }),
                   child: const Text("Nhắn tin",
                       style: TextStyle(color: Colors.black)),
                 ),

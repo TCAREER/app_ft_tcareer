@@ -16,4 +16,10 @@ class AppConstants {
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MzU2NDU2MCIsIm5hbWUiOiJ0Y2FyZWVyIiwiaWF0IjoxNTE2MjM5MDIyfQ.Sq3pqtCFTKv-Pwr8nUY2cg_DzRm4zpOfDX93-sNI7o4";
   static const driveApiKey = "key=AIzaSyDbkwrxPX1NCrrbWp5m9uOdmsd3nAX-Rpg";
   static const driveUrl = "https://drive.google.com/uc?export=download&id=";
+  static const ablyKey =
+      "l8xDTg.FFzKkg:cnC-cWz25wOdN4SAFb26xTYDLf1R8tcVzhCVAyGamss";
+
+  //test app
+  // static const ablyKey =
+  //     "Gy_VqQ._3XhpQ:Kt4Uv8_Vjfd4g-Sv__rywDoAvEbJbrNmwCIdS545fW0";
 }

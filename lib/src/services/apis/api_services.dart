@@ -9,6 +9,8 @@ import 'package:app_tcareer/src/features/authentication/data/models/reset_passwo
 import 'package:app_tcareer/src/features/authentication/data/models/login_request.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/login_response.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/register_request.dart';
+import 'package:app_tcareer/src/features/chat/data/models/conversation.dart';
+import 'package:app_tcareer/src/features/chat/data/models/send_message_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/create_comment_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/like_comment_request.dart';
@@ -144,4 +146,10 @@ abstract class ApiServices {
 
   @POST('api/auth/post/{id}/hidden')
   Future postHiddenPost({@Path('id') required String postId});
+
+  @GET("api/auth/get_conversation/{id}")
+  Future<Conversation> getConversation({@Path('id') required String userId});
+
+  @POST('api/auth/send_message')
+  Future postSendMessage({@Body() required SendMessageRequest body});
 }

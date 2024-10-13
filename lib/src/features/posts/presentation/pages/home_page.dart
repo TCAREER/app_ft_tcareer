@@ -224,7 +224,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: GestureDetector(
-            onTap: () => context.pushNamed("messages"),
+            onTap: () => context.pushNamed("conversation"),
             child: const PhosphorIcon(
               PhosphorIconsRegular.chatCenteredDots,
               color: Colors.black,

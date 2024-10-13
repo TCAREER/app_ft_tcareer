@@ -12,41 +12,43 @@ class IntroPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(
-        mainAxisAlignment:
-            MainAxisAlignment.spaceBetween, // Sử dụng spaceBetween
-        children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: SvgPicture.asset("assets/images/splash/intro.svg"),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                introduction(),
-                const SizedBox(
-                  height: 15,
-                ),
-                const Text(
-                  AppConstants.introContent,
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xff524B6B)),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-              ],
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment:
+              MainAxisAlignment.spaceBetween, // Sử dụng spaceBetween
+          children: [
+            SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: SvgPicture.asset("assets/images/splash/intro.svg"),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  introduction(),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  const Text(
+                    AppConstants.introContent,
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xff524B6B)),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                ],
+              ),
             ),
-          ),
-          // Nút sẽ luôn nằm ở cuối màn hình
-          arrowButton(context),
-        ],
+            // Nút sẽ luôn nằm ở cuối màn hình
+            arrowButton(context),
+          ],
+        ),
       ),
     );
   }

@@ -209,4 +209,14 @@ class AppUtils {
     // Thay '/' bằng '-' và thêm 'T' giữa ngày và giờ
     return dateString.replaceAll('/', '-').replaceFirst(' ', 'T');
   }
+
+  static String formatCreatedAt(String createdAt) {
+    // Parse chuỗi thời gian thành đối tượng DateTime
+    DateTime dateTime = DateTime.parse(createdAt);
+
+    // Định dạng giờ phút
+    String formattedTime = DateFormat('HH:mm').format(dateTime);
+
+    return formattedTime; // Trả về chuỗi giờ phút
+  }
 }

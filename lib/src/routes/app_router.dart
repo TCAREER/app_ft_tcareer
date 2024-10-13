@@ -5,8 +5,8 @@ import 'package:app_tcareer/src/features/authentication/presentation/pages/forgo
 import 'package:app_tcareer/src/features/authentication/presentation/pages/login/login_page.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/pages/register/register_page.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/pages/verify/verify_page.dart';
-import 'package:app_tcareer/src/features/messages/presentation/pages/chat_page.dart';
-import 'package:app_tcareer/src/features/messages/presentation/pages/message_page.dart';
+import 'package:app_tcareer/src/features/chat/presentation/pages/chat_page.dart';
+import 'package:app_tcareer/src/features/chat/presentation/pages/conversation_page.dart';
 import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/post_edit.dart';
 import 'package:app_tcareer/src/features/posts/data/models/shared_post.dart';
@@ -187,20 +187,23 @@ class AppRouter {
           },
         ),
         GoRoute(
-            path: "/messages",
-            name: "messages",
+            path: "/conversation",
+            name: "conversation",
             pageBuilder: (context, state) {
               return const CustomTransitionPage(
-                  child: MessagePage(),
+                  child: ConversationPage(),
                   transitionsBuilder: fadeTransitionBuilder);
             },
             routes: [
               GoRoute(
-                  path: "chat",
+                  path: "chat/:userId",
                   name: "chat",
                   pageBuilder: (context, state) {
-                    return const CustomTransitionPage(
-                        child: ChatPage(),
+                    String userId = state.pathParameters['userId'].toString();
+                    return CustomTransitionPage(
+                        child: ChatPage(
+                          userId: userId,
+                        ),
                         transitionsBuilder: fadeTransitionBuilder);
                   },
                   routes: [])
