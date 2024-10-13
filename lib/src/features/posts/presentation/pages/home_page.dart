@@ -16,55 +16,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class HomePage extends ConsumerStatefulWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   @override
-  ConsumerState<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends ConsumerState<HomePage> {
-  // bool hasRefreshed = false;
-  @override
-  void initState() {
-    super.initState();
-
-    Future.microtask(() {
-      ref.read(postControllerProvider).postCache.clear();
-      ref.read(postControllerProvider).getPost();
-      ref.read(userControllerProvider).getUserInfo();
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-    var extra = GoRouterState.of(context).extra;
-    if (extra == "reload") {
-      print(">>>>>>>>>>>B");
-      Future.microtask(() {
-        ref.read(postControllerProvider).scrollToTop();
-        ref.watch(postControllerProvider).refresh();
-        extra = null;
-      });
-
-      // hasRefreshed = true;
-    }
-
-    //
-
-    //
-    // if (extra == "create") {
-    //   Future.microtask(()
-    //     ref.read(postControllerProvider).scrollToTop();
-    //   });
-    // }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Khởi tạo dữ liệu ở đây
     final controller = ref.watch(postControllerProvider);
+    final userController = ref.watch(userControllerProvider);
+    Future.microtask(() async {
+      if (controller.postData == null || userController.userData == null) {
+        ref.read(postControllerProvider).getPost();
+        ref.read(userControllerProvider).getUserInfo();
+      }
+    });
 
     bool hasData = controller.postCache.isNotEmpty;
 
@@ -79,16 +44,18 @@ class _HomePageState extends ConsumerState<HomePage> {
             CupertinoSliverRefreshControl(
               onRefresh: () async => await controller.refresh(),
             ),
-            sliverAppBar(ref),
+            sliverAppBar(ref, context),
             SliverVisibility(
-                visible: controller.postData != null,
-                replacementSliver: postLoadingWidget(context),
-                sliver: SliverVisibility(
-                    visible: controller.postData?.data?.isNotEmpty == true,
-                    replacementSliver: SliverFillRemaining(
-                      child: emptyWidget("Không có bài viết nào"),
-                    ),
-                    sliver: sliverPost(ref))),
+              visible: controller.postData != null,
+              replacementSliver: postLoadingWidget(context),
+              sliver: SliverVisibility(
+                visible: controller.postData?.data?.isNotEmpty == true,
+                replacementSliver: SliverFillRemaining(
+                  child: emptyWidget("Không có bài viết nào"),
+                ),
+                sliver: sliverPost(ref),
+              ),
+            ),
             SliverToBoxAdapter(
               child: Visibility(
                 visible: hasData &&
@@ -119,34 +86,35 @@ class _HomePageState extends ConsumerState<HomePage> {
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Visibility(
                   replacement: sharedPostWidget(
-                      privacyOrigin: sharedPost?.privacy ?? "",
-                      onLike: () async => await controller.postLikePost(
-                            index: index,
-                            postId: post.id.toString(),
-                          ),
-                      originUserId: sharedPost?.userId.toString() ?? "",
-                      userId: post.userId.toString(),
-                      originCreatedAt: sharedPost?.createdAt ?? "",
-                      originPostId: sharedPost?.id.toString() ?? "",
-                      mediaUrl: sharedPost?.mediaUrl,
-                      context: context,
-                      ref: ref,
-                      avatarUrl: post.avatar ??
-                          "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
-                      userName: post.fullName ?? "",
-                      userNameOrigin: sharedPost?.fullName ?? "",
-                      avatarUrlOrigin: sharedPost?.avatar ??
-                          "https://ui-avatars.com/api/?name=${sharedPost?.fullName}&background=random",
-                      createdAt: post.createdAt ?? "",
-                      content: post.body ?? "",
-                      contentOrigin: sharedPost?.body ?? "",
-                      liked: post.liked ?? false,
-                      likes: post.likeCount?.toString() ?? "0",
-                      comments: post.commentCount?.toString() ?? "0",
-                      shares: post.shareCount?.toString() ?? "0",
-                      privacy: post.privacy ?? "",
+                    privacyOrigin: sharedPost?.privacy ?? "",
+                    onLike: () async => await controller.postLikePost(
+                      index: index,
                       postId: post.id.toString(),
-                      index: index),
+                    ),
+                    originUserId: sharedPost?.userId.toString() ?? "",
+                    userId: post.userId.toString(),
+                    originCreatedAt: sharedPost?.createdAt ?? "",
+                    originPostId: sharedPost?.id.toString() ?? "",
+                    mediaUrl: sharedPost?.mediaUrl,
+                    context: context,
+                    ref: ref,
+                    avatarUrl: post.avatar ??
+                        "https://ui-avatars.com/api/?name=${post.fullName}&background=random",
+                    userName: post.fullName ?? "",
+                    userNameOrigin: sharedPost?.fullName ?? "",
+                    avatarUrlOrigin: sharedPost?.avatar ??
+                        "https://ui-avatars.com/api/?name=${sharedPost?.fullName}&background=random",
+                    createdAt: post.createdAt ?? "",
+                    content: post.body ?? "",
+                    contentOrigin: sharedPost?.body ?? "",
+                    liked: post.liked ?? false,
+                    likes: post.likeCount?.toString() ?? "0",
+                    comments: post.commentCount?.toString() ?? "0",
+                    shares: post.shareCount?.toString() ?? "0",
+                    privacy: post.privacy ?? "",
+                    postId: post.id.toString(),
+                    index: index,
+                  ),
                   visible: post.sharedPostId == null,
                   child: postWidget(
                     onLike: () async => await controller.postLikePost(
@@ -172,11 +140,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                 ),
               ),
-              // if (index < controller.postCache.length - 1)
-              //   Divider(
-              //     height: 1,
-              //     color: Colors.grey.shade100,
-              //   ),
             ],
           );
         },
@@ -185,30 +148,19 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  Widget sliverAppBar(WidgetRef ref) {
+  Widget sliverAppBar(WidgetRef ref, BuildContext context) {
     final postingController = ref.watch(postingControllerProvider);
 
     return SliverAppBar(
-      // leading: Column(
-      //   mainAxisAlignment: MainAxisAlignment.center,
-      //   children: [
-      //     CircleAvatar(
-      //       radius: 18,
-      //       backgroundImage: NetworkImage(userData.avatar ??
-      //           "https://ui-avatars.com/api/?name=${userData.fullName}&background=random"),
-      //     ),
-      //   ],
-      // ),
       automaticallyImplyLeading: false,
       centerTitle: false,
       backgroundColor: Colors.white,
       floating: true,
-      pinned: false, // AppBar không cố định
+      pinned: false,
       title: const Text(
         "Bài đăng",
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
       ),
-      // leadingWidth: 120,
       actions: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -261,9 +213,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     color: AppColors.primary,
                   ),
                 ),
-                SizedBox(
-                  width: 10,
-                ),
+                SizedBox(width: 10),
                 Text(
                   "Đang tải bài viết lên...",
                   style: TextStyle(fontSize: 11),

@@ -170,7 +170,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
       ),
       centerTitle: false,
       title: Text(
-        widget.action != null ? "Chỉnh sửa bài viết" : "Tạo bài viết",
+        widget.action == "edit" ? "Chỉnh sửa bài viết" : "Tạo bài viết",
         style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
       ),
       titleTextStyle: const TextStyle(
@@ -191,7 +191,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
                     backgroundColor: AppColors.executeButton),
                 onPressed: isActive ? onPosting : null,
                 child: Text(
-                  widget.action != null ? "Lưu" : "Đăng",
+                  widget.action == "edit" ? "Lưu" : "Đăng",
                   style: TextStyle(color: Colors.white, fontSize: 13),
                 )),
           ),

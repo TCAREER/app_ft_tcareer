@@ -37,12 +37,12 @@ class PostController extends ChangeNotifier {
   }
   post_model.PostsResponse? postData;
   bool isLoading = false;
+  bool _disposed = false;
 
   @override
   void dispose() {
     // TODO: implement dispose
-
-    scrollController.removeListener(loadMore);
+    _disposed = true;
     scrollController.dispose();
     super.dispose();
   }
@@ -89,13 +89,17 @@ class PostController extends ChangeNotifier {
   List<post_model.Data> postCache = [];
 
   Future<void> getPost() async {
+    postData = null;
     postData = await postUseCase.getPost(personal: "n");
     if (postData?.data != null) {
       final newPosts = postData?.data
           ?.where((newPost) =>
               !postCache.any((cachedPost) => cachedPost.id == newPost.id))
           .toList();
+
       postCache.addAll(newPosts as Iterable<post_model.Data>);
+
+      // if (!_disposed) {
       notifyListeners();
     }
   }
