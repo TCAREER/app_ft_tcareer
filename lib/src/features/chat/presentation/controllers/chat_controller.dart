@@ -45,12 +45,12 @@ class ChatController extends ChangeNotifier {
           ?.where((newConversation) =>
               !messages.any((messages) => messages.id == newConversation.id))
           .toList();
-      messages.addAll(newConversations as Iterable<MessageModel>);
+      messages.addAll(newConversations?.reversed ?? []);
       notifyListeners();
 
-      Future.delayed(Duration(milliseconds: 100), () {
-        scrollToBottom();
-      });
+      // WidgetsBinding.instance.addPostFrameCallback((_) {
+      //   scrollToBottom();
+      // });
     }
   }
 
@@ -99,8 +99,7 @@ class ChatController extends ChangeNotifier {
     // Kiểm tra xem message có tồn tại trong messages hay không
     if (!messages
         .any((existingMessage) => existingMessage.id == newMessage.id)) {
-      messages.add(newMessage);
-      scrollToBottom();
+      messages.insert(0, newMessage);
       notifyListeners();
     }
   }

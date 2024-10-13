@@ -49,7 +49,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       // extendBody: true,
 
       resizeToAvoidBottomInset: true,
-      // backgroundColor: Colors.white,
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: false,
@@ -232,6 +232,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     final messages = controller.messages;
 
     return ListView.separated(
+      reverse: true,
       controller: controller.scrollController,
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5)
           .copyWith(bottom: 80),
