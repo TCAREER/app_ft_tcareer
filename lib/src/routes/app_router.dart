@@ -5,6 +5,8 @@ import 'package:app_tcareer/src/features/authentication/presentation/pages/forgo
 import 'package:app_tcareer/src/features/authentication/presentation/pages/login/login_page.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/pages/register/register_page.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/pages/verify/verify_page.dart';
+import 'package:app_tcareer/src/features/messages/presentation/pages/chat_page.dart';
+import 'package:app_tcareer/src/features/messages/presentation/pages/message_page.dart';
 import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/post_edit.dart';
 import 'package:app_tcareer/src/features/posts/data/models/shared_post.dart';
@@ -184,6 +186,25 @@ class AppRouter {
             );
           },
         ),
+        GoRoute(
+            path: "/messages",
+            name: "messages",
+            pageBuilder: (context, state) {
+              return const CustomTransitionPage(
+                  child: MessagePage(),
+                  transitionsBuilder: fadeTransitionBuilder);
+            },
+            routes: [
+              GoRoute(
+                  path: "chat",
+                  name: "chat",
+                  pageBuilder: (context, state) {
+                    return const CustomTransitionPage(
+                        child: ChatPage(),
+                        transitionsBuilder: fadeTransitionBuilder);
+                  },
+                  routes: [])
+            ])
       ],
       refreshListenable: GoRouterRefreshStream(),
     );
