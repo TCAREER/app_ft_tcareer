@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../services.dart';
@@ -57,7 +58,11 @@ final apiServiceProvider = Provider<ApiServices>((ref) {
         final response =
             await refreshAccessToken(refreshToken: refreshToken, ref: ref);
         if (response != null) {
+          Map<String, dynamic> payload =
+              JwtDecoder.decode(response.accessToken ?? "");
+          print(">>>>>>>>payload: $payload");
           await userUtils.saveAuthToken(
+              userId: payload['sub'],
               authToken: response.accessToken ?? "",
               refreshToken: refreshToken);
           final authToken = await userUtils.getAuthToken();

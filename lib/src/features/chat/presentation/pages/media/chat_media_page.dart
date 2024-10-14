@@ -160,8 +160,9 @@ class _ChatMediaPageState extends ConsumerState<ChatMediaPage> {
             onTap: () async {
               if (controller.isShowPopUp != true) {
                 await showChatAlbumPopup(context, controller.albums, ref);
+              } else {
+                controller.setIsShowPopUp(false);
               }
-              // controller.setIsShowPopUp(false);
             },
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 110),

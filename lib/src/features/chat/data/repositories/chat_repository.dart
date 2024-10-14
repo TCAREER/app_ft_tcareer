@@ -9,6 +9,12 @@ import 'package:ably_flutter/ably_flutter.dart' as ably;
 class ChatRepository {
   final Ref ref;
   ChatRepository(this.ref);
+
+  Future<void> initialize() async {
+    final ablyService = ref.watch(ablyServiceProvider);
+    return ablyService.initialize();
+  }
+
   StreamSubscription<ably.Message> listenAllMessage(
       {required String channelName,
       required Function(ably.Message) handleChannelMessage}) {
@@ -56,6 +62,16 @@ class ChatRepository {
     final ablyService = ref.watch(ablyServiceProvider);
     return ablyService.listenPresence(
         channelName: channelName, handleChannelPresence: handleChannelPresence);
+  }
+
+  Future<void> disconnect() async {
+    final ablyService = ref.watch(ablyServiceProvider);
+    return await ablyService.disconnect();
+  }
+
+  Future<void> dispose() async {
+    final ablyService = ref.watch(ablyServiceProvider);
+    return await ablyService.dispose();
   }
 }
 

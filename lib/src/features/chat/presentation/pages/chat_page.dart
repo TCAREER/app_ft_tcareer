@@ -27,11 +27,13 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   void initState() {
     // TODO: implement initState
     Future.microtask(() async {
-      await ref.read(chatControllerProvider).getConversation(widget.userId);
+      final controller = ref.read(chatControllerProvider);
+      await controller.getConversation(widget.userId);
       // ref.watch(chatControllerProvider).scrollToBottom();
-      await ref.read(chatControllerProvider).enterPresence(widget.clientId);
-      ref.read(chatControllerProvider).listenPresence(widget.userId);
-      ref.read(chatControllerProvider).listenMessage();
+      await controller.initializeAbly();
+      await controller.enterPresence(widget.clientId);
+      controller.listenPresence(widget.userId);
+      controller.listenMessage();
     });
 
     super.initState();
@@ -64,6 +66,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       onPopInvoked: (didPop) async {
         if (didPop) {
           await controller.leavePresence(widget.clientId);
+          await controller.disposeService();
           controller.setHasContent("");
           if (controller.isShowEmoji == true) {
             controller.setIsShowEmoJi(context);

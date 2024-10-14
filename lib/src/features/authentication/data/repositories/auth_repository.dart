@@ -15,6 +15,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import '../../../../services/services.dart';
 
@@ -39,9 +40,13 @@ class AuthRepository {
           deviceToken: deviceToken,
           deviceId: deviceId);
       final response = await apiServices.postLogin(body: body);
+      Map<String, dynamic> payload =
+          JwtDecoder.decode(response.accessToken ?? "");
+      print(">>>>>>>>payload: $payload");
       userUtil.saveAuthToken(
           authToken: response.accessToken ?? "",
-          refreshToken: response.refreshToken ?? "");
+          refreshToken: response.refreshToken ?? "",
+          userId: payload['sub']);
 
       // ref.read(isAuthenticatedProvider.notifier).update((state) => true);
     } on DioException catch (e) {
@@ -64,9 +69,15 @@ class AuthRepository {
               deviceId: deviceId,
               deviceToken: deviceToken));
 
+      Map<String, dynamic> payload =
+          JwtDecoder.decode(response.accessToken ?? "");
+      print(">>>>>>>>payload: $payload");
+      print(">>>>>>>>>userId: ${payload['sub']}");
       userUtil.saveAuthToken(
           authToken: response.accessToken ?? "",
-          refreshToken: response.refreshToken ?? "");
+          refreshToken: response.refreshToken ?? "",
+          userId: payload['sub']);
+      print(">>>>>>>>>>>>userId2: ${await userUtil.getUserId()}");
     } on DioException catch (e) {
       rethrow;
     }

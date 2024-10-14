@@ -11,11 +11,14 @@ class UserUtils {
   UserUtils(this.ref);
 
   Future<void> saveAuthToken(
-      {required String authToken, required String refreshToken}) async {
+      {required String authToken,
+      required String refreshToken,
+      required String userId}) async {
     final sharedRef = await ref.read(sharedPreferencesProvider.future);
     final refreshTokenNotifier = ref.watch(refreshTokenStateProvider.notifier);
     sharedRef.setString(AppConstants.authToken, authToken);
     sharedRef.setString(AppConstants.refreshToken, refreshToken);
+    sharedRef.setString("userId", userId);
     refreshTokenNotifier.setTokenExpired(false);
   }
 
@@ -47,6 +50,11 @@ class UserUtils {
   Future<String> getRefreshToken() async {
     final sharedRef = await ref.read(sharedPreferencesProvider.future);
     return sharedRef.getString(AppConstants.refreshToken) ?? "";
+  }
+
+  Future<String> getUserId() async {
+    final sharedRef = await ref.read(sharedPreferencesProvider.future);
+    return sharedRef.getString("userId") ?? "";
   }
 
   Future<bool> saveCacheList(

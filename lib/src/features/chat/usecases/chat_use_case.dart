@@ -9,6 +9,8 @@ class ChatUseCase {
   final ChatRepository chatRepository;
   ChatUseCase(this.chatRepository);
 
+  Future<void> initialize() async => await chatRepository.initialize();
+
   StreamSubscription<ably.Message> listenAllMessage(
           {required Function(ably.Message) handleChannelMessage,
           required String conversationId}) =>
@@ -43,6 +45,10 @@ class ChatUseCase {
       chatRepository.listenPresence(
           channelName: "conversation-$conversationId",
           handleChannelPresence: handleChannelPresence);
+
+  Future<void> disconnect() async => await chatRepository.disconnect();
+
+  Future<void> dispose() async => await chatRepository.dispose();
 }
 
 final chatUseCaseProvider = Provider<ChatUseCase>((ref) {

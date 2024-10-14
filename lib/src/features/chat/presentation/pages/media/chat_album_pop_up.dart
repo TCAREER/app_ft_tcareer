@@ -38,76 +38,83 @@ Future<AssetPathEntity?> showChatAlbumPopup(
       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
     ),
     builder: (context) {
-      return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              controller.setIsShowPopUp(false);
-              context.pop();
-            },
-            icon: const Icon(
-              Icons.close,
-              color: Colors.black,
+      return PopScope(
+        onPopInvoked: (didPop) {
+          if (didPop) {
+            controller.setIsShowPopUp(false);
+          }
+        },
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            leading: IconButton(
+              onPressed: () {
+                controller.setIsShowPopUp(false);
+                context.pop();
+              },
+              icon: const Icon(
+                Icons.close,
+                color: Colors.black,
+              ),
+            ),
+            centerTitle: true,
+            title: Text(
+              "Chọn album",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
-          centerTitle: true,
-          title: Text(
-            "Chọn album",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-        ),
-        body: ListView(
-          padding: EdgeInsets.zero,
-          children: albumWithThumbnail.map((albumData) {
-            final AssetPathEntity album = albumData["album"];
-            final AssetEntity? assetFirst = albumData["first"];
-            controller.setIsShowPopUp(true);
+          body: ListView(
+            padding: EdgeInsets.zero,
+            children: albumWithThumbnail.map((albumData) {
+              final AssetPathEntity album = albumData["album"];
+              final AssetEntity? assetFirst = albumData["first"];
+              controller.setIsShowPopUp(true);
 
-            return ListTile(
-              onTap: () async {
-                await controller.selectAlbum(album);
-                Navigator.pop(
-                    context, album); // Đóng BottomSheet và trả về album đã chọn
-              },
-              leading: assetFirst != null
-                  ? FutureBuilder<Uint8List?>(
-                      future: assetFirst.thumbnailData,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return SizedBox(
-                            height: 64,
-                            width: 64,
-                            child: Center(child: CircularProgressIndicator()),
-                          );
-                        } else if (snapshot.hasData) {
-                          return Image.memory(
-                            snapshot.data!,
-                            height: 64,
-                            width: 64,
-                            fit: BoxFit.cover,
-                          );
-                        } else {
-                          return SizedBox(
-                            height: 64,
-                            width: 64,
-                            child:
-                                Container(), // Hoặc một widget khác nếu không có dữ liệu
-                          );
-                        }
-                      },
-                    )
-                  : SizedBox(
-                      height: 64,
-                      width: 64,
-                      child:
-                          Container(), // Hoặc một widget khác để hiển thị khi assetFirst là null
-                    ),
-              title: Text(album.name),
-              subtitle: Text("${albumData["total"]}"),
-            );
-          }).toList(),
+              return ListTile(
+                onTap: () async {
+                  await controller.selectAlbum(album);
+                  Navigator.pop(context,
+                      album); // Đóng BottomSheet và trả về album đã chọn
+                },
+                leading: assetFirst != null
+                    ? FutureBuilder<Uint8List?>(
+                        future: assetFirst.thumbnailData,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return SizedBox(
+                              height: 64,
+                              width: 64,
+                              child: Center(child: CircularProgressIndicator()),
+                            );
+                          } else if (snapshot.hasData) {
+                            return Image.memory(
+                              snapshot.data!,
+                              height: 64,
+                              width: 64,
+                              fit: BoxFit.cover,
+                            );
+                          } else {
+                            return SizedBox(
+                              height: 64,
+                              width: 64,
+                              child:
+                                  Container(), // Hoặc một widget khác nếu không có dữ liệu
+                            );
+                          }
+                        },
+                      )
+                    : SizedBox(
+                        height: 64,
+                        width: 64,
+                        child:
+                            Container(), // Hoặc một widget khác để hiển thị khi assetFirst là null
+                      ),
+                title: Text(album.name),
+                subtitle: Text("${albumData["total"]}"),
+              );
+            }).toList(),
+          ),
         ),
       );
     },

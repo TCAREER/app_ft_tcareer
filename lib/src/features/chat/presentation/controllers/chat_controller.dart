@@ -68,6 +68,7 @@ class ChatController extends ChangeNotifier {
     }, context, (val) {});
   }
 
+  Future<void> initializeAbly() async => await chatUseCase.initialize();
   StreamSubscription<ably.Message>? messageSubscription;
 
   StreamSubscription<ably.Message>? listenMessage() {
@@ -152,6 +153,7 @@ class ChatController extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> disposeService() async => await chatUseCase.dispose();
   @override
   void dispose() {
     // TODO: implement dispose
