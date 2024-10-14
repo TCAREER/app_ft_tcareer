@@ -26,6 +26,23 @@ class ChatUseCase {
 
   Future<void> sendMessage(SendMessageRequest body) async =>
       await chatRepository.sendMessage(body);
+
+  Future<void> enterPresence(
+          {required String conversationId, required String userId}) async =>
+      await chatRepository.enterPresence(
+          channelName: "conversation-$conversationId", userId: userId);
+
+  Future<void> leavePresence(
+          {required String conversationId, required String userId}) async =>
+      await chatRepository.leavePresence(
+          channelName: "conversation-$conversationId", userId: userId);
+
+  StreamSubscription<ably.PresenceMessage> listenPresence(
+          {required String conversationId,
+          required Function(ably.PresenceMessage) handleChannelPresence}) =>
+      chatRepository.listenPresence(
+          channelName: "conversation-$conversationId",
+          handleChannelPresence: handleChannelPresence);
 }
 
 final chatUseCaseProvider = Provider<ChatUseCase>((ref) {

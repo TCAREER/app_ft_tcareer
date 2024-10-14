@@ -205,6 +205,33 @@ class AppUtils {
     }
   }
 
+  static String formatTimeMessage(String dateString) {
+    // Chuyển đổi định dạng ngày tháng
+    dateString = dateString.replaceAll('/', '-'); // Đổi dấu '/' thành '-'
+
+    final dateTime = DateTime.tryParse(dateString);
+    if (dateTime == null) {
+      return 'Invalid date format';
+    }
+
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inSeconds < 60) {
+      return 'Đang hoạt động';
+    } else if (difference.inMinutes < 60) {
+      return 'Hoạt động ${difference.inMinutes} phút trước';
+    } else if (difference.inHours < 24) {
+      return 'Hoạt động ${difference.inHours} giờ trước';
+    } else if (difference.inDays < 7) {
+      return 'Hoạt động ${difference.inDays} ngày trước';
+    } else if (difference.inDays < 14) {
+      return 'Hoạt động 1 tuần trước';
+    } else {
+      return DateFormat('dd/MM/yyyy').format(dateTime);
+    }
+  }
+
   static String convertToISOFormat(String dateString) {
     // Thay '/' bằng '-' và thêm 'T' giữa ngày và giờ
     return dateString.replaceAll('/', '-').replaceFirst(' ', 'T');

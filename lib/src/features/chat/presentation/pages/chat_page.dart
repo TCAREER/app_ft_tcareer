@@ -11,7 +11,8 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
   final String userId;
-  const ChatPage({super.key, required this.userId});
+  final String clientId;
+  const ChatPage({super.key, required this.userId, required this.clientId});
 
   @override
   ConsumerState<ChatPage> createState() => _ChatPageState();
@@ -21,23 +22,33 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   @override
   void initState() {
     // TODO: implement initState
-    Future.microtask(() {
-      ref.watch(chatControllerProvider).getConversation(widget.userId);
+    Future.microtask(() async {
+      await ref.read(chatControllerProvider).getConversation(widget.userId);
       // ref.watch(chatControllerProvider).scrollToBottom();
+      await ref.read(chatControllerProvider).enterPresence(widget.clientId);
+      ref.read(chatControllerProvider).listenPresence(widget.userId);
+      ref.read(chatControllerProvider).listenMessage();
     });
 
-    ref.read(chatControllerProvider).listenMessage();
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   ref.read(chatControllerProvider).scrollToBottom();
-    // });
-  }
+  // @override
+  // void dispose() {
+  //   // TODO: implement dispose
+  //   Future.microtask(() async {
+  //     await ref.read(chatControllerProvider).leavePresence(widget.userId);
+  //   });
+  //   super.dispose();
+  // }
+  // @override
+  // void didChangeDependencies() {
+  //   // TODO: implement didChangeDependencies
+  //   super.didChangeDependencies();
+  //   // WidgetsBinding.instance.addPostFrameCallback((_) {
+  //   //   ref.read(chatControllerProvider).scrollToBottom();
+  //   // });
+  // }
 
   @override
   Widget build(
@@ -45,66 +56,76 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   ) {
     final controller = ref.watch(chatControllerProvider);
 
-    return Scaffold(
-      // extendBody: true,
+    return PopScope(
+      onPopInvoked: (didPop) async {
+        if (didPop) {
+          await controller.leavePresence(widget.clientId);
+        }
+      },
+      child: Scaffold(
+        // extendBody: true,
 
-      resizeToAvoidBottomInset: true,
-      backgroundColor: Colors.grey.shade100,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        centerTitle: false,
-        leadingWidth: 40,
-        leading: GestureDetector(
-          onTap: () => context.pop(),
-          child: Icon(Icons.arrow_back),
+        resizeToAvoidBottomInset: true,
+        backgroundColor: Colors.grey.shade100,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          centerTitle: false,
+          leadingWidth: 40,
+          leading: GestureDetector(
+            onTap: () => context.pop(),
+            child: Icon(Icons.arrow_back),
+          ),
+          title: Row(
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                radius: 20,
+                backgroundImage: NetworkImage(controller.user?.avatar ?? ""),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    controller.user?.fullName ?? "",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Visibility(
+                        visible: controller.status == "online",
+                        child: Icon(
+                          Icons.circle,
+                          color: Colors.green,
+                          size: 8,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        controller.statusText ?? "",
+                        style: TextStyle(color: Colors.black45, fontSize: 12),
+                      ),
+                    ],
+                  )
+                ],
+              )
+            ],
+          ),
+          actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.menu))],
         ),
-        title: Row(
-          // crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            CircleAvatar(
-              radius: 20,
-              backgroundImage: NetworkImage(controller.user?.avatar ?? ""),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  controller.user?.fullName ?? "",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.circle,
-                      color: Colors.green,
-                      size: 8,
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      "Đang hoạt động",
-                      style: TextStyle(color: Colors.green, fontSize: 12),
-                    ),
-                  ],
-                )
-              ],
-            )
-          ],
-        ),
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.menu))],
+        body: messages(),
+        bottomNavigationBar: bottomAppBar(ref, context),
       ),
-      body: messages(),
-      bottomNavigationBar: bottomAppBar(ref, context),
     );
   }
 

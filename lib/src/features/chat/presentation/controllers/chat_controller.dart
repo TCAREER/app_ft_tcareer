@@ -19,7 +19,7 @@ class ChatController extends ChangeNotifier {
   final Ref ref;
 
   ChatController(this.chatUseCase, this.ref) {
-    listenMessage();
+    // listenMessage();
   }
 
   ScrollController scrollController = ScrollController();
@@ -109,17 +109,60 @@ class ChatController extends ChangeNotifier {
     scrollController.jumpTo(position);
   }
 
+  Future<void> enterPresence(String userId) async {
+    await chatUseCase.enterPresence(
+        conversationId: conversation?.conversationId.toString() ?? "",
+        userId: userId);
+  }
+
+  Future<void> leavePresence(String userId) async {
+    await chatUseCase.leavePresence(
+        conversationId: conversation?.conversationId.toString() ?? "",
+        userId: userId);
+  }
+
+  StreamSubscription<ably.PresenceMessage>? presenceSubscription;
+
+  StreamSubscription<ably.PresenceMessage>? listenPresence(String userId) {
+    presenceSubscription = chatUseCase.listenPresence(
+        conversationId: conversation?.conversationId.toString() ?? "",
+        handleChannelPresence: (presenceMessage) {
+          print(">>>>>>>>>data: ${presenceMessage.data}");
+          handleActivityState(presenceMessage, userId);
+        });
+    return presenceSubscription;
+  }
+
+  String? statusText;
+  String status = "off";
+  void handleActivityState(
+      ably.PresenceMessage presenceMessage, String userId) {
+    final presenceData = jsonDecode(presenceMessage.data.toString());
+    print(">>>>>>>>>>>presenceData: $presenceData");
+    if (presenceData['userId'] == userId) {
+      status = presenceData['status'];
+      print(">>>>>>status: ${presenceData['status']}");
+      if (status == "online") {
+        statusText = "Đang hoạt động";
+      } else {
+        String leavedAt =
+            statusText = AppUtils.formatTimeMessage(presenceData['leavedAt']);
+      }
+    }
+    notifyListeners();
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
     messageSubscription?.cancel();
+    presenceSubscription?.cancel();
     scrollController.dispose();
   }
 }
 
 final chatControllerProvider = ChangeNotifierProvider<ChatController>((ref) {
   final chatUseCase = ref.watch(chatUseCaseProvider);
-
   return ChatController(chatUseCase, ref);
 });

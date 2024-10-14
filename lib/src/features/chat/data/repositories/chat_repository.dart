@@ -35,6 +35,28 @@ class ChatRepository {
     final api = ref.watch(apiServiceProvider);
     return await api.postSendMessage(body: body);
   }
+
+  Future<void> enterPresence(
+      {required String channelName, required String userId}) async {
+    final ablyService = ref.watch(ablyServiceProvider);
+    return await ablyService.enterPresence(
+        channelName: channelName, userId: userId);
+  }
+
+  Future<void> leavePresence(
+      {required String channelName, required String userId}) async {
+    final ablyService = ref.watch(ablyServiceProvider);
+    return await ablyService.leavePresence(
+        channelName: channelName, userId: userId);
+  }
+
+  StreamSubscription<ably.PresenceMessage> listenPresence(
+      {required String channelName,
+      required Function(ably.PresenceMessage) handleChannelPresence}) {
+    final ablyService = ref.watch(ablyServiceProvider);
+    return ablyService.listenPresence(
+        channelName: channelName, handleChannelPresence: handleChannelPresence);
+  }
 }
 
 final chatRepositoryProvider =

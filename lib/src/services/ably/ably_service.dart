@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:ably_flutter/ably_flutter.dart' as ably;
 import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
 
 class AblyService {
-  final clientOptions = ably.ClientOptions(key: AppConstants.ablyKey);
+  final clientOptions =
+      ably.ClientOptions(key: AppConstants.ablyKey, clientId: Uuid().v4());
   // final realtime =  ably.Realtime(options: clientOptions);
 
   Future<void> listenAllConnectionState(
@@ -43,6 +46,38 @@ class AblyService {
     return channel
         .subscribe(name: eventName)
         .listen((ably.Message message) async => handleChannelMessage(message));
+  }
+
+  Future<void> enterPresence(
+      {required String channelName, required String userId}) async {
+    ably.Realtime realtime = ably.Realtime(options: clientOptions);
+    ably.RealtimeChannel channel = realtime.channels.get(channelName);
+    String data = jsonEncode({"userId": userId, "status": "online"});
+    await channel.presence.enter(data);
+  }
+
+  Future<void> leavePresence(
+      {required String channelName, required String userId}) async {
+    ably.Realtime realtime = ably.Realtime(options: clientOptions);
+    ably.RealtimeChannel channel = realtime.channels.get(channelName);
+    String data = jsonEncode({
+      "userId": userId,
+      "status": "offline",
+      "leavedAt": DateTime.now().toIso8601String()
+    });
+    await channel.presence.leave(data);
+  }
+
+  StreamSubscription<ably.PresenceMessage> listenPresence(
+      {required String channelName,
+      required Function(ably.PresenceMessage) handleChannelPresence}) {
+    ably.Realtime realtime = ably.Realtime(options: clientOptions);
+    ably.RealtimeChannel channel = realtime.channels.get(channelName);
+    return channel.presence
+        .subscribe()
+        .listen((ably.PresenceMessage presenceMessage) {
+      handleChannelPresence(presenceMessage);
+    });
   }
 
   Future<void> publishMessage({

@@ -232,6 +232,7 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage>
   Widget buttonConnectAndMessage(String? friendStatus) {
     final controller = ref.watch(anotherUserControllerProvider);
     final connectionController = ref.watch(userConnectionControllerProvider);
+    final userController = ref.watch(userControllerProvider);
     String userId = controller.anotherUserData?.data?.id.toString() ?? "";
     return Visibility(
       visible: controller.anotherUserData != null,
@@ -267,7 +268,9 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage>
                   ),
                   onPressed: () => context.pushNamed("chat", pathParameters: {
                     "userId":
-                        controller.anotherUserData?.data?.id.toString() ?? ""
+                        controller.anotherUserData?.data?.id.toString() ?? "",
+                    "clientId":
+                        userController.userData?.data?.id.toString() ?? ""
                   }),
                   child: const Text("Nhắn tin",
                       style: TextStyle(color: Colors.black)),

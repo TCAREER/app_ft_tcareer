@@ -196,13 +196,16 @@ class AppRouter {
             },
             routes: [
               GoRoute(
-                  path: "chat/:userId",
+                  path: "chat/:userId/:clientId",
                   name: "chat",
                   pageBuilder: (context, state) {
                     String userId = state.pathParameters['userId'].toString();
+                    String clientId =
+                        state.pathParameters['clientId'].toString();
                     return CustomTransitionPage(
                         child: ChatPage(
                           userId: userId,
+                          clientId: clientId,
                         ),
                         transitionsBuilder: fadeTransitionBuilder);
                   },
