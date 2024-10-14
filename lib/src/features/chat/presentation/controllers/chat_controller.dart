@@ -159,6 +159,41 @@ class ChatController extends ChangeNotifier {
     messageSubscription?.cancel();
     presenceSubscription?.cancel();
     scrollController.dispose();
+    contentController.dispose();
+  }
+
+  bool hasContent = false;
+  void setHasContent(String value) {
+    if (value.isNotEmpty) {
+      hasContent = true;
+    } else {
+      hasContent = false;
+    }
+    notifyListeners();
+  }
+
+  bool isShowEmoji = false;
+
+  void setIsShowEmoJi(BuildContext context) {
+    isShowEmoji = !isShowEmoji;
+    if (isShowEmoji == true) {
+      FocusScope.of(context).unfocus();
+    } else {
+      FocusScope.of(context).requestFocus();
+    }
+    notifyListeners();
+  }
+
+  bool isShowMedia = false;
+
+  void setIsShowMedia(BuildContext context) {
+    isShowMedia = !isShowMedia;
+    if (isShowMedia == true) {
+      FocusScope.of(context).unfocus();
+    } else {
+      FocusScope.of(context).requestFocus();
+    }
+    notifyListeners();
   }
 }
 

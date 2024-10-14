@@ -189,7 +189,6 @@ class MediaController extends ChangeNotifier {
     required BuildContext context,
     bool? isComment,
   }) async {
-    print(">>>>>>>>>$isComment");
     if (isComment != false &&
         selectedAsset.length == 1 &&
         !selectedAsset.contains(asset)) {

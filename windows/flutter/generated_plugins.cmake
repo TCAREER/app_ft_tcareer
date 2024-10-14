@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   awesome_notifications
   desktop_webview_auth
+  emoji_picker_flutter
   file_selector_windows
   firebase_auth
   firebase_core
