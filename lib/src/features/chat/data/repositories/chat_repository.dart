@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:app_tcareer/src/features/chat/data/models/all_conversation.dart';
 import 'package:app_tcareer/src/features/chat/data/models/conversation.dart';
 import 'package:app_tcareer/src/features/chat/data/models/leave_chat_request.dart';
 import 'package:app_tcareer/src/features/chat/data/models/mark_read_message_request.dart';
@@ -102,6 +103,11 @@ class ChatRepository {
   Future<void> postMarkReadMessage(MarkReadMessageRequest body) async {
     final api = ref.watch(apiServiceProvider);
     return await api.postMarkReadMessage(body: body);
+  }
+
+  Future<AllConversation> getAllConversation() async {
+    final api = ref.watch(apiServiceProvider);
+    return await api.getAllConversation();
   }
 }
 

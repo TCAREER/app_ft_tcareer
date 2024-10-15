@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_tcareer/src/configs/app_constants.dart';
+import 'package:app_tcareer/src/features/chat/data/models/all_conversation.dart';
 import 'package:app_tcareer/src/features/chat/data/models/conversation.dart';
 import 'package:app_tcareer/src/features/chat/data/models/leave_chat_request.dart';
+import 'package:app_tcareer/src/features/chat/data/models/mark_read_message_request.dart';
 import 'package:app_tcareer/src/features/chat/data/models/message.dart';
 import 'package:app_tcareer/src/features/chat/data/models/send_message_request.dart';
 import 'package:app_tcareer/src/features/chat/data/models/user.dart';
@@ -145,6 +147,12 @@ class ChatController extends ChangeNotifier {
     // status = "off";
   }
 
+  Future<void> markReadMessage() async {
+    await chatUseCase.postMarkReadMessage(MarkReadMessageRequest(
+      conversationId: conversationData?.conversation?.id,
+    ));
+  }
+
   StreamSubscription<ably.PresenceMessage>? presenceSubscription;
 
   StreamSubscription<ably.PresenceMessage>? listenPresence(String userId) {
@@ -276,6 +284,12 @@ class ChatController extends ChangeNotifier {
   //             },
   //           ));
   // }
+
+  AllConversation? allConversation;
+  Future<void> getAllConversation() async {
+    allConversation = await chatUseCase.getAllConversation();
+    notifyListeners();
+  }
 }
 
 final chatControllerProvider = ChangeNotifierProvider<ChatController>((ref) {

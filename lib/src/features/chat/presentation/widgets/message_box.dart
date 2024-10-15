@@ -14,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Widget messageBox({
+  required String avatarUrl,
   required String message,
   bool isMe = false,
   required String createdAt,
@@ -27,10 +28,9 @@ Widget messageBox({
     children: [
       Visibility(
         visible: !isMe,
-        child: const CircleAvatar(
+        child: CircleAvatar(
           radius: 15,
-          backgroundImage: NetworkImage(
-              "https://mighty.tools/mockmind-api/content/human/41.jpg"),
+          backgroundImage: NetworkImage(avatarUrl),
         ),
       ),
       const SizedBox(

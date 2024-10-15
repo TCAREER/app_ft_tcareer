@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:app_tcareer/src/extensions/image_extension.dart';
 import 'package:app_tcareer/src/extensions/video_extension.dart';
+import 'package:app_tcareer/src/features/chat/data/models/mark_read_message_request.dart';
 import 'package:app_tcareer/src/features/chat/data/models/message.dart';
 import 'package:app_tcareer/src/features/chat/presentation/controllers/chat_controller.dart';
 import 'package:app_tcareer/src/features/chat/usecases/chat_use_case.dart';

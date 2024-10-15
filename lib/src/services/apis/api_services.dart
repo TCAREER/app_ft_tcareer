@@ -9,6 +9,7 @@ import 'package:app_tcareer/src/features/authentication/data/models/reset_passwo
 import 'package:app_tcareer/src/features/authentication/data/models/login_request.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/login_response.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/register_request.dart';
+import 'package:app_tcareer/src/features/chat/data/models/all_conversation.dart';
 import 'package:app_tcareer/src/features/chat/data/models/conversation.dart';
 import 'package:app_tcareer/src/features/chat/data/models/leave_chat_request.dart';
 import 'package:app_tcareer/src/features/chat/data/models/mark_read_message_request.dart';
@@ -160,4 +161,7 @@ abstract class ApiServices {
 
   @POST('api/auth/mark_read')
   Future postMarkReadMessage({@Body() required MarkReadMessageRequest body});
+
+  @GET('api/auth/get_all_conversation')
+  Future<AllConversation> getAllConversation();
 }

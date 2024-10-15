@@ -254,6 +254,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         final message = messages[index];
         bool isMe = message.senderId == user.userData?.data?.id;
         return messageBox(
+            avatarUrl: controller.user?.userAvatar ?? "",
             media: message.mediaUrl ?? [],
             ref: ref,
             message: message.content ?? "",
@@ -268,6 +269,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 
   PreferredSize appBar(WidgetRef ref) {
     final controller = ref.watch(chatControllerProvider);
+
     return PreferredSize(
         preferredSize: Size.fromHeight(50),
         child: AppBar(
@@ -282,11 +284,42 @@ class _ChatPageState extends ConsumerState<ChatPage> {
             // crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundImage:
-                    NetworkImage(controller.user?.userAvatar ?? ""),
-              ),
+              Visibility(
+                  visible: controller.status == "online" ||
+                      controller.statusText == "Đang hoạt động",
+                  replacement: CircleAvatar(
+                    radius: 20,
+                    backgroundImage:
+                        NetworkImage(controller.user?.userAvatar ?? ""),
+                  ),
+                  child: Stack(
+                    children: [
+                      // Avatar
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundImage:
+                            NetworkImage(controller.user?.userAvatar ?? ""),
+                      ),
+                      // Chấm tròn cắt vào avatar
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          width: 12, // Độ rộng của chấm tròn
+                          height: 12, // Chiều cao của chấm tròn
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.green, // Màu của chấm tròn
+                            border: Border.all(
+                              color: Colors
+                                  .white, // Đường viền màu trắng để tạo hiệu ứng cắt vào avatar
+                              width: 2, // Độ dày của viền
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )),
               const SizedBox(
                 width: 10,
               ),
@@ -304,22 +337,22 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Visibility(
-                        visible: controller.status == "online" ||
-                            controller.statusText == "Đang hoạt động",
-                        child: const Icon(
-                          Icons.circle,
-                          color: Colors.green,
-                          size: 8,
-                        ),
-                      ),
-                      Visibility(
-                        visible: controller.status == "online" ||
-                            controller.statusText == "Đang hoạt động",
-                        child: const SizedBox(
-                          width: 5,
-                        ),
-                      ),
+                      // Visibility(
+                      //   visible: controller.status == "online" ||
+                      //       controller.statusText == "Đang hoạt động",
+                      //   child: const Icon(
+                      //     Icons.circle,
+                      //     color: Colors.green,
+                      //     size: 8,
+                      //   ),
+                      // ),
+                      // Visibility(
+                      //   visible: controller.status == "online" ||
+                      //       controller.statusText == "Đang hoạt động",
+                      //   child: const SizedBox(
+                      //     width: 5,
+                      //   ),
+                      // ),
                       Text(
                         controller.statusText ?? "",
                         // AppUtils.formatTimeMessage(controller.user?.leftAt),

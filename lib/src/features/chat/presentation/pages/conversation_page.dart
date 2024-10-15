@@ -1,16 +1,37 @@
+import 'package:app_tcareer/src/features/chat/presentation/controllers/chat_controller.dart';
+import 'package:app_tcareer/src/features/posts/presentation/widgets/empty_widget.dart';
+import 'package:app_tcareer/src/utils/app_utils.dart';
+import 'package:app_tcareer/src/utils/user_utils.dart';
+import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class ConversationPage extends StatelessWidget {
+class ConversationPage extends ConsumerStatefulWidget {
   const ConversationPage({super.key});
 
   @override
+  ConsumerState<ConversationPage> createState() => _ConversationPageState();
+}
+
+class _ConversationPageState extends ConsumerState<ConversationPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.microtask(() async {
+      ref.read(chatControllerProvider).getAllConversation();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final controller = ref.watch(chatControllerProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
-        slivers: [sliverAppBar(context), sliverFriend(), sliverChat()],
+        slivers: [sliverAppBar(context), sliverChat()],
       ),
     );
   }
@@ -54,26 +75,47 @@ class ConversationPage extends StatelessWidget {
   }
 
   Widget sliverChat() {
-    return SliverList(
-        delegate: SliverChildBuilderDelegate(
-      childCount: 5,
-      (context, index) {
-        return ListTile(
-          onTap: () => context.goNamed("chat"),
-          leading: CircleAvatar(
-            radius: 25,
-            backgroundImage: NetworkImage(
-                "https://mighty.tools/mockmind-api/content/human/57.jpg"),
+    final controller = ref.watch(chatControllerProvider);
+    final userUtils = ref.watch(userUtilsProvider);
+    return SliverVisibility(
+        visible: controller.allConversation != null,
+        replacementSliver: SliverToBoxAdapter(
+          child: circularLoadingWidget(),
+        ),
+        sliver: SliverVisibility(
+          visible: controller.allConversation?.data?.isNotEmpty == true,
+          replacementSliver: SliverToBoxAdapter(
+            child: emptyWidget("Bạn chưa có đoạn chat nào!"),
           ),
-          title: Text("Quang Thiện"),
-          subtitle: Text(
-            "Bạn: Xin chào",
-            style: TextStyle(fontSize: 12, color: Colors.black54),
-          ),
-          trailing: Text("1 phút"),
-        );
-      },
-    ));
+          sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+            childCount: controller.allConversation?.data?.length,
+            (context, index) {
+              final conversation = controller.allConversation?.data?[index];
+
+              return ListTile(
+                onTap: () async {
+                  String clientId = await userUtils.getUserId();
+                  context.goNamed("chat", pathParameters: {
+                    "userId": conversation?.userId.toString() ?? "",
+                    "clientId": clientId
+                  });
+                },
+                leading: CircleAvatar(
+                  radius: 25,
+                  backgroundImage: NetworkImage(conversation?.userAvatar ?? ""),
+                ),
+                title: Text(conversation?.userFullName ?? ""),
+                subtitle: Text(
+                  conversation?.latestMessage ?? "",
+                  style: TextStyle(fontSize: 12, color: Colors.black54),
+                ),
+                trailing: Text(
+                    AppUtils.formatTimeLastMessage(conversation?.leftAt ?? "")),
+              );
+            },
+          )),
+        ));
   }
 
   Widget sliverFriend() {

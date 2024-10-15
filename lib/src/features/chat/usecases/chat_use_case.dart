@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:ably_flutter/ably_flutter.dart' as ably;
+import 'package:app_tcareer/src/features/chat/data/models/all_conversation.dart';
 import 'package:app_tcareer/src/features/chat/data/models/conversation.dart';
 import 'package:app_tcareer/src/features/chat/data/models/leave_chat_request.dart';
 import 'package:app_tcareer/src/features/chat/data/models/mark_read_message_request.dart';
@@ -69,6 +70,9 @@ class ChatUseCase {
 
   Future<void> postMarkReadMessage(MarkReadMessageRequest body) async =>
       await chatRepository.postMarkReadMessage(body);
+
+  Future<AllConversation> getAllConversation() async =>
+      await chatRepository.getAllConversation();
 }
 
 final chatUseCaseProvider = Provider<ChatUseCase>((ref) {
