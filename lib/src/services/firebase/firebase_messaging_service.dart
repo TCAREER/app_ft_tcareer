@@ -82,23 +82,25 @@ class FirebaseMessagingService {
   Future<void> directToPage(RemoteMessage message) async {
     final context = navigatorKey.currentContext;
     final data = message.data;
-
+    print(">>>>>>>>>data: $data");
     final postId = data["post_id"]?.toString();
     final userId = data['related_user_id']?.toString();
     final type = data['type']?.toString();
 
-    if (postId != null && type?.contains("COMMENT") == true) {
+    if (postId != null &&
+        postId.isNotEmpty &&
+        type?.contains("COMMENT") == true) {
       context?.pushNamed(
         "detail",
         pathParameters: {"id": postId},
         queryParameters: {"notificationType": type},
       );
-    } else if (postId != null) {
+    } else if (postId != null && postId.isNotEmpty) {
       context?.pushNamed(
         "detail",
         pathParameters: {"id": postId},
       );
-    } else if (userId != null) {
+    } else if (userId != null && userId.isNotEmpty) {
       context?.pushNamed(
         'profile',
         queryParameters: {"userId": userId},
@@ -120,23 +122,25 @@ final firebaseMessagingServiceProvider =
 Future<void> backgroundHandler(RemoteMessage message) async {
   final context = navigatorKey.currentContext;
   final data = message.data;
-
+  print(">>>>>>>>>data: $data");
   final postId = data["post_id"]?.toString();
   final userId = data['related_user_id']?.toString();
   final type = data['type']?.toString();
 
-  if (postId != null && type?.contains("COMMENT") == true) {
+  if (postId != null &&
+      postId.isNotEmpty &&
+      type?.contains("COMMENT") == true) {
     context?.pushNamed(
       "detail",
       pathParameters: {"id": postId},
       queryParameters: {"notificationType": type},
     );
-  } else if (postId != null) {
+  } else if (postId != null && postId.isNotEmpty) {
     context?.pushNamed(
       "detail",
       pathParameters: {"id": postId},
     );
-  } else if (userId != null) {
+  } else if (userId != null && userId.isNotEmpty) {
     context?.pushNamed(
       'profile',
       queryParameters: {"userId": userId},

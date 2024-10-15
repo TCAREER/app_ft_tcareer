@@ -9,7 +9,9 @@ import '../../../app.dart';
 
 class NotificationService {
   GlobalKey<NavigatorState> navigatorKey;
+
   NotificationService(this.navigatorKey);
+
   void initialize() async {
     AwesomeNotifications().initialize(null, [
       NotificationChannel(
@@ -73,25 +75,26 @@ class NotificationService {
 
   void directToPage(ReceivedAction receivedAction) {
     final payload = receivedAction.payload ?? {};
-
+    print(">>>>>>>>payload: $payload");
     final postId = payload["post_id"]?.toString();
     final userId = payload["related_user_id"]?.toString();
     final type = payload['type']?.toString();
 
-    if (postId != null && type?.contains("COMMENT") == true) {
+    if (postId != null &&
+        postId.isNotEmpty &&
+        type?.contains("COMMENT") == true) {
       // Điều hướng đến chi tiết bài viết với type là COMMENT
-
       navigatorKey.currentContext?.pushNamed(
         "detail",
         pathParameters: {"id": postId},
         queryParameters: {"notificationType": type},
       );
-    } else if (postId != null) {
+    } else if (postId != null && postId.isNotEmpty) {
       navigatorKey.currentContext?.pushNamed(
         "detail",
         pathParameters: {"id": postId},
       );
-    } else if (userId != null) {
+    } else if (userId != null && userId.isNotEmpty) {
       print(">>>>>>>>>>>2");
       navigatorKey.currentContext?.pushNamed(
         'profile',
