@@ -1,13 +1,12 @@
 class UserConversation {
   UserConversation({
-    num? id,
-    num? userId,
-    dynamic leftAt,
-    String? userAvatar,
-    String? userFullName,
-    String? latestMessage,
-    String? updatedAt,
-  }) {
+      num? id, 
+      num? userId, 
+      String? leftAt, 
+      String? userAvatar, 
+      String? userFullName, 
+      String? latestMessage, 
+      String? updatedAt,}){
     _id = id;
     _userId = userId;
     _leftAt = leftAt;
@@ -15,7 +14,7 @@ class UserConversation {
     _userFullName = userFullName;
     _latestMessage = latestMessage;
     _updatedAt = updatedAt;
-  }
+}
 
   UserConversation.fromJson(dynamic json) {
     _id = json['id'];
@@ -28,32 +27,29 @@ class UserConversation {
   }
   num? _id;
   num? _userId;
-  dynamic _leftAt;
+  String? _leftAt;
   String? _userAvatar;
   String? _userFullName;
   String? _latestMessage;
   String? _updatedAt;
-  UserConversation copyWith({
-    num? id,
-    num? userId,
-    dynamic leftAt,
-    String? userAvatar,
-    String? userFullName,
-    String? latestMessage,
-    String? updatedAt,
-  }) =>
-      UserConversation(
-        id: id ?? _id,
-        userId: userId ?? _userId,
-        leftAt: leftAt ?? _leftAt,
-        userAvatar: userAvatar ?? _userAvatar,
-        userFullName: userFullName ?? _userFullName,
-        latestMessage: latestMessage ?? _latestMessage,
-        updatedAt: updatedAt ?? _updatedAt,
-      );
+UserConversation copyWith({  num? id,
+  num? userId,
+  String? leftAt,
+  String? userAvatar,
+  String? userFullName,
+  String? latestMessage,
+  String? updatedAt,
+}) => UserConversation(  id: id ?? _id,
+  userId: userId ?? _userId,
+  leftAt: leftAt ?? _leftAt,
+  userAvatar: userAvatar ?? _userAvatar,
+  userFullName: userFullName ?? _userFullName,
+  latestMessage: latestMessage ?? _latestMessage,
+  updatedAt: updatedAt ?? _updatedAt,
+);
   num? get id => _id;
   num? get userId => _userId;
-  dynamic get leftAt => _leftAt;
+  String? get leftAt => _leftAt;
   String? get userAvatar => _userAvatar;
   String? get userFullName => _userFullName;
   String? get latestMessage => _latestMessage;
@@ -70,4 +66,5 @@ class UserConversation {
     map['updated_at'] = _updatedAt;
     return map;
   }
+
 }

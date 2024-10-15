@@ -305,15 +305,20 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Visibility(
-                        visible: controller.status == "online",
+                        visible: controller.status == "online" ||
+                            controller.statusText == "Đang hoạt động",
                         child: const Icon(
                           Icons.circle,
                           color: Colors.green,
                           size: 8,
                         ),
                       ),
-                      const SizedBox(
-                        width: 5,
+                      Visibility(
+                        visible: controller.status == "online" ||
+                            controller.statusText == "Đang hoạt động",
+                        child: const SizedBox(
+                          width: 5,
+                        ),
                       ),
                       Text(
                         controller.statusText ?? "",

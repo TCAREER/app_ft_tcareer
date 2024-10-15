@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/features/chat/data/models/conversation.dart';
+import 'package:app_tcareer/src/features/chat/data/models/leave_chat_request.dart';
 import 'package:app_tcareer/src/features/chat/data/models/message.dart';
 import 'package:app_tcareer/src/features/chat/data/models/send_message_request.dart';
 import 'package:app_tcareer/src/features/chat/data/models/user.dart';
@@ -59,6 +60,8 @@ class ChatController extends ChangeNotifier {
               !messages.any((messages) => messages.id == newConversation.id))
           .toList();
       messages.addAll(newConversations?.reversed ?? []);
+      statusText = AppUtils.formatTimeMessage(user?.leftAt.toString() ?? "");
+      _startTimer(user?.leftAt.toString() ?? "");
       notifyListeners();
     }
   }
@@ -109,11 +112,12 @@ class ChatController extends ChangeNotifier {
       createdAt:
           messageData['created_at'], // sửa 'createdAt' thành 'created_at'
     );
-    messages.removeWhere((message) => message.type == "temp");
+
     notifyListeners();
     // Kiểm tra xem message có tồn tại trong messages hay không
     if (!messages
         .any((existingMessage) => existingMessage.id == newMessage.id)) {
+      messages.removeWhere((message) => message.type == "temp");
       messages.insert(0, newMessage);
       notifyListeners();
     }
@@ -134,6 +138,11 @@ class ChatController extends ChangeNotifier {
     await chatUseCase.leavePresence(
         conversationId: conversationData?.conversation?.id.toString() ?? "",
         userId: userId);
+    await chatUseCase.putLeavedChat(LeaveChatRequest(
+        conversationId: conversationData?.conversation?.id,
+        time: DateTime.now().toIso8601String()));
+    // statusText = null;
+    // status = "off";
   }
 
   StreamSubscription<ably.PresenceMessage>? presenceSubscription;
@@ -150,6 +159,8 @@ class ChatController extends ChangeNotifier {
 
   String? statusText;
   String status = "off";
+  Timer? _timer;
+
   void handleActivityState(
       ably.PresenceMessage presenceMessage, String userId) {
     final presenceData = jsonDecode(presenceMessage.data.toString());
@@ -159,12 +170,28 @@ class ChatController extends ChangeNotifier {
       print(">>>>>>status: ${presenceData['status']}");
       if (status == "online") {
         statusText = "Đang hoạt động";
+        _cancelTimer();
       } else {
-        String leavedAt =
-            statusText = AppUtils.formatTimeMessage(presenceData['leavedAt']);
+        statusText = AppUtils.formatTimeMessage(presenceData['leavedAt']);
+        _startTimer(presenceData['leavedAt']);
       }
     }
     notifyListeners();
+  }
+
+  void _startTimer(String dateString) {
+    _cancelTimer(); // Hủy Timer nếu đang có Timer nào đó đang chạy
+    _timer = Timer.periodic(Duration(minutes: 1), (_) {
+      // Cập nhật trạng thái mỗi phút
+      statusText =
+          AppUtils.formatTimeMessage(dateString); // Cập nhật statusText
+      notifyListeners(); // Gọi notifyListeners để cập nhật giao diện
+    });
+  }
+
+  void _cancelTimer() {
+    _timer?.cancel(); // Hủy Timer nếu nó đang chạy
+    _timer = null;
   }
 
   Future<void> disposeService() async => await chatUseCase.dispose();

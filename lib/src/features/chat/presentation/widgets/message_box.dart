@@ -127,7 +127,7 @@ Widget messageBox({
 Widget mediaItem(List<String> media, WidgetRef ref) {
   if (media.length == 1) {
     return Visibility(
-      visible: media[0].isImageNetWork,
+      visible: media.first.isImageNetWork,
       replacement: Stack(
         alignment: Alignment.center,
         children: [
@@ -142,70 +142,73 @@ Widget mediaItem(List<String> media, WidgetRef ref) {
             ),
           ),
           SizedBox(
-              width: 24, // Kích thước của indicator
-              height: 24,
-              child: circularLoadingWidget()),
+            width: 24, // Kích thước của indicator
+            height: 24,
+            child: circularLoadingWidget(),
+          ),
         ],
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: cachedImageWidget(
-          visiblePlaceHolder: false,
-          imageUrl: media[0],
-          fit: BoxFit.cover,
+      child: Visibility(
+        visible: !media.first.isVideoNetWork,
+        replacement: ChatVideoPlayerWidget(media.first),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: cachedImageWidget(
+            visiblePlaceHolder: false,
+            imageUrl: media[0],
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );
   } else {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 5,
-        mainAxisSpacing: 5,
-        childAspectRatio: 0.5,
-      ),
-      itemCount: media.length,
-      itemBuilder: (context, index) {
-        return Visibility(
-          visible: media[index].isImageNetWork,
-          replacement: Stack(
-            alignment: Alignment.center,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: ColorFiltered(
-                  colorFilter:
-                      ColorFilter.mode(Colors.black54, BlendMode.darken),
-                  child: Image.file(
-                    File(media[index]),
-                    fit: BoxFit.cover,
+    return Wrap(
+      spacing: 5, // Khoảng cách giữa các phần tử theo chiều ngang
+      runSpacing: 5, // Khoảng cách giữa các hàng theo chiều dọc
+      children: media.map((mediaItem) {
+        return Container(
+          width: (ScreenUtil().screenWidth - 15) /
+              2, // 2 phần tử trên 1 hàng, trừ khoảng cách spacing
+          child: Visibility(
+            visible: mediaItem.isImageNetWork,
+            replacement: Stack(
+              alignment: Alignment.center,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: ColorFiltered(
+                    colorFilter:
+                        ColorFilter.mode(Colors.black54, BlendMode.darken),
+                    child: Image.file(
+                      File(mediaItem),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
+                SizedBox(
                   width: 24, // Kích thước của indicator
                   height: 24,
-                  child: circularLoadingWidget()),
-            ],
-          ),
-          child: Visibility(
-            visible: !media[index].isVideoNetWork,
-            replacement: ChatVideoPlayerWidget(
-              videoUrl: media[index],
+                  child: circularLoadingWidget(),
+                ),
+              ],
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: cachedImageWidget(
-                visiblePlaceHolder: false,
-                imageUrl: media[index],
-                fit: BoxFit.cover,
+            child: Visibility(
+              visible: !mediaItem.isVideoNetWork,
+              replacement: ChatVideoPlayerWidget(
+                mediaItem,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: cachedImageWidget(
+                  visiblePlaceHolder: false,
+                  imageUrl: mediaItem,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
         );
-      },
+      }).toList(),
     );
   }
 }

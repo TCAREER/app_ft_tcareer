@@ -211,7 +211,7 @@ class AppUtils {
 
     final dateTime = DateTime.tryParse(dateString);
     if (dateTime == null) {
-      return 'Invalid date format';
+      return "";
     }
 
     final now = DateTime.now();

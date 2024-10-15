@@ -12,8 +12,10 @@ import 'package:video_player/video_player.dart';
 class ChatVideoPlayerWidget extends ConsumerStatefulWidget {
   // Đường dẫn đến file video
   final String videoUrl;
-  const ChatVideoPlayerWidget({Key? key, required this.videoUrl})
-      : super(key: key);
+  const ChatVideoPlayerWidget(
+    this.videoUrl, {
+    Key? key,
+  }) : super(key: key);
 
   @override
   _ChatVideoPlayerWidgetState createState() => _ChatVideoPlayerWidgetState();
@@ -27,8 +29,7 @@ class _ChatVideoPlayerWidgetState extends ConsumerState<ChatVideoPlayerWidget> {
     super.initState();
 
     flickManager = FlickManager(
-        videoPlayerController: VideoPlayerController.network(
-            "${widget.videoUrl}&${AppConstants.driveApiKey}"),
+        videoPlayerController: VideoPlayerController.network(widget.videoUrl),
         autoPlay: false,
         autoInitialize: true);
   }
@@ -42,9 +43,10 @@ class _ChatVideoPlayerWidgetState extends ConsumerState<ChatVideoPlayerWidget> {
   @override
   Widget build(BuildContext context) {
     return flickManager != null
-        ? SizedBox(
-            height: 200,
-            width: 200,
+        ? ConstrainedBox(
+            constraints: BoxConstraints(
+                maxWidth: ScreenUtil().screenWidth * .5,
+                maxHeight: ScreenUtil().screenHeight * .4),
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: FlickVideoPlayer(

@@ -225,8 +225,8 @@ class ChatMediaController extends ChangeNotifier {
                 file: File(path), folderPath: "Chats/$id");
             mediaUrl.add(imageUrl);
           }
-          await chatController.sendMessageWithMedia(mediaUrl);
         }
+        await chatController.sendMessageWithMedia(mediaUrl);
       },
       context,
       (value) {},
@@ -275,6 +275,7 @@ class ChatMediaController extends ChangeNotifier {
         type: 'temp');
 
     chatController.messages.insert(0, newMessage);
+    // mediaLocalPath.clear();
     notifyListeners();
   }
   // Future<void> removeImage(int index) async {

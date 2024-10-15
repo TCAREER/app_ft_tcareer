@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:app_tcareer/src/features/chat/data/models/conversation.dart';
+import 'package:app_tcareer/src/features/chat/data/models/leave_chat_request.dart';
+import 'package:app_tcareer/src/features/chat/data/models/mark_read_message_request.dart';
 import 'package:app_tcareer/src/features/chat/data/models/send_message_request.dart';
 import 'package:app_tcareer/src/services/ably/ably_service.dart';
 import 'package:app_tcareer/src/services/apis/api_service_provider.dart';
@@ -90,6 +92,16 @@ class ChatRepository {
     final upload = ref.watch(uploadFileServiceProvider);
     return await upload.uploadFile(
         topic: topic, folderName: folderName, file: file);
+  }
+
+  Future<void> putLeavedChat(LeaveChatRequest body) async {
+    final api = ref.watch(apiServiceProvider);
+    return await api.putLeaveChat(body: body);
+  }
+
+  Future<void> postMarkReadMessage(MarkReadMessageRequest body) async {
+    final api = ref.watch(apiServiceProvider);
+    return await api.postMarkReadMessage(body: body);
   }
 }
 

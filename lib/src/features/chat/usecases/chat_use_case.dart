@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'package:ably_flutter/ably_flutter.dart' as ably;
 import 'package:app_tcareer/src/features/chat/data/models/conversation.dart';
+import 'package:app_tcareer/src/features/chat/data/models/leave_chat_request.dart';
+import 'package:app_tcareer/src/features/chat/data/models/mark_read_message_request.dart';
 import 'package:app_tcareer/src/features/chat/data/models/send_message_request.dart';
 import 'package:app_tcareer/src/features/chat/data/repositories/chat_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -61,6 +63,12 @@ class ChatUseCase {
           required String topic}) async =>
       await chatRepository.uploadVideo(
           file: file, folderName: folderName, topic: topic);
+
+  Future<void> putLeavedChat(LeaveChatRequest body) async =>
+      await chatRepository.putLeavedChat(body);
+
+  Future<void> postMarkReadMessage(MarkReadMessageRequest body) async =>
+      await chatRepository.postMarkReadMessage(body);
 }
 
 final chatUseCaseProvider = Provider<ChatUseCase>((ref) {

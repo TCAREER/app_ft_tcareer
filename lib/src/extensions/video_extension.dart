@@ -4,7 +4,7 @@ extension FileTypeChecker on String {
       this.contains('https://res.cloudinary.com') ||
       this.contains("https://drive.google.com/uc?export=download&id=");
 
-  bool get isVideoNetWork => this.contains("https");
+  bool get isVideoNetWork => this.contains('https://res.cloudinary.com');
 
   bool get isVideoLocal {
     // Lấy phần mở rộng của file từ chuỗi đường dẫn
