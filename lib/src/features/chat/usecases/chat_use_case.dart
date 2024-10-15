@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:ably_flutter/ably_flutter.dart' as ably;
 import 'package:app_tcareer/src/features/chat/data/models/conversation.dart';
 import 'package:app_tcareer/src/features/chat/data/models/send_message_request.dart';
@@ -49,6 +50,17 @@ class ChatUseCase {
   Future<void> disconnect() async => await chatRepository.disconnect();
 
   Future<void> dispose() async => await chatRepository.dispose();
+
+  Future<String> uploadImage(
+          {required File file, required String folderPath}) async =>
+      await chatRepository.uploadImage(file: file, folderPath: folderPath);
+
+  Future<String> uploadVideo(
+          {required File file,
+          required String folderName,
+          required String topic}) async =>
+      await chatRepository.uploadVideo(
+          file: file, folderName: folderName, topic: topic);
 }
 
 final chatUseCaseProvider = Provider<ChatUseCase>((ref) {

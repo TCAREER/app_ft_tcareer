@@ -1,18 +1,25 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/features/chat/data/models/conversation.dart';
 import 'package:app_tcareer/src/features/chat/data/models/message.dart';
 import 'package:app_tcareer/src/features/chat/data/models/send_message_request.dart';
 import 'package:app_tcareer/src/features/chat/data/models/user.dart';
+import 'package:app_tcareer/src/features/chat/data/models/user_conversation.dart';
+import 'package:app_tcareer/src/features/chat/presentation/controllers/chat_media_controller.dart';
+import 'package:app_tcareer/src/features/chat/presentation/pages/media/chat_media_page.dart';
 import 'package:app_tcareer/src/features/chat/usecases/chat_use_case.dart';
 import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
 import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:app_tcareer/src/utils/snackbar_utils.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ably_flutter/ably_flutter.dart' as ably;
+import 'package:photo_manager/photo_manager.dart';
+import 'package:uuid/uuid.dart';
 
 class ChatController extends ChangeNotifier {
   final ChatUseCase chatUseCase;
@@ -33,38 +40,39 @@ class ChatController extends ChangeNotifier {
         data: {"message": contentController.text, "userId": "1"});
   }
 
-  Conversation? conversation;
-  UserModel? user;
+  Conversation? conversationData;
+  UserConversation? user;
   List<MessageModel> messages = [];
+  String? cachedUserId; // Lưu trữ userId để sử dụng lại
+
   Future<void> getConversation(String userId) async {
+    // if (cachedUserId != userId) {
+    //   // Kiểm tra nếu userId đã thay đổi
+    //   cachedUserId = userId; // Lưu trữ userId
     messages.clear();
-    conversation = await chatUseCase.getConversation(userId);
-    if (conversation != null) {
-      user = conversation?.user;
-      final newConversations = conversation?.message?.data
+    conversationData = await chatUseCase.getConversation(userId);
+
+    if (conversationData != null) {
+      user = conversationData?.conversation;
+      final newConversations = conversationData?.message?.data
           ?.where((newConversation) =>
               !messages.any((messages) => messages.id == newConversation.id))
           .toList();
       messages.addAll(newConversations?.reversed ?? []);
       notifyListeners();
-
-      // WidgetsBinding.instance.addPostFrameCallback((_) {
-      //   scrollToBottom();
-      // });
     }
   }
 
   Future<void> sendMessage(BuildContext context) async {
     AppUtils.futureApi(() async {
       final body = SendMessageRequest(
-        conversationId: conversation?.conversationId,
+        conversationId: conversationData?.conversation?.id,
         content: contentController.text,
       );
       await chatUseCase.sendMessage(body);
 
       contentController.clear();
-
-      notifyListeners();
+      setHasContent("");
     }, context, (val) {});
   }
 
@@ -76,7 +84,7 @@ class ChatController extends ChangeNotifier {
     // messageSubscription?.cancel();
 
     messageSubscription = chatUseCase.listenAllMessage(
-      conversationId: conversation?.conversationId.toString() ?? "",
+      conversationId: conversationData?.conversation?.id.toString() ?? "",
       handleChannelMessage: (message) {
         print(">>>>>>>>data: ${message.data}");
         handleUpdateMessage(message);
@@ -90,7 +98,7 @@ class ChatController extends ChangeNotifier {
     final messageData = jsonDecode(message.data.toString());
     final newMessage = MessageModel(
       content: messageData['content'],
-      conversationId: conversation?.conversationId,
+      conversationId: conversationData?.conversation?.id,
       id: messageData['message_id'],
       senderId: messageData['sender_id'],
       createdAt:
@@ -112,13 +120,13 @@ class ChatController extends ChangeNotifier {
 
   Future<void> enterPresence(String userId) async {
     await chatUseCase.enterPresence(
-        conversationId: conversation?.conversationId.toString() ?? "",
+        conversationId: conversationData?.conversation?.id.toString() ?? "",
         userId: userId);
   }
 
   Future<void> leavePresence(String userId) async {
     await chatUseCase.leavePresence(
-        conversationId: conversation?.conversationId.toString() ?? "",
+        conversationId: conversationData?.conversation?.id.toString() ?? "",
         userId: userId);
   }
 
@@ -126,7 +134,7 @@ class ChatController extends ChangeNotifier {
 
   StreamSubscription<ably.PresenceMessage>? listenPresence(String userId) {
     presenceSubscription = chatUseCase.listenPresence(
-        conversationId: conversation?.conversationId.toString() ?? "",
+        conversationId: conversationData?.conversation?.id.toString() ?? "",
         handleChannelPresence: (presenceMessage) {
           print(">>>>>>>>>data: ${presenceMessage.data}");
           handleActivityState(presenceMessage, userId);
@@ -188,7 +196,7 @@ class ChatController extends ChangeNotifier {
 
   bool isShowMedia = false;
 
-  void setIsShowMedia(BuildContext context) {
+  Future<void> setIsShowMedia(BuildContext context) async {
     isShowMedia = !isShowMedia;
     if (isShowMedia == true) {
       FocusScope.of(context).unfocus();
@@ -197,6 +205,48 @@ class ChatController extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Future<void> sendMessageWithMedia(BuildContext context) async {
+    final mediaController = ref.watch(chatMediaControllerProvider);
+    await mediaController.getAssetPaths(context);
+    print(">>>>>>>image: ${mediaController.imagePaths}");
+    notifyListeners();
+
+    // if (mediaController.imagePaths.isNotEmpty) {
+    //   await mediaController.uploadImage();
+    //
+    //   // AppUtils.futureApi(() async {
+    //   //   final body = SendMessageRequest(
+    //   //       conversationId: conversationData?.conversation?.id,
+    //   //       content: "Gửi hình ảnh",
+    //   //       mediaUrl: mediaController.mediaUrl);
+    //   //   await chatUseCase.sendMessage(body);
+    //   //   // notifyListeners();
+    //   // }, context, (val) {});
+    // }
+  }
+
+  // Future<void> showMediaPage(BuildContext context) async {
+  //   await showModalBottomSheet(
+  //       isScrollControlled: true,
+  //       useRootNavigator: true,
+  //       context: context,
+  //       builder: (context) => DraggableScrollableSheet(
+  //             expand: true,
+  //             snap: true,
+  //             initialChildSize: 0.4,
+  //             maxChildSize: 1.0,
+  //             minChildSize: 0.4,
+  //             builder: (context, scrollController) {
+  //               return Container(
+  //                 color: Colors.white,
+  //                 child: ChatMediaPage(
+  //                   scrollController: scrollController,
+  //                 ),
+  //               );
+  //             },
+  //           ));
+  // }
 }
 
 final chatControllerProvider = ChangeNotifierProvider<ChatController>((ref) {

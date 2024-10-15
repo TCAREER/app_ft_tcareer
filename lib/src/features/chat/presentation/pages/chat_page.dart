@@ -6,6 +6,7 @@ import 'package:app_tcareer/src/features/chat/presentation/widgets/chat_input.da
 import 'package:app_tcareer/src/features/chat/presentation/widgets/message_box.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
+import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -81,65 +82,10 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       child: Scaffold(
         // extendBody: true,
 
-        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: false,
         backgroundColor: Colors.grey.shade100,
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          centerTitle: false,
-          leadingWidth: 40,
-          leading: GestureDetector(
-            onTap: () => context.pop(),
-            child: const Icon(Icons.arrow_back),
-          ),
-          title: Row(
-            // crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundImage: NetworkImage(controller.user?.avatar ?? ""),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    controller.user?.fullName ?? "",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Visibility(
-                        visible: controller.status == "online",
-                        child: const Icon(
-                          Icons.circle,
-                          color: Colors.green,
-                          size: 8,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        controller.statusText ?? "",
-                        style: const TextStyle(
-                            color: Colors.black45, fontSize: 12),
-                      ),
-                    ],
-                  )
-                ],
-              )
-            ],
-          ),
-          actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.menu))],
-        ),
+        appBar: appBar(ref),
+
         body: Stack(
           alignment: Alignment.bottomCenter,
           children: [
@@ -162,6 +108,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
               ),
           ],
         ),
+
         bottomNavigationBar: Visibility(
             visible: !controller.isShowMedia,
             child: bottomAppBar(ref, context)),
@@ -233,7 +180,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                   replacement: GestureDetector(
                     onTap: () async {
                       await media.getAlbums();
-                      controller.setIsShowMedia(context);
+                      await controller.setIsShowMedia(context);
                     },
                     child: const PhosphorIcon(
                       PhosphorIconsRegular.image,
@@ -294,6 +241,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   Widget messages() {
     final controller = ref.watch(chatControllerProvider);
     final user = ref.watch(userControllerProvider);
+    final mediaController = ref.watch(chatMediaControllerProvider);
     final messages = controller.messages;
 
     return ListView.separated(
@@ -306,13 +254,80 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         final message = messages[index];
         bool isMe = message.senderId == user.userData?.data?.id;
         return messageBox(
+            media: message.mediaUrl ?? [],
+            ref: ref,
             message: message.content ?? "",
             isMe: isMe,
             createdAt: message.createdAt ?? "");
       },
       separatorBuilder: (context, index) => const SizedBox(
-        height: 20,
+        height: 10,
       ),
     );
+  }
+
+  PreferredSize appBar(WidgetRef ref) {
+    final controller = ref.watch(chatControllerProvider);
+    return PreferredSize(
+        preferredSize: Size.fromHeight(50),
+        child: AppBar(
+          automaticallyImplyLeading: false,
+          centerTitle: false,
+          leadingWidth: 40,
+          leading: GestureDetector(
+            onTap: () => context.pop(),
+            child: const Icon(Icons.arrow_back),
+          ),
+          title: Row(
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                radius: 20,
+                backgroundImage:
+                    NetworkImage(controller.user?.userAvatar ?? ""),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    controller.user?.userFullName ?? "",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Visibility(
+                        visible: controller.status == "online",
+                        child: const Icon(
+                          Icons.circle,
+                          color: Colors.green,
+                          size: 8,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        controller.statusText ?? "",
+                        // AppUtils.formatTimeMessage(controller.user?.leftAt),
+                        style: const TextStyle(
+                            color: Colors.black45, fontSize: 12),
+                      ),
+                    ],
+                  )
+                ],
+              )
+            ],
+          ),
+          actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.menu))],
+        ));
   }
 }

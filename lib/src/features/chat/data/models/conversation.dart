@@ -1,45 +1,39 @@
 import 'package:app_tcareer/src/features/chat/data/models/message.dart';
-import 'package:app_tcareer/src/features/chat/data/models/user.dart';
+import 'package:app_tcareer/src/features/chat/data/models/user_conversation.dart';
 
 class Conversation {
   Conversation({
-    num? conversationId,
-    UserModel? user,
+    UserConversation? conversation,
     Message? message,
   }) {
-    _conversationId = conversationId;
-    _user = user;
+    _conversation = conversation;
     _message = message;
   }
 
   Conversation.fromJson(dynamic json) {
-    _conversationId = json['conversation_id'];
-    _user = json['user'] != null ? UserModel.fromJson(json['user']) : null;
+    _conversation = json['conversation'] != null
+        ? UserConversation.fromJson(json['conversation'])
+        : null;
     _message =
         json['message'] != null ? Message.fromJson(json['message']) : null;
   }
-  num? _conversationId;
-  UserModel? _user;
+  UserConversation? _conversation;
   Message? _message;
   Conversation copyWith({
-    num? conversationId,
-    UserModel? user,
+    UserConversation? conversation,
     Message? message,
   }) =>
       Conversation(
-        conversationId: conversationId ?? _conversationId,
-        user: user ?? _user,
+        conversation: conversation ?? _conversation,
         message: message ?? _message,
       );
-  num? get conversationId => _conversationId;
-  UserModel? get user => _user;
+  UserConversation? get conversation => _conversation;
   Message? get message => _message;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    map['conversation_id'] = _conversationId;
-    if (_user != null) {
-      map['user'] = _user?.toJson();
+    if (_conversation != null) {
+      map['conversation'] = _conversation?.toJson();
     }
     if (_message != null) {
       map['message'] = _message?.toJson();

@@ -5,15 +5,17 @@ class MessageModel {
     num? senderId,
     String? content,
     String? type,
+    List<String>? mediaUrl,
     String? createdAt,
     String? updatedAt,
-    dynamic deletedAt,
+    String? deletedAt,
   }) {
     _id = id;
     _conversationId = conversationId;
     _senderId = senderId;
     _content = content;
     _type = type;
+    _mediaUrl = mediaUrl;
     _createdAt = createdAt;
     _updatedAt = updatedAt;
     _deletedAt = deletedAt;
@@ -25,6 +27,8 @@ class MessageModel {
     _senderId = json['sender_id'];
     _content = json['content'];
     _type = json['type'];
+    _mediaUrl =
+        json['media_url'] != null ? json['media_url'].cast<String>() : [];
     _createdAt = json['created_at'];
     _updatedAt = json['updated_at'];
     _deletedAt = json['deleted_at'];
@@ -34,18 +38,20 @@ class MessageModel {
   num? _senderId;
   String? _content;
   String? _type;
+  List<String>? _mediaUrl;
   String? _createdAt;
   String? _updatedAt;
-  dynamic _deletedAt;
+  String? _deletedAt;
   MessageModel copyWith({
     num? id,
     num? conversationId,
     num? senderId,
     String? content,
     String? type,
+    List<String>? mediaUrl,
     String? createdAt,
     String? updatedAt,
-    dynamic deletedAt,
+    String? deletedAt,
   }) =>
       MessageModel(
         id: id ?? _id,
@@ -53,6 +59,7 @@ class MessageModel {
         senderId: senderId ?? _senderId,
         content: content ?? _content,
         type: type ?? _type,
+        mediaUrl: mediaUrl ?? _mediaUrl,
         createdAt: createdAt ?? _createdAt,
         updatedAt: updatedAt ?? _updatedAt,
         deletedAt: deletedAt ?? _deletedAt,
@@ -62,9 +69,10 @@ class MessageModel {
   num? get senderId => _senderId;
   String? get content => _content;
   String? get type => _type;
+  List<String>? get mediaUrl => _mediaUrl;
   String? get createdAt => _createdAt;
   String? get updatedAt => _updatedAt;
-  dynamic get deletedAt => _deletedAt;
+  String? get deletedAt => _deletedAt;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -73,6 +81,7 @@ class MessageModel {
     map['sender_id'] = _senderId;
     map['content'] = _content;
     map['type'] = _type;
+    map['media_url'] = _mediaUrl;
     map['created_at'] = _createdAt;
     map['updated_at'] = _updatedAt;
     map['deleted_at'] = _deletedAt;

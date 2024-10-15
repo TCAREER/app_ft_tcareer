@@ -3,6 +3,8 @@ import 'dart:typed_data';
 
 import 'package:app_tcareer/src/extensions/image_extension.dart';
 import 'package:app_tcareer/src/extensions/video_extension.dart';
+import 'package:app_tcareer/src/features/chat/presentation/controllers/chat_controller.dart';
+import 'package:app_tcareer/src/features/chat/usecases/chat_use_case.dart';
 import 'package:app_tcareer/src/features/posts/data/models/media_state.dart';
 import 'package:app_tcareer/src/features/posts/presentation/controllers/comment_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/controllers/post_controller.dart';
@@ -19,11 +21,13 @@ import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:uuid/uuid.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 class ChatMediaController extends ChangeNotifier {
   final MediaUseCase mediaUseCase;
-  ChatMediaController(this.mediaUseCase, this.ref);
+  final ChatUseCase chatUseCase;
+  ChatMediaController(this.mediaUseCase, this.ref, this.chatUseCase);
   final ChangeNotifierProviderRef<Object?> ref;
   bool permissionGranted = false;
   List<AssetPathEntity> albums = [];
@@ -67,10 +71,7 @@ class ChatMediaController extends ChangeNotifier {
   void setIsShowPopUp(bool value) {
     isShowPopUp = value;
     notifyListeners();
-  }
-
-  bool isAutoPop = false;
-  Future<void> clearData(BuildContext context) async {
+  } /*Future<void> clearData(BuildContext context) async {
     bool hasChanged = await hasChangedSelectedAssets();
     if (isAutoPop) {
       return;
@@ -92,71 +93,9 @@ class ChatMediaController extends ChangeNotifier {
             });
           });
     }
-  }
+  }*/
 
-  List<String> imagePaths = [];
-  List<String> videoPaths = [];
-
-  Future<void> getAssetPaths(BuildContext context) async {
-    final userUtils = ref.watch(userUtilsProvider);
-    await userUtils.removeCache("selectedAsset");
-    await userUtils.removeCache("imageCache");
-
-    imagePaths.removeWhere((path) => !path.isImageNetWork);
-    // Clear videoPaths as well
-
-    for (AssetEntity asset in selectedAsset) {
-      File? file = await asset.file;
-      if (file != null) {
-        if (asset.type == AssetType.image) {
-          imagePaths.add(file.path);
-        } else if (asset.type == AssetType.video) {
-          if (videoPaths.isNotEmpty && videoPaths.first.isVideo == true) {
-            print(">>>>>>>>>1");
-            bool? shouldReplace = await showCupertinoModalPopup<bool>(
-              context: context,
-              builder: (BuildContext context) {
-                return CupertinoActionSheet(
-                  message: const Text(
-                      'Bạn có muốn thay thế video bài viết hiện tại?'),
-                  actions: <Widget>[
-                    CupertinoActionSheetAction(
-                      isDestructiveAction: true,
-                      onPressed: () => Navigator.pop(context, false),
-                      child: const Text('Quay lại'),
-                    ),
-                    CupertinoActionSheetAction(
-                      child: const Text('Tiếp tục',
-                          style: TextStyle(color: Colors.blue)),
-                      onPressed: () => Navigator.pop(context, true),
-                    ),
-                  ],
-                );
-              },
-            );
-
-            if (shouldReplace == true) {
-              videoPaths.clear();
-              videoPaths.add(file.path);
-
-              await generateVideoThumbnail();
-            }
-          } else {
-            videoPaths.clear();
-
-            videoPaths.add(file.path);
-
-            await generateVideoThumbnail();
-          }
-        }
-      }
-    }
-
-    notifyListeners();
-    print("Image Paths: $imagePaths");
-    print("Video Paths: $videoPaths");
-    context.pop();
-  }
+  bool isAutoPop = false;
 
   void resetAutoPop() {
     isAutoPop = false;
@@ -327,13 +266,13 @@ class ChatMediaController extends ChangeNotifier {
     );
   }
 
-  Future<void> removeAssets() async {
-    imagePaths.clear();
-    videoPaths.clear();
-    videoThumbnail = null;
-    selectedAsset.clear();
-    notifyListeners();
-  }
+  // Future<void> removeAssets() async {
+  //   imagePaths.clear();
+  //   videoPaths.clear();
+  //   videoThumbnail = null;
+  //   selectedAsset.clear();
+  //   notifyListeners();
+  // }
 
   String? videoThumbnail;
   Future<void> generateVideoThumbnail() async {
@@ -346,28 +285,78 @@ class ChatMediaController extends ChangeNotifier {
     }
   }
 
-  Future<void> removeImage(int index) async {
-    imagePaths.removeAt(index);
-    if (selectedAsset.isNotEmpty) {
-      selectedAsset.removeAt(index);
+  List<String> imagePaths = [];
+  List<String> videoPaths = [];
+  List<String> mediaUrl = [];
+  Future<void> uploadImage() async {
+    mediaUrl.clear();
+    final uuid = Uuid();
+    final id = uuid.v4();
+    for (String path in imagePaths) {
+      String imageUrl = await chatUseCase.uploadImage(
+          file: File(path), folderPath: "Chats/$id");
+      mediaUrl.add(imageUrl);
     }
-    notifyListeners();
+    imagePaths.clear();
   }
 
-  Future<void> removeVideo() async {
+  Future<void> uploadVideo() async {
+    mediaUrl.clear();
+    for (String path in videoPaths) {
+      String videoUrl = await chatUseCase.uploadVideo(
+          file: File(path), folderName: "video", topic: "chat");
+      mediaUrl.add(videoUrl);
+    }
     videoPaths.clear();
-    videoThumbnail = null;
+  }
 
+  Future<void> getAssetPaths(BuildContext context) async {
+    // final userUtils = ref.watch(userUtilsProvider);
+
+    // imagePaths.removeWhere((path) => !path.isImageNetWork);
+    // Clear videoPaths as well
+
+    for (AssetEntity asset in selectedAsset) {
+      File? file = await asset.file;
+      if (file != null) {
+        if (asset.type == AssetType.image) {
+          imagePaths.add(file.path);
+        } else {
+          videoPaths.add(file.path);
+          // await generateVideoThumbnail();
+        }
+      }
+    }
     selectedAsset.clear();
-    notifyListeners();
-  }
 
-  Future<void> deleteVideo() async {
-    videoPaths.clear();
-    videoThumbnail = null;
-
-    notifyListeners();
+    // print("Image Paths: $imagePaths");
+    // print("Video Paths: $videoPaths");
+    // if (chatController.isShowMedia == true) {
+    //   chatController.setIsShowMedia(context);
+    // }
   }
+  // Future<void> removeImage(int index) async {
+  //   imagePaths.removeAt(index);
+  //   if (selectedAsset.isNotEmpty) {
+  //     selectedAsset.removeAt(index);
+  //   }
+  //   notifyListeners();
+  // }
+
+  // Future<void> removeVideo() async {
+  //   videoPaths.clear();
+  //   videoThumbnail = null;
+  //
+  //   selectedAsset.clear();
+  //   notifyListeners();
+  // }
+  //
+  // Future<void> deleteVideo() async {
+  //   videoPaths.clear();
+  //   videoThumbnail = null;
+  //
+  //   notifyListeners();
+  // }
 
   Future<bool> hasChangedSelectedAssets() async {
     final userUtils = ref.watch(userUtilsProvider);
@@ -399,5 +388,6 @@ class ChatMediaController extends ChangeNotifier {
 
 final chatMediaControllerProvider = ChangeNotifierProvider((ref) {
   final mediaUseCase = ref.watch(mediaUseCaseProvider);
-  return ChatMediaController(mediaUseCase, ref);
+  final chatUseCase = ref.watch(chatUseCaseProvider);
+  return ChatMediaController(mediaUseCase, ref, chatUseCase);
 });

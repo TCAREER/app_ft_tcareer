@@ -201,7 +201,8 @@ class _ChatMediaPageState extends ConsumerState<ChatMediaPage> {
                     color: Colors.black,
                   )),
               child: GestureDetector(
-                onTap: () async {},
+                onTap: () async =>
+                    await chatController.sendMessageWithMedia(context),
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 5),
                   padding: const EdgeInsets.all(
