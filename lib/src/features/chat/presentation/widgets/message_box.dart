@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:app_tcareer/src/extensions/image_extension.dart';
+import 'package:app_tcareer/src/extensions/video_extension.dart';
 import 'package:app_tcareer/src/features/chat/presentation/controllers/chat_controller.dart';
 import 'package:app_tcareer/src/features/chat/presentation/controllers/chat_media_controller.dart';
+import 'package:app_tcareer/src/features/chat/presentation/widgets/chat_video_player.dart';
 import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:app_tcareer/src/widgets/cached_image_widget.dart';
 import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
@@ -188,12 +190,18 @@ Widget mediaItem(List<String> media, WidgetRef ref) {
                   child: circularLoadingWidget()),
             ],
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: cachedImageWidget(
-              visiblePlaceHolder: false,
-              imageUrl: media[index],
-              fit: BoxFit.cover,
+          child: Visibility(
+            visible: !media[index].isVideoNetWork,
+            replacement: ChatVideoPlayerWidget(
+              videoUrl: media[index],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: cachedImageWidget(
+                visiblePlaceHolder: false,
+                imageUrl: media[index],
+                fit: BoxFit.cover,
+              ),
             ),
           ),
         );

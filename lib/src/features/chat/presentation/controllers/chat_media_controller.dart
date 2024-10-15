@@ -137,32 +137,32 @@ class ChatMediaController extends ChangeNotifier {
     //   showSnackBarError("Bạn chỉ có thể chọn tối đa 1 ảnh hoặc 1 video");
     //   return;
     // }
-    if (imagePaths.any((image) => image.isImageNetWork) &&
-        asset.type == AssetType.video) {
-      showSnackBarError("Bạn chỉ được phép chọn thêm ảnh");
+    // if (imagePaths.any((image) => image.isImageNetWork) &&
+    //     asset.type == AssetType.video) {
+    //   showSnackBarError("Bạn chỉ được phép chọn thêm ảnh");
+    //   return;
+    // }
+
+    // if (asset.type == AssetType.video &&
+    //     selectedAsset.any((a) => a.type == AssetType.image)) {
+    //   showSnackBarError("Bạn chỉ có thể chọn tối đa 10 ảnh hoặc 5 video");
+    //   return;
+    // }
+    // if (asset.type == AssetType.image &&
+    //     selectedAsset.any((a) =>
+    //         a.type == AssetType.video && !selectedAsset.contains(asset))) {
+    //   showSnackBarError("Bạn đã chọn 1 video, không thể chọn thêm ảnh.");
+    //   return;
+    // }
+    if (asset.type == AssetType.video &&
+        selectedAsset.where((a) => a.type == AssetType.video).length >= 5) {
+      showSnackBarError("Bạn chỉ có thể chọn tối đa 5 video");
       return;
     }
 
-    if (asset.type == AssetType.video &&
-        selectedAsset.any((a) => a.type == AssetType.image)) {
-      showSnackBarError("Bạn chỉ có thể chọn tối đa 10 ảnh hoặc 1 video");
-      return;
-    }
-    if (asset.type == AssetType.image &&
-        selectedAsset.any((a) =>
-            a.type == AssetType.video && !selectedAsset.contains(asset))) {
-      showSnackBarError("Bạn đã chọn 1 video, không thể chọn thêm ảnh.");
-      return;
-    }
-    if (asset.type == AssetType.video &&
-        selectedAsset.any((a) =>
-            a.type == AssetType.video && !selectedAsset.contains(asset))) {
-      showSnackBarError("Bạn chỉ có thể chọn tối đa 1 video");
-      return;
-    }
     if (asset.type == AssetType.image) {
       if (selectedAsset.length >= 10 && !selectedAsset.contains(asset)) {
-        showSnackBarError("Bạn chỉ có thể chọn tối đa là 10 ảnh");
+        showSnackBarError("Bạn chỉ có thể chọn tối đa là 10 ảnh và video");
         return;
       }
     } else if (asset.type == AssetType.video) {
@@ -175,16 +175,10 @@ class ChatMediaController extends ChangeNotifier {
         }
       }
 
-      if (selectedAsset.length >= 10 && !selectedAsset.contains(asset)) {
-        showSnackBarError("Bạn chỉ có thể chọn tối đa là 10 ảnh hoặc 1 video");
-        return;
-      } else if (selectedAsset
-              .where((a) => a.type == AssetType.video)
-              .isNotEmpty &&
-          !selectedAsset.contains(asset)) {
-        showSnackBarError("Bạn chỉ có thể chọn tối đa là 1 video");
-        return;
-      }
+      // if (selectedAsset.length >= 10 && !selectedAsset.contains(asset)) {
+      //   showSnackBarError("Bạn chỉ có thể chọn tối đa là 10 ảnh hoặc 1 video");
+      //   return;
+      // }
     }
 
     if (selectedAsset.contains(asset)) {
@@ -200,95 +194,12 @@ class ChatMediaController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setCacheSelectedAssets() async {
-    final userUtils = ref.watch(userUtilsProvider);
-    List<String> assetIds = selectedAsset.map((asset) => asset.id).toList();
-    await userUtils.saveCacheList(key: "selectedAsset", value: assetIds);
-  }
-
-  Future<void> loadSelectedAsset() async {
-    final userUtils = ref.watch(userUtilsProvider);
-    List<String>? assetIds = await userUtils.loadCacheList("selectedAsset");
-    if (assetIds != null) {
-      selectedAsset.clear();
-      for (String id in assetIds) {
-        AssetEntity? asset = await AssetEntity.fromId(id);
-        if (asset != null) {
-          selectedAsset.add(asset);
-        }
-      }
-      notifyListeners();
-    }
-  }
-
-  Future<void> setCache() async {
-    await setCacheSelectedAssets();
-  }
-
-  Future<void> loadCache() async {
-    await loadSelectedAsset();
-    await loadAssetIndices();
-  }
-
   Future<void> loadAssetIndices() async {
     assetIndices =
         selectedAsset.map((asset) => selectedAsset.indexOf(asset)).toList();
     notifyListeners();
   }
 
-  void showModalPopup({
-    required BuildContext context,
-    required void Function() onPop,
-  }) {
-    showCupertinoModalPopup(
-      context: context,
-      builder: (BuildContext context) {
-        return CupertinoActionSheet(
-          title: const Text(
-            'Bỏ thay đổi?',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-          ),
-          message: const Text('Nếu quay lại sẽ bỏ những thay đổi đã thực hiện'),
-          actions: <Widget>[
-            CupertinoActionSheetAction(
-                isDestructiveAction: true,
-                onPressed: onPop,
-                child: const Text(
-                  'Quay lại',
-                )),
-            CupertinoActionSheetAction(
-                child: const Text(
-                  'Tiếp tục chỉnh sửa',
-                  style: TextStyle(color: Colors.blue),
-                ),
-                onPressed: () => context.pop()),
-          ],
-        );
-      },
-    );
-  }
-
-  // Future<void> removeAssets() async {
-  //   imagePaths.clear();
-  //   videoPaths.clear();
-  //   videoThumbnail = null;
-  //   selectedAsset.clear();
-  //   notifyListeners();
-  // }
-
-  String? videoThumbnail;
-  Future<void> generateVideoThumbnail() async {
-    if (videoPaths.isNotEmpty) {
-      videoThumbnail = await VideoThumbnail.thumbnailFile(
-          video: videoPaths.first,
-          thumbnailPath: (await getTemporaryDirectory()).path,
-          imageFormat: ImageFormat.JPEG,
-          quality: 100);
-    }
-  }
-
-  List<String> imagePaths = [];
-  List<String> videoPaths = [];
   List<String> mediaUrl = [];
   bool isLoading = false;
   void setIsLoading(bool value) {
@@ -296,50 +207,56 @@ class ChatMediaController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> uploadImage(BuildContext context) async {
+  Future<void> uploadMedia(BuildContext context) async {
     final chatController = ref.read(chatControllerProvider);
     await chatController.setIsShowMedia(context);
     AppUtils.futureApi(
       () async {
         mediaUrl.clear();
-        selectedAsset.clear();
         final uuid = Uuid();
         final id = uuid.v4();
-        for (String path in imagePaths) {
-          String imageUrl = await chatUseCase.uploadImage(
-              file: File(path), folderPath: "Chats/$id");
-          mediaUrl.add(imageUrl);
+        for (String path in mediaPath) {
+          if (path.isVideoLocal) {
+            String videoUrl = await chatUseCase.uploadVideo(
+                file: File(path), folderName: "video", topic: "chat");
+            mediaUrl.add(videoUrl);
+          } else {
+            String imageUrl = await chatUseCase.uploadImage(
+                file: File(path), folderPath: "Chats/$id");
+            mediaUrl.add(imageUrl);
+          }
+          await chatController.sendMessageWithMedia(mediaUrl);
         }
-
-        await chatController.sendMessageWithMedia(mediaUrl);
       },
       context,
       (value) {},
     );
-    // notifyListeners();
   }
 
-  Future<void> uploadVideo() async {
-    mediaUrl.clear();
-    for (String path in videoPaths) {
-      String videoUrl = await chatUseCase.uploadVideo(
-          file: File(path), folderName: "video", topic: "chat");
-      mediaUrl.add(videoUrl);
-    }
-    videoPaths.clear();
+  Future<String?> generateVideoThumbnail(String videoPath) async {
+    String? thumbnail = await VideoThumbnail.thumbnailFile(
+        video: videoPath,
+        thumbnailPath: (await getTemporaryDirectory()).path,
+        imageFormat: ImageFormat.JPEG,
+        quality: 100);
+    return thumbnail;
   }
 
+  List<String> mediaPath = [];
+  List<String> mediaLocalPath = [];
   Future<void> getAssetPaths(BuildContext context) async {
-    imagePaths.clear();
-    videoPaths.clear();
+    // imagePaths.clear();
+    // videoPaths.clear();
     for (AssetEntity asset in selectedAsset) {
       File? file = await asset.file;
       if (file != null) {
         if (asset.type == AssetType.image) {
-          imagePaths.add(file.path);
+          mediaPath.add(file.path);
+          mediaLocalPath.add(file.path);
         } else {
-          videoPaths.add(file.path);
-          // await generateVideoThumbnail();
+          mediaPath.add(file.path);
+          String? thumbnail = await generateVideoThumbnail(file.path);
+          mediaLocalPath.add(thumbnail ?? "");
         }
       }
     }
@@ -352,7 +269,7 @@ class ChatMediaController extends ChangeNotifier {
     num senderId = num.parse(await userUtil.getUserId());
     final newMessage = MessageModel(
         conversationId: chatController.conversationData?.conversation?.id,
-        mediaUrl: imagePaths,
+        mediaUrl: mediaLocalPath,
         createdAt: DateTime.now().toIso8601String(),
         senderId: senderId,
         type: 'temp');
@@ -366,7 +283,6 @@ class ChatMediaController extends ChangeNotifier {
   //     selectedAsset.removeAt(index);
   //   }
   //   notifyListeners();
-  // }
 
   // Future<void> removeVideo() async {
   //   videoPaths.clear();
@@ -391,7 +307,7 @@ class ChatMediaController extends ChangeNotifier {
 
   Future<void> pickImageCamera(BuildContext context) async {
     final image = await mediaUseCase.pickImageCamera();
-    imagePaths.add(image?.path ?? "");
+    mediaPath.add(image?.path ?? "");
     notifyListeners();
     context.pop();
   }
