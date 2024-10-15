@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:app_tcareer/src/extensions/image_extension.dart';
 import 'package:app_tcareer/src/extensions/video_extension.dart';
+import 'package:app_tcareer/src/features/chat/data/models/message.dart';
 import 'package:app_tcareer/src/features/chat/presentation/controllers/chat_controller.dart';
 import 'package:app_tcareer/src/features/chat/usecases/chat_use_case.dart';
 import 'package:app_tcareer/src/features/posts/data/models/media_state.dart';
@@ -11,6 +12,7 @@ import 'package:app_tcareer/src/features/posts/presentation/controllers/post_con
 import 'package:app_tcareer/src/features/posts/presentation/pages/posting_page.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/features/posts/usecases/media_use_case.dart';
+import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:app_tcareer/src/utils/snackbar_utils.dart';
 import 'package:app_tcareer/src/utils/user_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -288,16 +290,33 @@ class ChatMediaController extends ChangeNotifier {
   List<String> imagePaths = [];
   List<String> videoPaths = [];
   List<String> mediaUrl = [];
-  Future<void> uploadImage() async {
-    mediaUrl.clear();
-    final uuid = Uuid();
-    final id = uuid.v4();
-    for (String path in imagePaths) {
-      String imageUrl = await chatUseCase.uploadImage(
-          file: File(path), folderPath: "Chats/$id");
-      mediaUrl.add(imageUrl);
-    }
-    imagePaths.clear();
+  bool isLoading = false;
+  void setIsLoading(bool value) {
+    isLoading = value;
+    notifyListeners();
+  }
+
+  Future<void> uploadImage(BuildContext context) async {
+    final chatController = ref.read(chatControllerProvider);
+    await chatController.setIsShowMedia(context);
+    AppUtils.futureApi(
+      () async {
+        mediaUrl.clear();
+        selectedAsset.clear();
+        final uuid = Uuid();
+        final id = uuid.v4();
+        for (String path in imagePaths) {
+          String imageUrl = await chatUseCase.uploadImage(
+              file: File(path), folderPath: "Chats/$id");
+          mediaUrl.add(imageUrl);
+        }
+
+        await chatController.sendMessageWithMedia(mediaUrl);
+      },
+      context,
+      (value) {},
+    );
+    // notifyListeners();
   }
 
   Future<void> uploadVideo() async {
@@ -311,11 +330,8 @@ class ChatMediaController extends ChangeNotifier {
   }
 
   Future<void> getAssetPaths(BuildContext context) async {
-    // final userUtils = ref.watch(userUtilsProvider);
-
-    // imagePaths.removeWhere((path) => !path.isImageNetWork);
-    // Clear videoPaths as well
-
+    imagePaths.clear();
+    videoPaths.clear();
     for (AssetEntity asset in selectedAsset) {
       File? file = await asset.file;
       if (file != null) {
@@ -327,13 +343,22 @@ class ChatMediaController extends ChangeNotifier {
         }
       }
     }
-    selectedAsset.clear();
+    await updateMediaLocalConversation();
+  }
 
-    // print("Image Paths: $imagePaths");
-    // print("Video Paths: $videoPaths");
-    // if (chatController.isShowMedia == true) {
-    //   chatController.setIsShowMedia(context);
-    // }
+  Future<void> updateMediaLocalConversation() async {
+    final chatController = ref.watch(chatControllerProvider);
+    final userUtil = ref.watch(userUtilsProvider);
+    num senderId = num.parse(await userUtil.getUserId());
+    final newMessage = MessageModel(
+        conversationId: chatController.conversationData?.conversation?.id,
+        mediaUrl: imagePaths,
+        createdAt: DateTime.now().toIso8601String(),
+        senderId: senderId,
+        type: 'temp');
+
+    chatController.messages.insert(0, newMessage);
+    notifyListeners();
   }
   // Future<void> removeImage(int index) async {
   //   imagePaths.removeAt(index);

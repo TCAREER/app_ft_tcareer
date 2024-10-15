@@ -5,6 +5,7 @@ import 'package:app_tcareer/src/features/chat/presentation/controllers/chat_cont
 import 'package:app_tcareer/src/features/chat/presentation/controllers/chat_media_controller.dart';
 import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:app_tcareer/src/widgets/cached_image_widget.dart';
+import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fb_photo_view/flutter_fb_photo_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -91,7 +92,7 @@ Widget messageBox({
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        mediaItem(media),
+                        mediaItem(media, ref),
                         const SizedBox(
                           height: 5,
                         ),
@@ -121,20 +122,33 @@ Widget messageBox({
   );
 }
 
-Widget mediaItem(List<String> media) {
+Widget mediaItem(List<String> media, WidgetRef ref) {
   if (media.length == 1) {
     return Visibility(
       visible: media[0].isImageNetWork,
-      replacement: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: Image.file(
-          File(media[0]),
-          fit: BoxFit.cover,
-        ),
+      replacement: Stack(
+        alignment: Alignment.center,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: ColorFiltered(
+              colorFilter: ColorFilter.mode(Colors.black54, BlendMode.darken),
+              child: Image.file(
+                File(media[0]),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          SizedBox(
+              width: 24, // Kích thước của indicator
+              height: 24,
+              child: circularLoadingWidget()),
+        ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: cachedImageWidget(
+          visiblePlaceHolder: false,
           imageUrl: media[0],
           fit: BoxFit.cover,
         ),
@@ -154,16 +168,30 @@ Widget mediaItem(List<String> media) {
       itemBuilder: (context, index) {
         return Visibility(
           visible: media[index].isImageNetWork,
-          replacement: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.file(
-              File(media[index]),
-              fit: BoxFit.cover,
-            ),
+          replacement: Stack(
+            alignment: Alignment.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: ColorFiltered(
+                  colorFilter:
+                      ColorFilter.mode(Colors.black54, BlendMode.darken),
+                  child: Image.file(
+                    File(media[index]),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SizedBox(
+                  width: 24, // Kích thước của indicator
+                  height: 24,
+                  child: circularLoadingWidget()),
+            ],
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: cachedImageWidget(
+              visiblePlaceHolder: false,
               imageUrl: media[index],
               fit: BoxFit.cover,
             ),

@@ -201,8 +201,13 @@ class _ChatMediaPageState extends ConsumerState<ChatMediaPage> {
                     color: Colors.black,
                   )),
               child: GestureDetector(
-                onTap: () async =>
-                    await chatController.sendMessageWithMedia(context),
+                onTap: () async {
+                  await controller.getAssetPaths(context);
+                  await controller.uploadImage(context);
+                  // if (mounted) {
+                  // await chatController.sendMessageWithMedia(context);
+                  // }
+                },
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 5),
                   padding: const EdgeInsets.all(

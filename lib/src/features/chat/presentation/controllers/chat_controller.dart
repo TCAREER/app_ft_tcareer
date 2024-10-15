@@ -96,7 +96,12 @@ class ChatController extends ChangeNotifier {
 
   void handleUpdateMessage(ably.Message message) {
     final messageData = jsonDecode(message.data.toString());
+    final mediaUrls = messageData['media_url'] != null
+        ? List<String>.from(messageData['media_url'])
+        : <String>[];
+
     final newMessage = MessageModel(
+      mediaUrl: mediaUrls,
       content: messageData['content'],
       conversationId: conversationData?.conversation?.id,
       id: messageData['message_id'],
@@ -104,7 +109,8 @@ class ChatController extends ChangeNotifier {
       createdAt:
           messageData['created_at'], // sửa 'createdAt' thành 'created_at'
     );
-
+    messages.removeWhere((message) => message.type == "temp");
+    notifyListeners();
     // Kiểm tra xem message có tồn tại trong messages hay không
     if (!messages
         .any((existingMessage) => existingMessage.id == newMessage.id)) {
@@ -206,24 +212,20 @@ class ChatController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> sendMessageWithMedia(BuildContext context) async {
-    final mediaController = ref.watch(chatMediaControllerProvider);
-    await mediaController.getAssetPaths(context);
-    print(">>>>>>>image: ${mediaController.imagePaths}");
-    notifyListeners();
+  Future<void> sendMessageWithMedia(List<String> mediaUrl) async {
+    // await mediaController.getAssetPaths(context);
+    // print(">>>>>>>image: ${mediaController.imagePaths}");
+    // notifyListeners();
 
     // if (mediaController.imagePaths.isNotEmpty) {
     //   await mediaController.uploadImage();
-    //
-    //   // AppUtils.futureApi(() async {
-    //   //   final body = SendMessageRequest(
-    //   //       conversationId: conversationData?.conversation?.id,
-    //   //       content: "Gửi hình ảnh",
-    //   //       mediaUrl: mediaController.mediaUrl);
-    //   //   await chatUseCase.sendMessage(body);
-    //   //   // notifyListeners();
-    //   // }, context, (val) {});
-    // }
+
+    final body = SendMessageRequest(
+        conversationId: conversationData?.conversation?.id, mediaUrl: mediaUrl);
+    await chatUseCase.sendMessage(body);
+    // notifyListeners();
+
+    // setIsShowMedia(context);
   }
 
   // Future<void> showMediaPage(BuildContext context) async {

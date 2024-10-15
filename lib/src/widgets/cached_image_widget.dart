@@ -9,10 +9,12 @@ Widget cachedImageWidget(
     double? width,
     Color? color,
     BoxFit? fit,
+    bool visiblePlaceHolder = true,
     BlendMode? colorBlendMode}) {
   return CachedNetworkImage(
       progressIndicatorBuilder: (context, url, progress) {
-        return imagePlaceholder();
+        return Visibility(
+            visible: visiblePlaceHolder, child: imagePlaceholder());
       },
       imageUrl: imageUrl ?? "",
       height: height,
