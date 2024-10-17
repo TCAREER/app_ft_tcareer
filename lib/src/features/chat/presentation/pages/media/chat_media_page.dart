@@ -183,7 +183,7 @@ class _ChatMediaPageState extends ConsumerState<ChatMediaPage> {
     return PreferredSize(
         preferredSize: Size.fromHeight(50),
         child: Visibility(
-          visible: controller.isMaxChildSizeMedia,
+          visible: controller.isMaxChildSizeMedia == true,
           replacement: chatBottomAppBar(ref, context, autoFocus: false),
           child: AppBar(
             centerTitle: true,

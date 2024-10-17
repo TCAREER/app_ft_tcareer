@@ -184,30 +184,23 @@ class _MediaPageState extends ConsumerState<MediaPage> {
               }
               controller.setIsShowPopUp(false);
             },
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 110),
-              child: Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(30)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      controller.selectedAlbum?.name ?? "",
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Visibility(
-                      visible: controller.albums.length >= 1,
-                      child: Visibility(
-                          visible: controller.isShowPopUp != true,
-                          replacement: const Icon(Icons.keyboard_arrow_up),
-                          child: const Icon(Icons.keyboard_arrow_down)),
-                    )
-                  ],
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  controller.selectedAlbum?.name ?? "",
+                  style: const TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold),
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
+                Visibility(
+                  visible: controller.albums.length >= 1,
+                  child: Visibility(
+                      visible: controller.isShowPopUp != true,
+                      replacement: const Icon(Icons.keyboard_arrow_up),
+                      child: const Icon(Icons.keyboard_arrow_down)),
+                )
+              ],
             ),
           ),
           actions: [
