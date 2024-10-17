@@ -1,5 +1,6 @@
 import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/post_edit.dart';
+import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/video_player_widget.dart';
 import 'package:app_tcareer/src/extensions/video_extension.dart';
@@ -203,7 +204,7 @@ Widget postWidget({
             Visibility(
                 visible: !isShared,
                 child: engagementWidget(
-                  onLike: () async {},
+                  onLike: onLike,
                   index: index,
                   liked: liked,
                   ref: ref,

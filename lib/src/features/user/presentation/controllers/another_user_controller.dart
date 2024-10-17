@@ -70,11 +70,30 @@ class AnotherUserController extends ChangeNotifier {
     }
   }
 
-  Future<void> postLikePost(
-      {required int index, required String postId}) async {
+  int pendingLikeCount = 0;
+  bool isLikeProcess = false;
+  Future<void> postLikePost({
+    required int index,
+    required String postId,
+  }) async {
+    if (isLikeProcess) return;
+    isLikeProcess = true;
+    final currentPost = postCache[index];
+    final isLiked = currentPost.liked ?? false;
+    final likeCount = currentPost.likeCount ?? 0;
+    pendingLikeCount = isLiked ? -1 : 1;
+    final updatedPostTemp = currentPost.copyWith(
+        liked: !(postCache[index].liked ?? false),
+        likeCount: likeCount + pendingLikeCount);
+
+    postCache[index] = updatedPostTemp;
+    notifyListeners();
+    // setLikePost(index);
     await postUseCase.postLikePost(
         postId: postId, index: index, postCache: postCache);
+    isLikeProcess = false;
     notifyListeners();
+    pendingLikeCount = 0;
   }
 
   Future<void> refresh() async {

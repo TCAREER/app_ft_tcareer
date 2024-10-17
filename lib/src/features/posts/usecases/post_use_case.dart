@@ -71,23 +71,19 @@ class PostUseCase {
 
     try {
       LikePostData likeData = await postRepository.postLikePost(postId, 0);
-      // Cập nhật lại likeCount từ server
+
       postCache[index] =
           currentPost.copyWith(likeCount: likeData.data?.likeCount);
-      // Thông báo cho UI cập nhật
-    } catch (e) {
-      // Xử lý lỗi nếu cần
-    }
+    } catch (e) {}
   }
 
   Future<void> postLikePost(
-      {required String postId,
-      required int index,
-      required List<post.Data> postCache}) async {
-    await setLikePost(index: index, postId: postId, postCache: postCache);
-  }
+          {required String postId,
+          required int index,
+          required List<post.Data> postCache}) async =>
+      await setLikePost(index: index, postId: postId, postCache: postCache);
 
-  Future<void> postLikePostDetail(String postId, int likeCount) async =>
+  Future<LikePostData> postLikePostDetail(String postId, int likeCount) async =>
       await postRepository.postLikePost(postId, likeCount);
 
   Future<PostsDetailResponse> getPostById(String postId) async =>

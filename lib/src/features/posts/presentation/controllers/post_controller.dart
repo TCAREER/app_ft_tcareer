@@ -78,25 +78,25 @@ class PostController extends ChangeNotifier {
 
   int pendingLikeCount = 0;
   bool isLikeProcess = false;
-  Future<void> postLikePost(
-      {required int index,
-      required String postId,
-      required List<post_model.Data> post}) async {
+  Future<void> postLikePost({
+    required int index,
+    required String postId,
+  }) async {
     if (isLikeProcess) return;
     isLikeProcess = true;
-    final currentPost = post[index];
+    final currentPost = postCache[index];
     final isLiked = currentPost.liked ?? false;
     final likeCount = currentPost.likeCount ?? 0;
     pendingLikeCount = isLiked ? -1 : 1;
     final updatedPostTemp = currentPost.copyWith(
-        liked: !(post[index].liked ?? false),
+        liked: !(postCache[index].liked ?? false),
         likeCount: likeCount + pendingLikeCount);
 
-    post[index] = updatedPostTemp;
+    postCache[index] = updatedPostTemp;
     notifyListeners();
     // setLikePost(index);
     await postUseCase.postLikePost(
-        postId: postId, index: index, postCache: post);
+        postId: postId, index: index, postCache: postCache);
     isLikeProcess = false;
     notifyListeners();
     pendingLikeCount = 0;

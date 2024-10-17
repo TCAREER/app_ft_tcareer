@@ -21,27 +21,32 @@ class PostDetailController extends ChangeNotifier {
 
   Future<void> likePostById(String postId) async {
     await setLikePost(postId);
-
-    notifyListeners();
   }
 
+  int pendingLikeCount = 0;
+  bool isLikeProcess = false;
   Future<void> setLikePost(String postId) async {
+    if (isLikeProcess) return;
+    isLikeProcess = true;
     var currentPost = postData;
     final isLiked = postData?.liked ?? false;
     final likeCount = postData?.likeCount ?? 0;
-    if (currentPost != null) {
-      final updatePost = currentPost.copyWith(
-          liked: !(currentPost.liked ?? false),
-          likeCount: isLiked ? likeCount - 1 : likeCount + 1);
-      postData = updatePost;
-      await Future.delayed(const Duration(milliseconds: 500));
-      await postUseCase
-          .postLikePostDetail(postId, postData?.likeCount?.toInt() ?? 0)
-          .catchError((e) {
-        postData = currentPost;
-      });
-      notifyListeners();
-    }
+    pendingLikeCount = isLiked ? -1 : 1;
+
+    final updatePostTemp = currentPost?.copyWith(
+        liked: !(currentPost.liked ?? false),
+        likeCount: likeCount + pendingLikeCount);
+    postData = updatePostTemp;
+    notifyListeners();
+
+    final likePostData = await postUseCase.postLikePostDetail(postId, 0);
+    final updatePost =
+        updatePostTemp?.copyWith(likeCount: likePostData.data?.likeCount);
+
+    postData = updatePost;
+    isLikeProcess = false;
+    notifyListeners();
+    pendingLikeCount = 0;
   }
 }
 

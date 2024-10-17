@@ -33,18 +33,14 @@ class FirebaseStorageService {
     final ref = FirebaseStorage.instance.ref().child(path);
 
     try {
-      // Chỉ định loại MIME là image/jpeg hoặc image/png tùy thuộc vào loại ảnh
       UploadTask uploadTask = ref.putData(
         file,
-        SettableMetadata(
-            contentType:
-                "image/jpg"), // Thay 'image/jpeg' bằng loại MIME của ảnh bạn đang tải lên
+        SettableMetadata(contentType: "image/jpg"),
       );
       TaskSnapshot snapshot = await uploadTask;
       String url = await snapshot.ref.getDownloadURL();
       return url;
     } catch (e) {
-      // Hiển thị thông báo lỗi nếu có
       showSnackBarError("Có lỗi xảy ra, Vui lòng thử lại");
       rethrow;
     }
@@ -72,7 +68,7 @@ class FirebaseStorageService {
         });
       }
 
-      return url; // Trả về link tạm thời
+      return url;
     } catch (e) {
       showSnackBarError("Có lỗi xảy ra, Vui lòng thử lại");
       rethrow;
