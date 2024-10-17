@@ -244,11 +244,11 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage>
             connectButton(
               friendStatus: friendStatus ?? "default",
               onConnect: () async =>
-                  await connectionController.postAddFriend(userId),
+                  await connectionController.postAddFriend(userId, context),
               onConfirm: () async => await connectionController
                   .showModalConfirmRequest(context: context, userId: userId),
               onCancelRequest: () async =>
-                  await connectionController.cancelRequest(userId),
+                  await connectionController.cancelRequest(userId, context),
               onDelete: () async => await connectionController
                   .showModalDeleteFriend(context: context, userId: userId),
             ),

@@ -44,6 +44,7 @@ void main() async {
       rethrow;
     }
   }
+  await Future.delayed(Duration(milliseconds: 100));
   container
       .read(notificationProvider(navigatorKey))
       .initializeNotificationServices();

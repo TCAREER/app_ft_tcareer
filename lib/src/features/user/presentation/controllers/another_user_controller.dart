@@ -22,10 +22,8 @@ class AnotherUserController extends ChangeNotifier {
   Future<void> getUserById(String userId) async {
     print(">>>>>>>>>>>>userId:$userId");
     anotherUserData = null;
-    postCache.clear();
     anotherUserData = await userUseCase.getUserById(userId);
     await getPost(userId);
-    notifyListeners();
   }
 
   bool isLoading = false;

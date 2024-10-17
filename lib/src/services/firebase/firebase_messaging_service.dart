@@ -21,7 +21,7 @@ class FirebaseMessagingService {
     String? deviceToken = await fcm.getToken();
     await userUtils.saveDeviceToken(deviceToken: deviceToken ?? "");
     print(">>>>>>>>>>deviceToken: $deviceToken");
-    fcm.subscribeToTopic("tcareer");
+    // fcm.subscribeToTopic("tcareer");
     fcm.getInitialMessage().then((RemoteMessage? message) {
       if (message != null) {
         directToPage(message);
@@ -30,6 +30,8 @@ class FirebaseMessagingService {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
       directToPage(message);
     });
+
+    // FirebaseMessaging.onBackgroundMessage(backgroundHandler);
 
     await fcm.requestPermission(
       alert: true,
@@ -87,24 +89,26 @@ class FirebaseMessagingService {
     final userId = data['related_user_id']?.toString();
     final type = data['type']?.toString();
 
-    if (postId != null &&
-        postId.isNotEmpty &&
-        type?.contains("COMMENT") == true) {
-      context?.pushNamed(
-        "detail",
-        pathParameters: {"id": postId},
-        queryParameters: {"notificationType": type},
-      );
-    } else if (postId != null && postId.isNotEmpty) {
-      context?.pushNamed(
-        "detail",
-        pathParameters: {"id": postId},
-      );
-    } else if (userId != null && userId.isNotEmpty) {
-      context?.pushNamed(
-        'profile',
-        queryParameters: {"userId": userId},
-      );
+    if (context != null) {
+      if (postId != null &&
+          postId.isNotEmpty &&
+          type?.contains("COMMENT") == true) {
+        context.pushNamed(
+          "detail",
+          pathParameters: {"id": postId},
+          queryParameters: {"notificationType": type},
+        );
+      } else if (postId != null && postId.isNotEmpty) {
+        context.pushNamed(
+          "detail",
+          pathParameters: {"id": postId},
+        );
+      } else if (userId != null && userId.isNotEmpty) {
+        context.pushNamed(
+          'profile',
+          queryParameters: {"userId": userId},
+        );
+      }
     }
   }
 }
@@ -127,23 +131,25 @@ Future<void> backgroundHandler(RemoteMessage message) async {
   final userId = data['related_user_id']?.toString();
   final type = data['type']?.toString();
 
-  if (postId != null &&
-      postId.isNotEmpty &&
-      type?.contains("COMMENT") == true) {
-    context?.pushNamed(
-      "detail",
-      pathParameters: {"id": postId},
-      queryParameters: {"notificationType": type},
-    );
-  } else if (postId != null && postId.isNotEmpty) {
-    context?.pushNamed(
-      "detail",
-      pathParameters: {"id": postId},
-    );
-  } else if (userId != null && userId.isNotEmpty) {
-    context?.pushNamed(
-      'profile',
-      queryParameters: {"userId": userId},
-    );
+  if (context != null) {
+    if (postId != null &&
+        postId.isNotEmpty &&
+        type?.contains("COMMENT") == true) {
+      context.pushNamed(
+        "detail",
+        pathParameters: {"id": postId},
+        queryParameters: {"notificationType": type},
+      );
+    } else if (postId != null && postId.isNotEmpty) {
+      context.pushNamed(
+        "detail",
+        pathParameters: {"id": postId},
+      );
+    } else if (userId != null && userId.isNotEmpty) {
+      context.pushNamed(
+        'profile',
+        queryParameters: {"userId": userId},
+      );
+    }
   }
 }

@@ -38,7 +38,7 @@ class NotificationService {
 
   Future<void> displayNotification(RemoteMessage message) async {
     print(">>>>>>>>>>>data = ${message.data}");
-    String fullName = message.data['full_name'];
+    String fullName = message.data['full_name'].toString();
     String image = message.notification?.android?.imageUrl ??
         "https://ui-avatars.com/api/?name=$fullName&background=random";
     // String postId = message.data["id"];
