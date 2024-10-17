@@ -32,26 +32,30 @@ class UserConnectionController extends ChangeNotifier {
     if (currentUser.data?.followed != true) {
       showSnackBar("Bạn đã theo dõi ${currentUser.data?.fullName}");
     }
-    notifyListeners();
   }
 
   Future<void> postAddFriend(String userId) async {
-    await connectionUseCase.postAddFriend(userId: userId);
     await anotherUserController.getUserById(userId);
-    showSnackBar(
-        "Đã gửi lời mời kết bạn đến ${anotherUserController.anotherUserData?.data?.fullName}");
-    notifyListeners();
+    final currentUser = anotherUserController.anotherUserData;
+    if (currentUser?.data?.friendStatus != "sent_request") {
+      await connectionUseCase.postAddFriend(userId: userId);
+      await anotherUserController.getUserById(userId);
+      showSnackBar(
+          "Đã gửi lời mời kết bạn đến ${anotherUserController.anotherUserData?.data?.fullName}");
+    }
   }
 
   Future<void> postAcceptFriend(BuildContext context, String userId) async {
-    final currentUser = anotherUserController.anotherUserData;
-    await connectionUseCase.postAcceptFriend(
-      userId: userId,
-    );
     await anotherUserController.getUserById(userId);
-    context.pop();
-    showSnackBar("Bạn đã đồng ý kết bạn với ${currentUser?.data?.fullName}");
-    notifyListeners();
+    final currentUser = anotherUserController.anotherUserData;
+    if (currentUser?.data?.friendStatus != null) {
+      await connectionUseCase.postAcceptFriend(
+        userId: userId,
+      );
+      await anotherUserController.getUserById(userId);
+      context.pop();
+      showSnackBar("Bạn đã đồng ý kết bạn với ${currentUser?.data?.fullName}");
+    }
   }
 
   Future<void> postDeclineFriend(BuildContext context, String userId) async {
@@ -63,7 +67,6 @@ class UserConnectionController extends ChangeNotifier {
     await anotherUser.getUserById(userId);
     context.pop();
     showSnackBar("Đã từ chối kết bạn với ${currentUser?.data?.fullName}");
-    notifyListeners();
   }
 
   Future<void> showModalDeleteFriend(
@@ -194,18 +197,26 @@ class UserConnectionController extends ChangeNotifier {
   }
 
   Future<void> cancelRequest(String userId) async {
+    // await anotherUserController.getUserById(userId);
+    // final currentUser = anotherUserController.anotherUserData;
     await connectionUseCase.deleteCancelRequest(userId);
-    await anotherUserController.getUserById(userId);
-    final currentUser = anotherUserController.anotherUserData;
-    showSnackBar("Đã hủy lời mời kết bạn với ${currentUser?.data?.fullName}");
+    // if (currentUser?.data?.friendStatus != "is_friend") {
+    //
+    //   await anotherUserController.getUserById(userId);
+    //   showSnackBar("Đã hủy lời mời kết bạn với ${currentUser?.data?.fullName}");
+    // }
   }
 
   Future<void> unFriend(BuildContext context, String userId) async {
-    await connectionUseCase.deleteUnFriend(userId);
     await anotherUserController.getUserById(userId);
+
     final currentUser = anotherUserController.anotherUserData;
-    context.pop();
-    showSnackBar("Đã hủy kết bạn với ${currentUser?.data?.fullName}");
+    if (currentUser?.data?.friendStatus != null) {
+      await connectionUseCase.deleteUnFriend(userId);
+      await anotherUserController.getUserById(userId);
+      context.pop();
+      showSnackBar("Đã hủy kết bạn với ${currentUser?.data?.fullName}");
+    }
   }
 }
 

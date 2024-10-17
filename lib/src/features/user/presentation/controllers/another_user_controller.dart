@@ -24,7 +24,7 @@ class AnotherUserController extends ChangeNotifier {
     anotherUserData = null;
     postCache.clear();
     anotherUserData = await userUseCase.getUserById(userId);
-
+    await getPost(userId);
     notifyListeners();
   }
 

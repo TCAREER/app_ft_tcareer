@@ -17,11 +17,13 @@ import 'package:app_tcareer/src/features/chat/data/models/send_message_request.d
 import 'package:app_tcareer/src/features/posts/data/models/create_comment_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/like_comment_request.dart';
+import 'package:app_tcareer/src/features/posts/data/models/like_post_data.dart';
 import 'package:app_tcareer/src/features/posts/data/models/like_post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_detail_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/search_user_and_post_data.dart';
+import 'package:app_tcareer/src/features/posts/data/models/share_post_data.dart';
 import 'package:app_tcareer/src/features/posts/data/models/share_post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/quick_search_user_data.dart';
 import 'package:app_tcareer/src/features/posts/data/models/quick_search_user_request.dart';
@@ -82,13 +84,13 @@ abstract class ApiServices {
   Future<PostsResponse> getPosts({@Queries() required PostRequest queries});
 
   @POST('api/auth/like_post')
-  Future postLikePost({@Body() required LikePostRequest body});
+  Future<LikePostData> postLikePost({@Body() required LikePostRequest body});
 
   @GET('api/auth/post/{id}')
   Future<PostsDetailResponse> getPostById({@Path('id') required String postId});
 
   @POST('api/auth/share_post')
-  Future postSharePost({@Body() required SharePostRequest body});
+  Future<SharePostData> postSharePost({@Body() required SharePostRequest body});
 
   @POST('api/auth/comment')
   Future postCreateComment({@Body() required CreateCommentRequest body});

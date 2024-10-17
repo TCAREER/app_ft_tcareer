@@ -7,9 +7,12 @@ import 'package:app_tcareer/src/features/posts/data/models/post_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_detail_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart'
     as post;
+import 'package:app_tcareer/src/features/posts/data/models/share_post_data.dart';
 import 'package:app_tcareer/src/features/posts/data/models/user_liked.dart';
 import 'package:app_tcareer/src/features/posts/data/repositories/post_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../data/models/like_post_data.dart';
 
 class PostUseCase {
   final PostRepository postRepository;
@@ -61,20 +64,19 @@ class PostUseCase {
       {required int index,
       required String postId,
       required List<post.Data> postCache}) async {
-    if (postCache.isNotEmpty && index < postCache.length) {
-      final currentPost = postCache[index];
-      final isLiked = currentPost.liked ?? false;
-      final likeCount = currentPost.likeCount ?? 0;
-      final updatedPost = currentPost.copyWith(
-          liked: !(postCache[index].liked ?? false),
-          likeCount: isLiked ? likeCount - 1 : likeCount + 1);
-      postCache[index] = updatedPost;
-      await Future.delayed(const Duration(milliseconds: 500));
-      await postRepository
-          .postLikePost(postId, updatedPost.likeCount?.toInt() ?? 0)
-          .catchError((e) {
-        postCache[index] = currentPost;
-      });
+    final currentPost = postCache[index];
+
+    // await Future.delayed(
+    //     const Duration(milliseconds: 500)); // Chờ một thời gian (nếu cần)
+
+    try {
+      LikePostData likeData = await postRepository.postLikePost(postId, 0);
+      // Cập nhật lại likeCount từ server
+      postCache[index] =
+          currentPost.copyWith(likeCount: likeData.data?.likeCount);
+      // Thông báo cho UI cập nhật
+    } catch (e) {
+      // Xử lý lỗi nếu cần
     }
   }
 
@@ -102,7 +104,7 @@ class PostUseCase {
           mediaUrl: mediaUrl,
           parentId: parentId);
 
-  Future<void> postSharePost(
+  Future<SharePostData> postSharePost(
       {required int postId,
       required String privacy,
       required String body}) async {

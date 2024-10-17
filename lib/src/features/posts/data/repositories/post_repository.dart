@@ -5,12 +5,14 @@ import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/features/posts/data/models/create_comment_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/like_comment_request.dart';
+import 'package:app_tcareer/src/features/posts/data/models/like_post_data.dart';
 import 'package:app_tcareer/src/features/posts/data/models/like_post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/post_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_detail_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/quick_search_user_data.dart';
+import 'package:app_tcareer/src/features/posts/data/models/share_post_data.dart';
 import 'package:app_tcareer/src/features/posts/data/models/share_post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/user_liked.dart';
 import 'package:app_tcareer/src/features/posts/data/models/user_liked_request.dart';
@@ -82,7 +84,7 @@ class PostRepository {
             PostRequest(personal: personal, profileUserId: userId, page: page));
   }
 
-  Future<void> postLikePost(String postId, int likeCount) async {
+  Future<LikePostData> postLikePost(String postId, int likeCount) async {
     final api = ref.watch(apiServiceProvider);
     return api.postLikePost(
         body: LikePostRequest(postId: postId, likeCount: likeCount));
@@ -131,7 +133,8 @@ class PostRepository {
     return database.listenToData(path);
   }
 
-  Future<void> postSharePost(int postId, String privacy, String body) async {
+  Future<SharePostData> postSharePost(
+      int postId, String privacy, String body) async {
     final api = ref.watch(apiServiceProvider);
     return await api.postSharePost(
         body: SharePostRequest(postId: postId, privacy: privacy, body: body));

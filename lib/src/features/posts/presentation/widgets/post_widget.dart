@@ -203,7 +203,7 @@ Widget postWidget({
             Visibility(
                 visible: !isShared,
                 child: engagementWidget(
-                  onLike: onLike,
+                  onLike: () async {},
                   index: index,
                   liked: liked,
                   ref: ref,

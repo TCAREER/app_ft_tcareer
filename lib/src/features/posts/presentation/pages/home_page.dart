@@ -87,9 +87,9 @@ class HomePage extends ConsumerWidget {
                   replacement: sharedPostWidget(
                     privacyOrigin: sharedPost?.privacy ?? "",
                     onLike: () async => await controller.postLikePost(
-                      index: index,
-                      postId: post.id.toString(),
-                    ),
+                        index: index,
+                        postId: post.id.toString(),
+                        post: controller.postCache),
                     originUserId: sharedPost?.userId.toString() ?? "",
                     userId: post.userId.toString(),
                     originCreatedAt: sharedPost?.createdAt ?? "",
@@ -117,6 +117,7 @@ class HomePage extends ConsumerWidget {
                   visible: post.sharedPostId == null,
                   child: postWidget(
                     onLike: () async => await controller.postLikePost(
+                      post: controller.postCache,
                       index: index,
                       postId: post.id.toString(),
                     ),
