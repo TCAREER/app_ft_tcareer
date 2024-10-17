@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:app_tcareer/src/features/chat/presentation/controllers/chat_controller.dart';
 import 'package:app_tcareer/src/features/chat/presentation/controllers/chat_media_controller.dart';
+import 'package:app_tcareer/src/features/chat/presentation/widgets/chat_bottom_app_bar.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,8 +10,12 @@ import 'package:photo_manager/photo_manager.dart';
 import 'chat_album_pop_up.dart';
 
 class ChatMediaPage extends ConsumerStatefulWidget {
-  const ChatMediaPage({super.key, required this.scrollController});
+  const ChatMediaPage(
+      {super.key,
+      required this.scrollController,
+      required this.draggableScrollableController});
   final ScrollController scrollController;
+  final DraggableScrollableController draggableScrollableController;
 
   @override
   ConsumerState<ChatMediaPage> createState() => _ChatMediaPageState();
@@ -21,8 +26,26 @@ class _ChatMediaPageState extends ConsumerState<ChatMediaPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    final controller = ref.read(chatMediaControllerProvider);
     widget.scrollController.addListener(() {
-      print(">>>>>>>>>>>>is Scroll");
+      Future.microtask(
+        () async {
+          if (widget.scrollController.position.maxScrollExtent ==
+              widget.scrollController.offset) {
+            await controller.loadMore();
+          }
+        },
+      );
+    });
+
+    widget.draggableScrollableController.addListener(() {
+      Future.microtask(() async {
+        if (widget.draggableScrollableController.size == 1.0) {
+          await controller.setIsMaxChildSizeMedia(true);
+        } else if (widget.draggableScrollableController.size == 0.4) {
+          await controller.setIsMaxChildSizeMedia(false);
+        }
+      });
     });
   }
 
@@ -159,86 +182,84 @@ class _ChatMediaPageState extends ConsumerState<ChatMediaPage> {
     final chatController = ref.watch(chatControllerProvider);
     return PreferredSize(
         preferredSize: Size.fromHeight(50),
-        child: AppBar(
-          centerTitle: true,
-          leading: IconButton(
-            onPressed: () {
-              chatController.setIsShowMedia(context);
-            },
-            icon: const Icon(
-              Icons.close,
-              color: Colors.black,
+        child: Visibility(
+          visible: controller.isMaxChildSizeMedia,
+          replacement: chatBottomAppBar(ref, context, autoFocus: false),
+          child: AppBar(
+            centerTitle: true,
+            leading: IconButton(
+              onPressed: () {
+                chatController.setIsShowMedia(context);
+              },
+              icon: const Icon(
+                Icons.close,
+                color: Colors.black,
+              ),
             ),
-          ),
-          title: GestureDetector(
-            onTap: () async {
-              if (controller.isShowPopUp != true) {
-                await showChatAlbumPopup(context, controller.albums, ref);
-              } else {
-                controller.setIsShowPopUp(false);
-              }
-            },
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 110),
-              child: Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(30)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      controller.selectedAlbum?.name ?? "",
-                      overflow: TextOverflow.ellipsis,
+            title: InkWell(
+              onTap: () async {
+                if (controller.isShowPopUp != true) {
+                  await showChatAlbumPopup(context, controller.albums, ref);
+                } else {
+                  controller.setIsShowPopUp(false);
+                }
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    controller.selectedAlbum?.name ?? "",
+                    style: const TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Visibility(
+                    visible: controller.albums.length >= 1,
+                    child: Visibility(
+                        visible: controller.isShowPopUp != true,
+                        replacement: const Icon(Icons.keyboard_arrow_up),
+                        child: const Icon(Icons.keyboard_arrow_down)),
+                  )
+                ],
+              ),
+            ),
+            actions: [
+              Visibility(
+                visible: controller.selectedAsset.isNotEmpty,
+                replacement: IconButton(
+                    onPressed: () async =>
+                        await controller.pickImageCamera(context),
+                    icon: const Icon(
+                      Icons.camera_alt,
+                      color: Colors.black,
+                    )),
+                child: GestureDetector(
+                  onTap: () async {
+                    await controller.getAssetPaths(context);
+                    await controller.uploadMedia(context);
+                    // if (mounted) {
+                    // await chatController.sendMessageWithMedia(context);
+                    // }
+                  },
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 5),
+                    padding: const EdgeInsets.all(
+                        8), // Thêm padding để làm cho nút đẹp hơn
+                    decoration: const BoxDecoration(
+                      color: Colors.blue,
+                      shape: BoxShape.circle,
                     ),
-                    Visibility(
-                      visible: controller.albums.length >= 1,
-                      child: Visibility(
-                          visible: controller.isShowPopUp != true,
-                          replacement: const Icon(Icons.keyboard_arrow_up),
-                          child: const Icon(Icons.keyboard_arrow_down)),
-                    )
-                  ],
+                    child: const Icon(
+                      Icons.arrow_forward_rounded,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                  ),
                 ),
-              ),
-            ),
+              )
+            ],
           ),
-          actions: [
-            Visibility(
-              visible: controller.selectedAsset.isNotEmpty,
-              replacement: IconButton(
-                  onPressed: () async =>
-                      await controller.pickImageCamera(context),
-                  icon: const Icon(
-                    Icons.camera_alt,
-                    color: Colors.black,
-                  )),
-              child: GestureDetector(
-                onTap: () async {
-                  await controller.getAssetPaths(context);
-                  await controller.uploadMedia(context);
-                  // if (mounted) {
-                  // await chatController.sendMessageWithMedia(context);
-                  // }
-                },
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 5),
-                  padding: const EdgeInsets.all(
-                      8), // Thêm padding để làm cho nút đẹp hơn
-                  decoration: const BoxDecoration(
-                    color: Colors.blue,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.arrow_forward_rounded,
-                    color: Colors.white,
-                    size: 18,
-                  ),
-                ),
-              ),
-            )
-          ],
         ));
   }
 }

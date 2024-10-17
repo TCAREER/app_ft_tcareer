@@ -226,6 +226,10 @@ class ChatController extends ChangeNotifier {
   bool isShowEmoji = false;
 
   void setIsShowEmoJi(BuildContext context) {
+    if (isShowMedia == true) {
+      setIsShowMedia(context);
+    }
+
     isShowEmoji = !isShowEmoji;
     if (isShowEmoji == true) {
       FocusScope.of(context).unfocus();
@@ -238,6 +242,9 @@ class ChatController extends ChangeNotifier {
   bool isShowMedia = false;
 
   Future<void> setIsShowMedia(BuildContext context) async {
+    if (isShowEmoji == true) {
+      setIsShowEmoJi(context);
+    }
     isShowMedia = !isShowMedia;
     if (isShowMedia == true) {
       FocusScope.of(context).unfocus();

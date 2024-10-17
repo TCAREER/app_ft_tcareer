@@ -3,14 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 Widget chatInput(WidgetRef ref, BuildContext context,
-    {void Function(String)? onChanged, void Function()? onTap}) {
+    {void Function(String)? onChanged,
+    void Function()? onTap,
+    bool autoFocus = true}) {
   final controller = ref.watch(chatControllerProvider);
 
   return Container(
     // padding: EdgeInsets.a,
     child: TextField(
       onTap: onTap,
-      autofocus: true,
+      autofocus:
+          controller.isShowMedia || controller.isShowEmoji ? false : true,
       controller: controller.contentController,
       style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
       textAlignVertical: TextAlignVertical.center,

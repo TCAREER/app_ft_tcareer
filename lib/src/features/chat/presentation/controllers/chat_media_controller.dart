@@ -54,10 +54,18 @@ class ChatMediaController extends ChangeNotifier {
     }
   }
 
+  int albumSize = 18;
+  // int albumPage = 1;
   Future<void> getMediaFromAlbum(AssetPathEntity album) async {
-    media = await mediaUseCase.getMediaFromAlbum(album: album);
+    media = await mediaUseCase.getMediaFromAlbum(album: album, size: albumSize);
     await prefetchVideoDurations();
     notifyListeners();
+  }
+
+  Future<void> loadMore() async {
+    albumSize += 18;
+
+    await getMediaFromAlbum(selectedAlbum!);
   }
 
   Future<void> selectAlbum(album) async {
@@ -326,6 +334,12 @@ class ChatMediaController extends ChangeNotifier {
     if (await Permission.storage.isGranted == false) {
       await Permission.storage.request();
     }
+  }
+
+  bool isMaxChildSizeMedia = false;
+  Future<void> setIsMaxChildSizeMedia(bool value) async {
+    isMaxChildSizeMedia = value;
+    notifyListeners();
   }
 }
 

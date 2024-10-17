@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:app_tcareer/src/features/chat/presentation/controllers/chat_controller.dart';
 import 'package:app_tcareer/src/features/chat/presentation/controllers/chat_media_controller.dart';
 import 'package:app_tcareer/src/features/chat/presentation/pages/media/chat_media_page.dart';
+import 'package:app_tcareer/src/features/chat/presentation/widgets/chat_bottom_app_bar.dart';
+import 'package:app_tcareer/src/features/chat/presentation/widgets/chat_emoji.dart';
 import 'package:app_tcareer/src/features/chat/presentation/widgets/chat_input.dart';
 import 'package:app_tcareer/src/features/chat/presentation/widgets/message_box.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
@@ -24,6 +26,8 @@ class ChatPage extends ConsumerStatefulWidget {
 }
 
 class _ChatPageState extends ConsumerState<ChatPage> {
+  final DraggableScrollableController draggableScrollableController =
+      DraggableScrollableController();
   @override
   void initState() {
     // TODO: implement initState
@@ -89,9 +93,15 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           body: Stack(
             alignment: Alignment.bottomCenter,
             children: [
-              messages(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  messages(),
+                ],
+              ),
               if (controller.isShowMedia)
                 DraggableScrollableSheet(
+                  controller: draggableScrollableController,
                   expand: true,
                   snap: true,
                   initialChildSize: 0.4,
@@ -102,132 +112,20 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                       color: Colors.white,
                       child: ChatMediaPage(
                         scrollController: scrollController,
+                        draggableScrollableController:
+                            draggableScrollableController,
                       ), // Gọi trang media của bạn
                     );
                   },
                 ),
               Visibility(
                   visible: !controller.isShowMedia,
-                  child: bottomAppBar(ref, context)),
+                  child: chatBottomAppBar(ref, context)),
             ],
           ),
 
           // bottomNavigationBar:
         ));
-  }
-
-  Widget bottomAppBar(WidgetRef ref, BuildContext context) {
-    // final controller = ref.watch(commentControllerProvider);
-    final media = ref.watch(chatMediaControllerProvider);
-
-    final controller = ref.watch(chatControllerProvider);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.end,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          color: Colors.white,
-          padding: const EdgeInsets.symmetric(
-              horizontal: 8), // Thêm padding để tạo không gian
-          child: Row(
-            // mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center, // Đặt align cho Row
-            children: [
-              Expanded(
-                flex: 1,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () async {
-                        controller.setIsShowEmoJi(context);
-                      },
-                      child: const PhosphorIcon(
-                        PhosphorIconsRegular.smiley,
-                        color: Colors.grey,
-                        size: 33,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                flex: 6,
-                child: chatInput(
-                  ref,
-                  context,
-                  onChanged: controller.setHasContent,
-                  onTap: () {
-                    if (controller.isShowEmoji == true) {
-                      controller.setIsShowEmoJi(context);
-                    }
-                    if (controller.isShowMedia == true) {
-                      controller.setIsShowMedia(context);
-                    }
-                  },
-                ),
-              ),
-              Visibility(
-                visible: controller.hasContent,
-                replacement: GestureDetector(
-                  onTap: () async {
-                    await media.getAlbums();
-                    await controller.setIsShowMedia(context);
-                  },
-                  child: const PhosphorIcon(
-                    PhosphorIconsRegular.image,
-                    color: Colors.grey,
-                    size: 33,
-                  ),
-                ),
-                child: GestureDetector(
-                  onTap: () async => await controller.sendMessage(context),
-                  child: Container(
-                    padding: const EdgeInsets.all(
-                        8), // Thêm padding để làm cho nút đẹp hơn
-                    decoration: const BoxDecoration(
-                      color: Colors.blue,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.arrow_forward_rounded,
-                      color: Colors.white,
-                      size: 18,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        emoji(),
-      ],
-    );
-  }
-
-  Widget emoji() {
-    final controller = ref.watch(chatControllerProvider);
-    return Visibility(
-      visible: controller.isShowEmoji,
-      child: EmojiPicker(
-        textEditingController: controller.contentController,
-        onEmojiSelected: (category, emoji) {
-          controller.setHasContent(emoji.toString());
-        },
-        onBackspacePressed: () {
-          controller.setIsShowEmoJi(context);
-        },
-        config: const Config(
-          height: 325,
-          checkPlatformCompatibility: true,
-          skinToneConfig: SkinToneConfig(),
-          categoryViewConfig: CategoryViewConfig(),
-          bottomActionBarConfig: BottomActionBarConfig(),
-          searchViewConfig: SearchViewConfig(),
-        ),
-      ),
-    );
   }
 
   Widget messages() {
@@ -241,8 +139,13 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       child: ListView.separated(
         reverse: true,
         controller: controller.scrollController,
-        padding: const EdgeInsets.symmetric(horizontal: 10)
-            .copyWith(bottom: 60, top: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 10).copyWith(
+            bottom: controller.isShowMedia
+                ? ScreenUtil().screenHeight * .37
+                : controller.isShowEmoji
+                    ? ScreenUtil().screenHeight * .4
+                    : 60,
+            top: 5),
         itemCount: messages.length,
         itemBuilder: (context, index) {
           final message = messages[index];
