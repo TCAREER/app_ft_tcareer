@@ -7,7 +7,7 @@ Widget chatInput(WidgetRef ref, BuildContext context,
   final controller = ref.watch(chatControllerProvider);
 
   return Container(
-    padding: EdgeInsets.all(8),
+    // padding: EdgeInsets.a,
     child: TextField(
       onTap: onTap,
       autofocus: true,

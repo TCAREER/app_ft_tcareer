@@ -64,56 +64,56 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     final controller = ref.watch(chatControllerProvider);
 
     return PopScope(
-      onPopInvoked: (didPop) async {
-        if (didPop) {
-          await controller.leavePresence(widget.clientId);
-          await controller.disposeService();
-          controller.setHasContent("");
-          if (controller.isShowEmoji == true) {
-            controller.setIsShowEmoJi(context);
+        onPopInvoked: (didPop) async {
+          if (didPop) {
+            await controller.leavePresence(widget.clientId);
+            await controller.disposeService();
+            controller.setHasContent("");
+            if (controller.isShowEmoji == true) {
+              controller.setIsShowEmoJi(context);
+            }
+            if (controller.isShowMedia == true) {
+              controller.setIsShowMedia(context);
+            }
+
+            controller.contentController.clear();
           }
-          if (controller.isShowMedia == true) {
-            controller.setIsShowMedia(context);
-          }
+        },
+        child: Scaffold(
+          extendBody: true,
 
-          controller.contentController.clear();
-        }
-      },
-      child: Scaffold(
-        // extendBody: true,
+          resizeToAvoidBottomInset: true,
+          backgroundColor: Colors.grey.shade100,
+          appBar: appBar(ref),
 
-        resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.grey.shade100,
-        appBar: appBar(ref),
+          body: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              messages(),
+              if (controller.isShowMedia)
+                DraggableScrollableSheet(
+                  expand: true,
+                  snap: true,
+                  initialChildSize: 0.4,
+                  maxChildSize: 1.0,
+                  minChildSize: 0.4,
+                  builder: (context, scrollController) {
+                    return Container(
+                      color: Colors.white,
+                      child: ChatMediaPage(
+                        scrollController: scrollController,
+                      ), // Gọi trang media của bạn
+                    );
+                  },
+                ),
+              Visibility(
+                  visible: !controller.isShowMedia,
+                  child: bottomAppBar(ref, context)),
+            ],
+          ),
 
-        body: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            messages(),
-            if (controller.isShowMedia)
-              DraggableScrollableSheet(
-                expand: true,
-                snap: true,
-                initialChildSize: 0.4,
-                maxChildSize: 1.0,
-                minChildSize: 0.4,
-                builder: (context, scrollController) {
-                  return Container(
-                    color: Colors.white,
-                    child: ChatMediaPage(
-                      scrollController: scrollController,
-                    ), // Gọi trang media của bạn
-                  );
-                },
-              ),
-          ],
-        ),
-
-        bottomNavigationBar: Visibility(
-            visible: !controller.isShowMedia,
-            child: bottomAppBar(ref, context)),
-      ),
-    );
+          // bottomNavigationBar:
+        ));
   }
 
   Widget bottomAppBar(WidgetRef ref, BuildContext context) {
@@ -121,96 +121,88 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     final media = ref.watch(chatMediaControllerProvider);
 
     final controller = ref.watch(chatControllerProvider);
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-        // left: 5,
-        // right: 5,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.end,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            color: Colors.white,
-            padding: const EdgeInsets.symmetric(
-                horizontal: 8), // Thêm padding để tạo không gian
-            child: Row(
-              // mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment:
-                  CrossAxisAlignment.center, // Đặt align cho Row
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () async {
-                          controller.setIsShowEmoJi(context);
-                        },
-                        child: const PhosphorIcon(
-                          PhosphorIconsRegular.smiley,
-                          color: Colors.grey,
-                          size: 33,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  flex: 6,
-                  child: chatInput(
-                    ref,
-                    context,
-                    onChanged: controller.setHasContent,
-                    onTap: () {
-                      if (controller.isShowEmoji == true) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          color: Colors.white,
+          padding: const EdgeInsets.symmetric(
+              horizontal: 8), // Thêm padding để tạo không gian
+          child: Row(
+            // mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center, // Đặt align cho Row
+            children: [
+              Expanded(
+                flex: 1,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
                         controller.setIsShowEmoJi(context);
-                      }
-                      if (controller.isShowMedia == true) {
-                        controller.setIsShowMedia(context);
-                      }
-                    },
-                  ),
-                ),
-                Visibility(
-                  visible: controller.hasContent,
-                  replacement: GestureDetector(
-                    onTap: () async {
-                      await media.getAlbums();
-                      await controller.setIsShowMedia(context);
-                    },
-                    child: const PhosphorIcon(
-                      PhosphorIconsRegular.image,
-                      color: Colors.grey,
-                      size: 33,
-                    ),
-                  ),
-                  child: GestureDetector(
-                    onTap: () async => await controller.sendMessage(context),
-                    child: Container(
-                      padding: const EdgeInsets.all(
-                          8), // Thêm padding để làm cho nút đẹp hơn
-                      decoration: const BoxDecoration(
-                        color: Colors.blue,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.arrow_forward_rounded,
-                        color: Colors.white,
-                        size: 18,
+                      },
+                      child: const PhosphorIcon(
+                        PhosphorIconsRegular.smiley,
+                        color: Colors.grey,
+                        size: 33,
                       ),
                     ),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 6,
+                child: chatInput(
+                  ref,
+                  context,
+                  onChanged: controller.setHasContent,
+                  onTap: () {
+                    if (controller.isShowEmoji == true) {
+                      controller.setIsShowEmoJi(context);
+                    }
+                    if (controller.isShowMedia == true) {
+                      controller.setIsShowMedia(context);
+                    }
+                  },
+                ),
+              ),
+              Visibility(
+                visible: controller.hasContent,
+                replacement: GestureDetector(
+                  onTap: () async {
+                    await media.getAlbums();
+                    await controller.setIsShowMedia(context);
+                  },
+                  child: const PhosphorIcon(
+                    PhosphorIconsRegular.image,
+                    color: Colors.grey,
+                    size: 33,
                   ),
                 ),
-              ],
-            ),
+                child: GestureDetector(
+                  onTap: () async => await controller.sendMessage(context),
+                  child: Container(
+                    padding: const EdgeInsets.all(
+                        8), // Thêm padding để làm cho nút đẹp hơn
+                    decoration: const BoxDecoration(
+                      color: Colors.blue,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.arrow_forward_rounded,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          emoji(),
-        ],
-      ),
+        ),
+        emoji(),
+      ],
     );
   }
 
@@ -244,25 +236,28 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     final mediaController = ref.watch(chatMediaControllerProvider);
     final messages = controller.messages;
 
-    return ListView.separated(
-      reverse: true,
-      controller: controller.scrollController,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5)
-          .copyWith(bottom: 80),
-      itemCount: messages.length,
-      itemBuilder: (context, index) {
-        final message = messages[index];
-        bool isMe = message.senderId == user.userData?.data?.id;
-        return messageBox(
-            avatarUrl: controller.user?.userAvatar ?? "",
-            media: message.mediaUrl ?? [],
-            ref: ref,
-            message: message.content ?? "",
-            isMe: isMe,
-            createdAt: message.createdAt ?? "");
-      },
-      separatorBuilder: (context, index) => const SizedBox(
-        height: 10,
+    return Expanded(
+      // flex: 5,
+      child: ListView.separated(
+        reverse: true,
+        controller: controller.scrollController,
+        padding: const EdgeInsets.symmetric(horizontal: 10)
+            .copyWith(bottom: 60, top: 5),
+        itemCount: messages.length,
+        itemBuilder: (context, index) {
+          final message = messages[index];
+          bool isMe = message.senderId == user.userData?.data?.id;
+          return messageBox(
+              avatarUrl: controller.user?.userAvatar ?? "",
+              media: message.mediaUrl ?? [],
+              ref: ref,
+              message: message.content ?? "",
+              isMe: isMe,
+              createdAt: message.createdAt ?? "");
+        },
+        separatorBuilder: (context, index) => const SizedBox(
+          height: 2,
+        ),
       ),
     );
   }
