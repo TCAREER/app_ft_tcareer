@@ -28,10 +28,15 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
   @override
   Widget build(BuildContext context) {
     final controller = ref.watch(chatControllerProvider);
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: CustomScrollView(
-        slivers: [sliverAppBar(context), sliverChat()],
+    return PopScope(
+      onPopInvoked: (didPop) {
+        context.goNamed("home");
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: CustomScrollView(
+          slivers: [sliverAppBar(context), sliverChat()],
+        ),
       ),
     );
   }
