@@ -9,13 +9,14 @@ class JobPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       backgroundColor: Colors.white,
-      body: CustomScrollView(
-        slivers: [sliverAppBar(), recommendJobs()],
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [sliverAppBar(), recommendJobs()],
+        ),
       ),
-    ));
+    );
   }
 
   Widget sliverAppBar() {

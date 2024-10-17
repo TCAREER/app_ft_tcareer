@@ -33,11 +33,10 @@ class HomePage extends ConsumerWidget {
 
     bool hasData = controller.postCache.isNotEmpty;
 
-    return SafeArea(
-      top: true,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: CustomScrollView(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           controller: controller.scrollController,
           slivers: [

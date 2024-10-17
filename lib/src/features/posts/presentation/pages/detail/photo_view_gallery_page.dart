@@ -36,84 +36,88 @@ class PhotoViewGalleryPage extends ConsumerWidget {
         final indexController = ref.read(indexControllerProvider.notifier);
         indexController.setBottomNavigationBarVisibility(true);
       },
-      child: Scaffold(
-        appBar: AppBar(
-          bottomOpacity: 0,
-          elevation: 0.0,
-          // toolbarOpacity: 0.5,
+      child: SafeArea(
+        child: Scaffold(
           backgroundColor: Colors.black,
-          centerTitle: true,
-          leading: IconButton(
-            icon: Icon(
-              Icons.close,
-              color: Colors.white,
+          appBar: AppBar(
+            bottomOpacity: 0,
+            elevation: 0.0,
+            // toolbarOpacity: 0.5,
+            backgroundColor: Colors.black,
+            centerTitle: true,
+            leading: IconButton(
+              icon: Icon(
+                Icons.close,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                final currentIndex = controller.activeIndexMap[postId] ?? 0;
+                context.pop();
+              },
             ),
-            onPressed: () {
-              final currentIndex = controller.activeIndexMap[postId] ?? 0;
-              context.pop();
-            },
+            automaticallyImplyLeading: false,
+            titleTextStyle: TextStyle(color: Colors.white),
+            title: Visibility(
+                visible: images.length > 1,
+                child: Text(
+                    "${(controller.activeIndexMap[postId] ?? 0) + 1}/${images.length}")),
           ),
-          automaticallyImplyLeading: false,
-          titleTextStyle: TextStyle(color: Colors.white),
-          title: Visibility(
-              visible: images.length > 1,
-              child: Text(
-                  "${(controller.activeIndexMap[postId] ?? 0) + 1}/${images.length}")),
-        ),
-        body: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            Container(
-                child: PhotoViewGallery.builder(
-                    scrollPhysics: const BouncingScrollPhysics(),
-                    builder: (BuildContext context, int index) {
-                      final assetSource = images[index];
-                      final isNetworkAsset = assetSource.isNetworkSource;
-                      return PhotoViewGalleryPageOptions.customChild(
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: PhotoView(
-                            imageProvider: isNetworkAsset
-                                ? CachedNetworkImageProvider(assetSource)
-                                : FileImage(File(assetSource)),
-                            minScale: PhotoViewComputedScale.contained,
-                            initialScale: PhotoViewComputedScale.contained,
-                            heroAttributes:
-                                PhotoViewHeroAttributes(tag: assetSource),
+          body: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Container(
+                  child: PhotoViewGallery.builder(
+                      scrollPhysics: const BouncingScrollPhysics(),
+                      builder: (BuildContext context, int index) {
+                        final assetSource = images[index];
+                        final isNetworkAsset = assetSource.isNetworkSource;
+                        return PhotoViewGalleryPageOptions.customChild(
+                          child: Container(
+                            margin:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: PhotoView(
+                              imageProvider: isNetworkAsset
+                                  ? CachedNetworkImageProvider(assetSource)
+                                  : FileImage(File(assetSource)),
+                              minScale: PhotoViewComputedScale.contained,
+                              initialScale: PhotoViewComputedScale.contained,
+                              heroAttributes:
+                                  PhotoViewHeroAttributes(tag: assetSource),
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    itemCount: images.length,
-                    loadingBuilder: (context, event) => const Center(
-                          child: SizedBox(
-                            width: 20.0,
-                            height: 20.0,
-                            child: CupertinoActivityIndicator(
-                                color: Colors.white, radius: 10),
+                        );
+                      },
+                      itemCount: images.length,
+                      loadingBuilder: (context, event) => const Center(
+                            child: SizedBox(
+                              width: 20.0,
+                              height: 20.0,
+                              child: CupertinoActivityIndicator(
+                                  color: Colors.white, radius: 10),
+                            ),
                           ),
-                        ),
-                    backgroundDecoration: const BoxDecoration(
-                      color: Colors.black,
-                    ),
-                    pageController: controller.pageController,
-                    onPageChanged: onPageChanged)),
-            const SizedBox(
-              height: 10,
-            ),
-          ],
+                      backgroundDecoration: const BoxDecoration(
+                        color: Colors.black,
+                      ),
+                      pageController: controller.pageController,
+                      onPageChanged: onPageChanged)),
+              const SizedBox(
+                height: 10,
+              ),
+            ],
+          ),
+          // bottomNavigationBar: BottomAppBar(
+          //   color: Colors.black,
+          //   child: engagementWidget(
+          //       index: 1,
+          //       liked: true,
+          //       ref: ref,
+          //       postId: postId,
+          //       context: context,
+          //       likeCount: "0",
+          //       shareCount: "0"),
+          // ),
         ),
-        // bottomNavigationBar: BottomAppBar(
-        //   color: Colors.black,
-        //   child: engagementWidget(
-        //       index: 1,
-        //       liked: true,
-        //       ref: ref,
-        //       postId: postId,
-        //       context: context,
-        //       likeCount: "0",
-        //       shareCount: "0"),
-        // ),
       ),
     );
   }

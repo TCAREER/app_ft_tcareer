@@ -42,12 +42,12 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage>
   Widget build(BuildContext context) {
     final controller = ref.watch(anotherUserControllerProvider);
     final user = controller.anotherUserData?.data;
-    return SafeArea(
-      child: DefaultTabController(
-        length: 3,
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          body: NestedScrollView(
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
                 SliverAppBar(

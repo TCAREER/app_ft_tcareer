@@ -98,6 +98,7 @@ class PostController extends ChangeNotifier {
           .toList();
 
       postCache.addAll(newPosts as Iterable<post_model.Data>);
+      print(">>>>>>>>>>postLength: ${postCache.length}");
 
       // if (!_disposed) {
       notifyListeners();
@@ -119,7 +120,7 @@ class PostController extends ChangeNotifier {
     postCache.clear();
     print(">>>>>>>>>>${postCache.length}");
     notifyListeners();
-    await getPost();
+    // await getPost();
   }
 
   Stream<Map<dynamic, dynamic>> commentsStream(String postId) {
@@ -127,10 +128,6 @@ class PostController extends ChangeNotifier {
     return commentUseCase.listenToComment(postId).map((event) {
       if (event.snapshot.value != null) {
         final commentMap = event.snapshot.value as Map<dynamic, dynamic>;
-
-        // Sắp xếp bình luận
-
-        // Tạo bản đồ đã sắp xếp
         return commentMap;
       } else {
         return {};
