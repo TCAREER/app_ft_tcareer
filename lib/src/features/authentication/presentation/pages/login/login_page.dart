@@ -110,7 +110,7 @@ class LoginPage extends ConsumerWidget {
                         height: 20,
                       ),
                       TextButton(
-                          onPressed: () => context.push('/register'),
+                          onPressed: () => context.pushNamed("verifyPhone"),
                           child: const Text("Tạo tài khoản",
                               style: TextStyle(
                                   fontSize: 14,

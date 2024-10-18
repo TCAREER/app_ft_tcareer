@@ -1,5 +1,6 @@
 import 'package:app_tcareer/app.dart';
 import 'package:app_tcareer/src/configs/app_constants.dart';
+import 'package:app_tcareer/src/features/authentication/data/models/check_user_phone_request.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/forgot_password_request.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/forgot_password_verify_request.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/login_google_request.dart';
@@ -166,4 +167,7 @@ abstract class ApiServices {
 
   @GET('api/auth/get_all_conversation')
   Future<AllConversation> getAllConversation();
+
+  @POST('auth/user/phone')
+  Future postCheckUserPhone({@Body() required CheckUserPhoneRequest body});
 }

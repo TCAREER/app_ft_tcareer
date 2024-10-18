@@ -1,4 +1,5 @@
 import 'package:app_tcareer/src/configs/app_constants.dart';
+import 'package:app_tcareer/src/features/authentication/data/models/check_user_phone_request.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/forgot_password_request.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/forgot_password_verify_request.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/login_google_request.dart';
@@ -6,6 +7,7 @@ import 'package:app_tcareer/src/features/authentication/data/models/login_reques
 import 'package:app_tcareer/src/features/authentication/data/models/logout_request.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/register_request.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/reset_password_request.dart';
+import 'package:app_tcareer/src/services/twilio/twilio_service.dart';
 import 'package:app_tcareer/src/utils/user_utils.dart';
 
 import 'package:dio/dio.dart';
@@ -16,6 +18,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:twilio_flutter/twilio_flutter.dart';
 
 import '../../../../services/services.dart';
 
@@ -118,6 +121,49 @@ class AuthRepository {
             email: email,
             password: password,
             key: AppConstants.resetPasswordKey));
+  }
+
+  Future<void> postCheckUserPhone(String phone) async {
+    final apiServices = ref.watch(apiServiceProvider);
+    await apiServices.postCheckUserPhone(
+        body: CheckUserPhoneRequest(phone: phone));
+  }
+
+  Future<void> verifyPhoneNumber(
+      {required String phoneNumber,
+      required void Function(PhoneAuthCredential phoneAuthCredential)
+          verificationCompleted,
+      required void Function(FirebaseAuthException firebaseAuthException)
+          verificationFailed,
+      required void Function(String verificationId, int? forceResendingToken)
+          codeSent,
+      required void Function(String verificationId)
+          codeAutoRetrievalTimeout}) async {
+    final fireBaseAuth = ref.watch(firebaseAuthServiceProvider);
+    return await fireBaseAuth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: verificationCompleted,
+        verificationFailed: verificationFailed,
+        codeSent: codeSent,
+        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
+  }
+
+  Future<void> signInWithOTP(
+      {required String smsCode, required String verificationId}) async {
+    final fireBaseAuth = ref.watch(firebaseAuthServiceProvider);
+    return await fireBaseAuth.signInWithOTP(
+        smsCode: smsCode, verificationId: verificationId);
+  }
+
+  Future<TwilioResponse> sendVerificationCode(String phoneNumber) async {
+    final twilio = ref.watch(twilioService);
+    return await twilio.sendVerificationCode(phoneNumber);
+  }
+
+  Future<TwilioResponse> verifyCode(
+      {required String phoneNumber, required String code}) async {
+    final twilio = ref.watch(twilioService);
+    return await twilio.verifyCode(phoneNumber: phoneNumber, code: code);
   }
 }
 

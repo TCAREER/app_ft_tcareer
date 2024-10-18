@@ -44,6 +44,11 @@ void main() async {
       rethrow;
     }
   }
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: AndroidProvider.playIntegrity,
+    appleProvider: AppleProvider.appAttest,
+    webProvider: ReCaptchaV3Provider(""),
+  );
   await Future.delayed(Duration(milliseconds: 100));
   container
       .read(notificationProvider(navigatorKey))

@@ -1,6 +1,7 @@
 import 'package:app_tcareer/src/features/authentication/data/models/register_request.dart';
 import 'package:app_tcareer/src/features/authentication/usecases/register_use_case.dart';
 import 'package:app_tcareer/src/utils/app_utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -17,6 +18,7 @@ class RegisterController extends StateNotifier<void> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController passController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKeyVerifyPhone = GlobalKey<FormState>();
 
   Future<void> createAccount(BuildContext context) async {
     AppUtils.loadingApi(() async {
@@ -35,5 +37,27 @@ class RegisterController extends StateNotifier<void> {
     if (formKey.currentState?.validate() == true) {
       await createAccount(context);
     }
+  }
+
+  Future<void> checkUserPhone(BuildContext context) async {
+    if (formKeyVerifyPhone.currentState?.validate() == true) {
+      AppUtils.loadingApi(() async {
+        await registerUseCaseProvider.checkUserPhone(phoneController.text);
+        await verifyPhoneNumber();
+      }, context);
+    }
+  }
+
+  //0862042810
+
+  Future<void> verifyPhoneNumber() async {
+    String phone = "+84${phoneController.text.substring(1)}";
+    await registerUseCaseProvider.verifyPhoneNumber(
+      phoneNumber: phone,
+      verificationCompleted: (phoneAuthCredential) {},
+      verificationFailed: (firebaseAuthException) {},
+      codeSent: (verificationId, forceResendingToken) {},
+      codeAutoRetrievalTimeout: (verificationId) {},
+    );
   }
 }

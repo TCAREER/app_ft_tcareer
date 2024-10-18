@@ -32,6 +32,31 @@ class FirebaseAuthService {
     await auth.signOut();
   }
 
+  Future<void> verifyPhoneNumber(
+      {required String phoneNumber,
+      required void Function(PhoneAuthCredential phoneAuthCredential)
+          verificationCompleted,
+      required void Function(FirebaseAuthException firebaseAuthException)
+          verificationFailed,
+      required void Function(String verificationId, int? forceResendingToken)
+          codeSent,
+      required void Function(String verificationId)
+          codeAutoRetrievalTimeout}) async {
+    return await auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: verificationCompleted,
+        verificationFailed: verificationFailed,
+        codeSent: codeSent,
+        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
+  }
+
+  Future<void> signInWithOTP(
+      {required String smsCode, required String verificationId}) async {
+    PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verificationId, smsCode: smsCode);
+    await auth.signInWithCredential(credential);
+  }
+
   User? get currentUser => auth.currentUser;
 }
 

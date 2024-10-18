@@ -4,6 +4,7 @@ import 'package:app_tcareer/src/features/authentication/presentation/pages/forgo
 import 'package:app_tcareer/src/features/authentication/presentation/pages/forgot_password/reset_password_page.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/pages/login/login_page.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/pages/register/register_page.dart';
+import 'package:app_tcareer/src/features/authentication/presentation/pages/register/verify_phone_page.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/pages/verify/verify_page.dart';
 import 'package:app_tcareer/src/features/chat/presentation/pages/chat_page.dart';
 import 'package:app_tcareer/src/features/chat/presentation/pages/conversation_page.dart';
@@ -77,6 +78,7 @@ class AppRouter {
           '/forgotPassword/resetPassword': '/forgotPassword/resetPassword',
           '/login': '/login',
           '/intro': '/intro',
+          '/verifyPhone': '/verifyPhone'
         };
 
         if (isAuthenticated != true ||
@@ -114,6 +116,15 @@ class AppRouter {
           pageBuilder: (context, state) => CustomTransitionPage(
             key: state.pageKey,
             child: const LoginPage(),
+            transitionsBuilder: fadeTransitionBuilder,
+          ),
+        ),
+        GoRoute(
+          path: "/verifyPhone",
+          name: "verifyPhone",
+          pageBuilder: (context, state) => CustomTransitionPage(
+            key: state.pageKey,
+            child: const VerifyPhonePage(),
             transitionsBuilder: fadeTransitionBuilder,
           ),
         ),
