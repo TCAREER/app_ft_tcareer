@@ -43,7 +43,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
     // TODO: implement initState
     super.initState();
     Future.microtask(() {
-      final controller = ref.watch(postingControllerProvider);
+      final controller = ref.read(postingControllerProvider);
 
       controller.loadPostCache();
       if (widget.postEdit != null) {
@@ -65,7 +65,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
     final mediaController = ref.watch(mediaControllerProvider);
     final controller = ref.watch(postingControllerProvider);
     final userController = ref.watch(userControllerProvider);
-    bool isActive = controller.contentController.text != "" ||
+    bool isActive = mediaController.contentController.text != "" ||
         mediaController.imagePaths.isNotEmpty ||
         controller.imagesWeb.isNotEmpty == true ||
         controller.videoUrlWeb != null ||
@@ -128,7 +128,7 @@ class _PostingPageState extends ConsumerState<PostingPage> {
               height: 5,
             ),
             postInput(
-                controller: controller.contentController,
+                controller: mediaController.contentController,
                 onChanged: controller.setContent),
             const SizedBox(
               height: 5,
@@ -221,12 +221,10 @@ class _PostingPageState extends ConsumerState<PostingPage> {
             children: [
               IconButton(
                 onPressed: () async {
-                  if (!kIsWeb) {
-                    await mediaController.getAlbums();
-                    context.pushNamed("photoManager");
-                  } else {
-                    await controller.pickMediaWeb(context);
-                  }
+                  // await controller
+                  //     .setContent(controller.contentController.text);
+                  await mediaController.getAlbums();
+                  context.goNamed("photoManager");
                 },
                 icon: const PhosphorIcon(
                   PhosphorIconsFill.image,

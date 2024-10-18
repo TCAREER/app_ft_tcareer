@@ -159,14 +159,13 @@ class PostingController extends ChangeNotifier {
     );
   }
 
-  TextEditingController contentController = TextEditingController();
   Future<void> showDialog(BuildContext context) async {
     final mediaController = ref.watch(mediaControllerProvider);
     if (mediaController.imagePaths.any((image) => image.isImageNetWork) ||
         mediaController.videoPaths.any((video) => video.isVideoNetWork)) {
       print(">>>>>>>>2");
       clearPostCache(context);
-      context.replaceNamed("home");
+      context.goNamed("home");
     } else if (mediaController.imagePaths.isNotEmpty ||
         mediaController.videoPaths.isNotEmpty && content != null) {
       print(">>>>>>>>1");
@@ -304,10 +303,9 @@ class PostingController extends ChangeNotifier {
         final fileSizeInBytes = await asset.length();
         final fileSizeInMB = fileSizeInBytes / (1024 * 1024);
 
-        // Kiểm tra nếu dung lượng video lớn hơn 30MB
         if (fileSizeInMB > 30) {
           showSnackBarError("Video phải có kích thước dưới 30MB");
-          return; // Hoặc có thể hiển thị thông báo lỗi cho người dùng.
+          return;
         }
 
         imagesWeb.clear();
@@ -350,7 +348,7 @@ class PostingController extends ChangeNotifier {
     final mediaController = ref.watch(mediaControllerProvider);
     final post = postEdit.post;
     selectedPrivacy = post?.privacy ?? "";
-    contentController.text = post?.body ?? "";
+    mediaController.contentController.text = post?.body ?? "";
     setContent(post?.body ?? "");
     if (post?.mediaUrl?.isNotEmpty == true &&
         post?.mediaUrl?.any((media) => media.isVideo) == true) {
@@ -506,5 +504,11 @@ class PostingController extends ChangeNotifier {
       context.pop();
       await postUseCase.deletePost(postId);
     }, context, (value) {});
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 }

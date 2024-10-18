@@ -14,7 +14,7 @@ Widget notificationItem(
   int? postId = notification['post_id'];
   int? relatedUserId = notification['related_user_id'];
   String? type = notification['type'];
-  String notificationId = notification['notification_id'];
+  String notificationId = notification['notification_id'] ?? "";
   bool? isRead = notification['is_read'] ?? false;
 
   return GestureDetector(

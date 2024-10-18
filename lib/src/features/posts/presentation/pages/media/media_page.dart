@@ -10,8 +10,9 @@ import 'package:photo_manager/photo_manager.dart';
 import 'show_album_pop_up.dart';
 
 class MediaPage extends ConsumerStatefulWidget {
-  const MediaPage({super.key, this.isComment});
+  const MediaPage({super.key, this.isComment, this.content});
   final bool? isComment;
+  final String? content;
 
   @override
   ConsumerState<MediaPage> createState() => _MediaPageState();
@@ -29,9 +30,10 @@ class _MediaPageState extends ConsumerState<MediaPage> {
   @override
   Widget build(BuildContext context) {
     final controller = ref.watch(mediaControllerProvider);
-
+    final postingController = ref.watch(postingControllerProvider);
     return BackButtonListener(
       onBackButtonPressed: () async {
+        postingController.setContent(widget.content);
         Future.delayed(Duration.zero, () {
           controller.resetAutoPop();
           controller.clearData(context);

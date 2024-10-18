@@ -29,6 +29,7 @@ class MediaController extends ChangeNotifier {
   List<AssetPathEntity> albums = [];
   List<AssetEntity> media = [];
   AssetPathEntity? selectedAlbum;
+  TextEditingController contentController = TextEditingController();
 
   Future<bool> requestPermission() async =>
       await mediaUseCase.requestPermission();
@@ -40,7 +41,7 @@ class MediaController extends ChangeNotifier {
       albums = await mediaUseCase.getAlbums();
 
       selectedAlbum = albums.first;
-      notifyListeners();
+
       if (media.isEmpty) {
         await getMediaFromAlbum(albums.first);
       }
@@ -50,7 +51,7 @@ class MediaController extends ChangeNotifier {
   Future<void> getMediaFromAlbum(AssetPathEntity album) async {
     media = await mediaUseCase.getMediaFromAlbum(album: album);
     await prefetchVideoDurations();
-    notifyListeners();
+    // notifyListeners();
   }
 
   Future<void> selectAlbum(album) async {
@@ -172,7 +173,7 @@ class MediaController extends ChangeNotifier {
       }
     }
     print(">>>>>>>>>>$cachedVideoDurations");
-    notifyListeners();
+    // notifyListeners();
   }
 
   Future<Duration?> getVideoDuration(AssetEntity asset) async {

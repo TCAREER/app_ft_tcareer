@@ -171,21 +171,27 @@ class AppRouter {
                 ),
                 transitionsBuilder: slideUpTransitionBuilder,
               );
-            }),
-        GoRoute(
-          path: "/${RouteNames.photoManager.name}",
-          name: RouteNames.photoManager.name,
-          pageBuilder: (context, state) {
-            String isCommentString =
-                state.uri.queryParameters["isComment"] ?? "false";
-            bool isComment = bool.parse(isCommentString);
-            return CustomTransitionPage(
-              key: state.pageKey,
-              child: MediaPage(isComment: isComment),
-              transitionsBuilder: slideUpTransitionBuilder,
-            );
-          },
-        ),
+            },
+            routes: [
+              GoRoute(
+                path: "${RouteNames.photoManager.name}",
+                name: RouteNames.photoManager.name,
+                pageBuilder: (context, state) {
+                  String isCommentString =
+                      state.uri.queryParameters["isComment"] ?? "false";
+                  String content = state.uri.queryParameters['content'] ?? "";
+                  bool isComment = bool.parse(isCommentString);
+                  return CustomTransitionPage(
+                    key: state.pageKey,
+                    child: MediaPage(
+                      isComment: isComment,
+                      content: content,
+                    ),
+                    transitionsBuilder: slideUpTransitionBuilder,
+                  );
+                },
+              ),
+            ]),
         GoRoute(
             path: "/conversation",
             name: "conversation",

@@ -31,9 +31,11 @@ Widget information(
     subtitle: Row(
       children: [
         InkWell(
-          onTap: () => connectionController.showUserFollowed(context),
+          onTap: follows != "0"
+              ? () => connectionController.showUserFollowed(context)
+              : null,
           child: Text(
-            follows != null ? "$follows người theo dõi" : "0 người theo dõi",
+            follows != "0" ? "$follows người theo dõi" : "0 người theo dõi",
             style: const TextStyle(fontSize: 12, color: Colors.black54),
           ),
         ),
