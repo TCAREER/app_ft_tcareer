@@ -18,7 +18,7 @@ class AppConstants {
   static const driveUrl = "https://drive.google.com/uc?export=download&id=";
   static const ablyKey =
       "l8xDTg.FFzKkg:cnC-cWz25wOdN4SAFb26xTYDLf1R8tcVzhCVAyGamss";
-  static const twilioAuthToken = "882b5807410c1ced46d5ed17b2c1ca5f";
+  static const twilioAuthToken = "";
 
   //test app
   // static const ablyKey =
