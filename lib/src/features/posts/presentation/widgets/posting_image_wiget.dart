@@ -8,16 +8,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-// Sử dụng provider có sẵn để lấy hướng ảnh
-Widget postingImageWidget({
-  required List<String> mediaUrl,
-  required WidgetRef ref,
-}) {
+Widget postingImageWidget(
+    {required List<String> mediaUrl,
+    required WidgetRef ref,
+    bool visibleDelete = true}) {
   final controller = ref.watch(postingControllerProvider);
-
-  // Kiểm tra mediaUrl không rỗng trước khi truy cập phần tử đầu tiên
   if (mediaUrl.isEmpty) {
-    return const SizedBox(); // Trả về một widget trống nếu mediaUrl rỗng
+    return const SizedBox();
   }
 
   return Column(
@@ -66,19 +63,22 @@ Widget postingImageWidget({
               Positioned(
                 right: 15,
                 top: 5,
-                child: GestureDetector(
-                  onTap: () {
-                    ref.read(mediaControllerProvider).removeImage(index);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Icon(
-                      Icons.close,
-                      color: Colors.white,
-                      size: 20,
+                child: Visibility(
+                  visible: visibleDelete,
+                  child: GestureDetector(
+                    onTap: () {
+                      ref.read(mediaControllerProvider).removeImage(index);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black54,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 20,
+                      ),
                     ),
                   ),
                 ),

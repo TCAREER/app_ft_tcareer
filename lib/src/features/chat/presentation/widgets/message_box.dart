@@ -163,12 +163,11 @@ Widget mediaItem(List<String> media, WidgetRef ref) {
     );
   } else {
     return Wrap(
-      spacing: 5, // Khoảng cách giữa các phần tử theo chiều ngang
-      runSpacing: 5, // Khoảng cách giữa các hàng theo chiều dọc
+      spacing: 5,
+      runSpacing: 5,
       children: media.map((mediaItem) {
         return Container(
-          width: (ScreenUtil().screenWidth - 15) /
-              2, // 2 phần tử trên 1 hàng, trừ khoảng cách spacing
+          width: (ScreenUtil().screenWidth - 15) / 2,
           child: Visibility(
             visible: mediaItem.isImageNetWork,
             replacement: Stack(
@@ -186,7 +185,7 @@ Widget mediaItem(List<String> media, WidgetRef ref) {
                   ),
                 ),
                 SizedBox(
-                  width: 24, // Kích thước của indicator
+                  width: 24,
                   height: 24,
                   child: circularLoadingWidget(),
                 ),

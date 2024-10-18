@@ -92,57 +92,68 @@ class _PostingPageState extends ConsumerState<PostingPage> {
                 await controller.createPost(context);
               }
             }),
-        body: ListView(
-          controller: scrollController,
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        body: Column(
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(userController
-                          .userData?.data?.avatar ??
-                      "https://ui-avatars.com/api/?name=${userController.userData?.data?.fullName}&background=random"),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      userController.userData?.data?.fullName ?? "",
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    privacyWidget(controller, context)
-                  ],
-                )
-              ],
+            Expanded(
+              child: ListView(
+                controller: scrollController,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundImage: NetworkImage(userController
+                                .userData?.data?.avatar ??
+                            "https://ui-avatars.com/api/?name=${userController.userData?.data?.fullName}&background=random"),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            userController.userData?.data?.fullName ?? "",
+                            style: TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          privacyWidget(controller, context)
+                        ],
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  postInput(
+                      controller: mediaController.contentController,
+                      onChanged: controller.setContent),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Visibility(
+                      visible: mediaController.videoPaths.isNotEmpty,
+                      child: PostingVideoPlayerWidget(
+                        videoUrl: mediaController.videoPaths,
+                      )),
+                  postingImageWidget(
+                      mediaUrl: mediaController.imagePaths, ref: ref),
+                  Visibility(
+                      visible: widget.postEdit?.sharedPost != null,
+                      child: sharePost())
+                ],
+              ),
             ),
-            const SizedBox(
-              height: 5,
-            ),
-            postInput(
-                controller: mediaController.contentController,
-                onChanged: controller.setContent),
-            const SizedBox(
-              height: 5,
-            ),
-            Visibility(
-                visible: mediaController.videoPaths.isNotEmpty,
-                child: const PostingVideoPlayerWidget()),
-            postingImageWidget(mediaUrl: mediaController.imagePaths, ref: ref),
-            Visibility(
-                visible: widget.postEdit?.sharedPost != null,
-                child: sharePost())
+            bottomAppBar(context, ref),
           ],
         ),
-        bottomNavigationBar: bottomAppBar(context, ref),
+        // bottomNavigationBar:
       ),
     );
   }
@@ -206,52 +217,48 @@ class _PostingPageState extends ConsumerState<PostingPage> {
 
     double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.easeInOut,
-      margin: EdgeInsets.only(bottom: keyboardHeight > 0 ? keyboardHeight : 0),
-      child: Visibility(
-        visible: widget.postEdit?.sharedPost == null,
-        child: Container(
-          height: 48,
-          color: Colors.white,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              IconButton(
-                onPressed: () async {
-                  // await controller
-                  //     .setContent(controller.contentController.text);
-                  await mediaController.getAlbums();
-                  context.goNamed("photoManager");
-                },
-                icon: const PhosphorIcon(
-                  PhosphorIconsFill.image,
-                  color: Colors.grey,
-                  size: 25,
-                ),
+    return Visibility(
+      visible: widget.postEdit?.sharedPost == null,
+      child: Container(
+        height: 48,
+        color: Colors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            IconButton(
+              onPressed: () async {
+                // await controller
+                //
+
+                await mediaController.getAlbums();
+                context.goNamed("photoManager");
+              },
+              icon: const PhosphorIcon(
+                PhosphorIconsRegular.image,
+                color: Colors.grey,
+                size: 25,
               ),
+            ),
 
-              // IconButton(
-              //   onPressed: () {},
-              //   icon: const PhosphorIcon(
-              //     PhosphorIconsFill.link,
-              //     color: Colors.grey,
-              //     size: 25,
-              //   ),
-              // ),
+            // IconButton(
+            //   onPressed: () {},
+            //   icon: const PhosphorIcon(
+            //     PhosphorIconsFill.link,
+            //     color: Colors.grey,
+            //     size: 25,
+            //   ),
+            // ),
 
-              // IconButton(
-              //   onPressed: () {},
-              //   icon: const PhosphorIcon(
-              //     PhosphorIconsBold.smiley,
-              //     color: Colors.grey,
-              //     size: 20,
-              //   ),
-              // ),
-            ],
-          ),
+            // IconButton(
+            //   onPressed: () {},
+            //   icon: const PhosphorIcon(
+            //     PhosphorIconsBold.smiley,
+            //     color: Colors.grey,
+            //     size: 20,
+            //   ),
+            // ),
+          ],
         ),
       ),
     );

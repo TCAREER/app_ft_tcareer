@@ -9,12 +9,14 @@ import 'package:app_tcareer/src/features/posts/data/models/create_post_request.d
 import 'package:app_tcareer/src/features/posts/data/models/post_edit.dart';
 import 'package:app_tcareer/src/features/posts/data/models/post_response.dart';
 import 'package:app_tcareer/src/features/posts/data/models/post_state.dart';
-import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart';
+import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart'
+    as post;
 import 'package:app_tcareer/src/features/posts/presentation/controllers/media_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/features/posts/usecases/media_use_case.dart';
 import 'package:app_tcareer/src/features/posts/usecases/post_use_case.dart';
 import 'package:app_tcareer/src/features/user/data/models/users.dart';
+import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
 import 'package:app_tcareer/src/features/user/usercases/user_use_case.dart';
 import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:app_tcareer/src/utils/snackbar_utils.dart';
@@ -191,7 +193,7 @@ class PostingController extends ChangeNotifier {
     final postController = ref.watch(postControllerProvider);
 
     context.goNamed("home");
-
+    await updatePostTemp();
     AppUtils.futureApi(() async {
       if (mediaController.imagePaths.isNotEmpty ||
           imagesWeb.isNotEmpty == true) {
@@ -209,6 +211,26 @@ class PostingController extends ChangeNotifier {
       clearPostCache(context);
       await postController.refresh();
     }, context, setIsLoading);
+    notifyListeners();
+  }
+
+  Future<void> updatePostTemp() async {
+    final postController = ref.watch(postControllerProvider);
+    final userController = ref.watch(userControllerProvider);
+    final media = ref.watch(mediaControllerProvider);
+    final user = userController.userData?.data;
+
+    final newPost = post.Data(
+        userId: user?.id,
+        title: "temp",
+        body: content,
+        fullName: user?.fullName,
+        avatar: user?.avatar,
+        createdAt: AppUtils.formatTime(DateTime.now().toIso8601String()),
+        privacy: selectedPrivacy,
+        mediaUrl:
+            media.imagePaths.isNotEmpty ? media.imagePaths : media.videoPaths);
+    postController.postCache.insert(0, newPost);
     notifyListeners();
   }
 

@@ -1,3 +1,4 @@
+import 'package:app_tcareer/src/extensions/image_extension.dart';
 import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/post_edit.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart';

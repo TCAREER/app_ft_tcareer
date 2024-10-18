@@ -9,7 +9,11 @@ import 'package:visibility_detector/visibility_detector.dart';
 import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
 
 class PostingVideoPlayerWidget extends ConsumerStatefulWidget {
-  const PostingVideoPlayerWidget({Key? key}) : super(key: key);
+  final List<String> videoUrl;
+  final bool visibleDelete;
+  const PostingVideoPlayerWidget(
+      {Key? key, this.visibleDelete = true, required this.videoUrl})
+      : super(key: key);
 
   @override
   _PostingVideoPlayerWidgetState createState() =>
@@ -31,12 +35,12 @@ class _PostingVideoPlayerWidgetState
   Future<void> initVideo() async {
     final controller = ref.read(mediaControllerProvider);
 
-    if (controller.videoPaths.isNotEmpty) {
+    if (widget.videoUrl.isNotEmpty) {
       // Chỉ khởi tạo controller nếu nó chưa được khởi tạo
       if (!_isVideoInitialized) {
-        _videoPlayerController = controller.videoPaths.first.isVideo
-            ? VideoPlayerController.network(controller.videoPaths.first)
-            : VideoPlayerController.file(File(controller.videoPaths.first));
+        _videoPlayerController = widget.videoUrl.first.isVideo
+            ? VideoPlayerController.network(widget.videoUrl.first)
+            : VideoPlayerController.file(File(widget.videoUrl.first));
 
         try {
           await _videoPlayerController.initialize();
@@ -82,7 +86,7 @@ class _PostingVideoPlayerWidgetState
   Widget build(BuildContext context) {
     final controller = ref.watch(mediaControllerProvider);
     return VisibilityDetector(
-      key: ValueKey(controller.videoPaths ?? ""),
+      key: ValueKey(widget.videoUrl),
       child: _isVideoInitialized
           ? Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -99,22 +103,25 @@ class _PostingVideoPlayerWidgetState
                   Positioned(
                     right: 15,
                     top: 5,
-                    child: GestureDetector(
-                      onTap: () {
-                        // Gọi hàm để xóa video tại index
-                        ref.read(mediaControllerProvider).removeVideo();
-                      },
-                      child: Opacity(
-                        opacity: 0.5,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black54,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Icon(
-                            Icons.close,
-                            color: Colors.white,
-                            size: 20,
+                    child: Visibility(
+                      visible: widget.visibleDelete,
+                      child: GestureDetector(
+                        onTap: () {
+                          // Gọi hàm để xóa video tại index
+                          ref.read(mediaControllerProvider).removeVideo();
+                        },
+                        child: Opacity(
+                          opacity: 0.5,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black54,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              color: Colors.white,
+                              size: 20,
+                            ),
                           ),
                         ),
                       ),
