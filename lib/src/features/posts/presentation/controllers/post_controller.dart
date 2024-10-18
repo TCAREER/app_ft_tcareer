@@ -138,7 +138,8 @@ class PostController extends ChangeNotifier {
     postData = null;
     postCache.clear();
     print(">>>>>>>>>>${postCache.length}");
-    notifyListeners();
+    await getPost();
+
     // await getPost();
   }
 

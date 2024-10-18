@@ -25,15 +25,15 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
     with SingleTickerProviderStateMixin {
   ScrollController scrollController = ScrollController();
 
-  @override
-  void initState() {
-    super.initState();
-
-    Future.microtask(() {
-      ref.read(userControllerProvider).getUserInfo();
-      ref.read(userControllerProvider).getPost();
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //
+  //   Future.microtask(() {
+  //     ref.read(userControllerProvider).getUserInfo();
+  //     ref.read(userControllerProvider).getPost();
+  //   });
+  // }
 
   @override
   void didChangeDependencies() {
@@ -145,13 +145,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
       height: MediaQuery.of(context).size.height, // Đảm bảo chiều cao
       child: NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification scrollInfo) {
-          // Kiểm tra xem đã cuộn đến cuối danh sách chưa
           if (scrollInfo.metrics.pixels >=
               scrollInfo.metrics.maxScrollExtent - 50) {
-            // Gọi hàm tải thêm bài viết
             controller.loadMore();
           }
-          return false; // Cho phép sự kiện cuộn tiếp tục
+          return false;
         },
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),

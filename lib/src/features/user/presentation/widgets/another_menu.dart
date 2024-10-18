@@ -9,8 +9,10 @@ class AnotherMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.watch(userConnectionControllerProvider);
     final anotherUser = ref.watch(anotherUserControllerProvider);
+    String userId = anotherUser.anotherUserData?.data?.id.toString() ?? "";
+    final controller = ref.watch(userConnectionControllerProvider(userId));
+
     return ClipRRect(
       borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20), topRight: Radius.circular(20)),
@@ -38,9 +40,7 @@ class AnotherMenu extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           children: [
             ListTile(
-              onTap: () => controller.postFollow(
-                  anotherUser.anotherUserData?.data?.id.toString() ?? "",
-                  context),
+              onTap: () => controller.postFollow(context),
               trailing: Visibility(
                 visible: anotherUser.anotherUserData?.data?.followed != true,
                 replacement: const PhosphorIcon(

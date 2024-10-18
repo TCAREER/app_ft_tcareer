@@ -191,7 +191,7 @@ class PostingController extends ChangeNotifier {
     final mediaController = ref.watch(mediaControllerProvider);
     final postController = ref.watch(postControllerProvider);
 
-    context.pushReplacementNamed("home");
+    context.goNamed("home");
 
     AppUtils.futureApi(() async {
       if (mediaController.imagePaths.isNotEmpty ||

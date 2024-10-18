@@ -231,9 +231,11 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage>
 
   Widget buttonConnectAndMessage(String? friendStatus) {
     final controller = ref.watch(anotherUserControllerProvider);
-    final connectionController = ref.watch(userConnectionControllerProvider);
-    final userController = ref.watch(userControllerProvider);
     String userId = controller.anotherUserData?.data?.id.toString() ?? "";
+    final connectionController =
+        ref.watch(userConnectionControllerProvider(userId));
+    final userController = ref.watch(userControllerProvider);
+
     return Visibility(
       visible: controller.anotherUserData != null,
       child: Padding(
@@ -244,13 +246,13 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage>
             connectButton(
               friendStatus: friendStatus ?? "default",
               onConnect: () async =>
-                  await connectionController.postAddFriend(userId, context),
+                  await connectionController.postAddFriend(context),
               onConfirm: () async => await connectionController
-                  .showModalConfirmRequest(context: context, userId: userId),
+                  .showModalConfirmRequest(context: context),
               onCancelRequest: () async =>
-                  await connectionController.cancelRequest(userId, context),
+                  await connectionController.cancelRequest(context),
               onDelete: () async => await connectionController
-                  .showModalDeleteFriend(context: context, userId: userId),
+                  .showModalDeleteFriend(context: context),
             ),
             const SizedBox(
               width: 10,

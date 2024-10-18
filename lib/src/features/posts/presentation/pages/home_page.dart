@@ -23,7 +23,7 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Khởi tạo dữ liệu ở đây
     final controller = ref.watch(postControllerProvider);
-
+    final scrollController = ref.read(postControllerProvider).scrollController;
     bool hasData = controller.postCache.isNotEmpty;
 
     return Scaffold(
@@ -31,7 +31,7 @@ class HomePage extends ConsumerWidget {
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
-          controller: controller.scrollController,
+          controller: scrollController,
           slivers: [
             CupertinoSliverRefreshControl(
               onRefresh: () async => await controller.refresh(),

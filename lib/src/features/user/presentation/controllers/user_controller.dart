@@ -17,6 +17,8 @@ class UserController extends ChangeNotifier {
   final PostUseCase postUseCase;
   final Ref ref;
   UserController(this.userUseCase, this.postUseCase, this.ref) {
+    getUserInfo();
+    getPost();
     // scrollController.addListener(() {
     //   loadMore();
     // });

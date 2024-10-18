@@ -17,11 +17,14 @@ class UserConnectionController extends ChangeNotifier {
   final UserConnectionUseCase connectionUseCase;
   final AnotherUserController anotherUserController;
   final UserUseCase userUseCase;
+  final String userId;
   final Ref ref;
   UserConnectionController(this.connectionUseCase, this.ref, this.userUseCase,
-      this.anotherUserController);
+      this.anotherUserController, this.userId) {
+    getFollowers();
+  }
 
-  Future<void> postFollow(String userId, BuildContext context) async {
+  Future<void> postFollow(BuildContext context) async {
     // Đọc `AnotherUserController` từ provider
 
     // Lấy đối tượng `anotherUserData` và `currentFollowed`
@@ -35,7 +38,7 @@ class UserConnectionController extends ChangeNotifier {
     }
   }
 
-  Future<void> postAddFriend(String userId, BuildContext context) async {
+  Future<void> postAddFriend(BuildContext context) async {
     // final currentUser = anotherUserController.anotherUserData;
     // if (currentUser?.data?.friendStatus != "sent_request") {
     //
@@ -53,7 +56,7 @@ class UserConnectionController extends ChangeNotifier {
     }, context, (val) {});
   }
 
-  Future<void> postAcceptFriend(BuildContext context, String userId) async {
+  Future<void> postAcceptFriend(BuildContext context) async {
     await connectionUseCase
         .postAcceptFriend(
       userId: userId,
@@ -69,7 +72,7 @@ class UserConnectionController extends ChangeNotifier {
     });
   }
 
-  Future<void> postDeclineFriend(BuildContext context, String userId) async {
+  Future<void> postDeclineFriend(BuildContext context) async {
     final currentUser = anotherUserController.anotherUserData;
     await connectionUseCase
         .postDeclineFriend(
@@ -85,8 +88,7 @@ class UserConnectionController extends ChangeNotifier {
     });
   }
 
-  Future<void> showModalDeleteFriend(
-      {required BuildContext context, required String userId}) async {
+  Future<void> showModalDeleteFriend({required BuildContext context}) async {
     final currentUser = anotherUserController.anotherUserData?.data;
     showCupertinoModalPopup(
       context: context,
@@ -111,7 +113,7 @@ class UserConnectionController extends ChangeNotifier {
           actions: <Widget>[
             CupertinoActionSheetAction(
                 isDestructiveAction: true,
-                onPressed: () async => await unFriend(context, userId),
+                onPressed: () async => await unFriend(context),
                 child: const Text(
                   'Hủy kết bạn',
                   style: TextStyle(fontSize: 16),
@@ -129,8 +131,9 @@ class UserConnectionController extends ChangeNotifier {
     );
   }
 
-  Future<void> showModalConfirmRequest(
-      {required BuildContext context, required String userId}) async {
+  Future<void> showModalConfirmRequest({
+    required BuildContext context,
+  }) async {
     final currentUser = anotherUserController.anotherUserData?.data;
     showCupertinoModalPopup(
       context: context,
@@ -155,7 +158,7 @@ class UserConnectionController extends ChangeNotifier {
           actions: <Widget>[
             CupertinoActionSheetAction(
                 // isDestructiveAction: true,
-                onPressed: () async => await postAcceptFriend(context, userId),
+                onPressed: () async => await postAcceptFriend(context),
                 child: const Text(
                   'Xác nhận',
                   style: TextStyle(fontSize: 16, color: Colors.black),
@@ -167,14 +170,16 @@ class UserConnectionController extends ChangeNotifier {
                 'Hủy',
                 style: TextStyle(fontSize: 16),
               ),
-              onPressed: () async => await postDeclineFriend(context, userId)),
+              onPressed: () async => await postDeclineFriend(
+                    context,
+                  )),
         );
       },
     );
   }
 
   List<Data> followers = [];
-  Future<void> getFollowers(String userId) async {
+  Future<void> getFollowers() async {
     followers.clear();
     notifyListeners();
     final data = await userUseCase.getFollowers(userId);
@@ -190,7 +195,7 @@ class UserConnectionController extends ChangeNotifier {
         .toList();
   }
 
-  Future<void> showUserFollowed(BuildContext context, String userId) async {
+  Future<void> showUserFollowed(BuildContext context) async {
     final index = ref.watch(indexControllerProvider.notifier);
 
     // index.showBottomSheet(
@@ -212,7 +217,7 @@ class UserConnectionController extends ChangeNotifier {
     );
   }
 
-  Future<void> cancelRequest(String userId, BuildContext context) async {
+  Future<void> cancelRequest(BuildContext context) async {
     // await anotherUserController.getUserById(userId);
     AppUtils.futureApi(() async {
       final currentUser = anotherUserController.anotherUserData;
@@ -229,7 +234,7 @@ class UserConnectionController extends ChangeNotifier {
     // }
   }
 
-  Future<void> unFriend(BuildContext context, String userId) async {
+  Future<void> unFriend(BuildContext context) async {
     final currentUser = anotherUserController.anotherUserData;
     await connectionUseCase.deleteUnFriend(userId).then((val) async {
       await anotherUserController.getUserById(userId);
@@ -242,10 +247,12 @@ class UserConnectionController extends ChangeNotifier {
   }
 }
 
-final userConnectionControllerProvider = ChangeNotifierProvider((ref) {
+final userConnectionControllerProvider =
+    ChangeNotifierProviderFamily<UserConnectionController, String>(
+        (ref, userId) {
   final userUseCase = ref.watch(userUseCaseProvider);
   final userConnectionUseCase = ref.watch(userConnectionUseCaseProvider);
   final anotherUserController = ref.watch(anotherUserControllerProvider);
   return UserConnectionController(
-      userConnectionUseCase, ref, userUseCase, anotherUserController);
+      userConnectionUseCase, ref, userUseCase, anotherUserController, userId);
 });

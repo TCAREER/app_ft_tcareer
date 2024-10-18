@@ -9,30 +9,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-class UserListPage extends ConsumerStatefulWidget {
+class UserListPage extends ConsumerWidget {
   final String? userId;
 
   const UserListPage({this.userId});
 
   @override
-  ConsumerState<UserListPage> createState() => _UserListPageState();
-}
-
-class _UserListPageState extends ConsumerState<UserListPage> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    Future.microtask(() {
-      ref
-          .read(userConnectionControllerProvider)
-          .getFollowers(widget.userId ?? "");
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = ref.watch(userConnectionControllerProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller =
+        ref.watch(userConnectionControllerProvider(userId ?? ""));
     final postController = ref.watch(postControllerProvider);
 
     final users = controller.followers;
@@ -82,8 +67,7 @@ class _UserListPageState extends ConsumerState<UserListPage> {
                     onTap: () => postController.goToProfile(
                         userId: user.id.toString() ?? "", context: context),
                     leading: CircleAvatar(
-                      backgroundImage: NetworkImage(user.avatar ??
-                          "https://ui-avatars.com/api/?name=${user.fullName}&background=random"),
+                      backgroundImage: NetworkImage(user.avatar ?? ""),
                     ),
                     title: Text(user.fullName ?? ""),
                     trailing: Icon(

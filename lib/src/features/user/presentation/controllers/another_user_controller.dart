@@ -23,7 +23,7 @@ class AnotherUserController extends ChangeNotifier {
     print(">>>>>>>>>>>>userId:$userId");
     anotherUserData = null;
     anotherUserData = await userUseCase.getUserById(userId);
-    await getPost(userId);
+    notifyListeners();
   }
 
   bool isLoading = false;

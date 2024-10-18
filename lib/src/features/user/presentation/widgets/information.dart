@@ -11,7 +11,8 @@ Widget information(
     String? follows,
     String? avatar,
     String? friends}) {
-  final connectionController = ref.watch(userConnectionControllerProvider);
+  final connectionController =
+      ref.watch(userConnectionControllerProvider(userId ?? ""));
   return ListTile(
     title: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,8 +31,7 @@ Widget information(
     subtitle: Row(
       children: [
         InkWell(
-          onTap: () =>
-              connectionController.showUserFollowed(context, userId ?? ""),
+          onTap: () => connectionController.showUserFollowed(context),
           child: Text(
             follows != null ? "$follows người theo dõi" : "0 người theo dõi",
             style: const TextStyle(fontSize: 12, color: Colors.black54),
