@@ -1,3 +1,4 @@
+import 'package:app_tcareer/src/features/authentication/data/models/verify_otp.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/auth_providers.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/widgets/auth_button_widget.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/widgets/pin_put_widget.dart';
@@ -7,11 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class VerifyPage extends ConsumerWidget {
-  const VerifyPage({super.key});
+  final VerifyOTP? verifyOTP;
+
+  const VerifyPage({super.key, this.verifyOTP});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.watch(forgotPasswordControllerProvider);
+    final registerController = ref.watch(registerControllerProvider);
+
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
@@ -35,10 +40,18 @@ class VerifyPage extends ConsumerWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                Text(
-                  "Nhập mã xác minh mà chúng tôi vừa gửi đến email của bạn ${controller.textInputController.text}",
-                  style: const TextStyle(
-                      fontSize: 12, color: Colors.grey, letterSpacing: 1),
+                Visibility(
+                  visible: verifyOTP == null,
+                  replacement: Text(
+                    "Nhập mã xác minh mà chúng tôi vừa gửi đến số điện thoại của bạn ${verifyOTP?.phoneNumber}",
+                    style: const TextStyle(
+                        fontSize: 12, color: Colors.grey, letterSpacing: 1),
+                  ),
+                  child: Text(
+                    "Nhập mã xác minh mà chúng tôi vừa gửi đến email của bạn ${controller.textInputController.text}",
+                    style: const TextStyle(
+                        fontSize: 12, color: Colors.grey, letterSpacing: 1),
+                  ),
                 ),
                 const SizedBox(
                   height: 20,
@@ -54,7 +67,18 @@ class VerifyPage extends ConsumerWidget {
                       ),
                       authButtonWidget(
                           context: context,
-                          onPressed: () async => controller.verifyOtp(context),
+                          onPressed: () async {
+                            if (verifyOTP != null) {
+                              print(">>>>>>>data: $verifyOTP");
+                              await registerController.signInWithOTP(
+                                  context: context,
+                                  smsCode: controller.codeController.text,
+                                  verificationId:
+                                      verifyOTP?.verificationId ?? "");
+                            } else {
+                              await controller.verifyOtp(context);
+                            }
+                          },
                           title: "Xác nhận"),
                       const SizedBox(
                         height: 10,

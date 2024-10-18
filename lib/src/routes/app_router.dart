@@ -1,4 +1,5 @@
 import 'package:app_tcareer/main.dart';
+import 'package:app_tcareer/src/features/authentication/data/models/verify_otp.dart';
 import 'package:app_tcareer/src/features/authentication/data/repositories/auth_repository.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/pages/forgot_password/forgot_password_page.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/pages/forgot_password/reset_password_page.dart';
@@ -147,14 +148,18 @@ class AppRouter {
           ),
           routes: [
             GoRoute(
-              path: RouteNames.verify.name,
-              name: RouteNames.verify.name,
-              pageBuilder: (context, state) => CustomTransitionPage(
-                key: state.pageKey,
-                child: const VerifyPage(),
-                transitionsBuilder: fadeTransitionBuilder,
-              ),
-            ),
+                path: RouteNames.verify.name,
+                name: RouteNames.verify.name,
+                pageBuilder: (context, state) {
+                  VerifyOTP? verifyOTp = state.extra as VerifyOTP?;
+                  return CustomTransitionPage(
+                    key: state.pageKey,
+                    child: VerifyPage(
+                      verifyOTP: verifyOTp,
+                    ),
+                    transitionsBuilder: fadeTransitionBuilder,
+                  );
+                }),
             GoRoute(
               path: RouteNames.resetPassword.name,
               name: RouteNames.resetPassword.name,

@@ -1,4 +1,5 @@
 import 'package:app_tcareer/src/features/authentication/data/models/register_request.dart';
+import 'package:app_tcareer/src/features/authentication/data/models/verify_otp.dart';
 import 'package:app_tcareer/src/features/authentication/usecases/register_use_case.dart';
 import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -42,22 +43,43 @@ class RegisterController extends StateNotifier<void> {
   Future<void> checkUserPhone(BuildContext context) async {
     if (formKeyVerifyPhone.currentState?.validate() == true) {
       AppUtils.loadingApi(() async {
-        await registerUseCaseProvider.checkUserPhone(phoneController.text);
+        // await registerUseCaseProvider.checkUserPhone(phoneController.text);
         await verifyPhoneNumber();
       }, context);
+      final verifyOTP = VerifyOTP(phoneController.text, verificationId ?? "");
+      context.pushNamed("verify", extra: verifyOTP);
     }
   }
 
   //0862042810
-
+  String? verificationId;
   Future<void> verifyPhoneNumber() async {
     String phone = "+84${phoneController.text.substring(1)}";
     await registerUseCaseProvider.verifyPhoneNumber(
       phoneNumber: phone,
       verificationCompleted: (phoneAuthCredential) {},
       verificationFailed: (firebaseAuthException) {},
-      codeSent: (verificationId, forceResendingToken) {},
+      codeSent: (verificationId, forceResendingToken) {
+        verificationId = verificationId;
+      },
       codeAutoRetrievalTimeout: (verificationId) {},
     );
+  }
+
+  Future<void> signInWithOTP(
+      {required String smsCode,
+      required String verificationId,
+      required BuildContext context}) async {
+    AppUtils.loadingApi(() async {
+      await registerUseCaseProvider.signInWithOTP(
+          smsCode: smsCode, verificationId: verificationId);
+      context.pushNamed("register");
+    }, context);
+  }
+
+  Future<void> sendVerificationCode() async {
+    String phone = "+84${phoneController.text.substring(1)}";
+    final response = await registerUseCaseProvider.sendVerificationCode(phone);
+    print(">>>>>>>response: $response");
   }
 }
