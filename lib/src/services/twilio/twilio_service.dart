@@ -5,7 +5,7 @@ import 'package:twilio_flutter/twilio_flutter.dart';
 class TwilioService {
   final TwilioFlutter twilioFlutter = TwilioFlutter(
     accountSid: "", // replace with Account SID
-    authToken: AppConstants.twilioAuthToken, // replace with Auth Token
+    authToken: "", // replace with Auth Token
     twilioNumber: "+84", // replace with Twilio Number(With country code)
   );
 
