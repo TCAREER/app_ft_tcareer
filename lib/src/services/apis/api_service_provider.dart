@@ -5,6 +5,7 @@ import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/login_response.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/refresh_token_request.dart';
 import 'package:app_tcareer/src/routes/app_router.dart';
+import 'package:app_tcareer/src/services/custom_cache_manager.dart';
 import 'package:app_tcareer/src/utils/snackbar_utils.dart';
 import 'package:app_tcareer/src/utils/user_utils.dart';
 
@@ -31,8 +32,8 @@ final apiServiceProvider = Provider<ApiServices>((ref) {
       compact: true,
       maxWidth: 90));
   dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) async {
-    var fileResponse =
-        await DefaultCacheManager().getFileFromCache(options.uri.toString());
+    var fileResponse = await CustomCacheManager.instance
+        .getFileFromCache(options.uri.toString());
     if (fileResponse != null && fileResponse.file.existsSync()) {
       handler.resolve(Response(
         requestOptions: options,
@@ -88,7 +89,7 @@ final apiServiceProvider = Provider<ApiServices>((ref) {
     }
   }, onResponse: (response, handler) async {
     if (response.statusCode == 200 && response.data is List<int>) {
-      await DefaultCacheManager()
+      await CustomCacheManager.instance
           .putFile(response.requestOptions.uri.toString(), response.data);
     }
     handler.next(response);

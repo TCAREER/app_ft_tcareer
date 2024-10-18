@@ -31,6 +31,7 @@ class PostController extends ChangeNotifier {
   final PostUseCase postUseCase;
   final ChangeNotifierProviderRef<Object?> ref;
   PostController(this.postUseCase, this.ref) {
+    getPost();
     scrollController.addListener(() {
       loadMore();
     });
@@ -125,6 +126,7 @@ class PostController extends ChangeNotifier {
   Future<void> loadMore() async {
     if (scrollController.position.maxScrollExtent == scrollController.offset) {
       await getPost();
+      notifyListeners();
     }
   }
 

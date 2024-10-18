@@ -23,13 +23,6 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Khởi tạo dữ liệu ở đây
     final controller = ref.watch(postControllerProvider);
-    final userController = ref.watch(userControllerProvider);
-    Future.microtask(() async {
-      if (controller.postData == null || userController.userData == null) {
-        ref.read(postControllerProvider).getPost();
-        ref.read(userControllerProvider).getUserInfo();
-      }
-    });
 
     bool hasData = controller.postCache.isNotEmpty;
 
