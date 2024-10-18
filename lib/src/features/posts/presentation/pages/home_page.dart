@@ -215,20 +215,23 @@ class HomePage extends ConsumerWidget {
         padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
         child: Column(
           children: [
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SizedBox(
                   height: 10,
                   width: 10,
                   child: CircularProgressIndicator(
+                    value: postingController.loadingProgress,
                     strokeWidth: 2,
                     color: AppColors.primary,
                   ),
                 ),
                 SizedBox(width: 10),
                 Text(
-                  "Đang tải bài viết lên...",
+                  postingController.loadingProgress >= 0.75
+                      ? "Sắp hoàn tất..."
+                      : "Đang tải bài viết lên...",
                   style: TextStyle(fontSize: 11),
                 )
               ],

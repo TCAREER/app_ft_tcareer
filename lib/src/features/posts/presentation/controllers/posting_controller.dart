@@ -90,7 +90,7 @@ class PostingController extends ChangeNotifier {
     videoPicked?.clear();
 
     mediaController.videoPaths.clear();
-    mediaController.videoThumbnail = null;
+    mediaController.videoThumbnail.clear();
     notifyListeners();
     context.goNamed("home");
   }
@@ -183,8 +183,15 @@ class PostingController extends ChangeNotifier {
   }
 
   bool isLoading = false;
+  double loadingProgress = 0.0;
   void setIsLoading(bool value) {
     isLoading = value;
+
+    notifyListeners();
+  }
+
+  void setLoadingProgress(double value) {
+    loadingProgress = value;
     notifyListeners();
   }
 
@@ -193,20 +200,24 @@ class PostingController extends ChangeNotifier {
     final postController = ref.watch(postControllerProvider);
 
     context.goNamed("home");
+    loadingProgress = 0.0;
     await updatePostTemp();
     AppUtils.futureApi(() async {
+      setLoadingProgress(0.25);
       if (mediaController.imagePaths.isNotEmpty ||
           imagesWeb.isNotEmpty == true) {
         await uploadImageFile();
+        setLoadingProgress(0.5);
       }
       if (mediaController.videoPaths.isNotEmpty) {
         await uploadVideo();
+        setLoadingProgress(0.5);
       }
-
+      setLoadingProgress(0.75);
       await postUseCase.createPost(
           body: CreatePostRequest(
               body: content, privacy: selectedPrivacy, mediaUrl: mediaUrl));
-
+      setLoadingProgress(1);
       showSnackBar("Tạo bài viết thành công");
       clearPostCache(context);
       await postController.refresh();
@@ -228,8 +239,9 @@ class PostingController extends ChangeNotifier {
         avatar: user?.avatar,
         createdAt: AppUtils.formatTime(DateTime.now().toIso8601String()),
         privacy: selectedPrivacy,
-        mediaUrl:
-            media.imagePaths.isNotEmpty ? media.imagePaths : media.videoPaths);
+        mediaUrl: media.imagePaths.isNotEmpty
+            ? media.imagePaths
+            : media.videoThumbnail);
     postController.postCache.insert(0, newPost);
     notifyListeners();
   }
@@ -459,21 +471,28 @@ class PostingController extends ChangeNotifier {
     final mediaController = ref.watch(mediaControllerProvider);
     final postController = ref.watch(postControllerProvider);
 
-    context.pushReplacementNamed("home");
+    context.goNamed("home");
+    loadingProgress = 0.0;
 
     AppUtils.futureApi(() async {
+      setLoadingProgress(0.25);
       if (mediaController.imagePaths.isNotEmpty) {
         await uploadImageFile();
+        setLoadingProgress(0.5);
       }
       if (mediaController.videoPaths.isNotEmpty) {
         await uploadVideo();
+        setLoadingProgress(0.5);
       }
+      setLoadingProgress(0.75);
 
       await postUseCase.putUpdatePost(
           postId: postId,
           body: CreatePostRequest(
-              body: content, privacy: selectedPrivacy, mediaUrl: mediaUrl));
-
+              body: mediaController.contentController.text,
+              privacy: selectedPrivacy,
+              mediaUrl: mediaUrl));
+      setLoadingProgress(1);
       showSnackBar("Cập nhật bài viết thành công");
       clearPostCache(context);
       await postController.refresh();

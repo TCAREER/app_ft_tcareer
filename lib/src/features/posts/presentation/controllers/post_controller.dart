@@ -37,7 +37,7 @@ class PostController extends ChangeNotifier {
     });
   }
   post_model.PostsResponse? postData;
-  bool isLoading = false;
+
   bool _disposed = false;
 
   @override
@@ -47,6 +47,8 @@ class PostController extends ChangeNotifier {
     scrollController.dispose();
     super.dispose();
   }
+
+  bool isLoading = false;
 
   void setIsLoading(bool value) {
     isLoading = value;

@@ -330,19 +330,20 @@ class MediaController extends ChangeNotifier {
   Future<void> removeAssets() async {
     imagePaths.clear();
     videoPaths.clear();
-    videoThumbnail = null;
+    videoThumbnail.clear();
     selectedAsset.clear();
     notifyListeners();
   }
 
-  String? videoThumbnail;
+  List<String> videoThumbnail = [];
   Future<void> generateVideoThumbnail() async {
     if (videoPaths.isNotEmpty) {
-      videoThumbnail = await VideoThumbnail.thumbnailFile(
+      final thumbnail = await VideoThumbnail.thumbnailFile(
           video: videoPaths.first,
           thumbnailPath: (await getTemporaryDirectory()).path,
           imageFormat: ImageFormat.JPEG,
           quality: 100);
+      videoThumbnail.add(thumbnail!);
     }
   }
 
@@ -356,7 +357,7 @@ class MediaController extends ChangeNotifier {
 
   Future<void> removeVideo() async {
     videoPaths.clear();
-    videoThumbnail = null;
+    videoThumbnail.clear();
 
     selectedAsset.clear();
     notifyListeners();
@@ -364,7 +365,7 @@ class MediaController extends ChangeNotifier {
 
   Future<void> deleteVideo() async {
     videoPaths.clear();
-    videoThumbnail = null;
+    videoThumbnail.clear();
 
     notifyListeners();
   }

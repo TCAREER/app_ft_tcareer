@@ -197,17 +197,10 @@ Widget postTemp({
 
                   Visibility(
                     visible: hasMediaUrl,
-                    child: Visibility(
-                      visible: mediaUrl?.hasVideos ?? false,
-                      replacement: postingImageWidget(
-                          mediaUrl: mediaUrl ?? [],
-                          ref: ref,
-                          visibleDelete: false),
-                      child: PostingVideoPlayerWidget(
-                        videoUrl: mediaUrl ?? [],
-                        visibleDelete: false,
-                      ),
-                    ),
+                    child: postingImageWidget(
+                        mediaUrl: mediaUrl ?? [],
+                        ref: ref,
+                        visibleDelete: false),
                   ),
 
                   // Visibility(
