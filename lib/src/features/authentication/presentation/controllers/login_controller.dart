@@ -33,8 +33,10 @@ class LoginController extends ChangeNotifier {
   }
 
   Future<void> signInWithGoogle(BuildContext context) async {
-    await loginUseCaseProvider.loginWithGoogle();
-    context.replaceNamed("login");
+    AppUtils.loadingApi(() async {
+      await loginUseCaseProvider.loginWithGoogle();
+      context.replaceNamed("login");
+    }, context);
 
     // context.goNamed("home");
   }
