@@ -20,9 +20,7 @@ class UserConnectionController extends ChangeNotifier {
   final String userId;
   final Ref ref;
   UserConnectionController(this.connectionUseCase, this.ref, this.userUseCase,
-      this.anotherUserController, this.userId) {
-    getFollowers();
-  }
+      this.anotherUserController, this.userId) {}
 
   Future<void> postFollow(BuildContext context) async {
     // Đọc `AnotherUserController` từ provider

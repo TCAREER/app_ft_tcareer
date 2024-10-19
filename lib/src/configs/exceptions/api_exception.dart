@@ -3,8 +3,8 @@ import 'package:dio/dio.dart';
 class ApiException {
   List<String> getExceptionMessage(DioException exception) {
     switch (exception.type) {
-      case DioExceptionType.badResponse:
-        return ["Lỗi phản hồi", "URL API hoặc dữ liệu không hợp lệ."];
+      // case DioExceptionType.badResponse:
+      //   return ["Lỗi phản hồi", "URL API hoặc dữ liệu không hợp lệ."];
       case DioExceptionType.connectionError:
         return ["Lỗi kết nối", "Kiểm tra kết nối mạng."];
       case DioExceptionType.connectionTimeout:

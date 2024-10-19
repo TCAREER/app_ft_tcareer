@@ -32,7 +32,10 @@ Widget information(
       children: [
         InkWell(
           onTap: follows != "0"
-              ? () => connectionController.showUserFollowed(context)
+              ? () async {
+                  await connectionController.getFollowers();
+                  await connectionController.showUserFollowed(context);
+                }
               : null,
           child: Text(
             follows != "0" ? "$follows người theo dõi" : "0 người theo dõi",
