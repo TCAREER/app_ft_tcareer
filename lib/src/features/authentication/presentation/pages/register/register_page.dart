@@ -69,15 +69,15 @@ class RegisterPage extends ConsumerWidget {
                           hintText: "Nhập email",
                           validator: Validator.emailCanEmpty,
                         ),
-                        TextInputForm(
-                          isRequired: true,
-                          // isReadOnly: true,
-                          controller: controller.phoneController,
-                          // isRequired: true,
-                          title: "Điện thoại",
-                          hintText: "Nhập số điện thoại",
-                          validator: Validator.phone,
-                        ),
+                        // TextInputForm(
+                        //   isRequired: true,
+                        //   // isReadOnly: true,
+                        //   controller: controller.phoneController,
+                        //   // isRequired: true,
+                        //   title: "Điện thoại",
+                        //   hintText: "Nhập số điện thoại",
+                        //   validator: Validator.phone,
+                        // ),
                         TextInputForm(
                           isRequired: true,
                           validator: Validator.password,
@@ -86,6 +86,18 @@ class RegisterPage extends ConsumerWidget {
                           isSecurity: true,
                           title: "Mật khẩu",
                           hintText: "Nhập mật khẩu",
+                        ),
+                        TextInputForm(
+                          isRequired: true,
+                          isSecurity: true,
+                          controller: controller.confirmPasswordController,
+                          // isRequired: true,
+                          title: "Xác nhận mật khẩu",
+                          hintText: "Nhập lại mật khẩu",
+                          validator: (val) {
+                            return Validator.rePassword(
+                                val, controller.passController.text);
+                          },
                         ),
 
                         const SizedBox(

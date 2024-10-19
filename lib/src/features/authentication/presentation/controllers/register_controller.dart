@@ -18,6 +18,7 @@ class RegisterController extends StateNotifier<void> {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController passController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyVerifyPhone = GlobalKey<FormState>();
 
@@ -25,7 +26,7 @@ class RegisterController extends StateNotifier<void> {
     AppUtils.loadingApi(() async {
       final body = RegisterRequest(
           name: fullNameController.text,
-          email: emailController.text,
+          email: emailController.text.isNotEmpty ? emailController.text : null,
           phone: phoneController.text,
           password: passController.text);
       await registerUseCaseProvider.register(body);
