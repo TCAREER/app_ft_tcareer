@@ -43,24 +43,25 @@ class RegisterController extends StateNotifier<void> {
   Future<void> checkUserPhone(BuildContext context) async {
     if (formKeyVerifyPhone.currentState?.validate() == true) {
       AppUtils.loadingApi(() async {
-        // await registerUseCaseProvider.checkUserPhone(phoneController.text);
-        await verifyPhoneNumber();
+        await registerUseCaseProvider.checkUserPhone(phoneController.text);
+        await verifyPhoneNumber(context);
       }, context);
-      final verifyOTP = VerifyOTP(phoneController.text, verificationId ?? "");
-      context.pushNamed("verify", extra: verifyOTP);
     }
   }
 
   //0862042810
-  String? verificationId;
-  Future<void> verifyPhoneNumber() async {
+  // String? verification;
+  Future<void> verifyPhoneNumber(BuildContext context) async {
     String phone = "+84${phoneController.text.substring(1)}";
     await registerUseCaseProvider.verifyPhoneNumber(
       phoneNumber: phone,
       verificationCompleted: (phoneAuthCredential) {},
       verificationFailed: (firebaseAuthException) {},
       codeSent: (verificationId, forceResendingToken) {
-        verificationId = verificationId;
+        // verification = verificationId;
+        final verifyOTP = VerifyOTP(phoneController.text, verificationId ?? "");
+        print(">>>>>>>>verificationId: $verificationId");
+        context.pushNamed("verify", extra: verifyOTP);
       },
       codeAutoRetrievalTimeout: (verificationId) {},
     );
