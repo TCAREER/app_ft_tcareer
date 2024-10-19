@@ -50,6 +50,10 @@ class AuthRepository {
           authToken: response.accessToken ?? "",
           refreshToken: response.refreshToken ?? "",
           userId: payload['sub']);
+      var providers = ref.container.getAllProviderElements();
+      for (var element in providers) {
+        element.invalidateSelf();
+      }
 
       // ref.read(isAuthenticatedProvider.notifier).update((state) => true);
     } on DioException catch (e) {
@@ -80,6 +84,10 @@ class AuthRepository {
           authToken: response.accessToken ?? "",
           refreshToken: response.refreshToken ?? "",
           userId: payload['sub']);
+      var providers = ref.container.getAllProviderElements();
+      for (var element in providers) {
+        element.invalidateSelf();
+      }
       print(">>>>>>>>>>>>userId2: ${await userUtil.getUserId()}");
     } on DioException catch (e) {
       rethrow;

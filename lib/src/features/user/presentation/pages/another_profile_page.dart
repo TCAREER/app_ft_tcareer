@@ -31,10 +31,9 @@ class _AnotherProfilePageState extends ConsumerState<AnotherProfilePage>
   void initState() {
     super.initState();
 
-    Future.microtask(() {
-      ref.read(anotherUserControllerProvider).page = 1;
-      ref.read(anotherUserControllerProvider).getUserById(widget.userId);
-      ref.read(anotherUserControllerProvider).getPost(widget.userId);
+    Future.microtask(() async {
+      final controller = ref.read(anotherUserControllerProvider);
+      await controller.onInit(widget.userId);
     });
   }
 

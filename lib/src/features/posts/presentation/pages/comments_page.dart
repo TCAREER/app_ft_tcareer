@@ -302,6 +302,9 @@ class _CommentsPageState extends ConsumerState<CommentsPage> {
     final hasAsset = mediaController.imagePaths.isNotEmpty ||
         mediaController.videoThumbnail.isNotEmpty;
     final imagesPath = mediaController.imagePaths;
+    final video = mediaController.videoThumbnail.isNotEmpty
+        ? mediaController.videoThumbnail.first
+        : null;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       child: Column(
@@ -320,7 +323,7 @@ class _CommentsPageState extends ConsumerState<CommentsPage> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: Image.file(
-                        File(mediaController.videoThumbnail.first),
+                        File(video!),
                         height: 60,
                         width: 60,
                         fit: BoxFit.cover,

@@ -23,6 +23,7 @@ class AnotherUserController extends ChangeNotifier {
     print(">>>>>>>>>>>>userId:$userId");
     anotherUserData = null;
     anotherUserData = await userUseCase.getUserById(userId);
+
     notifyListeners();
   }
 
@@ -38,6 +39,7 @@ class AnotherUserController extends ChangeNotifier {
   Future<void> getPost(String? userId) async {
     // postCache.clear();
     setIsLoading(true);
+    // postData = null;
     postData =
         await postUseCase.getPost(personal: "p", userId: userId, page: page);
     if (postData?.data != null) {
@@ -60,12 +62,20 @@ class AnotherUserController extends ChangeNotifier {
       isLoadingMore = true;
       try {
         page += 1;
-        notifyListeners();
+
         await getPost(anotherUserData?.data?.id.toString() ?? "");
       } finally {
         isLoadingMore = false; // Đặt lại trạng thái
       }
     }
+  }
+
+  Future<void> onInit(String userId) async {
+    anotherUserData = null;
+    postCache.clear();
+    page = 1;
+    await getUserById(userId);
+    await getPost(userId);
   }
 
   int pendingLikeCount = 0;
@@ -96,7 +106,8 @@ class AnotherUserController extends ChangeNotifier {
 
   Future<void> refresh() async {
     // postData?.data?.clear();
-    // postCache.clear();
+    postData = null;
+    postCache.clear();
     page = 1;
     // notifyListeners();
     await getUserById(anotherUserData?.data?.id.toString() ?? "");

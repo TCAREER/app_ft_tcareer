@@ -51,6 +51,7 @@ class UserController extends ChangeNotifier {
   List<post_model.Data> postCache = [];
   int page = 1;
   Future<void> getPost() async {
+    postData = null;
     postData = await postUseCase.getPost(personal: "p", page: page);
     if (postData?.data != null) {
       final newPosts = postData?.data
@@ -117,15 +118,15 @@ class UserController extends ChangeNotifier {
   }
 
   Future<void> logout(BuildContext context) async {
-    var providers = ref.container.getAllProviderElements();
-
+    // var providers = ref.container.getAllProviderElements();
+    final auth = ref.watch(loginUseCase);
     AppUtils.loadingApi(() async {
-      final auth = ref.watch(loginUseCase);
       await auth.logout();
-      for (var element in providers) {
-        element.invalidateSelf();
-      }
-      // context.goNamed("login");
+
+      // for (var element in providers) {
+      //   element.invalidateSelf();
+      // }
+      context.goNamed("login");
     }, context);
   }
 
