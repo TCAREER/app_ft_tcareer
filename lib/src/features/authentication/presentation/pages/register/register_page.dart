@@ -55,6 +55,7 @@ class RegisterPage extends ConsumerWidget {
                     child: Column(
                       children: [
                         TextInputForm(
+                          isRequired: true,
                           controller: controller.fullNameController,
                           // isRequired: true,
                           title: "Họ tên",
@@ -69,6 +70,8 @@ class RegisterPage extends ConsumerWidget {
                           validator: Validator.emailCanEmpty,
                         ),
                         TextInputForm(
+                          isRequired: true,
+                          // isReadOnly: true,
                           controller: controller.phoneController,
                           // isRequired: true,
                           title: "Điện thoại",
@@ -76,6 +79,7 @@ class RegisterPage extends ConsumerWidget {
                           validator: Validator.phone,
                         ),
                         TextInputForm(
+                          isRequired: true,
                           validator: Validator.password,
                           controller: controller.passController,
                           // isRequired: true,

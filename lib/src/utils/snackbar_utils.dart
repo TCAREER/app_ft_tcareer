@@ -42,3 +42,24 @@ void showSnackBarError(String message) {
       ),
       background: Colors.white);
 }
+
+void showSnackBarErrorException(String message) {
+  showSimpleNotification(
+      Row(
+        children: [
+          PhosphorIcon(
+            PhosphorIconsBold.xCircle,
+            color: Colors.red,
+          ),
+          const SizedBox(
+            width: 5,
+          ),
+          Text(
+            message,
+            style: TextStyle(color: Colors.black, fontSize: 14),
+          ),
+        ],
+      ),
+      background: Colors.white,
+      duration: Duration(seconds: 3));
+}

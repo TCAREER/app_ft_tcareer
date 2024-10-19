@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:app_tcareer/app.dart';
 import 'package:app_tcareer/src/configs/app_constants.dart';
+import 'package:app_tcareer/src/configs/exceptions/api_exception.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/login_response.dart';
 import 'package:app_tcareer/src/features/authentication/data/models/refresh_token_request.dart';
 import 'package:app_tcareer/src/routes/app_router.dart';
@@ -85,14 +86,25 @@ final apiServiceProvider = Provider<ApiServices>((ref) {
       // refreshTokenNotifier.setTokenExpired(true);
       // await userUtils.clearToken();
     } else {
-      handler.reject(error);
+      final apiException = ApiException();
+      List<String> errorMessage = apiException.getExceptionMessage(error);
+      List<String> errorMessageStatusCode =
+          apiException.getHttpStatusMessage(error.response?.statusCode ?? 0);
+      if (errorMessage.isNotEmpty) {
+        showSnackBarErrorException("${errorMessage[0]}. ${errorMessage[1]}");
+      } else if (error.response?.statusCode == 500) {
+        showSnackBarErrorException(
+            "${errorMessageStatusCode[0]}. ${errorMessageStatusCode[1]}");
+      } else {
+        handler.reject(error);
+      }
     }
   }, onResponse: (response, handler) async {
     if (response.statusCode == 200 && response.data is List<int>) {
       await CustomCacheManager.instance
           .putFile(response.requestOptions.uri.toString(), response.data);
     }
-    handler.next(response);
+    final message = handler.next(response);
   }));
 
   return ApiServices(dio);

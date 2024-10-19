@@ -193,6 +193,9 @@ class Validator {
     if (!RegExp(r'\w+').hasMatch(value)) {
       return 'Vui lòng nhập đúng họ và tên';
     }
+    if (value.length < 5) {
+      return 'Họ tên phải từ 5 kí tự trở lên';
+    }
     return null;
   }
 

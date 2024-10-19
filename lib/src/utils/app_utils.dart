@@ -32,7 +32,8 @@ class AppUtils {
     } on DioException catch (error) {
       context.pop();
       if (error.response?.statusCode != null) {
-        if (error.response?.statusCode == 400) {
+        if (error.response?.statusCode == 400 ||
+            error.response?.statusCode == 422) {
           showExceptionErrorUser(error, context);
         } else {
           checkExceptionStatusCode(error, context);
@@ -57,7 +58,8 @@ class AppUtils {
     } on DioException catch (error) {
       setIsLoading(false);
       if (error.response?.statusCode != null) {
-        if (error.response?.statusCode == 400) {
+        if (error.response?.statusCode == 400 ||
+            error.response?.statusCode == 422) {
           showExceptionErrorUser(error, context);
         } else {
           checkExceptionStatusCode(error, context);
@@ -89,6 +91,9 @@ class AppUtils {
     if (error.response?.data != null) {
       final errorData = error.response?.data;
       final err = errorData['error'];
+      final errors = errorData['errors'];
+
+      // Kiểm tra nếu có lỗi chính
       if (err != null) {
         final errorObject = err['errors'];
         if (errorObject != null) {
@@ -99,6 +104,32 @@ class AppUtils {
                 title: "Có lỗi xảy ra",
                 content: errorMessage);
           }
+        }
+      }
+      // Kiểm tra nếu có lỗi trong 'errors'
+      else if (errors != null) {
+        // Danh sách để lưu trữ tất cả các giá trị lỗi
+        List<String> allErrorMessages = [];
+
+        // Lặp qua các key trong 'errors' và lấy giá trị
+        errors.forEach((key, value) {
+          if (value is List) {
+            // Chuyển đổi các giá trị thành String và thêm vào danh sách
+            allErrorMessages.addAll(value.map(
+                (v) => v.toString())); // Chuyển đổi từng phần tử thành String
+          }
+        });
+
+        // Nếu có thông báo lỗi, hiển thị chúng
+        if (allErrorMessages.isNotEmpty) {
+          AlertDialogUtil.showAlert(
+            context: context,
+            title: "Có lỗi xảy ra",
+            content: allErrorMessages
+                .join("\n"), // Kết hợp các thông báo lỗi thành một chuỗi
+          );
+        } else {
+          print("Không có thông báo lỗi nào trong 'errors'.");
         }
       }
     }
