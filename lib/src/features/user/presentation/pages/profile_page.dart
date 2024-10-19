@@ -36,19 +36,19 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
   // }
 
   @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-    String? reload = GoRouterState.of(context).extra as String?;
-    if (reload != null) {
-      scrollController.jumpTo(0);
-    }
-    Future.microtask(() {
-      ref.read(userControllerProvider).page = 1;
-      ref.read(userControllerProvider).getUserInfo();
-      ref.read(userControllerProvider).getPost();
-    });
-  }
+  // void didChangeDependencies() {
+  //   // TODO: implement didChangeDependencies
+  //   super.didChangeDependencies();
+  //   String? reload = GoRouterState.of(context).extra as String?;
+  //   if (reload != null) {
+  //     scrollController.jumpTo(0);
+  //   }
+  //   Future.microtask(() {
+  //     ref.read(userControllerProvider).page = 1;
+  //     ref.read(userControllerProvider).getUserInfo();
+  //     ref.read(userControllerProvider).getPost();
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {

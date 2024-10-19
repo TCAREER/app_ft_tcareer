@@ -86,18 +86,18 @@ final apiServiceProvider = Provider<ApiServices>((ref) {
       // refreshTokenNotifier.setTokenExpired(true);
       // await userUtils.clearToken();
     } else {
-      final apiException = ApiException();
-      List<String> errorMessage = apiException.getExceptionMessage(error);
-      List<String> errorMessageStatusCode =
-          apiException.getHttpStatusMessage(error.response?.statusCode ?? 0);
-      if (errorMessage.isNotEmpty) {
-        showSnackBarErrorException("${errorMessage[0]}. ${errorMessage[1]}");
-      } else if (error.response?.statusCode == 500) {
-        showSnackBarErrorException(
-            "${errorMessageStatusCode[0]}. ${errorMessageStatusCode[1]}");
-      } else {
-        handler.reject(error);
-      }
+      // final apiException = ApiException();
+      // List<String> errorMessage = apiException.getExceptionMessage(error);
+      // List<String> errorMessageStatusCode =
+      //     apiException.getHttpStatusMessage(error.response?.statusCode ?? 0);
+      // if (errorMessage.isNotEmpty) {
+      //   showSnackBarErrorException("${errorMessage[0]}. ${errorMessage[1]}");
+      // } else if (error.response?.statusCode == 500) {
+      //   showSnackBarErrorException(
+      //       "${errorMessageStatusCode[0]}. ${errorMessageStatusCode[1]}");
+      // } else {
+      handler.reject(error);
+      //}
     }
   }, onResponse: (response, handler) async {
     if (response.statusCode == 200 && response.data is List<int>) {

@@ -123,12 +123,14 @@ class AuthRepository {
 
   Future<void> resetPassword({
     String? email,
+    String? phone,
     required String password,
   }) async {
     final apiServices = ref.watch(apiServiceProvider);
     await apiServices.postResetPassword(
         body: ResetPasswordRequest(
             email: email,
+            phone: phone,
             password: password,
             key: AppConstants.resetPasswordKey));
   }

@@ -65,6 +65,7 @@ class ForgotPasswordController extends StateNotifier<void> {
       } else {
         AppUtils.loadingApi(() async {
           await forgotPasswordUseCaseProvider.resetPassword(
+              phone: textInputController.text,
               password: passwordController.text);
           context.goNamed('login');
           showSnackBar("Cập nhật mật khẩu thành công");

@@ -38,13 +38,14 @@ class UserController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getUserById(String userId) async {
-    print(">>>>>>>>>>>>userId:$userId");
-    setIsLoading(true);
-    anotherUserData = await userUseCase.getUserById(userId);
-    setIsLoading(false);
-    notifyListeners();
-  }
+  // Future<void> getUserById(String userId) async {
+  //   print(">>>>>>>>>>>>userId:$userId");
+  //   setIsLoading(true);
+  //   anotherUserData = null;
+  //   anotherUserData = await userUseCase.getUserById(userId);
+  //   setIsLoading(false);
+  //   notifyListeners();
+  // }
 
   post_model.PostsResponse? postData;
   final ScrollController scrollController = ScrollController();
