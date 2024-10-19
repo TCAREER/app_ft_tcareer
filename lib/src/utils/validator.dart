@@ -128,6 +128,25 @@ class Validator {
     return null;
   }
 
+  static String? emailOrPhoneNumber(value) {
+    if (value.isEmpty) {
+      return 'Vui lòng nhập email hoặc số điện thoại';
+    }
+
+    final emailRegExp =
+        RegExp(r"^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$");
+
+    final phoneRegExp =
+        RegExp(r'^\+?[0-9]{7,15}$' // Có thể có dấu "+" và từ 7 đến 15 chữ số
+            );
+
+    if (!emailRegExp.hasMatch(value) && !phoneRegExp.hasMatch(value)) {
+      return 'Vui lòng nhập đúng email hoặc số điện thoại hợp lệ';
+    }
+
+    return null;
+  }
+
   static String? birthday(valueDy) {
     String value = valueDy ?? '';
     if (value.isEmpty) {

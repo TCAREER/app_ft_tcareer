@@ -59,7 +59,8 @@ class RegisterController extends StateNotifier<void> {
       verificationFailed: (firebaseAuthException) {},
       codeSent: (verificationId, forceResendingToken) {
         // verification = verificationId;
-        final verifyOTP = VerifyOTP(phoneController.text, verificationId ?? "");
+        final verifyOTP = VerifyOTP(
+            phoneController.text, verificationId, TypeVerify.register);
         print(">>>>>>>>verificationId: $verificationId");
         context.pushNamed("verify", extra: verifyOTP);
       },

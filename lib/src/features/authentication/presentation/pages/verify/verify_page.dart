@@ -68,15 +68,24 @@ class VerifyPage extends ConsumerWidget {
                       authButtonWidget(
                           context: context,
                           onPressed: () async {
-                            if (verifyOTP != null) {
-                              print(">>>>>>>data: $verifyOTP");
-                              await registerController.signInWithOTP(
-                                  context: context,
-                                  smsCode: controller.codeController.text,
-                                  verificationId:
-                                      verifyOTP?.verificationId ?? "");
-                            } else {
-                              await controller.verifyOtp(context);
+                            switch (verifyOTP?.type) {
+                              case TypeVerify.register:
+                                await registerController.signInWithOTP(
+                                    context: context,
+                                    smsCode: controller.codeController.text,
+                                    verificationId:
+                                        verifyOTP?.verificationId ?? "");
+                                break;
+                              case TypeVerify.forgotPassword:
+                                await controller.signInWithOTP(
+                                    context: context,
+                                    smsCode: controller.codeController.text,
+                                    verificationId:
+                                        verifyOTP?.verificationId ?? "");
+                                break;
+                              default:
+                                await controller.verifyOtp(context);
+                                break;
                             }
                           },
                           title: "Xác nhận"),

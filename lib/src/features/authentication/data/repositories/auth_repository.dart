@@ -113,8 +113,10 @@ class AuthRepository {
     await apiServices.postForgotPasswordVerify(body: body);
   }
 
-  Future<void> resetPassword(
-      {required String email, required String password}) async {
+  Future<void> resetPassword({
+    String? email,
+    required String password,
+  }) async {
     final apiServices = ref.watch(apiServiceProvider);
     await apiServices.postResetPassword(
         body: ResetPasswordRequest(

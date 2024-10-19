@@ -1,3 +1,4 @@
+import 'package:app_tcareer/src/extensions/auth_extension.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/auth_providers.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/widgets/auth_button_widget.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/widgets/text_input_form.dart';
@@ -37,7 +38,7 @@ class ForgotPasswordPage extends ConsumerWidget {
                   height: 20,
                 ),
                 const Text(
-                  "Vui lòng nhập email của bạn để đặt lại mật khẩu ",
+                  "Vui lòng nhập email hoặc số điện thoại của bạn để đặt lại mật khẩu",
                   style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
                 const SizedBox(
@@ -50,17 +51,24 @@ class ForgotPasswordPage extends ConsumerWidget {
                       TextInputForm(
                         controller: controller.textInputController,
                         // isRequired: true,
-                        title: "Email",
-                        hintText: "Nhập email",
-                        validator: Validator.email,
+                        title: "Email hoặc số điện thoại",
+                        hintText: "Nhập email hoặc số điện thoại",
+                        validator: Validator.emailOrPhoneNumber,
                       ),
                       const SizedBox(
                         height: 20,
                       ),
                       authButtonWidget(
                           context: context,
-                          onPressed: () async =>
-                              controller.forgotPassword(context),
+                          onPressed: () async {
+                            if (controller
+                                .textInputController.text.isValidEmail) {
+                              await controller.forgotPassword(context);
+                            } else if (controller
+                                .textInputController.text.isValidPhoneNumber) {
+                              await controller.checkUserPhone(context);
+                            }
+                          },
                           title: "Gửi mã xác thực"),
                       const SizedBox(
                         height: 20,

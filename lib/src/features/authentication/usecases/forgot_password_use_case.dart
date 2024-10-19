@@ -16,8 +16,7 @@ class ForgotPasswordUseCase {
     return await authRepository.forgotPasswordVerify(body);
   }
 
-  Future<void> resetPassword(
-      {required String email, required String password}) async {
+  Future<void> resetPassword({String? email, required String password}) async {
     return await authRepository.resetPassword(email: email, password: password);
   }
 }

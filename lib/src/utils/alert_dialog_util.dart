@@ -30,11 +30,11 @@ class AlertDialogUtil {
     );
   }
 
-  static void showAlert(
+  static Future<void> showAlert(
       {required BuildContext context,
       required String title,
-      required String content}) {
-    showDialog(
+      required String content}) async {
+    await showDialog(
       context: context,
       builder: (context) =>
           alertDialog(context: context, title: title, content: content),

@@ -20,5 +20,7 @@ final registerControllerProvider = Provider<RegisterController>((ref) {
 final forgotPasswordControllerProvider =
     Provider<ForgotPasswordController>((ref) {
   final forgotPasswordUseCaseProvider = ref.watch(forgotPasswordUseCase);
-  return ForgotPasswordController(forgotPasswordUseCaseProvider);
+  final registerUseCaseProvider = ref.watch(registerUseCase);
+  return ForgotPasswordController(
+      forgotPasswordUseCaseProvider, registerUseCaseProvider);
 });
