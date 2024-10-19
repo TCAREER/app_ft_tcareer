@@ -22,6 +22,7 @@ class AnotherUserController extends ChangeNotifier {
   Future<void> getUserById(String userId) async {
     print(">>>>>>>>>>>>userId:$userId");
     anotherUserData = null;
+
     anotherUserData = await userUseCase.getUserById(userId);
 
     notifyListeners();
@@ -72,7 +73,9 @@ class AnotherUserController extends ChangeNotifier {
 
   Future<void> onInit(String userId) async {
     anotherUserData = null;
+    postData = null;
     postCache.clear();
+    notifyListeners();
     page = 1;
     await getUserById(userId);
     await getPost(userId);
