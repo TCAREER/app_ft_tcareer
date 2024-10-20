@@ -4,6 +4,7 @@ import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart'
     as post_model;
 import 'package:app_tcareer/src/features/posts/usecases/post_use_case.dart';
 import 'package:app_tcareer/src/features/user/data/models/users.dart';
+import 'package:app_tcareer/src/features/user/usercases/connection_use_case.dart';
 import 'package:app_tcareer/src/features/user/usercases/user_use_case.dart';
 import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:app_tcareer/src/utils/user_utils.dart';
@@ -121,7 +122,9 @@ class UserController extends ChangeNotifier {
   Future<void> logout(BuildContext context) async {
     // var providers = ref.container.getAllProviderElements();
     final auth = ref.watch(loginUseCase);
+    final connectUseCase = ref.watch(connectionUseCaseProvider);
     AppUtils.loadingApi(() async {
+      await connectUseCase.setUserOfflineStatus();
       await auth.logout();
 
       // for (var element in providers) {

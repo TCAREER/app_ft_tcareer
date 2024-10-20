@@ -38,6 +38,36 @@ class FirebaseDatabaseService {
       rethrow;
     }
   }
+
+  Future<void> addData(
+      {required String path,
+      required Map<String, dynamic> data,
+      Map<String, Object?>? dataUpdate}) async {
+    try {
+      DatabaseReference ref = database.ref(path);
+      await ref.set(data);
+      ref.onDisconnect().update(dataUpdate!);
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<void> updateData(
+      {required String path, required Map<String, dynamic> data}) async {
+    try {
+      DatabaseReference ref = database.ref(path);
+      await ref.update(data);
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<void> monitorConnection(void Function(DatabaseEvent)? onData) async {
+    DatabaseReference connectionRef = database.ref(".info/connected");
+    connectionRef.onValue.listen(onData);
+  }
 }
 
 final firebaseDatabaseServiceProvider =

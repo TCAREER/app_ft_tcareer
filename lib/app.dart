@@ -1,3 +1,4 @@
+import 'package:app_tcareer/src/features/user/usercases/connection_use_case.dart';
 import 'package:app_tcareer/src/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,7 +20,10 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        ref.read(authStateProvider.notifier).checkAuthentication();
+        Future.microtask(() async {
+          final connectionUseCase = ref.watch(connectionUseCaseProvider);
+          await connectionUseCase.monitorConnection();
+        });
         final router = AppRouter.router(ref, navigatorKey);
 
         return ScreenUtilInit(
