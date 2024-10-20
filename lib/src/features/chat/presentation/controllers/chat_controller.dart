@@ -164,9 +164,9 @@ class ChatController extends ChangeNotifier {
       await chatUseCase.publishMessage(
           conversationId: conversationData?.conversation?.id.toString() ?? "",
           data: data);
-      // await chatUseCase.postMarkReadMessage(MarkReadMessageRequest(
-      //   conversationId: conversationData?.conversation?.id,
-      // ));
+      chatUseCase.postMarkReadMessage(MarkReadMessageRequest(
+        conversationId: conversationData?.conversation?.id,
+      ));
     }
   }
 
