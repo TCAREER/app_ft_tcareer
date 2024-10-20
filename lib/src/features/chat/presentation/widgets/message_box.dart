@@ -154,6 +154,7 @@ Widget statusText(String status) {
     decoration: BoxDecoration(
         color: Colors.grey.shade300, borderRadius: BorderRadius.circular(16)),
     child: Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           statusMap[status],
