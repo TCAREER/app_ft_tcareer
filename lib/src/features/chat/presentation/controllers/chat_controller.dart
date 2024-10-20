@@ -111,6 +111,7 @@ class ChatController extends ChangeNotifier {
       conversationId: conversationData?.conversation?.id,
       id: messageData['message_id'],
       senderId: messageData['sender_id'],
+      status: "sent",
       createdAt:
           messageData['created_at'], // sửa 'createdAt' thành 'created_at'
     );

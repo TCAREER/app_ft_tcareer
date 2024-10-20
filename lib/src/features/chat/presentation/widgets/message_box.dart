@@ -14,6 +14,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Widget messageBox({
+  required bool isFirstIndex,
+  required String status,
   required String avatarUrl,
   required String message,
   bool isMe = false,
@@ -22,6 +24,7 @@ Widget messageBox({
   required List<String> media,
 }) {
   print(">>>>>>>>media: $media");
+
   return Row(
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisAlignment: !isMe ? MainAxisAlignment.start : MainAxisAlignment.end,
@@ -77,6 +80,10 @@ Widget messageBox({
                   ),
                 ),
               ),
+              Visibility(
+                visible: isMe && isFirstIndex,
+                child: Visibility(child: statusText(status)),
+              )
             ],
           ),
         ),
@@ -92,25 +99,21 @@ Widget messageBox({
                     constraints:
                         BoxConstraints(maxWidth: ScreenUtil().screenWidth * .6),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         mediaItem(media, ref),
                         const SizedBox(
                           height: 5,
                         ),
-                        Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                          decoration: BoxDecoration(
-                              color: Colors.grey.shade300,
-                              borderRadius: BorderRadius.circular(16)),
-                          child: Text(
-                            AppUtils.formatCreatedAt(createdAt),
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold),
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            createdAtText(createdAt),
+                            Visibility(
+                              visible: isMe && isFirstIndex,
+                              child: Visibility(child: statusText(status)),
+                            )
+                          ],
                         ),
                         const SizedBox(
                           height: 5,
@@ -124,6 +127,37 @@ Widget messageBox({
   );
 }
 
+Widget createdAtText(String createdAt) {
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+    decoration: BoxDecoration(
+        color: Colors.grey.shade300, borderRadius: BorderRadius.circular(16)),
+    child: Text(
+      AppUtils.formatCreatedAt(createdAt),
+      style: const TextStyle(
+          color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+    ),
+  );
+}
+
+Widget statusText(String status) {
+  Map<String, dynamic> statusMap = {
+    "sent": "Đã gửi",
+    "read": "Đã xem",
+    "delivered": "Đã nhận"
+  };
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+    decoration: BoxDecoration(
+        color: Colors.grey.shade300, borderRadius: BorderRadius.circular(16)),
+    child: Text(
+      statusMap[status],
+      style: const TextStyle(
+          color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+    ),
+  );
+}
+
 Widget mediaItem(List<String> media, WidgetRef ref) {
   if (media.length == 1) {
     return Visibility(
@@ -134,7 +168,8 @@ Widget mediaItem(List<String> media, WidgetRef ref) {
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: ColorFiltered(
-              colorFilter: ColorFilter.mode(Colors.black54, BlendMode.darken),
+              colorFilter:
+                  const ColorFilter.mode(Colors.black54, BlendMode.darken),
               child: Image.file(
                 File(media[0]),
                 fit: BoxFit.cover,
@@ -176,8 +211,8 @@ Widget mediaItem(List<String> media, WidgetRef ref) {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: ColorFiltered(
-                    colorFilter:
-                        ColorFilter.mode(Colors.black54, BlendMode.darken),
+                    colorFilter: const ColorFilter.mode(
+                        Colors.black54, BlendMode.darken),
                     child: Image.file(
                       File(mediaItem),
                       fit: BoxFit.cover,

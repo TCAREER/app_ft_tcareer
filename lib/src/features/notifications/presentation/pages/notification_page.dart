@@ -37,7 +37,7 @@ class NotificationPage extends ConsumerWidget {
     return StreamBuilder<List<Map<String, dynamic>>>(
         stream: controller.notificationsStream(),
         builder: (context, snapshot) {
-          print(">>>>>>>>>>data1: ${snapshot.data}");
+          // print(">>>>>>>>>>data1: ${snapshot.data}");
           if (!snapshot.hasData) {
             return circularLoadingWidget();
           }
@@ -51,7 +51,7 @@ class NotificationPage extends ConsumerWidget {
             // ),
             itemCount: notifications?.length ?? 0,
             itemBuilder: (context, index) {
-              print(">>>>>>>notification: $notifications");
+              // print(">>>>>>>notification: $notifications");
               final notification = notifications?[index];
 
               return notificationItem(notification ?? {}, context, ref);

@@ -3,8 +3,9 @@ class MessageModel {
     num? id,
     num? conversationId,
     num? senderId,
-    String? content,
+    dynamic content,
     String? type,
+    String? status,
     List<String>? mediaUrl,
     String? createdAt,
     String? updatedAt,
@@ -15,6 +16,7 @@ class MessageModel {
     _senderId = senderId;
     _content = content;
     _type = type;
+    _status = status;
     _mediaUrl = mediaUrl;
     _createdAt = createdAt;
     _updatedAt = updatedAt;
@@ -27,6 +29,7 @@ class MessageModel {
     _senderId = json['sender_id'];
     _content = json['content'];
     _type = json['type'];
+    _status = json['status'];
     _mediaUrl =
         json['media_url'] != null ? json['media_url'].cast<String>() : [];
     _createdAt = json['created_at'];
@@ -36,8 +39,9 @@ class MessageModel {
   num? _id;
   num? _conversationId;
   num? _senderId;
-  String? _content;
+  dynamic _content;
   String? _type;
+  String? _status;
   List<String>? _mediaUrl;
   String? _createdAt;
   String? _updatedAt;
@@ -46,8 +50,9 @@ class MessageModel {
     num? id,
     num? conversationId,
     num? senderId,
-    String? content,
+    dynamic content,
     String? type,
+    String? status,
     List<String>? mediaUrl,
     String? createdAt,
     String? updatedAt,
@@ -59,6 +64,7 @@ class MessageModel {
         senderId: senderId ?? _senderId,
         content: content ?? _content,
         type: type ?? _type,
+        status: status ?? _status,
         mediaUrl: mediaUrl ?? _mediaUrl,
         createdAt: createdAt ?? _createdAt,
         updatedAt: updatedAt ?? _updatedAt,
@@ -67,8 +73,9 @@ class MessageModel {
   num? get id => _id;
   num? get conversationId => _conversationId;
   num? get senderId => _senderId;
-  String? get content => _content;
+  dynamic get content => _content;
   String? get type => _type;
+  String? get status => _status;
   List<String>? get mediaUrl => _mediaUrl;
   String? get createdAt => _createdAt;
   String? get updatedAt => _updatedAt;
@@ -81,6 +88,7 @@ class MessageModel {
     map['sender_id'] = _senderId;
     map['content'] = _content;
     map['type'] = _type;
+    map['status'] = _status;
     map['media_url'] = _mediaUrl;
     map['created_at'] = _createdAt;
     map['updated_at'] = _updatedAt;

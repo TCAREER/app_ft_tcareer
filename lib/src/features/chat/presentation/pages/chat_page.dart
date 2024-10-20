@@ -148,9 +148,12 @@ class _ChatPageState extends ConsumerState<ChatPage> {
             top: 5),
         itemCount: messages.length,
         itemBuilder: (context, index) {
+          bool isFirstIndex = messages.length - index == messages.length;
           final message = messages[index];
           bool isMe = message.senderId == user.userData?.data?.id;
           return messageBox(
+              isFirstIndex: isFirstIndex,
+              status: message.status ?? "",
               avatarUrl: controller.user?.userAvatar ?? "",
               media: message.mediaUrl ?? [],
               ref: ref,

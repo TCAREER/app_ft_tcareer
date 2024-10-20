@@ -281,6 +281,7 @@ class ChatMediaController extends ChangeNotifier {
         mediaUrl: mediaLocalPath,
         createdAt: DateTime.now().toIso8601String(),
         senderId: senderId,
+        status: 'sent',
         type: 'temp');
 
     chatController.messages.insert(0, newMessage);
