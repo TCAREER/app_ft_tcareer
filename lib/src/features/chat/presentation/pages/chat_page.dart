@@ -33,10 +33,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     // TODO: implement initState
     Future.microtask(() async {
       final controller = ref.read(chatControllerProvider);
-      await controller.getConversation(widget.userId);
-      // ref.watch(chatControllerProvider).scrollToBottom();
-      await controller.initializeAbly();
-      await controller.enterPresence(widget.clientId);
+      await controller.onInit(clientId: widget.clientId, userId: widget.userId);
       controller.listenPresence(widget.userId);
       controller.listenMessage();
     });

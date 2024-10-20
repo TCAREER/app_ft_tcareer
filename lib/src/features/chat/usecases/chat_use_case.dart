@@ -22,9 +22,9 @@ class ChatUseCase {
           channelName: "conversation-$conversationId",
           handleChannelMessage: handleChannelMessage);
   Future<void> publishMessage(
-      {required String name, required Object data}) async {
+      {required String conversationId, required Object data}) async {
     return await chatRepository.publishMessage(
-        channelName: "tcareer", name: name, data: data);
+        channelName: "conversation-$conversationId", data: data);
   }
 
   Future<Conversation> getConversation(String userId) async =>

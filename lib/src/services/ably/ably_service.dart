@@ -78,6 +78,13 @@ class AblyService {
     await channel.presence.leave(data);
   }
 
+  Future<void> markMessageAsRead(
+      {required String channelName, required String userId}) async {
+    ably.RealtimeChannel channel = realtime.channels.get(channelName);
+    String data = jsonEncode({'statusMessage': 'read'});
+    await channel.presence.enter(data);
+  }
+
   StreamSubscription<ably.PresenceMessage> listenPresence(
       {required String channelName,
       required Function(ably.PresenceMessage) handleChannelPresence}) {
@@ -91,11 +98,10 @@ class AblyService {
 
   Future<void> publishMessage({
     required String channelName,
-    required String name,
     required Object data,
   }) async {
     ably.RealtimeChannel channel = realtime.channels.get(channelName);
-    await channel.publish(name: name, data: data);
+    await channel.publish(data: data);
   }
 
   Future<void> disconnect() async {

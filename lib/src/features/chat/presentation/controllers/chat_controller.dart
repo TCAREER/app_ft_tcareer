@@ -17,6 +17,7 @@ import 'package:app_tcareer/src/features/chat/usecases/chat_use_case.dart';
 import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
 import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:app_tcareer/src/utils/snackbar_utils.dart';
+import 'package:app_tcareer/src/utils/user_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,9 +39,9 @@ class ChatController extends ChangeNotifier {
   Future<void> publishMessage() async {
     final userController = ref.watch(userControllerProvider);
     final user = userController.userData?.data;
-    await chatUseCase.publishMessage(
-        name: user?.fullName ?? "",
-        data: {"message": contentController.text, "userId": "1"});
+    // await chatUseCase.publishMessage(
+    //
+    //     data: {"message": contentController.text, "userId": "1"});
   }
 
   Conversation? conversationData;
@@ -101,28 +102,41 @@ class ChatController extends ChangeNotifier {
 
   void handleUpdateMessage(ably.Message message) {
     final messageData = jsonDecode(message.data.toString());
-    final mediaUrls = messageData['media_url'] != null
-        ? List<String>.from(messageData['media_url'])
-        : <String>[];
-
-    final newMessage = MessageModel(
-      mediaUrl: mediaUrls,
-      content: messageData['content'],
-      conversationId: conversationData?.conversation?.id,
-      id: messageData['message_id'],
-      senderId: messageData['sender_id'],
-      status: "sent",
-      createdAt:
-          messageData['created_at'], // sửa 'createdAt' thành 'created_at'
-    );
-
-    notifyListeners();
-    // Kiểm tra xem message có tồn tại trong messages hay không
-    if (!messages
-        .any((existingMessage) => existingMessage.id == newMessage.id)) {
-      messages.removeWhere((message) => message.type == "temp");
-      messages.insert(0, newMessage);
+    if (messageData['status'] == "read") {
+      print(">>>>>>>>>>>1");
+      final currentMessage = messages.first;
+      final updatedMessage = currentMessage.copyWith(status: "read");
+      messages[0] = updatedMessage;
       notifyListeners();
+    } else {
+      print(">>>>>>>>2");
+      final mediaUrls = messageData['media_url'] != null
+          ? List<String>.from(messageData['media_url'])
+          : <String>[];
+
+      final newMessage = MessageModel(
+        mediaUrl: mediaUrls,
+        content: messageData['content'],
+        conversationId: conversationData?.conversation?.id,
+        id: messageData['message_id'],
+        senderId: messageData['sender_id'],
+        status: "sent",
+        createdAt:
+            messageData['created_at'], // sửa 'createdAt' thành 'created_at'
+      );
+
+      notifyListeners();
+      // Kiểm tra xem message có tồn tại trong messages hay không
+      if (!messages
+          .any((existingMessage) => existingMessage.id == newMessage.id)) {
+        messages.removeWhere((message) => message.type == "temp");
+        messages.insert(0, newMessage);
+        notifyListeners();
+      }
+      markMessageAsRead(
+          senderId: messageData['sender_id'].toString(),
+          userId: user?.userId.toString() ?? "",
+          messageId: messageData['message_id']);
     }
   }
 
@@ -135,6 +149,25 @@ class ChatController extends ChangeNotifier {
     await chatUseCase.enterPresence(
         conversationId: conversationData?.conversation?.id.toString() ?? "",
         userId: userId);
+  }
+
+  Future<void> markMessageAsRead(
+      {required String senderId,
+      required String userId,
+      required dynamic messageId}) async {
+    final userUtil = ref.watch(userUtilsProvider);
+    String clientId = await userUtil.getUserId();
+
+    if (clientId != senderId) {
+      String data = jsonEncode(
+          {"topic": "statusMessage", "id": messageId, "status": "read"});
+      await chatUseCase.publishMessage(
+          conversationId: conversationData?.conversation?.id.toString() ?? "",
+          data: data);
+      // await chatUseCase.postMarkReadMessage(MarkReadMessageRequest(
+      //   conversationId: conversationData?.conversation?.id,
+      // ));
+    }
   }
 
   Future<void> leavePresence(String userId) async {
@@ -189,12 +222,10 @@ class ChatController extends ChangeNotifier {
   }
 
   void _startTimer(String dateString) {
-    _cancelTimer(); // Hủy Timer nếu đang có Timer nào đó đang chạy
+    _cancelTimer();
     _timer = Timer.periodic(Duration(minutes: 1), (_) {
-      // Cập nhật trạng thái mỗi phút
-      statusText =
-          AppUtils.formatTimeMessage(dateString); // Cập nhật statusText
-      notifyListeners(); // Gọi notifyListeners để cập nhật giao diện
+      statusText = AppUtils.formatTimeMessage(dateString);
+      notifyListeners();
     });
   }
 
@@ -203,7 +234,7 @@ class ChatController extends ChangeNotifier {
     _timer = null;
   }
 
-  Future<void> disposeService() async => await chatUseCase.dispose();
+  Future<void> disposeService() async => await chatUseCase.disconnect();
   @override
   void dispose() {
     // TODO: implement dispose
@@ -297,6 +328,21 @@ class ChatController extends ChangeNotifier {
   Future<void> getAllConversation() async {
     allConversation = await chatUseCase.getAllConversation();
     notifyListeners();
+  }
+
+  Future<void> onInit(
+      {required String clientId, required String userId}) async {
+    await getConversation(userId);
+    await initializeAbly();
+    await enterPresence(clientId);
+    if (messages.isNotEmpty && messages[0].status == "sent") {
+      await markMessageAsRead(
+          senderId: messages.first.senderId.toString(),
+          userId: userId,
+          messageId: messages.first.id);
+    }
+    // listenPresence(userId);
+    // listenMessage();
   }
 }
 

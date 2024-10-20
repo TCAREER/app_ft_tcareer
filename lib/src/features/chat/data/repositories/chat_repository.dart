@@ -30,12 +30,10 @@ class ChatRepository {
   }
 
   Future<void> publishMessage(
-      {required String channelName,
-      required String name,
-      required Object data}) async {
+      {required String channelName, required Object data}) async {
     final ablyService = ref.watch(ablyServiceProvider);
     return await ablyService.publishMessage(
-        channelName: channelName, name: name, data: data);
+        channelName: channelName, data: data);
   }
 
   Future<Conversation> getConversation(String userId) async {

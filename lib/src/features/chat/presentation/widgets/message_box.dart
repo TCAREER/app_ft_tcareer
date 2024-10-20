@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_fb_photo_view/flutter_fb_photo_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 Widget messageBox({
   required bool isFirstIndex,
@@ -99,7 +100,9 @@ Widget messageBox({
                     constraints:
                         BoxConstraints(maxWidth: ScreenUtil().screenWidth * .6),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: isMe
+                          ? CrossAxisAlignment.start
+                          : CrossAxisAlignment.end,
                       children: [
                         mediaItem(media, ref),
                         const SizedBox(
@@ -150,10 +153,30 @@ Widget statusText(String status) {
     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
     decoration: BoxDecoration(
         color: Colors.grey.shade300, borderRadius: BorderRadius.circular(16)),
-    child: Text(
-      statusMap[status],
-      style: const TextStyle(
-          color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+    child: Row(
+      children: [
+        Text(
+          statusMap[status],
+          style: const TextStyle(
+              color: Colors.white, fontSize: 11, fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(
+          width: 2,
+        ),
+        Visibility(
+          visible: status == "sent",
+          replacement: PhosphorIcon(
+            PhosphorIconsRegular.eye,
+            color: Colors.white,
+            size: 15,
+          ),
+          child: PhosphorIcon(
+            PhosphorIconsRegular.checks,
+            color: Colors.white,
+            size: 15,
+          ),
+        ),
+      ],
     ),
   );
 }
