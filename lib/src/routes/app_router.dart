@@ -22,6 +22,8 @@ import 'package:app_tcareer/src/routes/index_route.dart';
 import 'package:app_tcareer/src/routes/transition_builder.dart';
 import 'package:app_tcareer/src/services/apis/api_service_provider.dart';
 import 'package:app_tcareer/src/utils/user_utils.dart';
+import 'package:app_tcareer/src/widgets/photos/app_photo_model.dart';
+import 'package:app_tcareer/src/widgets/photos/app_photo_view.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -232,7 +234,20 @@ class AppRouter {
                         transitionsBuilder: fadeTransitionBuilder);
                   },
                   routes: [])
-            ])
+            ]),
+        GoRoute(
+            path: "/appPhoto",
+            name: "appPhoto",
+            pageBuilder: (context, state) {
+              final data = state.extra as AppPhotoModel;
+              return CustomTransitionPage(
+                key: state.pageKey,
+                child: AppPhotoView(
+                  data: data,
+                ),
+                transitionsBuilder: fadeTransitionBuilder,
+              );
+            }),
       ],
       refreshListenable: GoRouterRefreshStream(),
     );

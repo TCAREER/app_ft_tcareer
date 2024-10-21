@@ -28,7 +28,6 @@ class ConnectionUseCase {
     final userUtil = ref.watch(userUtilsProvider);
     String userId = await userUtil.getUserId();
     Map<String, dynamic> data = {
-      "userId": userId,
       "status": "online",
       "updatedAt": DateTime.now().toIso8601String(),
     };

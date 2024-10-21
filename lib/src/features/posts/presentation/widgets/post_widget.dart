@@ -7,6 +7,7 @@ import 'package:app_tcareer/src/features/posts/presentation/widgets/video_player
 import 'package:app_tcareer/src/extensions/video_extension.dart';
 import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
 import 'package:app_tcareer/src/widgets/cached_image_widget.dart';
+import 'package:app_tcareer/src/widgets/photos/app_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_fb_photo_view/flutter_fb_photo_view.dart';
@@ -196,8 +197,10 @@ Widget postWidget({
               visible: hasMediaUrl,
               child: Visibility(
                 visible: mediaUrl?.hasVideos ?? false,
-                replacement:
-                    PostImageWidget(mediaUrl: mediaUrl ?? [], postId: postId),
+                replacement: AppImage(
+                  images: mediaUrl ?? [],
+                ),
+                // PostImageWidget(mediaUrl: mediaUrl ?? [], postId: postId),
                 child: VideoPlayerWidget(videoUrl: firstMediaUrl),
               ),
             ),
