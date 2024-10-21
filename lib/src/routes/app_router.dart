@@ -69,20 +69,16 @@ class AppRouter {
         final userUtils = ref.watch(userUtilsProvider);
         final isAuthenticated = await userUtils.isAuthenticated();
         bool isChatRoute = state.fullPath?.contains("conversation") == true ||
-            state.fullPath?.startsWith("chat") == true;
-        print(">>>>>>>>>inMessage: $inMessage");
+            state.fullPath?.contains("chat") == true;
+
         if (isAuthenticated && !inMessage) {
-          print(">>>>>>>>fullPath: ${state.matchedLocation}");
-          print(">>>>>>>>>>>1");
           if (isChatRoute) {
-            print(">>>>>>>>>>>2");
             await ref
                 .read(connectionUseCaseProvider)
                 .setUserOnlineStatusInMessage();
             inMessage = true;
           }
         } else if (isAuthenticated && !isChatRoute) {
-          print(">>>>>>>>>>>3");
           await ref.read(connectionUseCaseProvider).setUserOnlineStatus();
           inMessage = false;
         }
@@ -112,14 +108,7 @@ class AppRouter {
       },
       routes: [
         Index.router,
-        GoRoute(
-          path: "/notificaions",
-          name: "notifications",
-          pageBuilder: (context, state) => CustomTransitionPage(
-              key: state.pageKey,
-              child: const NotificationPage(),
-              transitionsBuilder: fadeTransitionBuilder),
-        ),
+
         GoRoute(
           path: "/${RouteNames.splash.name}",
           name: RouteNames.splash.name,

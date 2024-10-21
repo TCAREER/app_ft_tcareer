@@ -35,8 +35,8 @@ class IndexPage extends ConsumerWidget {
         "label": "Tạo mới"
       },
       {
-        'icon': PhosphorIconsThin.messengerLogo,
-        'activeIcon': PhosphorIconsFill.messengerLogo,
+        'icon': PhosphorIconsThin.chatCircleText,
+        'activeIcon': PhosphorIconsFill.chatCircleText,
         'route': 'conversation',
         "label": "Tin nhắn"
       },
@@ -82,6 +82,7 @@ class IndexPage extends ConsumerWidget {
             // unselectedLabelStyle: TextStyle(fontSize: 10),
             // selectedLabelStyle: TextStyle(fontSize: 10),
             onTap: (index) {
+              if (index == 5) return;
               if (index != 2) {
                 if (index == shell.currentIndex) {
                   final GoRouter router = GoRouter.of(context);

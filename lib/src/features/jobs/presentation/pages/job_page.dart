@@ -1,25 +1,27 @@
 import 'package:app_tcareer/src/features/jobs/data/models/jobs.dart';
 import 'package:app_tcareer/src/features/jobs/presentation/widgets/job_item.dart';
+import 'package:app_tcareer/src/widgets/notification_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class JobPage extends StatelessWidget {
+class JobPage extends ConsumerWidget {
   const JobPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: CustomScrollView(
-          slivers: [sliverAppBar(), recommendJobs()],
+          slivers: [sliverAppBar(ref, context), recommendJobs()],
         ),
       ),
     );
   }
 
-  Widget sliverAppBar() {
+  Widget sliverAppBar(WidgetRef ref, BuildContext context) {
     // final postingController = ref.watch(postingControllerProvider);
     return SliverAppBar(
       automaticallyImplyLeading: false,
@@ -45,15 +47,10 @@ class JobPage extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: GestureDetector(
-            child: const PhosphorIcon(
-              PhosphorIconsRegular.chatCenteredDots,
-              color: Colors.black,
-              size: 20,
-            ),
-          ),
-        ),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: GestureDetector(
+                onTap: () => context.pushNamed("notifications"),
+                child: notificationIcon(ref))),
       ],
       // bottom: PreferredSize(
       //   preferredSize: postingController.isLoading == true

@@ -56,7 +56,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
       floating: true,
       pinned: false, // AppBar không cố định
       title: const Text(
-        "Đoạn chat",
+        "Tin nhắn",
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
       ),
       // leadingWidth: 120,

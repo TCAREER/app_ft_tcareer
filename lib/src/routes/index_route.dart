@@ -69,6 +69,16 @@ class Index {
                 child: const ProfilePage(),
                 transitionsBuilder: fadeTransitionBuilder),
           ),
-        ])
+        ]),
+        StatefulShellBranch(routes: [
+          GoRoute(
+            path: "/notificaions",
+            name: "notifications",
+            pageBuilder: (context, state) => CustomTransitionPage(
+                key: state.pageKey,
+                child: const NotificationPage(),
+                transitionsBuilder: fadeTransitionBuilder),
+          ),
+        ]),
       ]);
 }

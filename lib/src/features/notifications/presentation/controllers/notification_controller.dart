@@ -46,15 +46,14 @@ class NotificationController extends ChangeNotifier {
     print(">>>>>>>>>>>>postId: $postId");
     readNotification(notificationId);
     if (postId != null) {
-      context.pushReplacementNamed("detail",
-          pathParameters: {"id": postId.toString()});
+      context.pushNamed("detail", pathParameters: {"id": postId.toString()});
     }
     if (relatedUserId != null) {
-      context.pushReplacementNamed('profile',
+      context.pushNamed('profile',
           queryParameters: {"userId": relatedUserId.toString()});
     }
     if (type?.contains("COMMENT") == true && postId != null) {
-      context.pushReplacementNamed("detail",
+      context.pushNamed("detail",
           pathParameters: {"id": postId.toString()},
           queryParameters: {"notificationType": type});
     }
