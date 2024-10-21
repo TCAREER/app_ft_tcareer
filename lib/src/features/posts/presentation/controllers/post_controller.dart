@@ -61,24 +61,6 @@ class PostController extends ChangeNotifier {
 
   Map<String, int> activeIndexMap = {};
 
-  void setActiveIndex({required String postId, required int index}) {
-    activeIndexMap[postId] = index;
-
-    notifyListeners();
-  }
-
-  int getActiveIndex(String postId) {
-    return activeIndexMap[postId] ?? 0;
-  }
-
-  PageController pageController = PageController();
-  CarouselController carouselController = CarouselController();
-
-  void animatePostImage(String postId) {
-    carouselController.animateToPage(activeIndexMap[postId] ?? 0);
-    notifyListeners();
-  }
-
   int pendingLikeCount = 0;
   bool isLikeProcess = false;
   Future<void> postLikePost({

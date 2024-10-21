@@ -1,5 +1,4 @@
 import 'package:app_tcareer/src/features/posts/data/models/photo_view_data.dart';
-import 'package:app_tcareer/src/features/posts/presentation/pages/detail/photo_view_gallery_page.dart';
 import 'package:app_tcareer/src/features/posts/presentation/pages/detail/post_detail_page.dart';
 import 'package:app_tcareer/src/features/posts/presentation/pages/search_page.dart';
 import 'package:app_tcareer/src/features/posts/presentation/pages/search_result_page.dart';
@@ -24,15 +23,6 @@ class HomeRoute {
               notificationType: notificationType,
             ),
             transitionsBuilder: fadeTransitionBuilder);
-      },
-    ),
-    GoRoute(
-      path: "photoView",
-      name: "photoView",
-      builder: (context, state) {
-        final postId = state.uri.queryParameters['postId'].toString();
-        final data = state.extra as PhotoViewData;
-        return PhotoViewGalleryPage(data.images, postId, data.onPageChanged);
       },
     ),
     GoRoute(

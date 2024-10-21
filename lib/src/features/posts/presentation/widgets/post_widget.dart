@@ -19,7 +19,6 @@ import 'package:readmore/readmore.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import 'engagement_widget.dart';
-import 'post_image_widget.dart';
 
 Widget postWidget({
   required void Function() onLike,

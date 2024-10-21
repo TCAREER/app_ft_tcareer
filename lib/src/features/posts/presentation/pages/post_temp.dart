@@ -4,7 +4,6 @@ import 'package:app_tcareer/src/features/posts/data/models/post_edit.dart';
 import 'package:app_tcareer/src/features/posts/data/models/posts_response.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/engagement_widget.dart';
-import 'package:app_tcareer/src/features/posts/presentation/widgets/post_image_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/posting_image_wiget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/posting_video_player_widget.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/video_player_widget.dart';
@@ -50,7 +49,7 @@ Widget postTemp({
     child: ClipRRect(
       borderRadius: BorderRadius.circular(12),
       child: ColorFiltered(
-        colorFilter: ColorFilter.mode(Colors.black54, BlendMode.darken),
+        colorFilter: const ColorFilter.mode(Colors.black54, BlendMode.darken),
         child: Container(
           padding: !isShared ? const EdgeInsets.symmetric(vertical: 15) : null,
           // margin: !isShared ? const EdgeInsets.symmetric(horizontal: 10) : null,
@@ -110,7 +109,7 @@ Widget postTemp({
                             ),
                             if (subName != null) ...[
                               Text(subName,
-                                  style: TextStyle(color: Colors.grey)),
+                                  style: const TextStyle(color: Colors.grey)),
                             ],
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -137,12 +136,12 @@ Widget postTemp({
                           child: Visibility(
                             replacement: Visibility(
                               visible: !isShared,
-                              child: Row(
+                              child: const Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   InkWell(
                                     onTap: null,
-                                    child: const PhosphorIcon(
+                                    child: PhosphorIcon(
                                       PhosphorIconsLight.x,
                                       color: Colors.grey,
                                     ),

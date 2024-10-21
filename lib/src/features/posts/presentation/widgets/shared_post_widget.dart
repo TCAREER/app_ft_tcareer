@@ -16,7 +16,6 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:readmore/readmore.dart';
 import '../../data/models/shared_post.dart';
 import 'engagement_widget.dart';
-import 'post_image_widget.dart';
 
 Widget sharedPostWidget(
     {required void Function() onLike,
