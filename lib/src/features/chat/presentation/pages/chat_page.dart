@@ -8,6 +8,7 @@ import 'package:app_tcareer/src/features/chat/presentation/widgets/chat_input.da
 import 'package:app_tcareer/src/features/chat/presentation/widgets/message_box.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
+import 'package:app_tcareer/src/features/user/usercases/connection_use_case.dart';
 import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +58,12 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   //   //   ref.read(chatControllerProvider).scrollToBottom();
   //   // });
   // }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   @override
   Widget build(

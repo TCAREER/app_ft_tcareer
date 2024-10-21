@@ -24,15 +24,33 @@ class ConnectionUseCase {
     }
   }
 
-  void setUserOnlineStatus() async {
+  Future<void> setUserOnlineStatus() async {
     final userUtil = ref.watch(userUtilsProvider);
     String userId = await userUtil.getUserId();
     Map<String, dynamic> data = {
       "status": "online",
+      "inMessage": false,
       "updatedAt": DateTime.now().toIso8601String(),
     };
     userRepository
         .addData(path: "users/$userId", data: data, dataUpdateDisconnect: {
+      "inMessage": false,
+      "status": "offline",
+      "updatedAt": DateTime.now().toIso8601String(),
+    });
+  }
+
+  Future<void> setUserOnlineStatusInMessage() async {
+    final userUtil = ref.watch(userUtilsProvider);
+    String userId = await userUtil.getUserId();
+    Map<String, dynamic> data = {
+      "status": "online",
+      "inMessage": true,
+      "updatedAt": DateTime.now().toIso8601String(),
+    };
+    userRepository
+        .addData(path: "users/$userId", data: data, dataUpdateDisconnect: {
+      "inMessage": true,
       "status": "offline",
       "updatedAt": DateTime.now().toIso8601String(),
     });
@@ -42,10 +60,20 @@ class ConnectionUseCase {
     final userUtil = ref.watch(userUtilsProvider);
     String userId = await userUtil.getUserId();
     Map<String, dynamic> data = {
+      "inMessage": false,
       "status": "offline",
       "updatedAt": DateTime.now().toIso8601String(),
     };
     userRepository.addData(path: "users/$userId", data: data);
+  }
+
+  Future<bool> getInMessage() async {
+    final userUtil = ref.watch(userUtilsProvider);
+    String userId = await userUtil.getUserId();
+    final data = await userRepository.getData("users/$userId");
+    print(">>>>>>>>>>>>dataMessage: $data");
+    bool inMessage = data?['inMessage'] as bool;
+    return inMessage;
   }
 }
 

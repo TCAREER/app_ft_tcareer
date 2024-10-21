@@ -28,6 +28,7 @@ class UserUtils {
     sharedRef.remove(AppConstants.authToken);
     sharedRef.remove(AppConstants.refreshToken);
     sharedRef.remove("userId");
+    sharedRef.remove("inMessage");
   }
 
   Future<bool> isAuthenticated() async {

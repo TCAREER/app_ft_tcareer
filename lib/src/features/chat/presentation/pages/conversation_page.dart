@@ -1,5 +1,6 @@
 import 'package:app_tcareer/src/features/chat/presentation/controllers/chat_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/empty_widget.dart';
+import 'package:app_tcareer/src/features/user/usercases/connection_use_case.dart';
 import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:app_tcareer/src/utils/user_utils.dart';
 import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
@@ -23,6 +24,12 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     Future.microtask(() async {
       ref.read(chatControllerProvider).getAllConversation();
     });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override

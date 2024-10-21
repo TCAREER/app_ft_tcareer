@@ -3,6 +3,7 @@ import 'package:app_tcareer/src/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'src/configs/app_colors.dart';
 import 'package:universal_io/io.dart';

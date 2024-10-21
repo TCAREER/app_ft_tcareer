@@ -24,8 +24,6 @@ Widget messageBox({
   required WidgetRef ref,
   required List<String> media,
 }) {
-  print(">>>>>>>>media: $media");
-
   return Row(
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisAlignment: !isMe ? MainAxisAlignment.start : MainAxisAlignment.end,

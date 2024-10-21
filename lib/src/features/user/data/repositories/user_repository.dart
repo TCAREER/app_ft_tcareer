@@ -43,6 +43,11 @@ class UserRepository {
     final database = ref.watch(firebaseDatabaseServiceProvider);
     return await database.monitorConnection(onData);
   }
+
+  Future<Map<dynamic, dynamic>?> getData(String path) async {
+    final database = ref.watch(firebaseDatabaseServiceProvider);
+    return await database.getData(path);
+  }
 }
 
 final userRepositoryProvider = Provider((ref) => UserRepository(ref));

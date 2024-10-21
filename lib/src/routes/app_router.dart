@@ -18,6 +18,7 @@ import 'package:app_tcareer/src/features/posts/presentation/pages/search_page.da
 import 'package:app_tcareer/src/features/splash/intro_page.dart';
 import 'package:app_tcareer/src/features/splash/splash_page.dart';
 import 'package:app_tcareer/src/features/user/presentation/pages/another_profile_page.dart';
+import 'package:app_tcareer/src/features/user/usercases/connection_use_case.dart';
 import 'package:app_tcareer/src/routes/index_route.dart';
 import 'package:app_tcareer/src/routes/transition_builder.dart';
 import 'package:app_tcareer/src/services/apis/api_service_provider.dart';
@@ -40,27 +41,21 @@ enum RouteNames {
   photoManager,
 }
 
-// FutureProvider lưu trữ trạng thái xác thực bất đồng bộ
-class AuthStateNotifier extends StateNotifier<bool> {
-  final UserUtils
-      userUtils; // Sử dụng UserUtils để kiểm tra trạng thái xác thực
+class InMessageProvider extends StateNotifier<bool> {
+  InMessageProvider() : super(false);
 
-  AuthStateNotifier(this.userUtils) : super(false);
-
-  // Hàm để cập nhật trạng thái xác thực
-  Future<void> checkAuthentication() async {
-    final isAuthenticated = await userUtils.isAuthenticated();
-    print(">>>>>>>>>isAuthenticated: $isAuthenticated");
-    state = isAuthenticated; // Cập nhật trạng thái
+  void setInMessage(bool value) {
+    state = value;
   }
 }
 
-final authStateProvider = StateNotifierProvider<AuthStateNotifier, bool>((ref) {
-  final userUtils = ref.watch(userUtilsProvider);
-  return AuthStateNotifier(userUtils);
+// Khai báo provider
+final inMessageProvider = StateNotifierProvider<InMessageProvider, bool>((ref) {
+  return InMessageProvider();
 });
 
 class AppRouter {
+  static bool inMessage = false;
   static GoRouter router(
       WidgetRef ref, GlobalKey<NavigatorState> navigatorKey) {
     return GoRouter(
@@ -68,12 +63,31 @@ class AppRouter {
       debugLogDiagnostics: true,
       initialLocation: "/home",
       redirect: (context, state) async {
+        final userUtils = ref.watch(userUtilsProvider);
+        final isAuthenticated = await userUtils.isAuthenticated();
+        bool isChatRoute = state.fullPath?.contains("conversation") == true ||
+            state.fullPath?.startsWith("chat") == true;
+        print(">>>>>>>>>inMessage: $inMessage");
+        if (isAuthenticated && !inMessage) {
+          print(">>>>>>>>fullPath: ${state.matchedLocation}");
+          print(">>>>>>>>>>>1");
+          if (isChatRoute) {
+            print(">>>>>>>>>>>2");
+            await ref
+                .read(connectionUseCaseProvider)
+                .setUserOnlineStatusInMessage();
+            inMessage = true;
+          }
+        } else if (isAuthenticated && !isChatRoute) {
+          print(">>>>>>>>>>>3");
+          await ref.read(connectionUseCaseProvider).setUserOnlineStatus();
+          inMessage = false;
+        }
         // Lấy trạng thái xác thực và refresh token
         // ref.read(authStateProvider.notifier).checkAuthentication();
         // final isAuthenticated = ref.watch(authStateProvider);
         final refreshTokenProvider = ref.watch(refreshTokenStateProvider);
-        final userUtils = ref.watch(userUtilsProvider);
-        final isAuthenticated = await userUtils.isAuthenticated();
+
         final Map<String, String> routeRedirectMap = {
           '/register': '/register',
           '/forgotPassword': '/forgotPassword',
@@ -250,6 +264,7 @@ class AppRouter {
             }),
       ],
       refreshListenable: GoRouterRefreshStream(),
+      // observers: [CustomNavigatorObserver(ref)]
     );
   }
 }
@@ -260,3 +275,39 @@ class GoRouterRefreshStream extends ChangeNotifier {
     super.notifyListeners();
   }
 }
+
+// class CustomNavigatorObserver extends NavigatorObserver {
+//   final WidgetRef ref;
+//
+//   CustomNavigatorObserver(this.ref);
+//
+//   @override
+//   void didPop(Route route, Route? previousRoute) {
+//     if (route.settings.name == 'chat' ||
+//         route.settings.name == 'conversation') {
+//       _handleUserStatusUpdate();
+//     }
+//     super.didPop(route, previousRoute);
+//   }
+//
+//   @override
+//   void didPush(Route route, Route? previousRoute) {
+//     if (previousRoute?.settings.name == 'chat' ||
+//         previousRoute?.settings.name == 'conversation') {
+//       _handleUserStatusUpdate();
+//     }
+//     super.didPush(route, previousRoute);
+//   }
+//
+//   void _handleUserStatusUpdate() {
+//     // Sử dụng Future.microtask để chạy bất đồng bộ mà không gây ảnh hưởng tới các phương thức chính
+//     Future.microtask(() async {
+//       final userUtil = ref.read(userUtilsProvider);
+//       final isAuthenticated = await userUtil.isAuthenticated();
+//       print(">>>>>>>>>>>>>isAuthenticated: $isAuthenticated");
+//       if (isAuthenticated) {
+//         ref.read(connectionUseCaseProvider).setUserOnlineStatus();
+//       }
+//     });
+//   }
+// }
