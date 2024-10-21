@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FirebaseMessagingService {
   final NotificationService notificationService;
@@ -88,6 +89,7 @@ class FirebaseMessagingService {
     final postId = data["post_id"]?.toString();
     final userId = data['related_user_id']?.toString();
     final type = data['type']?.toString();
+    final conversationId = data['conversation_id']?.toString();
 
     if (context != null) {
       if (postId != null &&
@@ -103,6 +105,13 @@ class FirebaseMessagingService {
           "detail",
           pathParameters: {"id": postId},
         );
+      } else if (type?.contains("CHAT") == true &&
+          userId != null &&
+          userId.isNotEmpty) {
+        final userUtil = ref.watch(userUtilsProvider);
+        String clientId = await userUtil.getUserId();
+        context.pushNamed("chat",
+            pathParameters: {"userId": userId ?? "", "clientId": clientId});
       } else if (userId != null && userId.isNotEmpty) {
         context.pushNamed(
           'profile',
@@ -145,6 +154,13 @@ Future<void> backgroundHandler(RemoteMessage message) async {
         "detail",
         pathParameters: {"id": postId},
       );
+    } else if (type?.contains("CHAT") == true &&
+        userId != null &&
+        userId.isNotEmpty) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String clientId = prefs.getString("userId").toString();
+      context.pushNamed("chat",
+          pathParameters: {"userId": userId ?? "", "clientId": clientId});
     } else if (userId != null && userId.isNotEmpty) {
       context.pushNamed(
         'profile',

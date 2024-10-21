@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../app.dart';
 
@@ -70,10 +71,10 @@ class NotificationService {
   }
 
   Future<void> onActionReceivedMethod(ReceivedAction receivedAction) async {
-    directToPage(receivedAction);
+    await directToPage(receivedAction);
   }
 
-  void directToPage(ReceivedAction receivedAction) {
+  Future<void> directToPage(ReceivedAction receivedAction) async {
     final payload = receivedAction.payload ?? {};
     print(">>>>>>>>payload: $payload");
     final postId = payload["post_id"]?.toString();
@@ -94,6 +95,13 @@ class NotificationService {
         "detail",
         pathParameters: {"id": postId},
       );
+    } else if (type?.contains("CHAT") == true &&
+        userId != null &&
+        userId.isNotEmpty) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String clientId = prefs.getString("userId").toString();
+      navigatorKey.currentContext?.pushNamed("chat",
+          pathParameters: {"userId": userId ?? "", "clientId": clientId});
     } else if (userId != null && userId.isNotEmpty) {
       print(">>>>>>>>>>>2");
       navigatorKey.currentContext?.pushNamed(
