@@ -4,6 +4,7 @@ import 'package:app_tcareer/src/features/user/usercases/connection_use_case.dart
 import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:app_tcareer/src/utils/user_utils.dart';
 import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -42,7 +43,14 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: CustomScrollView(
-          slivers: [sliverAppBar(context), sliverChat()],
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            CupertinoSliverRefreshControl(
+              onRefresh: () async => await controller.getAllConversation(),
+            ),
+            sliverAppBar(context),
+            sliverChat()
+          ],
         ),
       ),
     );

@@ -131,12 +131,12 @@ class ChatController extends ChangeNotifier {
           .any((existingMessage) => existingMessage.id == newMessage.id)) {
         messages.removeWhere((message) => message.type == "temp");
         messages.insert(0, newMessage);
+        markMessageAsRead(
+            senderId: messageData['sender_id'].toString(),
+            userId: user?.userId.toString() ?? "",
+            messageId: messageData['message_id']);
         notifyListeners();
       }
-      markMessageAsRead(
-          senderId: messageData['sender_id'].toString(),
-          userId: user?.userId.toString() ?? "",
-          messageId: messageData['message_id']);
     }
   }
 
@@ -158,15 +158,18 @@ class ChatController extends ChangeNotifier {
     final userUtil = ref.watch(userUtilsProvider);
     String clientId = await userUtil.getUserId();
 
-    if (clientId != senderId) {
+    if (clientId != senderId && messages.first.status == "sent") {
       String data = jsonEncode(
           {"topic": "statusMessage", "id": messageId, "status": "read"});
-      await chatUseCase.publishMessage(
-          conversationId: conversationData?.conversation?.id.toString() ?? "",
-          data: data);
-      chatUseCase.postMarkReadMessage(MarkReadMessageRequest(
+      await chatUseCase.postMarkReadMessage(MarkReadMessageRequest(
         conversationId: conversationData?.conversation?.id,
       ));
+      await chatUseCase
+          .publishMessage(
+              conversationId:
+                  conversationData?.conversation?.id.toString() ?? "",
+              data: data)
+          .then((val) async {});
     }
   }
 

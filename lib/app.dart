@@ -1,5 +1,6 @@
 import 'package:app_tcareer/src/features/user/usercases/connection_use_case.dart';
 import 'package:app_tcareer/src/routes/app_router.dart';
+import 'package:app_tcareer/src/utils/user_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,7 +9,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'src/configs/app_colors.dart';
 import 'package:universal_io/io.dart';
 
-class App extends StatelessWidget {
+class App extends ConsumerStatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
   const App({
     required this.navigatorKey,
@@ -18,6 +19,35 @@ class App extends StatelessWidget {
         );
 
   @override
+  ConsumerState<App> createState() => _AppState();
+}
+
+class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // TODO: implement didChangeAppLifecycleState
+    super.didChangeAppLifecycleState(state);
+    Future.microtask(() async {
+      final appLifecycleNotifier = ref.read(appLifecycleProvider.notifier);
+      await appLifecycleNotifier.updateState(state, ref, context);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
@@ -25,7 +55,7 @@ class App extends StatelessWidget {
           final connectionUseCase = ref.watch(connectionUseCaseProvider);
           await connectionUseCase.monitorConnection();
         });
-        final router = AppRouter.router(ref, navigatorKey);
+        final router = AppRouter.router(ref, widget.navigatorKey);
 
         return ScreenUtilInit(
             designSize: const Size(360, 690),
@@ -112,3 +142,40 @@ class UnsupportedPlatformPage extends StatelessWidget {
     );
   }
 }
+
+class AppLifecycleNotifier extends StateNotifier<AppLifecycleState> {
+  AppLifecycleNotifier() : super(AppLifecycleState.resumed);
+
+  Future<void> updateState(
+      AppLifecycleState state, WidgetRef ref, BuildContext context) async {
+    this.state = state; // Cập nhật trạng thái
+    final connectionUseCase = ref.read(connectionUseCaseProvider);
+    final userUtil = ref.watch(userUtilsProvider);
+    bool isAuthenticated = await userUtil.isAuthenticated();
+    if (!isAuthenticated) return;
+    if (state == AppLifecycleState.paused) {
+      // Thực hiện các hành động cần thiết khi app ở nền
+      // Ví dụ: Gọi một provider khác
+      if (isAuthenticated) {
+        await Future.delayed(Duration(minutes: 1));
+        await connectionUseCase.setUserOfflineStatus();
+      }
+    } else if (state == AppLifecycleState.resumed) {
+      final state = GoRouterState.of(context);
+      bool isChatRoute = state.fullPath?.contains("conversation") == true ||
+          state.fullPath?.contains("chat") == true;
+      print(">>>>>>>>>>isChatRoute: $isChatRoute");
+      if (isChatRoute) {
+        await connectionUseCase.setUserOnlineStatusInMessage();
+      } else {
+        await connectionUseCase.setUserOnlineStatus();
+      }
+    }
+  }
+}
+
+// Tạo provider cho AppLifecycleNotifier
+final appLifecycleProvider =
+    StateNotifierProvider<AppLifecycleNotifier, AppLifecycleState>((ref) {
+  return AppLifecycleNotifier();
+});
