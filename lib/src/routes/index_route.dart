@@ -1,3 +1,4 @@
+import 'package:app_tcareer/src/features/chat/presentation/pages/conversation_page.dart';
 import 'package:app_tcareer/src/features/index/index_page.dart';
 import 'package:app_tcareer/src/features/jobs/presentation/pages/job_page.dart';
 import 'package:app_tcareer/src/features/notifications/presentation/pages/notification_page.dart';
@@ -50,13 +51,14 @@ class Index {
         ]),
         StatefulShellBranch(routes: [
           GoRoute(
-            path: "/${RouteNames.notifications.name}",
-            name: RouteNames.notifications.name,
-            pageBuilder: (context, state) => CustomTransitionPage(
-                key: state.pageKey,
-                child: const NotificationPage(),
-                transitionsBuilder: fadeTransitionBuilder),
-          ),
+              path: "/conversation",
+              name: "conversation",
+              pageBuilder: (context, state) {
+                return const CustomTransitionPage(
+                    child: ConversationPage(),
+                    transitionsBuilder: fadeTransitionBuilder);
+              },
+              routes: []),
         ]),
         StatefulShellBranch(routes: [
           GoRoute(

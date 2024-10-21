@@ -29,6 +29,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/notifications/presentation/pages/notification_page.dart';
+import '../features/posts/presentation/pages/detail/post_detail_page.dart';
+
 enum RouteNames {
   splash,
   intro,
@@ -109,6 +112,14 @@ class AppRouter {
       },
       routes: [
         Index.router,
+        GoRoute(
+          path: "/notificaions",
+          name: "notifications",
+          pageBuilder: (context, state) => CustomTransitionPage(
+              key: state.pageKey,
+              child: const NotificationPage(),
+              transitionsBuilder: fadeTransitionBuilder),
+        ),
         GoRoute(
           path: "/${RouteNames.splash.name}",
           name: RouteNames.splash.name,
@@ -225,30 +236,19 @@ class AppRouter {
               ),
             ]),
         GoRoute(
-            path: "/conversation",
-            name: "conversation",
+            path: "/chat/:userId/:clientId",
+            name: "chat",
             pageBuilder: (context, state) {
-              return const CustomTransitionPage(
-                  child: ConversationPage(),
+              String userId = state.pathParameters['userId'].toString();
+              String clientId = state.pathParameters['clientId'].toString();
+              return CustomTransitionPage(
+                  child: ChatPage(
+                    userId: userId,
+                    clientId: clientId,
+                  ),
                   transitionsBuilder: fadeTransitionBuilder);
             },
-            routes: [
-              GoRoute(
-                  path: "chat/:userId/:clientId",
-                  name: "chat",
-                  pageBuilder: (context, state) {
-                    String userId = state.pathParameters['userId'].toString();
-                    String clientId =
-                        state.pathParameters['clientId'].toString();
-                    return CustomTransitionPage(
-                        child: ChatPage(
-                          userId: userId,
-                          clientId: clientId,
-                        ),
-                        transitionsBuilder: fadeTransitionBuilder);
-                  },
-                  routes: [])
-            ]),
+            routes: []),
         GoRoute(
             path: "/appPhoto",
             name: "appPhoto",
@@ -262,6 +262,23 @@ class AppRouter {
                 transitionsBuilder: fadeTransitionBuilder,
               );
             }),
+        // GoRoute(
+        //   path: "/detail/:id",
+        //   name: "detail",
+        //   pageBuilder: (context, state) {
+        //     final postId = state.pathParameters["id"] ?? "";
+        //     final notificationType =
+        //         state.uri.queryParameters["notificationType"] ?? "";
+        //     print(">>>>>>>>>>>>>>>type0: ${notificationType}");
+        //     return CustomTransitionPage(
+        //         key: state.pageKey,
+        //         child: PostDetailPage(
+        //           postId,
+        //           notificationType: notificationType,
+        //         ),
+        //         transitionsBuilder: fadeTransitionBuilder);
+        //   },
+        // ),
       ],
       refreshListenable: GoRouterRefreshStream(),
       // observers: [CustomNavigatorObserver(ref)]

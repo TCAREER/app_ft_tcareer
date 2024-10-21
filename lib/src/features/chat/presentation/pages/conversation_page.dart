@@ -51,11 +51,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
   Widget sliverAppBar(BuildContext context) {
     // final postingController = ref.watch(postingControllerProvider);
     return SliverAppBar(
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back),
-        onPressed: () => context.goNamed("home"),
-      ),
-      centerTitle: true,
+      centerTitle: false,
       backgroundColor: Colors.white,
       floating: true,
       pinned: false, // AppBar không cố định
@@ -108,7 +104,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
               return ListTile(
                 onTap: () async {
                   String clientId = await userUtils.getUserId();
-                  context.goNamed("chat", pathParameters: {
+                  context.pushNamed("chat", pathParameters: {
                     "userId": conversation?.userId.toString() ?? "",
                     "clientId": clientId
                   });

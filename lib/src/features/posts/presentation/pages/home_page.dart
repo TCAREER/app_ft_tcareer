@@ -10,6 +10,7 @@ import 'package:app_tcareer/src/features/posts/presentation/widgets/shared_post_
 import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
 
 import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
+import 'package:app_tcareer/src/widgets/notification_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -186,17 +187,22 @@ class HomePage extends ConsumerWidget {
             ),
           ),
         ),
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(horizontal: 10),
+        //   child: GestureDetector(
+        //     onTap: () => context.pushNamed("conversation"),
+        //     child: const PhosphorIcon(
+        //       PhosphorIconsRegular.chatCenteredDots,
+        //       color: Colors.black,
+        //       size: 20,
+        //     ),
+        //   ),
+        // ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: GestureDetector(
-            onTap: () => context.pushNamed("conversation"),
-            child: const PhosphorIcon(
-              PhosphorIconsRegular.chatCenteredDots,
-              color: Colors.black,
-              size: 20,
-            ),
-          ),
-        ),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: GestureDetector(
+                onTap: () => context.pushNamed("notifications"),
+                child: notificationIcon(ref))),
       ],
       bottom: PreferredSize(
         preferredSize: postingController.isLoading == true

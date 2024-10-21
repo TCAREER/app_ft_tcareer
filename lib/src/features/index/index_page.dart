@@ -35,10 +35,10 @@ class IndexPage extends ConsumerWidget {
         "label": "Tạo mới"
       },
       {
-        'icon': PhosphorIconsThin.bell,
-        'activeIcon': PhosphorIconsThin.bell,
-        'route': 'notifications',
-        "label": "Thông báo"
+        'icon': PhosphorIconsThin.messengerLogo,
+        'activeIcon': PhosphorIconsFill.messengerLogo,
+        'route': 'conversation',
+        "label": "Tin nhắn"
       },
       {
         'icon': PhosphorIconsThin.userCircle,
@@ -102,14 +102,8 @@ class IndexPage extends ConsumerWidget {
               final item = entry.value;
               final index = entry.key;
               return BottomNavigationBarItem(
-                  icon: Visibility(
-                      visible: index != 3,
-                      replacement: notificationIcon(ref),
-                      child: PhosphorIcon(item['icon'])),
-                  activeIcon: Visibility(
-                      visible: index != 3,
-                      replacement: notificationIcon(ref, active: true),
-                      child: PhosphorIcon(item['activeIcon'])),
+                  icon: PhosphorIcon(item['icon']),
+                  activeIcon: PhosphorIcon(item['activeIcon']),
                   label: item['label']);
             }).toList()),
       ),
