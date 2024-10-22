@@ -1,4 +1,5 @@
 import 'package:app_tcareer/src/features/chat/presentation/controllers/chat_controller.dart';
+import 'package:app_tcareer/src/features/chat/presentation/controllers/conversation_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/widgets/empty_widget.dart';
 import 'package:app_tcareer/src/features/user/usercases/connection_use_case.dart';
 import 'package:app_tcareer/src/utils/app_utils.dart';
@@ -22,9 +23,9 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.microtask(() async {
-      ref.read(chatControllerProvider).getAllConversation();
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) async {
+    //   await ref.read(conversationControllerProvider).getAllConversation();
+    // });
   }
 
   @override
@@ -35,21 +36,21 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = ref.watch(chatControllerProvider);
-    return PopScope(
-      onPopInvoked: (didPop) {
-        context.goNamed("home");
-      },
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: CustomScrollView(
+    final controller = ref.watch(conversationControllerProvider);
+    Future.microtask(() async {
+      await controller.onInit();
+    });
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
             CupertinoSliverRefreshControl(
               onRefresh: () async => await controller.getAllConversation(),
             ),
             sliverAppBar(context),
-            sliverChat()
+            sliverChat(),
           ],
         ),
       ),
@@ -91,47 +92,53 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
   }
 
   Widget sliverChat() {
-    final controller = ref.watch(chatControllerProvider);
+    final controller = ref.watch(conversationControllerProvider);
     final userUtils = ref.watch(userUtilsProvider);
-    return SliverVisibility(
-        visible: controller.allConversation != null,
-        replacementSliver: SliverToBoxAdapter(
-          child: circularLoadingWidget(),
-        ),
-        sliver: SliverVisibility(
-          visible: controller.allConversation?.data?.isNotEmpty == true,
+    return SliverPadding(
+      padding: const EdgeInsets.only(bottom: 550),
+      sliver: SliverVisibility(
+          visible: controller.allConversation != null,
           replacementSliver: SliverToBoxAdapter(
-            child: emptyWidget("Bạn chưa có đoạn chat nào!"),
+            child: circularLoadingWidget(),
           ),
-          sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-            childCount: controller.allConversation?.data?.length,
-            (context, index) {
-              final conversation = controller.allConversation?.data?[index];
+          sliver: SliverVisibility(
+            visible: controller.conversations.isNotEmpty == true,
+            replacementSliver: SliverToBoxAdapter(
+              child: emptyWidget("Bạn chưa có đoạn chat nào!"),
+            ),
+            sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+              childCount: controller.conversations.length,
+              (context, index) {
+                final conversation = controller.conversations[index];
 
-              return ListTile(
-                onTap: () async {
-                  String clientId = await userUtils.getUserId();
-                  context.pushNamed("chat", pathParameters: {
-                    "userId": conversation?.userId.toString() ?? "",
-                    "clientId": clientId
-                  });
-                },
-                leading: CircleAvatar(
-                  radius: 25,
-                  backgroundImage: NetworkImage(conversation?.userAvatar ?? ""),
-                ),
-                title: Text(conversation?.userFullName ?? ""),
-                subtitle: Text(
-                  conversation?.latestMessage ?? "",
-                  style: TextStyle(fontSize: 12, color: Colors.black54),
-                ),
-                trailing: Text(
-                    AppUtils.formatTimeLastMessage(conversation?.leftAt ?? "")),
-              );
-            },
+                return ListTile(
+                  onTap: () async {
+                    String clientId = await userUtils.getUserId();
+                    context.goNamed("chat", pathParameters: {
+                      "userId": conversation.userId.toString() ?? "",
+                      "clientId": clientId
+                    });
+                    print(
+                        ">>>>>>>>>>>>conversations: ${controller.conversations}");
+                  },
+                  leading: CircleAvatar(
+                    radius: 25,
+                    backgroundImage:
+                        NetworkImage(conversation.userAvatar ?? ""),
+                  ),
+                  title: Text(conversation.userFullName ?? ""),
+                  subtitle: Text(
+                    conversation.latestMessage ?? "",
+                    style: const TextStyle(fontSize: 12, color: Colors.black54),
+                  ),
+                  trailing: Text(AppUtils.formatTimeLastMessage(
+                      conversation.leftAt ?? "")),
+                );
+              },
+            )),
           )),
-        ));
+    );
   }
 
   Widget sliverFriend() {
@@ -149,7 +156,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
                 margin: const EdgeInsets.symmetric(horizontal: 10),
                 child: Column(
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       radius: 30,
                       backgroundImage: NetworkImage(
                           "https://mighty.tools/mockmind-api/content/human/57.jpg"),

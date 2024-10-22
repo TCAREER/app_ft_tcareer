@@ -9,6 +9,7 @@ import 'package:app_tcareer/src/features/authentication/presentation/pages/regis
 import 'package:app_tcareer/src/features/authentication/presentation/pages/verify/verify_page.dart';
 import 'package:app_tcareer/src/features/chat/presentation/pages/chat_page.dart';
 import 'package:app_tcareer/src/features/chat/presentation/pages/conversation_page.dart';
+import 'package:app_tcareer/src/features/chat/usecases/chat_use_case.dart';
 import 'package:app_tcareer/src/features/posts/data/models/create_post_request.dart';
 import 'package:app_tcareer/src/features/posts/data/models/post_edit.dart';
 import 'package:app_tcareer/src/features/posts/data/models/shared_post.dart';
@@ -67,6 +68,7 @@ class AppRouter {
           }
         } else if (isAuthenticated && !isChatRoute) {
           await ref.read(connectionUseCaseProvider).setUserOnlineStatus();
+          await ref.read(chatUseCaseProvider).disconnect();
           inMessage = false;
         }
         // Lấy trạng thái xác thực và refresh token
@@ -211,20 +213,7 @@ class AppRouter {
                 },
               ),
             ]),
-        GoRoute(
-            path: "/chat/:userId/:clientId",
-            name: "chat",
-            pageBuilder: (context, state) {
-              String userId = state.pathParameters['userId'].toString();
-              String clientId = state.pathParameters['clientId'].toString();
-              return CustomTransitionPage(
-                  child: ChatPage(
-                    userId: userId,
-                    clientId: clientId,
-                  ),
-                  transitionsBuilder: fadeTransitionBuilder);
-            },
-            routes: []),
+
         GoRoute(
             path: "/appPhoto",
             name: "appPhoto",

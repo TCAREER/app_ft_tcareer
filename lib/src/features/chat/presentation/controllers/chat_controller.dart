@@ -55,7 +55,6 @@ class ChatController extends ChangeNotifier {
     //   cachedUserId = userId; // Lưu trữ userId
     messages.clear();
     conversationData = await chatUseCase.getConversation(userId);
-
     if (conversationData != null) {
       user = conversationData?.conversation;
       final newConversations = conversationData?.message?.data
@@ -75,10 +74,10 @@ class ChatController extends ChangeNotifier {
         conversationId: conversationData?.conversation?.id,
         content: contentController.text,
       );
-      await chatUseCase.sendMessage(body);
-
-      contentController.clear();
-      setHasContent("");
+      await chatUseCase.sendMessage(body).then((val) {
+        contentController.clear();
+        setHasContent("");
+      });
     }, context, (val) {});
   }
 
@@ -327,14 +326,12 @@ class ChatController extends ChangeNotifier {
   //           ));
   // }
 
-  AllConversation? allConversation;
-  Future<void> getAllConversation() async {
-    allConversation = await chatUseCase.getAllConversation();
-    notifyListeners();
-  }
-
   Future<void> onInit(
       {required String clientId, required String userId}) async {
+    // isShowMedia = false;
+    // isShowEmoji = false;
+    // contentController.clear();
+    // hasContent = false;
     await getConversation(userId);
     await initializeAbly();
     await enterPresence(clientId);

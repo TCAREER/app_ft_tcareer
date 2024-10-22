@@ -1,3 +1,4 @@
+import 'package:app_tcareer/src/features/chat/presentation/pages/chat_page.dart';
 import 'package:app_tcareer/src/features/chat/presentation/pages/conversation_page.dart';
 import 'package:app_tcareer/src/features/index/index_page.dart';
 import 'package:app_tcareer/src/features/jobs/presentation/pages/job_page.dart';
@@ -58,7 +59,23 @@ class Index {
                     child: ConversationPage(),
                     transitionsBuilder: fadeTransitionBuilder);
               },
-              routes: []),
+              routes: [
+                GoRoute(
+                    path: "chat/:userId/:clientId",
+                    name: "chat",
+                    pageBuilder: (context, state) {
+                      String userId = state.pathParameters['userId'].toString();
+                      String clientId =
+                          state.pathParameters['clientId'].toString();
+                      return CustomTransitionPage(
+                          child: ChatPage(
+                            userId: userId,
+                            clientId: clientId,
+                          ),
+                          transitionsBuilder: fadeTransitionBuilder);
+                    },
+                    routes: []),
+              ]),
         ]),
         StatefulShellBranch(routes: [
           GoRoute(

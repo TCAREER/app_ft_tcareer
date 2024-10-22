@@ -34,6 +34,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     // TODO: implement initState
     Future.microtask(() async {
       final controller = ref.read(chatControllerProvider);
+
       await controller.onInit(clientId: widget.clientId, userId: widget.userId);
       controller.listenPresence(widget.userId);
       controller.listenMessage();
@@ -69,67 +70,68 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   Widget build(
     BuildContext context,
   ) {
-    final controller = ref.watch(chatControllerProvider);
+    final controller = ref.read(chatControllerProvider);
 
     return PopScope(
-        onPopInvoked: (didPop) async {
-          if (didPop) {
-            await controller.leavePresence(widget.clientId);
-            await controller.disposeService();
-            controller.setHasContent("");
-            if (controller.isShowEmoji == true) {
-              controller.setIsShowEmoJi(context);
-            }
-            if (controller.isShowMedia == true) {
-              controller.setIsShowMedia(context);
-            }
-
-            controller.contentController.clear();
+      onPopInvoked: (didPop) async {
+        if (didPop) {
+          await controller.leavePresence(widget.clientId);
+          await controller.disposeService();
+          controller.setHasContent("");
+          if (controller.isShowEmoji == true) {
+            controller.setIsShowEmoJi(context);
           }
-        },
-        child: Scaffold(
-          extendBody: true,
+          if (controller.isShowMedia == true) {
+            controller.setIsShowMedia(context);
+          }
 
-          resizeToAvoidBottomInset: true,
-          backgroundColor: Colors.grey.shade100,
-          appBar: appBar(ref),
+          controller.contentController.clear();
+        }
+      },
+      child: Scaffold(
+        extendBody: true,
 
-          body: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  messages(),
-                ],
+        resizeToAvoidBottomInset: true,
+        backgroundColor: Colors.grey.shade100,
+        appBar: appBar(ref),
+
+        body: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                messages(),
+              ],
+            ),
+            if (controller.isShowMedia)
+              DraggableScrollableSheet(
+                controller: draggableScrollableController,
+                expand: true,
+                snap: true,
+                initialChildSize: 0.4,
+                maxChildSize: 1.0,
+                minChildSize: 0.4,
+                builder: (context, scrollController) {
+                  return Container(
+                    color: Colors.white,
+                    child: ChatMediaPage(
+                      scrollController: scrollController,
+                      draggableScrollableController:
+                          draggableScrollableController,
+                    ), // Gọi trang media của bạn
+                  );
+                },
               ),
-              if (controller.isShowMedia)
-                DraggableScrollableSheet(
-                  controller: draggableScrollableController,
-                  expand: true,
-                  snap: true,
-                  initialChildSize: 0.4,
-                  maxChildSize: 1.0,
-                  minChildSize: 0.4,
-                  builder: (context, scrollController) {
-                    return Container(
-                      color: Colors.white,
-                      child: ChatMediaPage(
-                        scrollController: scrollController,
-                        draggableScrollableController:
-                            draggableScrollableController,
-                      ), // Gọi trang media của bạn
-                    );
-                  },
-                ),
-              Visibility(
-                  visible: !controller.isShowMedia,
-                  child: chatBottomAppBar(ref, context)),
-            ],
-          ),
+            Visibility(
+                visible: !controller.isShowMedia,
+                child: chatBottomAppBar(ref, context)),
+          ],
+        ),
 
-          // bottomNavigationBar:
-        ));
+        // bottomNavigationBar:
+      ),
+    );
   }
 
   Widget messages() {
