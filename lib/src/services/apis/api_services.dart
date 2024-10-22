@@ -170,4 +170,7 @@ abstract class ApiServices {
 
   @POST('auth/user/phone')
   Future postCheckUserPhone({@Body() required CheckUserPhoneRequest body});
+
+  @GET('api/auth/friends/{userId}/view')
+  Future getFriends({@Path('userId') required String userId});
 }

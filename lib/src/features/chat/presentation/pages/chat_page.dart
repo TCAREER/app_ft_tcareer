@@ -10,6 +10,7 @@ import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart'
 import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
 import 'package:app_tcareer/src/features/user/usercases/connection_use_case.dart';
 import 'package:app_tcareer/src/utils/app_utils.dart';
+import 'package:app_tcareer/src/widgets/circular_loading_widget.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -190,7 +191,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
             stream: controller.listenUserStatus(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return const Text("");
+                return circularLoadingWidget();
               }
               final user = snapshot.data;
               return Row(
@@ -253,7 +254,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                             user?['status'] == "online"
                                 ? "Đang hoạt động"
                                 : AppUtils.formatTimeMessage(
-                                    user?['updatedAt']),
+                                    user?['updatedAt'] ?? "0"),
                             // AppUtils.formatTimeMessage(controller.user?.leftAt),
                             style: const TextStyle(
                                 color: Colors.black45, fontSize: 12),

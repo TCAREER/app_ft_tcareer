@@ -26,6 +26,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
 
     Future.microtask(() async {
       final controller = ref.read(conversationControllerProvider);
+      await controller.getFriends();
       await controller.getAllConversation();
     });
 
@@ -70,6 +71,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
               onRefresh: () async => await controller.getAllConversation(),
             ),
             sliverAppBar(context),
+            sliverFriend(),
             sliverChat(),
           ],
         ),
@@ -162,6 +164,8 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
   }
 
   Widget sliverFriend() {
+    final userUtils = ref.watch(userUtilsProvider);
+    final controller = ref.watch(conversationControllerProvider);
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
@@ -169,21 +173,30 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
           height: 100, // Đặt chiều cao cho hàng bạn bè
           child: ListView.builder(
             scrollDirection: Axis.horizontal, // Cuộn theo chiều ngang
-            itemCount: 5,
+            itemCount: controller.friends.length,
             itemBuilder: (context, index) {
-              return Container(
-                width: 70, // Đặt chiều rộng cho mỗi avatar
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
-                  children: [
-                    const CircleAvatar(
-                      radius: 30,
-                      backgroundImage: NetworkImage(
-                          "https://mighty.tools/mockmind-api/content/human/57.jpg"),
-                    ),
-                    const SizedBox(height: 5),
-                    Text("Bạn $index"), // Thay đổi tên người bạn
-                  ],
+              final friend = controller.friends[index];
+              return GestureDetector(
+                onTap: () async {
+                  String clientId = await userUtils.getUserId();
+                  context.goNamed("chat", pathParameters: {
+                    "userId": friend.id.toString() ?? "",
+                    "clientId": clientId
+                  });
+                },
+                child: Container(
+                  width: 70, // Đặt chiều rộng cho mỗi avatar
+                  margin: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundImage: NetworkImage(friend.avatar ?? ""),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(friend.lastName ?? ""), // Thay đổi tên người bạn
+                    ],
+                  ),
                 ),
               );
             },

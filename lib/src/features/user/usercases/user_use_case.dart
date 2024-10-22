@@ -11,6 +11,9 @@ class UserUseCase {
       await userRepository.getUserById(userId);
   Future getFollowers(String userId) async =>
       await userRepository.getFollower(userId);
+
+  Future getFriends(String userId) async =>
+      await userRepository.getFriends(userId);
 }
 
 final userUseCaseProvider =

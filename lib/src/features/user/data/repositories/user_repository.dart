@@ -23,6 +23,11 @@ class UserRepository {
     return await api.getFollowers(userId: userId);
   }
 
+  Future getFriends(String userId) async {
+    final api = ref.watch(apiServiceProvider);
+    return await api.getFriends(userId: userId);
+  }
+
   Future<void> addData(
       {required String path,
       required Map<String, dynamic> data,

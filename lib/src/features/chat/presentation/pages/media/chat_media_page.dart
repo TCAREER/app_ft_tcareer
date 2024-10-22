@@ -42,7 +42,7 @@ class _ChatMediaPageState extends ConsumerState<ChatMediaPage> {
       Future.microtask(() async {
         if (widget.draggableScrollableController.size == 1.0) {
           await controller.setIsMaxChildSizeMedia(true);
-        } else if (widget.draggableScrollableController.size == 0.4) {
+        } else {
           await controller.setIsMaxChildSizeMedia(false);
         }
       });
