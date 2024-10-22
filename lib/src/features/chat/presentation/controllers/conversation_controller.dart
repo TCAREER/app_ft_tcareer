@@ -1,5 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
-
+import 'package:ably_flutter/ably_flutter.dart' as ably;
 import 'package:app_tcareer/src/features/chat/data/models/all_conversation.dart';
 import 'package:app_tcareer/src/features/chat/data/models/user_conversation.dart';
 import 'package:app_tcareer/src/features/chat/presentation/controllers/chat_controller.dart';
@@ -58,7 +59,7 @@ class ConversationController extends ChangeNotifier {
         latestMessage: senderLastMessage,
         updatedAt: DateTime.now().toIso8601String(),
       );
-      print(">>>>>>>new: ${jsonEncode(newConversation)}");
+      // print(">>>>>>>new: ${jsonEncode(newConversation)}");
       conversations
           .removeWhere((conversation) => conversation.id == conversationId);
       conversations.insert(0, newConversation);
@@ -66,13 +67,44 @@ class ConversationController extends ChangeNotifier {
     }
     // notifyListeners();
     print(">>>>>>>>>>>>>conversations: ${jsonEncode(conversations.first)}");
-    //     .removeWhere((conversation) => conversation.id == conversationId);
+    // .removeWhere((conversation) => conversation.id == conversationId);
   }
 
   Future<void> onInit() async {
     if (allConversation?.data == null) {
       await getAllConversation();
     }
+  }
+
+  List<StreamSubscription<ably.Message>> messageSubscriptions = [];
+
+  StreamSubscription<ably.Message>? listenAllConversation() {
+    for (UserConversation conversation in conversations) {
+      final subscription = chatUseCase.listenAllMessage(
+        conversationId: conversation.id.toString(),
+        handleChannelMessage: (message) {
+          print(">>>>>>>>>>>>inConversation: $message");
+          final messageData = jsonDecode(message.data.toString());
+          updateLastMessage(
+              senderId: conversation.userId.toString(),
+              messageData: messageData);
+        },
+      );
+      messageSubscriptions.add(subscription);
+    }
+
+    return messageSubscriptions.isNotEmpty ? messageSubscriptions.first : null;
+  }
+
+  Future<void> initializeAbly() async => await chatUseCase.initialize();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    for (var subscription in messageSubscriptions) {
+      subscription.cancel(); // Huỷ tất cả subscription khi dispose
+    }
+    super.dispose();
   }
 }
 

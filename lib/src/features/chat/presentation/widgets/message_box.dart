@@ -51,10 +51,10 @@ Widget messageBox({
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 5),
                   padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
                   decoration: BoxDecoration(
                       color: isMe ? const Color(0xff3E66FB) : Colors.white,
-                      borderRadius: BorderRadius.circular(16)),
+                      borderRadius: BorderRadius.circular(10)),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,7 +66,7 @@ Widget messageBox({
                             fontWeight: FontWeight.w400),
                       ),
                       const SizedBox(
-                        height: 10,
+                        height: 2,
                       ),
                       Text(
                         AppUtils.formatCreatedAt(createdAt),

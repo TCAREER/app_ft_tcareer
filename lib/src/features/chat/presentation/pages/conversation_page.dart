@@ -23,6 +23,11 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    Future.microtask(() async {
+      final controller = ref.read(conversationControllerProvider);
+      await controller.initializeAbly();
+      controller.listenAllConversation();
+    });
     // WidgetsBinding.instance.addPostFrameCallback((_) async {
     //   await ref.read(conversationControllerProvider).getAllConversation();
     // });
