@@ -15,6 +15,7 @@ import 'package:app_tcareer/src/features/chat/presentation/controllers/chat_medi
 import 'package:app_tcareer/src/features/chat/presentation/controllers/conversation_controller.dart';
 import 'package:app_tcareer/src/features/chat/presentation/pages/media/chat_media_page.dart';
 import 'package:app_tcareer/src/features/chat/usecases/chat_use_case.dart';
+import 'package:app_tcareer/src/features/index/index_controller.dart';
 import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
 import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:app_tcareer/src/utils/snackbar_utils.dart';
@@ -172,17 +173,6 @@ class ChatController extends ChangeNotifier {
     }
   }
 
-  Future<void> leavePresence(String userId) async {
-    await chatUseCase.leavePresence(
-        conversationId: conversationData?.conversation?.id.toString() ?? "",
-        userId: userId);
-    await chatUseCase.putLeavedChat(LeaveChatRequest(
-        conversationId: conversationData?.conversation?.id,
-        time: DateTime.now().toIso8601String()));
-    // statusText = null;
-    // status = "off";
-  }
-
   Future<void> markReadMessage() async {
     await chatUseCase.postMarkReadMessage(MarkReadMessageRequest(
       conversationId: conversationData?.conversation?.id,
@@ -248,8 +238,14 @@ class ChatController extends ChangeNotifier {
     isShowEmoji = !isShowEmoji;
     if (isShowEmoji == true) {
       FocusScope.of(context).unfocus();
+      ref
+          .watch(indexControllerProvider.notifier)
+          .setBottomNavigationBarVisibility(false);
     } else {
       FocusScope.of(context).requestFocus();
+      ref
+          .watch(indexControllerProvider.notifier)
+          .setBottomNavigationBarVisibility(true);
     }
     notifyListeners();
   }
@@ -263,8 +259,14 @@ class ChatController extends ChangeNotifier {
     isShowMedia = !isShowMedia;
     if (isShowMedia == true) {
       FocusScope.of(context).unfocus();
+      ref
+          .watch(indexControllerProvider.notifier)
+          .setBottomNavigationBarVisibility(false);
     } else {
       FocusScope.of(context).requestFocus();
+      ref
+          .watch(indexControllerProvider.notifier)
+          .setBottomNavigationBarVisibility(true);
     }
     notifyListeners();
   }
