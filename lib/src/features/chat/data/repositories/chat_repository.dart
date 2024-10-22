@@ -8,7 +8,9 @@ import 'package:app_tcareer/src/features/chat/data/models/send_message_request.d
 import 'package:app_tcareer/src/services/ably/ably_service.dart';
 import 'package:app_tcareer/src/services/apis/api_service_provider.dart';
 import 'package:app_tcareer/src/services/drive/upload_file_service.dart';
+import 'package:app_tcareer/src/services/firebase/firebase_database_service.dart';
 import 'package:app_tcareer/src/services/firebase/firebase_storage_service.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ably_flutter/ably_flutter.dart' as ably;
 
@@ -106,6 +108,13 @@ class ChatRepository {
   Future<AllConversation> getAllConversation() async {
     final api = ref.watch(apiServiceProvider);
     return await api.getAllConversation();
+  }
+
+  Stream<DatabaseEvent> listenUserStatus(String userId) {
+    final database = ref.watch(firebaseDatabaseServiceProvider);
+    String path = "users/$userId";
+    final data = database.listenToData(path);
+    return data;
   }
 }
 

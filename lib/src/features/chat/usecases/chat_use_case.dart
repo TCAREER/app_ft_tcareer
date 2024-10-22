@@ -7,6 +7,7 @@ import 'package:app_tcareer/src/features/chat/data/models/leave_chat_request.dar
 import 'package:app_tcareer/src/features/chat/data/models/mark_read_message_request.dart';
 import 'package:app_tcareer/src/features/chat/data/models/send_message_request.dart';
 import 'package:app_tcareer/src/features/chat/data/repositories/chat_repository.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ChatUseCase {
@@ -73,6 +74,8 @@ class ChatUseCase {
 
   Future<AllConversation> getAllConversation() async =>
       await chatRepository.getAllConversation();
+  Stream<DatabaseEvent> listenUserStatus(String userId) =>
+      chatRepository.listenUserStatus(userId);
 }
 
 final chatUseCaseProvider = Provider<ChatUseCase>((ref) {

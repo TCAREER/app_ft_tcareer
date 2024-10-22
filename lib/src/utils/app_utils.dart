@@ -275,7 +275,7 @@ class AppUtils {
     final difference = now.difference(dateTime);
 
     if (difference.inSeconds < 60) {
-      return 'Đang hoạt động';
+      return 'Hoạt động vài giây trước';
     } else if (difference.inMinutes < 60) {
       return 'Hoạt động ${difference.inMinutes} phút trước';
     } else if (difference.inHours < 24) {

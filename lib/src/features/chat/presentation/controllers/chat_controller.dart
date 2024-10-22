@@ -64,7 +64,7 @@ class ChatController extends ChangeNotifier {
           .toList();
       messages.addAll(newConversations?.reversed ?? []);
       statusText = AppUtils.formatTimeMessage(user?.leftAt.toString() ?? "");
-      _startTimer(user?.leftAt.toString() ?? "");
+
       notifyListeners();
     }
   }
@@ -150,12 +150,6 @@ class ChatController extends ChangeNotifier {
     scrollController.jumpTo(position);
   }
 
-  Future<void> enterPresence(String userId) async {
-    await chatUseCase.enterPresence(
-        conversationId: conversationData?.conversation?.id.toString() ?? "",
-        userId: userId);
-  }
-
   Future<void> markMessageAsRead(
       {required String senderId,
       required String userId,
@@ -202,7 +196,6 @@ class ChatController extends ChangeNotifier {
         conversationId: conversationData?.conversation?.id.toString() ?? "",
         handleChannelPresence: (presenceMessage) {
           print(">>>>>>>>>data: ${presenceMessage.data}");
-          handleActivityState(presenceMessage, userId);
         });
     return presenceSubscription;
   }
@@ -210,24 +203,6 @@ class ChatController extends ChangeNotifier {
   String? statusText;
   String status = "off";
   Timer? _timer;
-
-  void handleActivityState(
-      ably.PresenceMessage presenceMessage, String userId) {
-    final presenceData = jsonDecode(presenceMessage.data.toString());
-    print(">>>>>>>>>>>presenceData: $presenceData");
-    if (presenceData['userId'] == userId) {
-      status = presenceData['status'];
-      print(">>>>>>status: ${presenceData['status']}");
-      if (status == "online") {
-        statusText = "Đang hoạt động";
-        _cancelTimer();
-      } else {
-        statusText = AppUtils.formatTimeMessage(presenceData['leavedAt']);
-        _startTimer(presenceData['leavedAt']);
-      }
-    }
-    notifyListeners();
-  }
 
   void _startTimer(String dateString) {
     _cancelTimer();
@@ -340,7 +315,7 @@ class ChatController extends ChangeNotifier {
     // hasContent = false;
     await getConversation(userId);
     await initializeAbly();
-    await enterPresence(clientId);
+
     if (messages.isNotEmpty && messages[0].status == "sent") {
       await markMessageAsRead(
           senderId: messages.first.senderId.toString(),
@@ -349,6 +324,19 @@ class ChatController extends ChangeNotifier {
     }
     // listenPresence(userId);
     // listenMessage();
+  }
+
+  Stream<Map<dynamic, dynamic>> listenUserStatus() {
+    String userId = user?.userId.toString() ?? "";
+    return chatUseCase.listenUserStatus(userId).map((event) {
+      if (event.snapshot.value != null) {
+        final userStatus = event.snapshot.value as Map<dynamic, dynamic>;
+        print(">>>>>>>>data");
+        return userStatus;
+      } else {
+        return {};
+      }
+    });
   }
 }
 
