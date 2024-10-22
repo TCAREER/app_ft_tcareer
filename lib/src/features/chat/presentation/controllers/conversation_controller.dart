@@ -13,12 +13,15 @@ class ConversationController extends ChangeNotifier {
   AllConversation? allConversation;
   List<UserConversation> conversations = [];
   Future<void> getAllConversation() async {
+    allConversation = null;
+
     allConversation = await chatUseCase.getAllConversation();
     if (allConversation?.data != null) {
       final newConversations = allConversation?.data
           ?.where((newPost) =>
               !conversations.any((cachedPost) => cachedPost.id == newPost.id))
           .toList();
+      conversations.clear();
       conversations.addAll(newConversations as Iterable<UserConversation>);
       notifyListeners();
     }
