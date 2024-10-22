@@ -67,6 +67,26 @@ class ConnectionUseCase {
     userRepository.addData(path: "users/$userId", data: data);
   }
 
+  Future<void> setUserOfflineStatusInBackground() async {
+    final userUtil = ref.watch(userUtilsProvider);
+    String userId = await userUtil.getUserId();
+    Map<String, dynamic> data = {
+      "inMessage": false,
+      "status": "online",
+      "updatedAt": DateTime.now().toIso8601String(),
+    };
+    userRepository.addData(path: "users/$userId", data: data);
+    await Future.delayed(const Duration(minutes: 1));
+    Map<String, dynamic> updatedData = {
+      "inMessage": false,
+      "status": "offline",
+      "updatedAt": DateTime.now().toIso8601String(),
+    };
+    userRepository.addData(path: "users/$userId", data: updatedData);
+
+    // await setUserOfflineStatus();
+  }
+
   Future<bool> getInMessage() async {
     final userUtil = ref.watch(userUtilsProvider);
     String userId = await userUtil.getUserId();

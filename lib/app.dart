@@ -22,31 +22,8 @@ class App extends ConsumerStatefulWidget {
   ConsumerState<App> createState() => _AppState();
 }
 
-class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
+class _AppState extends ConsumerState<App> {
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    // TODO: implement didChangeAppLifecycleState
-    super.didChangeAppLifecycleState(state);
-    Future.microtask(() async {
-      final appLifecycleNotifier = ref.read(appLifecycleProvider.notifier);
-      await appLifecycleNotifier.updateState(state, ref, context);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer(
@@ -118,64 +95,7 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
   }
 }
 
-class UnsupportedPlatformPage extends StatelessWidget {
-  const UnsupportedPlatformPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.warning, size: 50, color: Colors.red),
-            SizedBox(height: 20),
-            Text(
-              'Ứng dụng chỉ hỗ trợ trên thiết bị di động',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class AppLifecycleNotifier extends StateNotifier<AppLifecycleState> {
-  AppLifecycleNotifier() : super(AppLifecycleState.resumed);
-
-  Future<void> updateState(
-      AppLifecycleState state, WidgetRef ref, BuildContext context) async {
-    this.state = state; // Cập nhật trạng thái
-    final connectionUseCase = ref.read(connectionUseCaseProvider);
-    final userUtil = ref.watch(userUtilsProvider);
-    bool isAuthenticated = await userUtil.isAuthenticated();
-    if (!isAuthenticated) return;
-    if (state == AppLifecycleState.paused) {
-      // Thực hiện các hành động cần thiết khi app ở nền
-      // Ví dụ: Gọi một provider khác
-      if (isAuthenticated) {
-        await Future.delayed(Duration(minutes: 1));
-        await connectionUseCase.setUserOfflineStatus();
-      }
-    } else if (state == AppLifecycleState.resumed) {
-      final state = GoRouterState.of(context);
-      bool isChatRoute = state.fullPath?.contains("conversation") == true ||
-          state.fullPath?.contains("chat") == true;
-      print(">>>>>>>>>>isChatRoute: $isChatRoute");
-      if (isChatRoute) {
-        await connectionUseCase.setUserOnlineStatusInMessage();
-      } else {
-        await connectionUseCase.setUserOnlineStatus();
-      }
-    }
-  }
-}
-
-// Tạo provider cho AppLifecycleNotifier
-final appLifecycleProvider =
-    StateNotifierProvider<AppLifecycleNotifier, AppLifecycleState>((ref) {
-  return AppLifecycleNotifier();
-});
+// final goRouterProvider = Provider<GoRouter>((ref) {
+//   final navigatorKey = GlobalKey<NavigatorState>();
+//   return AppRouter.router(ref, navigatorKey); // Truyền ref vào AppRouter
+// });

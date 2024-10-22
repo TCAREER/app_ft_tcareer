@@ -44,19 +44,6 @@ enum RouteNames {
   photoManager,
 }
 
-class InMessageProvider extends StateNotifier<bool> {
-  InMessageProvider() : super(false);
-
-  void setInMessage(bool value) {
-    state = value;
-  }
-}
-
-// Khai báo provider
-final inMessageProvider = StateNotifierProvider<InMessageProvider, bool>((ref) {
-  return InMessageProvider();
-});
-
 class AppRouter {
   static bool inMessage = false;
   static GoRouter router(
