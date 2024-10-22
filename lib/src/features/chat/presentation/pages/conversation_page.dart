@@ -133,7 +133,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
                     style: const TextStyle(fontSize: 12, color: Colors.black54),
                   ),
                   trailing: Text(AppUtils.formatTimeLastMessage(
-                      conversation.leftAt ?? "")),
+                      conversation.updatedAt ?? "")),
                 );
               },
             )),

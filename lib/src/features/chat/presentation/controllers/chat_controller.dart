@@ -12,6 +12,7 @@ import 'package:app_tcareer/src/features/chat/data/models/send_message_request.d
 import 'package:app_tcareer/src/features/chat/data/models/user.dart';
 import 'package:app_tcareer/src/features/chat/data/models/user_conversation.dart';
 import 'package:app_tcareer/src/features/chat/presentation/controllers/chat_media_controller.dart';
+import 'package:app_tcareer/src/features/chat/presentation/controllers/conversation_controller.dart';
 import 'package:app_tcareer/src/features/chat/presentation/pages/media/chat_media_page.dart';
 import 'package:app_tcareer/src/features/chat/usecases/chat_use_case.dart';
 import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
@@ -123,17 +124,22 @@ class ChatController extends ChangeNotifier {
         createdAt:
             messageData['created_at'], // sửa 'createdAt' thành 'created_at'
       );
-
+      final conversationController = ref.read(conversationControllerProvider);
+      conversationController.updateLastMessage(
+          senderId: messageData['sender_id'].toString(),
+          messageData: messageData);
       notifyListeners();
       // Kiểm tra xem message có tồn tại trong messages hay không
       if (!messages
           .any((existingMessage) => existingMessage.id == newMessage.id)) {
         messages.removeWhere((message) => message.type == "temp");
         messages.insert(0, newMessage);
+
         markMessageAsRead(
             senderId: messageData['sender_id'].toString(),
             userId: user?.userId.toString() ?? "",
             messageId: messageData['message_id']);
+
         notifyListeners();
       }
     }

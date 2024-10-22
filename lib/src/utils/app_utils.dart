@@ -247,8 +247,9 @@ class AppUtils {
 
     final now = DateTime.now();
     final difference = now.difference(dateTime);
-
-    if (difference.inMinutes < 60) {
+    if (difference.inSeconds < 60) {
+      return 'Vừa xong';
+    } else if (difference.inMinutes < 60) {
       return '${difference.inMinutes} phút';
     } else if (difference.inHours < 24) {
       return '${difference.inHours} giờ';
