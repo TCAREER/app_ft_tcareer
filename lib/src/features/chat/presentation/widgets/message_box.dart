@@ -220,11 +220,13 @@ Widget mediaItem(List<String> media, WidgetRef ref) {
     );
   } else {
     return Wrap(
+      alignment: WrapAlignment.end,
       spacing: 5,
       runSpacing: 5,
       children: media.map((mediaItem) {
         return Container(
-          width: (ScreenUtil().screenWidth - 15) / 2,
+          alignment: Alignment.centerRight,
+          // width: (ScreenUtil().screenWidth - 15) / 2,
           child: Visibility(
             visible: mediaItem.isImageNetWork,
             replacement: Stack(

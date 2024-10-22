@@ -18,7 +18,7 @@ Widget chatEmoji(WidgetRef ref, BuildContext context) {
         controller.setIsShowEmoJi(context);
       },
       config: Config(
-        height: ScreenUtil().screenHeight * .34,
+        height: ScreenUtil().screenHeight * .32,
         checkPlatformCompatibility: true,
         skinToneConfig: const SkinToneConfig(),
         categoryViewConfig: const CategoryViewConfig(),

@@ -42,14 +42,14 @@ class ConversationController extends ChangeNotifier {
     String clientId = await userUtil.getUserId();
     final conversation =
         conversations.firstWhere((e) => e.id == conversationId);
-    print(">>>>>>>>>>>>conversation: ${jsonEncode(conversation)}");
+
     // conversations
     if (clientId != senderId) {
       final newConversation = conversation.copyWith(
         latestMessage: lastMessage,
         updatedAt: DateTime.now().toIso8601String(),
       );
-      print(">>>>>>>new: ${jsonEncode(newConversation)}");
+
       conversations
           .removeWhere((conversation) => conversation.id == conversationId);
       conversations.insert(0, newConversation);
@@ -66,14 +66,13 @@ class ConversationController extends ChangeNotifier {
       notifyListeners();
     }
     // notifyListeners();
-    print(">>>>>>>>>>>>>conversations: ${jsonEncode(conversations.first)}");
+
     // .removeWhere((conversation) => conversation.id == conversationId);
   }
 
   Future<void> onInit() async {
-    if (allConversation?.data == null) {
-      await getAllConversation();
-    }
+    await initializeAbly();
+    listenAllConversation();
   }
 
   List<StreamSubscription<ably.Message>> messageSubscriptions = [];
@@ -83,7 +82,6 @@ class ConversationController extends ChangeNotifier {
       final subscription = chatUseCase.listenAllMessage(
         conversationId: conversation.id.toString(),
         handleChannelMessage: (message) {
-          print(">>>>>>>>>>>>inConversation: $message");
           final messageData = jsonDecode(message.data.toString());
           updateLastMessage(
               senderId: conversation.userId.toString(),

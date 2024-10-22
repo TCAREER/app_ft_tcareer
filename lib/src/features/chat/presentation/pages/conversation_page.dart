@@ -23,28 +23,43 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     Future.microtask(() async {
       final controller = ref.read(conversationControllerProvider);
-      await controller.initializeAbly();
-      controller.listenAllConversation();
+      await controller.getAllConversation();
     });
+
     // WidgetsBinding.instance.addPostFrameCallback((_) async {
     //   await ref.read(conversationControllerProvider).getAllConversation();
     // });
   }
 
+  // @override
+  // void dispose() {
+  //   final controller = ref.read(conversationControllerProvider);
+  //   controller.dispose();
+  //   super.dispose();
+  // }
   @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    Future.microtask(() async {
+      final controller = ref.read(conversationControllerProvider);
+
+      // await controller.onInit();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final controller = ref.watch(conversationControllerProvider);
-    Future.microtask(() async {
-      await controller.onInit();
-    });
+    // Future.microtask(() async {
+    //   await controller.onInit();
+    // });
+    // Future.microtask(() async {
+    //   await controller.onInit();
+    // });
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(

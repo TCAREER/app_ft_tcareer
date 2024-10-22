@@ -7,6 +7,7 @@ import 'package:app_tcareer/src/features/authentication/presentation/pages/login
 import 'package:app_tcareer/src/features/authentication/presentation/pages/register/register_page.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/pages/register/verify_phone_page.dart';
 import 'package:app_tcareer/src/features/authentication/presentation/pages/verify/verify_page.dart';
+import 'package:app_tcareer/src/features/chat/presentation/controllers/conversation_controller.dart';
 import 'package:app_tcareer/src/features/chat/presentation/pages/chat_page.dart';
 import 'package:app_tcareer/src/features/chat/presentation/pages/conversation_page.dart';
 import 'package:app_tcareer/src/features/chat/usecases/chat_use_case.dart';
@@ -64,12 +65,14 @@ class AppRouter {
             await ref
                 .read(connectionUseCaseProvider)
                 .setUserOnlineStatusInMessage();
+            ref.read(conversationControllerProvider).onInit();
             inMessage = true;
           }
         } else if (isAuthenticated && !isChatRoute) {
-          await ref.read(connectionUseCaseProvider).setUserOnlineStatus();
-          await ref.read(chatUseCaseProvider).disconnect();
           inMessage = false;
+          await ref.read(connectionUseCaseProvider).setUserOnlineStatus();
+          await ref.read(chatUseCaseProvider).dispose();
+          ref.read(conversationControllerProvider).messageSubscriptions.clear();
         }
         // Lấy trạng thái xác thực và refresh token
         // ref.read(authStateProvider.notifier).checkAuthentication();

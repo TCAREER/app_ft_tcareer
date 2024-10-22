@@ -76,6 +76,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       onPopInvoked: (didPop) async {
         if (didPop) {
           await controller.leavePresence(widget.clientId);
+
           await controller.disposeService();
           controller.setHasContent("");
           if (controller.isShowEmoji == true) {
