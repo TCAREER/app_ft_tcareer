@@ -58,7 +58,7 @@ class AppRouter {
         final userUtils = ref.watch(userUtilsProvider);
         final isAuthenticated = await userUtils.isAuthenticated();
         bool isChatRoute = state.fullPath?.contains("conversation") == true ||
-            state.fullPath?.contains("chat") == true;
+            state.fullPath?.startsWith("/conversation/chat") == true;
 
         if (isAuthenticated && !inMessage) {
           if (isChatRoute) {

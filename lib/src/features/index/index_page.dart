@@ -170,7 +170,7 @@ class AppLifecycleNotifier extends StateNotifier<AppLifecycleState> {
       // print(">>>>>>>>app is forceground");
       bool isChatRoute =
           routeState.fullPath?.contains("conversation") == true ||
-              routeState.fullPath?.contains("chat") == true;
+              routeState.fullPath?.startsWith("/conversation/chat") == true;
       print(">>>>>>>>>>isChatRoute: $isChatRoute");
       if (isChatRoute) {
         await connectionUseCase.setUserOnlineStatusInMessage();
