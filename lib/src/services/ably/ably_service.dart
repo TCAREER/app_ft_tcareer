@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:ably_flutter/ably_flutter.dart' as ably;
 import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/utils/user_utils.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AblyService {
@@ -43,8 +44,15 @@ class AblyService {
 
   StreamSubscription<ably.Message> listenAllMessage(
       {required String channelName,
-      required Function(ably.Message) handleChannelMessage}) {
-    ably.RealtimeChannel channel = realtime.channels.get(channelName);
+      required Function(ably.Message) handleChannelMessage,
+      ably.CipherParams? cipherParams}) {
+    ably.RealtimeChannelOptions realtimeChannelOptions =
+        ably.RealtimeChannelOptions(cipherParams: cipherParams);
+
+    ably.RealtimeChannel channel = realtime.channels.get(
+      channelName,
+    );
+    channel.setOptions(realtimeChannelOptions);
     return channel.subscribe().listen((ably.Message message) {
       handleChannelMessage(message);
     });

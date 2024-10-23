@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/configs/shared_preferences_provider.dart';
 import 'package:app_tcareer/src/routes/app_router.dart';
 import 'package:app_tcareer/src/services/apis/api_service_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 
 class UserUtils {
   final Ref ref;
@@ -103,6 +108,14 @@ class UserUtils {
   Future<String?> loadCache(String key) async {
     final shareRef = await ref.read(sharedPreferencesProvider.future);
     return shareRef.getString(key);
+  }
+
+  String decryptedData(String encrypted) {
+    final rawKey = dotenv.env['CIPHER_KEY'];
+    final key = encrypt.Key.fromUtf8(rawKey ?? "");
+
+    final encrypter = encrypt.Encrypter(encrypt.AES(key));
+    return encrypter.decrypt64(encrypted);
   }
 }
 

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:ably_flutter/ably_flutter.dart';
 import 'package:app_tcareer/src/configs/app_constants.dart';
 import 'package:app_tcareer/src/features/chat/data/models/all_conversation.dart';
 import 'package:app_tcareer/src/features/chat/data/models/conversation.dart';
@@ -22,6 +23,7 @@ import 'package:app_tcareer/src/utils/snackbar_utils.dart';
 import 'package:app_tcareer/src/utils/user_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ably_flutter/ably_flutter.dart' as ably;
 import 'package:photo_manager/photo_manager.dart';
@@ -92,7 +94,7 @@ class ChatController extends ChangeNotifier {
 
     messageSubscription = chatUseCase.listenAllMessage(
       conversationId: conversationData?.conversation?.id.toString() ?? "",
-      handleChannelMessage: (message) {
+      handleChannelMessage: (message) async {
         print(">>>>>>>>data: ${message.data}");
         handleUpdateMessage(message);
       },
@@ -101,7 +103,7 @@ class ChatController extends ChangeNotifier {
     return messageSubscription;
   }
 
-  void handleUpdateMessage(ably.Message message) {
+  void handleUpdateMessage(ably.Message message) async {
     final messageData = jsonDecode(message.data.toString());
     if (messageData['status'] == "read") {
       print(">>>>>>>>>>>1");

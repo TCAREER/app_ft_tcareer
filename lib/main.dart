@@ -14,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:universal_io/io.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // final navigatorKeyProvider = Provider<GlobalKey<NavigatorState>>((ref) {
 //   return GlobalKey<NavigatorState>();
@@ -56,7 +57,7 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(
     backgroundHandler,
   );
-
+  await dotenv.load(fileName: ".env");
   runApp(ProviderScope(
       // overrides: [navigatorKeyProvider.overrideWithValue(navigatorKey)],
       child: App(
