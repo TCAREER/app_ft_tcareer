@@ -74,16 +74,18 @@ class ConversationController extends ChangeNotifier {
 
   Future<void> onInit() async {
     await initializeAbly();
-    listenAllConversation();
+    await listenAllConversation();
+    print(">>>>>>>>>doneListen");
   }
 
   List<StreamSubscription<ably.Message>> messageSubscriptions = [];
 
-  StreamSubscription<ably.Message>? listenAllConversation() {
+  Future<StreamSubscription<ably.Message>?> listenAllConversation() async {
     for (UserConversation conversation in conversations) {
-      final subscription = chatUseCase.listenAllMessage(
+      final subscription = await chatUseCase.listenAllMessage(
         conversationId: conversation.id.toString(),
-        handleChannelMessage: (message) {
+        handleChannelMessage: (message) async {
+          print(">>>>>>>>>conversationData: ${message.data}");
           final messageData = jsonDecode(message.data.toString());
           updateLastMessage(
               senderId: conversation.userId.toString(),
@@ -102,7 +104,6 @@ class ConversationController extends ChangeNotifier {
     return chatUseCase.listenUsersStatus().map((event) {
       final rawData = event.snapshot.value;
       if (rawData is Map) {
-        print(">>>>>>rawData: $rawData");
         final usersStatus =
             rawData.entries.where((entry) => entry.value is Map).map((entry) {
           final element = Map<dynamic, dynamic>.from(entry.value);
@@ -123,6 +124,7 @@ class ConversationController extends ChangeNotifier {
     for (var subscription in messageSubscriptions) {
       subscription.cancel(); // Huỷ tất cả subscription khi dispose
     }
+    // connectSubscription?.cancel();
     super.dispose();
   }
 
@@ -144,6 +146,15 @@ class ConversationController extends ChangeNotifier {
         .whereType<Map<String, dynamic>>()
         .map((item) => Data.fromJson(item))
         .toList();
+  }
+
+  StreamSubscription<ably.ConnectionStateChange>? connectSubscription;
+  Future<StreamSubscription<ably.ConnectionStateChange>?> listenAblyConnected(
+      {required Function(ably.ConnectionStateChange stateChange)
+          handleChannelStateChange}) async {
+    connectSubscription = await chatUseCase.listenAblyConnected(
+        handleChannelStateChange: handleChannelStateChange);
+    return connectSubscription;
   }
 }
 

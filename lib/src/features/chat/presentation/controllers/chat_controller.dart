@@ -88,11 +88,11 @@ class ChatController extends ChangeNotifier {
   Future<void> initializeAbly() async => await chatUseCase.initialize();
   StreamSubscription<ably.Message>? messageSubscription;
 
-  StreamSubscription<ably.Message>? listenMessage() {
+  Future<StreamSubscription<ably.Message>?> listenMessage() async {
     // Hủy bỏ subscription cũ nếu có
     // messageSubscription?.cancel();
 
-    messageSubscription = chatUseCase.listenAllMessage(
+    messageSubscription = await chatUseCase.listenAllMessage(
       conversationId: conversationData?.conversation?.id.toString() ?? "",
       handleChannelMessage: (message) async {
         print(">>>>>>>>data: ${message.data}");
@@ -288,28 +288,6 @@ class ChatController extends ChangeNotifier {
 
     // setIsShowMedia(context);
   }
-
-  // Future<void> showMediaPage(BuildContext context) async {
-  //   await showModalBottomSheet(
-  //       isScrollControlled: true,
-  //       useRootNavigator: true,
-  //       context: context,
-  //       builder: (context) => DraggableScrollableSheet(
-  //             expand: true,
-  //             snap: true,
-  //             initialChildSize: 0.4,
-  //             maxChildSize: 1.0,
-  //             minChildSize: 0.4,
-  //             builder: (context, scrollController) {
-  //               return Container(
-  //                 color: Colors.white,
-  //                 child: ChatMediaPage(
-  //                   scrollController: scrollController,
-  //                 ),
-  //               );
-  //             },
-  //           ));
-  // }
 
   Future<void> onInit(
       {required String clientId, required String userId}) async {

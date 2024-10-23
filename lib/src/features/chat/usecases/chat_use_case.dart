@@ -16,10 +16,10 @@ class ChatUseCase {
 
   Future<void> initialize() async => await chatRepository.initialize();
 
-  StreamSubscription<ably.Message> listenAllMessage(
+  Future<StreamSubscription<ably.Message>> listenAllMessage(
           {required Function(ably.Message) handleChannelMessage,
-          required String conversationId}) =>
-      chatRepository.listenAllMessage(
+          required String conversationId}) async =>
+      await chatRepository.listenAllMessage(
           channelName: "conversation-$conversationId",
           handleChannelMessage: handleChannelMessage);
   Future<void> publishMessage(
@@ -79,6 +79,12 @@ class ChatUseCase {
 
   Stream<DatabaseEvent> listenUsersStatus() =>
       chatRepository.listenUsersStatus();
+
+  Future<StreamSubscription<ably.ConnectionStateChange>> listenAblyConnected(
+          {required Function(ably.ConnectionStateChange stateChange)
+              handleChannelStateChange}) async =>
+      await chatRepository.listenAblyConnected(
+          handleChannelStateChange: handleChannelStateChange);
 }
 
 final chatUseCaseProvider = Provider<ChatUseCase>((ref) {

@@ -33,6 +33,7 @@ import 'package:go_router/go_router.dart';
 
 import '../features/notifications/presentation/pages/notification_page.dart';
 import '../features/posts/presentation/pages/detail/post_detail_page.dart';
+import 'package:ably_flutter/ably_flutter.dart' as ably;
 
 enum RouteNames {
   splash,
@@ -65,13 +66,27 @@ class AppRouter {
             await ref
                 .read(connectionUseCaseProvider)
                 .setUserOnlineStatusInMessage();
-            ref.read(conversationControllerProvider).onInit();
+
+            await ref.read(conversationControllerProvider).initializeAbly();
+            await ref.read(conversationControllerProvider).listenAblyConnected(
+                handleChannelStateChange: (connectionState) async {
+              print(">>>>>>>state: ${connectionState.event}");
+              if (connectionState.event == ably.ConnectionEvent.closed) {
+                await ref.read(conversationControllerProvider).initializeAbly();
+              }
+              if (connectionState.event == ably.ConnectionEvent.connected) {
+                await ref
+                    .read(conversationControllerProvider)
+                    .listenAllConversation();
+              }
+            });
+
             inMessage = true;
           }
         } else if (isAuthenticated && !isChatRoute) {
           inMessage = false;
           await ref.read(connectionUseCaseProvider).setUserOnlineStatus();
-          await ref.read(chatUseCaseProvider).dispose();
+          await ref.read(chatUseCaseProvider).disconnect();
           ref.read(conversationControllerProvider).messageSubscriptions.clear();
         }
         // Lấy trạng thái xác thực và refresh token

@@ -37,8 +37,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       final controller = ref.read(chatControllerProvider);
 
       await controller.onInit(clientId: widget.clientId, userId: widget.userId);
-      controller.listenPresence(widget.userId);
-      controller.listenMessage();
+      await controller.listenMessage();
     });
 
     super.initState();

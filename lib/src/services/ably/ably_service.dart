@@ -42,10 +42,13 @@ class AblyService {
     });
   }
 
-  StreamSubscription<ably.Message> listenAllMessage(
-      {required String channelName,
-      required Function(ably.Message) handleChannelMessage,
-      ably.CipherParams? cipherParams}) {
+  Future<StreamSubscription<ably.Message>> listenAllMessage({
+    required String channelName,
+    required Function(ably.Message) handleChannelMessage,
+  }) async {
+    String? key = dotenv.env['CIPHER_KEY'];
+    ably.CipherParams cipherParams =
+        await ably.Crypto.getDefaultParams(key: key);
     ably.RealtimeChannelOptions realtimeChannelOptions =
         ably.RealtimeChannelOptions(cipherParams: cipherParams);
 
@@ -120,6 +123,16 @@ class AblyService {
     // Hủy tất cả các tài nguyên liên quan
     await disconnect();
     await realtime.close();
+  }
+
+  Future<StreamSubscription<ably.ConnectionStateChange>> listenAblyConnected(
+      {required Function(ably.ConnectionStateChange stateChange)
+          handleChannelStateChange}) async {
+    return realtime.connection
+        .on()
+        .listen((ably.ConnectionStateChange stateChange) async {
+      handleChannelStateChange(stateChange);
+    });
   }
 }
 

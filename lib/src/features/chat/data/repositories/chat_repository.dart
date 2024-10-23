@@ -23,11 +23,11 @@ class ChatRepository {
     return ablyService.initialize();
   }
 
-  StreamSubscription<ably.Message> listenAllMessage(
+  Future<StreamSubscription<ably.Message>> listenAllMessage(
       {required String channelName,
-      required Function(ably.Message) handleChannelMessage}) {
+      required Function(ably.Message) handleChannelMessage}) async {
     final ablyService = ref.watch(ablyServiceProvider);
-    return ablyService.listenAllMessage(
+    return await ablyService.listenAllMessage(
         channelName: channelName, handleChannelMessage: handleChannelMessage);
   }
 
@@ -122,6 +122,14 @@ class ChatRepository {
     String path = "users";
     final data = database.listenToData(path);
     return data;
+  }
+
+  Future<StreamSubscription<ably.ConnectionStateChange>> listenAblyConnected(
+      {required Function(ably.ConnectionStateChange stateChange)
+          handleChannelStateChange}) async {
+    final ablyService = ref.watch(ablyServiceProvider);
+    return await ablyService.listenAblyConnected(
+        handleChannelStateChange: handleChannelStateChange);
   }
 }
 

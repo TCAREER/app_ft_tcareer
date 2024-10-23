@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:ably_flutter/ably_flutter.dart' as ably;
 
 class ConversationPage extends ConsumerStatefulWidget {
   const ConversationPage({super.key});
@@ -47,8 +48,6 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     super.didChangeDependencies();
     Future.microtask(() async {
       final controller = ref.read(conversationControllerProvider);
-
-      // await controller.onInit();
     });
   }
 
@@ -56,7 +55,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
   Widget build(BuildContext context) {
     final controller = ref.watch(conversationControllerProvider);
     // Future.microtask(() async {
-    //   await controller.onInit();
+    //
     // });
     // Future.microtask(() async {
     //   await controller.onInit();

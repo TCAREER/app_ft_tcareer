@@ -1,4 +1,5 @@
 import 'package:app_tcareer/src/configs/app_colors.dart';
+import 'package:app_tcareer/src/features/chat/presentation/controllers/conversation_controller.dart';
 import 'package:app_tcareer/src/features/index/index_controller.dart';
 import 'package:app_tcareer/src/features/notifications/presentation/controllers/notification_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
@@ -26,6 +27,14 @@ class _IndexPageState extends ConsumerState<IndexPage>
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // Future.microtask(()async{
+    //   final routeState = GoRouterState.of(context);
+    //   if(routeState.fullPath?.contains("conversation") == true){
+    //     await ref.read(conversationControllerProvider).onInit().then((val) {
+    //       print(">>>>>>>>>>running listen");
+    //     });
+    //   }
+    // });
   }
 
   @override
@@ -174,6 +183,7 @@ class AppLifecycleNotifier extends StateNotifier<AppLifecycleState> {
       print(">>>>>>>>>>isChatRoute: $isChatRoute");
       if (isChatRoute) {
         await connectionUseCase.setUserOnlineStatusInMessage();
+
         print(">>>>>>>>>>1");
       } else {
         await connectionUseCase.setUserOnlineStatus();
