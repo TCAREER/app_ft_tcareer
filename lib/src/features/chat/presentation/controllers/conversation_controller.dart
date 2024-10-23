@@ -98,6 +98,25 @@ class ConversationController extends ChangeNotifier {
 
   Future<void> initializeAbly() async => await chatUseCase.initialize();
 
+  Stream<Map<dynamic, dynamic>> listenUsersStatus(String userId) {
+    return chatUseCase.listenUsersStatus().map((event) {
+      final rawData = event.snapshot.value;
+      if (rawData is Map) {
+        print(">>>>>>rawData: $rawData");
+        final usersStatus =
+            rawData.entries.where((entry) => entry.value is Map).map((entry) {
+          final element = Map<dynamic, dynamic>.from(entry.value);
+          element['userId'] = entry.key;
+          return element;
+        }).toList();
+        Map<dynamic, dynamic> userStatus =
+            usersStatus.firstWhere((user) => user['userId'] == userId);
+        return userStatus;
+      }
+      return {};
+    });
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose

@@ -12,9 +12,7 @@ class NotificationUseCase {
     return notificationRepository.listenToNotifications().map((event) {
       final rawData = event.snapshot.value;
 
-      // Kiểm tra nếu rawData là Map thay vì List
       if (rawData is Map) {
-        // Chuyển đổi Map thành List, trong đó mỗi phần tử là một Map với key là `notification_id`
         final notifications = rawData.entries.where((entry) {
           final element = entry.value;
           if (element == null) return false;
@@ -47,13 +45,12 @@ class NotificationUseCase {
                 DateTime.parse(AppUtils.convertToISOFormat(updatedB));
             return dateB.compareTo(dateA);
           } catch (e) {
-            return 0; // Để chúng ở vị trí hiện tại nếu có lỗi
+            return 0;
           }
         });
 
         return notifications;
       } else if (rawData is List) {
-        // Nếu dữ liệu là List thì xử lý như bạn đã làm trước đó
         final notifications = rawData
             .where((element) {
               if (element == null) return false;

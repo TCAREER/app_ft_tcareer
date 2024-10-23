@@ -76,6 +76,9 @@ class ChatUseCase {
       await chatRepository.getAllConversation();
   Stream<DatabaseEvent> listenUserStatus(String userId) =>
       chatRepository.listenUserStatus(userId);
+
+  Stream<DatabaseEvent> listenUsersStatus() =>
+      chatRepository.listenUsersStatus();
 }
 
 final chatUseCaseProvider = Provider<ChatUseCase>((ref) {

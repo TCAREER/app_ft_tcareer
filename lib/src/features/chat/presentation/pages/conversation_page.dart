@@ -144,10 +144,42 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
                     print(
                         ">>>>>>>>>>>>conversations: ${controller.conversations}");
                   },
-                  leading: CircleAvatar(
-                    radius: 25,
-                    backgroundImage:
-                        NetworkImage(conversation.userAvatar ?? ""),
+                  leading: Stack(
+                    children: [
+                      // Avatar
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundImage:
+                            NetworkImage(conversation.userAvatar ?? ""),
+                      ),
+                      // Chấm tròn cắt vào avatar
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: StreamBuilder<Map<dynamic, dynamic>>(
+                          stream: controller.listenUsersStatus(
+                              conversation.userId.toString()),
+                          builder: (context, snapshot) {
+                            return Visibility(
+                              visible: snapshot.data?['status'] == "online",
+                              child: Container(
+                                width: 12, // Độ rộng của chấm tròn
+                                height: 12, // Chiều cao của chấm tròn
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.green, // Màu của chấm tròn
+                                  border: Border.all(
+                                    color: Colors
+                                        .white, // Đường viền màu trắng để tạo hiệu ứng cắt vào avatar
+                                    width: 2, // Độ dày của viền
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                   title: Text(conversation.userFullName ?? ""),
                   subtitle: Text(
@@ -170,9 +202,9 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: SizedBox(
-          height: 100, // Đặt chiều cao cho hàng bạn bè
+          height: 80,
           child: ListView.builder(
-            scrollDirection: Axis.horizontal, // Cuộn theo chiều ngang
+            scrollDirection: Axis.horizontal,
             itemCount: controller.friends.length,
             itemBuilder: (context, index) {
               final friend = controller.friends[index];
@@ -189,12 +221,48 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
                   margin: const EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
                     children: [
-                      CircleAvatar(
-                        radius: 30,
-                        backgroundImage: NetworkImage(friend.avatar ?? ""),
+                      Stack(
+                        children: [
+                          // Avatar
+                          CircleAvatar(
+                            radius: 20,
+                            backgroundImage: NetworkImage(friend.avatar ?? ""),
+                          ),
+                          // Chấm tròn cắt vào avatar
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: StreamBuilder<Map<dynamic, dynamic>>(
+                              stream: controller
+                                  .listenUsersStatus(friend.id.toString()),
+                              builder: (context, snapshot) {
+                                return Visibility(
+                                  visible: snapshot.data?['status'] == "online",
+                                  child: Container(
+                                    width: 12, // Độ rộng của chấm tròn
+                                    height: 12, // Chiều cao của chấm tròn
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.green, // Màu của chấm tròn
+                                      border: Border.all(
+                                        color: Colors
+                                            .white, // Đường viền màu trắng để tạo hiệu ứng cắt vào avatar
+                                        width: 2, // Độ dày của viền
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
+
                       const SizedBox(height: 5),
-                      Text(friend.lastName ?? ""), // Thay đổi tên người bạn
+                      Text(
+                        friend.lastName ?? "",
+                        overflow: TextOverflow.ellipsis,
+                      ), // Thay đổi tên người bạn
                     ],
                   ),
                 ),

@@ -116,6 +116,13 @@ class ChatRepository {
     final data = database.listenToData(path);
     return data;
   }
+
+  Stream<DatabaseEvent> listenUsersStatus() {
+    final database = ref.watch(firebaseDatabaseServiceProvider);
+    String path = "users";
+    final data = database.listenToData(path);
+    return data;
+  }
 }
 
 final chatRepositoryProvider =
