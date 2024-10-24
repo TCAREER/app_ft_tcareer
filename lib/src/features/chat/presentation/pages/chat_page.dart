@@ -6,6 +6,7 @@ import 'package:app_tcareer/src/features/chat/presentation/widgets/chat_bottom_a
 import 'package:app_tcareer/src/features/chat/presentation/widgets/chat_emoji.dart';
 import 'package:app_tcareer/src/features/chat/presentation/widgets/chat_input.dart';
 import 'package:app_tcareer/src/features/chat/presentation/widgets/message_box.dart';
+import 'package:app_tcareer/src/features/index/index_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
 import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
 import 'package:app_tcareer/src/features/user/usercases/connection_use_case.dart';
@@ -86,6 +87,9 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           }
 
           controller.contentController.clear();
+          // ref
+          //     .watch(indexControllerProvider.notifier)
+          //     .setBottomNavigationBarVisibility(true);
           context.goNamed("conversation");
         }
       },

@@ -68,7 +68,6 @@ class ChatController extends ChangeNotifier {
               !messages.any((messages) => messages.id == newConversation.id))
           .toList();
       messages.addAll(newConversations?.reversed ?? []);
-      statusText = AppUtils.formatTimeMessage(user?.leftAt.toString() ?? "");
 
       notifyListeners();
     }
@@ -243,14 +242,8 @@ class ChatController extends ChangeNotifier {
     isShowEmoji = !isShowEmoji;
     if (isShowEmoji == true) {
       FocusScope.of(context).unfocus();
-      ref
-          .watch(indexControllerProvider.notifier)
-          .setBottomNavigationBarVisibility(false);
     } else {
       FocusScope.of(context).requestFocus();
-      ref
-          .watch(indexControllerProvider.notifier)
-          .setBottomNavigationBarVisibility(true);
     }
     notifyListeners();
   }
@@ -264,14 +257,8 @@ class ChatController extends ChangeNotifier {
     isShowMedia = !isShowMedia;
     if (isShowMedia == true) {
       FocusScope.of(context).unfocus();
-      ref
-          .watch(indexControllerProvider.notifier)
-          .setBottomNavigationBarVisibility(false);
     } else {
       FocusScope.of(context).requestFocus();
-      ref
-          .watch(indexControllerProvider.notifier)
-          .setBottomNavigationBarVisibility(true);
     }
     notifyListeners();
   }
@@ -301,11 +288,12 @@ class ChatController extends ChangeNotifier {
     await getConversation(userId);
     await initializeAbly();
 
-    if (messages.isNotEmpty && messages[0].status == "sent" ||
-        messages[0].status == "delivered") {
-      await markReadMessage(
-          senderId: messages.first.senderId.toString(),
-          messageId: messages.first.id);
+    if (messages.isNotEmpty) {
+      if (messages[0].status == "sent" || messages[0].status == "delivered") {
+        await markReadMessage(
+            senderId: messages.first.senderId.toString(),
+            messageId: messages.first.id);
+      }
     }
     // listenPresence(userId);
     // listenMessage();
