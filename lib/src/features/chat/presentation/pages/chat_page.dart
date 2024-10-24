@@ -133,6 +133,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                 child: chatBottomAppBar(ref, context)),
           ],
         ),
+        bottomNavigationBar: null,
 
         // bottomNavigationBar:
       ),

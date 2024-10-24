@@ -93,11 +93,12 @@ class _IndexPageState extends ConsumerState<IndexPage>
       },
     ];
     final state = ref.watch(indexControllerProvider);
-
+    final routerState = GoRouterState.of(context);
     return Scaffold(
       body: widget.shell,
       bottomNavigationBar: Visibility(
-        visible: state == true,
+        visible: state == true &&
+            routerState.fullPath?.startsWith("/conversation/chat") == false,
         child: BottomNavigationBar(
             showSelectedLabels: false,
             showUnselectedLabels: false,
@@ -172,13 +173,13 @@ class AppLifecycleNotifier extends StateNotifier<AppLifecycleState> {
     final connectionUseCase = ref.read(connectionUseCaseProvider);
     final userUtil = ref.watch(userUtilsProvider);
     bool isAuthenticated = await userUtil.isAuthenticated();
-    final chatUseCase = ref.read(chatUseCaseProvider);
+    final chatController = ref.read(chatControllerProvider);
     if (!isAuthenticated) return;
     print(">>>>>>>>>>state: $state");
     if (state == AppLifecycleState.paused) {
       // if (isAuthenticated) {
       await connectionUseCase.setUserOfflineStatus();
-      // await chatUseCase.disconnect();
+      // await chatController.messageSubscription.cancel();
       // }
     } else if (state == AppLifecycleState.resumed) {
       // print(">>>>>>>>app is forceground");

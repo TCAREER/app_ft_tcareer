@@ -50,7 +50,7 @@ class ConnectionUseCase {
     };
     userRepository
         .addData(path: "users/$userId", data: data, dataUpdateDisconnect: {
-      "inMessage": true,
+      "inMessage": false,
       "status": "offline",
       "updatedAt": DateTime.now().toIso8601String(),
     });

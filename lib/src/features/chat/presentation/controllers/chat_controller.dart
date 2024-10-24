@@ -18,6 +18,7 @@ import 'package:app_tcareer/src/features/chat/presentation/pages/media/chat_medi
 import 'package:app_tcareer/src/features/chat/usecases/chat_use_case.dart';
 import 'package:app_tcareer/src/features/index/index_controller.dart';
 import 'package:app_tcareer/src/features/user/presentation/controllers/user_controller.dart';
+import 'package:app_tcareer/src/features/user/usercases/connection_use_case.dart';
 import 'package:app_tcareer/src/utils/app_utils.dart';
 import 'package:app_tcareer/src/utils/snackbar_utils.dart';
 import 'package:app_tcareer/src/utils/user_utils.dart';
@@ -155,26 +156,28 @@ class ChatController extends ChangeNotifier {
       {required String senderId, required dynamic messageId}) async {
     final userUtil = ref.watch(userUtilsProvider);
     String clientId = await userUtil.getUserId();
-
-    if (clientId != senderId && messages.first.status == "sent" ||
-        messages.first.status == "delivered") {
-      String data = jsonEncode({
-        "topic": "statusMessage",
-        "id": messageId,
-        "updatedStatus": "read",
-        "conversationId": conversationData?.conversation?.id.toString() ?? "",
-        "senderId": senderId
-      });
-      await chatUseCase
-          .publishMessage(
-              conversationId:
-                  conversationData?.conversation?.id.toString() ?? "",
-              data: data)
-          .then((val) async {});
+    final connectionUseCase = ref.watch(connectionUseCaseProvider);
+    if (await connectionUseCase.getInMessage() == true) {
+      if (clientId != senderId && messages.first.status == "sent" ||
+          messages.first.status == "delivered") {
+        String data = jsonEncode({
+          "topic": "statusMessage",
+          "id": messageId,
+          "updatedStatus": "read",
+          "conversationId": conversationData?.conversation?.id.toString() ?? "",
+          "senderId": senderId
+        });
+        await chatUseCase
+            .publishMessage(
+                conversationId:
+                    conversationData?.conversation?.id.toString() ?? "",
+                data: data)
+            .then((val) async {});
+      }
+      chatUseCase.postMarkReadMessage(MarkReadMessageRequest(
+        conversationId: conversationData?.conversation?.id,
+      ));
     }
-    chatUseCase.postMarkReadMessage(MarkReadMessageRequest(
-      conversationId: conversationData?.conversation?.id,
-    ));
   }
 
   // Future<void> markReadMessage() async {
