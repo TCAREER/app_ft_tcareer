@@ -209,6 +209,32 @@ class AppUtils {
     return false;
   }
 
+  static String formatTimeStatusOnline(String dateString) {
+    // Chuyển đổi định dạng ngày tháng
+    dateString = dateString.replaceAll('/', '-'); // Đổi dấu '/' thành '-'
+
+    final dateTime = DateTime.tryParse(dateString);
+    if (dateTime == null) {
+      return 'Invalid date format';
+    }
+
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+    if (difference.inSeconds < 60) {
+      return 'Vài giây';
+    } else if (difference.inMinutes < 60) {
+      return '${difference.inMinutes} phút';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours} giờ';
+    } else if (difference.inDays < 7) {
+      return '${difference.inDays} ngày';
+    } else if (difference.inDays < 14) {
+      return '1 tuần';
+    } else {
+      return DateFormat('dd/MM/yyyy').format(dateTime);
+    }
+  }
+
   static String formatTime(String dateString) {
     // Chuyển đổi định dạng ngày tháng
     dateString = dateString.replaceAll('/', '-'); // Đổi dấu '/' thành '-'
@@ -248,7 +274,7 @@ class AppUtils {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
     if (difference.inSeconds < 60) {
-      return 'Vừa xong';
+      return 'Vài giây trước';
     } else if (difference.inMinutes < 60) {
       return '${difference.inMinutes} phút';
     } else if (difference.inHours < 24) {

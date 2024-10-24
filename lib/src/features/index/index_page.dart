@@ -1,5 +1,7 @@
 import 'package:app_tcareer/src/configs/app_colors.dart';
+import 'package:app_tcareer/src/features/chat/presentation/controllers/chat_controller.dart';
 import 'package:app_tcareer/src/features/chat/presentation/controllers/conversation_controller.dart';
+import 'package:app_tcareer/src/features/chat/usecases/chat_use_case.dart';
 import 'package:app_tcareer/src/features/index/index_controller.dart';
 import 'package:app_tcareer/src/features/notifications/presentation/controllers/notification_controller.dart';
 import 'package:app_tcareer/src/features/posts/presentation/posts_provider.dart';
@@ -11,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:ably_flutter/ably_flutter.dart' as ably;
 
 class IndexPage extends ConsumerStatefulWidget {
   const IndexPage({super.key, required this.shell});
@@ -169,12 +172,14 @@ class AppLifecycleNotifier extends StateNotifier<AppLifecycleState> {
     final connectionUseCase = ref.read(connectionUseCaseProvider);
     final userUtil = ref.watch(userUtilsProvider);
     bool isAuthenticated = await userUtil.isAuthenticated();
+    final chatUseCase = ref.read(chatUseCaseProvider);
     if (!isAuthenticated) return;
     print(">>>>>>>>>>state: $state");
     if (state == AppLifecycleState.paused) {
-      if (isAuthenticated) {
-        await connectionUseCase.setUserOfflineStatusInBackground();
-      }
+      // if (isAuthenticated) {
+      await connectionUseCase.setUserOfflineStatus();
+      // await chatUseCase.disconnect();
+      // }
     } else if (state == AppLifecycleState.resumed) {
       // print(">>>>>>>>app is forceground");
       bool isChatRoute =
@@ -183,13 +188,26 @@ class AppLifecycleNotifier extends StateNotifier<AppLifecycleState> {
       print(">>>>>>>>>>isChatRoute: $isChatRoute");
       if (isChatRoute) {
         await connectionUseCase.setUserOnlineStatusInMessage();
+        // await ref.read(conversationControllerProvider).listenAblyConnected(
+        //     handleChannelStateChange: (connectionState) async {
+        //       print(">>>>>>>state: ${connectionState.event}");
+        //       if (connectionState.event == ably.ConnectionEvent.closed) {
+        //         await ref.read(conversationControllerProvider).initializeAbly();
+        //       }
+        //       if (connectionState.event == ably.ConnectionEvent.connected) {
+        //         await ref
+        //             .read(conversationControllerProvider)
+        //             .listenAllConversation();
+        //       }
+        //     });
+        // await con
 
         print(">>>>>>>>>>1");
       } else {
         await connectionUseCase.setUserOnlineStatus();
       }
     } else if (state == AppLifecycleState.inactive) {
-      await connectionUseCase.setUserOfflineStatusInBackground();
+      await connectionUseCase.setUserOfflineStatus();
     }
   }
 }

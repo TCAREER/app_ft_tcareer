@@ -37,6 +37,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       final controller = ref.read(chatControllerProvider);
 
       await controller.onInit(clientId: widget.clientId, userId: widget.userId);
+      // controller.listenPresence(widget.userId);
       await controller.listenMessage();
     });
 
@@ -85,6 +86,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           }
 
           controller.contentController.clear();
+          context.goNamed("conversation");
         }
       },
       child: Scaffold(
@@ -183,7 +185,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           centerTitle: false,
           leadingWidth: 40,
           leading: GestureDetector(
-            onTap: () => context.pop(),
+            onTap: () => context.goNamed("conversation"),
             child: const Icon(Icons.arrow_back),
           ),
           title: StreamBuilder<Map<dynamic, dynamic>>(
@@ -193,76 +195,79 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                 return circularLoadingWidget();
               }
               final user = snapshot.data;
-              return Row(
-                // crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Visibility(
-                      visible: user?['status'] == "online",
-                      replacement: CircleAvatar(
-                        radius: 20,
-                        backgroundImage:
-                            NetworkImage(controller.user?.userAvatar ?? ""),
-                      ),
-                      child: Stack(
-                        children: [
-                          // Avatar
-                          CircleAvatar(
-                            radius: 20,
-                            backgroundImage:
-                                NetworkImage(controller.user?.userAvatar ?? ""),
-                          ),
-                          // Chấm tròn cắt vào avatar
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: Container(
-                              width: 12, // Độ rộng của chấm tròn
-                              height: 12, // Chiều cao của chấm tròn
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.green, // Màu của chấm tròn
-                                border: Border.all(
-                                  color: Colors
-                                      .white, // Đường viền màu trắng để tạo hiệu ứng cắt vào avatar
-                                  width: 2, // Độ dày của viền
+              return Visibility(
+                visible: controller.user != null,
+                child: Row(
+                  // crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Visibility(
+                        visible: user?['status'] == "online",
+                        replacement: CircleAvatar(
+                          radius: 20,
+                          backgroundImage:
+                              NetworkImage(controller.user?.userAvatar ?? ""),
+                        ),
+                        child: Stack(
+                          children: [
+                            // Avatar
+                            CircleAvatar(
+                              radius: 20,
+                              backgroundImage: NetworkImage(
+                                  controller.user?.userAvatar ?? ""),
+                            ),
+                            // Chấm tròn cắt vào avatar
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: Container(
+                                width: 12, // Độ rộng của chấm tròn
+                                height: 12, // Chiều cao của chấm tròn
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.green, // Màu của chấm tròn
+                                  border: Border.all(
+                                    color: Colors
+                                        .white, // Đường viền màu trắng để tạo hiệu ứng cắt vào avatar
+                                    width: 2, // Độ dày của viền
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      )),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        controller.user?.userFullName ?? "",
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            user?['status'] == "online"
-                                ? "Đang hoạt động"
-                                : AppUtils.formatTimeMessage(
-                                    user?['updatedAt'] ?? "0"),
-                            // AppUtils.formatTimeMessage(controller.user?.leftAt),
-                            style: const TextStyle(
-                                color: Colors.black45, fontSize: 12),
-                          ),
-                        ],
-                      )
-                    ],
-                  )
-                ],
+                          ],
+                        )),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          controller.user?.userFullName ?? "",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              user?['status'] == "online"
+                                  ? "Đang hoạt động"
+                                  : AppUtils.formatTimeMessage(
+                                      user?['updatedAt']),
+                              // AppUtils.formatTimeMessage(controller.user?.leftAt),
+                              style: const TextStyle(
+                                  color: Colors.black45, fontSize: 12),
+                            ),
+                          ],
+                        )
+                      ],
+                    )
+                  ],
+                ),
               );
             },
           ),

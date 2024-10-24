@@ -164,6 +164,9 @@ abstract class ApiServices {
 
   @POST('api/auth/mark_read')
   Future postMarkReadMessage({@Body() required MarkReadMessageRequest body});
+  @POST('api/auth/mark_delivered')
+  Future postMarkDeliveredMessage(
+      {@Body() required MarkReadMessageRequest body});
 
   @GET('api/auth/get_all_conversation')
   Future<AllConversation> getAllConversation();

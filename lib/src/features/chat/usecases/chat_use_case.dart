@@ -72,6 +72,9 @@ class ChatUseCase {
   Future<void> postMarkReadMessage(MarkReadMessageRequest body) async =>
       await chatRepository.postMarkReadMessage(body);
 
+  Future<void> postMarkDeliveredMessage(MarkReadMessageRequest body) async =>
+      await chatRepository.postMarkDeliveredMessage(body);
+
   Future<AllConversation> getAllConversation() async =>
       await chatRepository.getAllConversation();
   Stream<DatabaseEvent> listenUserStatus(String userId) =>

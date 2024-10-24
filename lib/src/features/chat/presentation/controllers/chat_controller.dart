@@ -54,10 +54,12 @@ class ChatController extends ChangeNotifier {
   String? cachedUserId; // Lưu trữ userId để sử dụng lại
 
   Future<void> getConversation(String userId) async {
-    // if (cachedUserId != userId) {
-    //   // Kiểm tra nếu userId đã thay đổi
-    //   cachedUserId = userId; // Lưu trữ userId
-    messages.clear();
+    if (user?.userId.toString() != userId) {
+      user = null;
+      messages.clear();
+      notifyListeners();
+    }
+
     conversationData = await chatUseCase.getConversation(userId);
     if (conversationData != null) {
       user = conversationData?.conversation;
@@ -105,14 +107,14 @@ class ChatController extends ChangeNotifier {
 
   void handleUpdateMessage(ably.Message message) async {
     final messageData = jsonDecode(message.data.toString());
-    if (messageData['status'] == "read") {
-      print(">>>>>>>>>>>1");
+    if (messageData['updatedStatus'] == "delivered" ||
+        messageData['updatedStatus'] == "read") {
       final currentMessage = messages.first;
-      final updatedMessage = currentMessage.copyWith(status: "read");
+      final updatedMessage =
+          currentMessage.copyWith(status: messageData['updatedStatus']);
       messages[0] = updatedMessage;
       notifyListeners();
     } else {
-      print(">>>>>>>>2");
       final mediaUrls = messageData['media_url'] != null
           ? List<String>.from(messageData['media_url'])
           : <String>[];
@@ -128,21 +130,18 @@ class ChatController extends ChangeNotifier {
             messageData['created_at'], // sửa 'createdAt' thành 'created_at'
       );
       final conversationController = ref.read(conversationControllerProvider);
-      conversationController.updateLastMessage(
-          senderId: messageData['sender_id'].toString(),
-          messageData: messageData);
+      // conversationController.updateLastMessage(
+      //     senderId: messageData['sender_id'].toString(),
+      //     messageData: messageData);
       notifyListeners();
-      // Kiểm tra xem message có tồn tại trong messages hay không
+
       if (!messages
           .any((existingMessage) => existingMessage.id == newMessage.id)) {
         messages.removeWhere((message) => message.type == "temp");
         messages.insert(0, newMessage);
-
-        markMessageAsRead(
+        markReadMessage(
             senderId: messageData['sender_id'].toString(),
-            userId: user?.userId.toString() ?? "",
             messageId: messageData['message_id']);
-
         notifyListeners();
       }
     }
@@ -153,19 +152,20 @@ class ChatController extends ChangeNotifier {
     scrollController.jumpTo(position);
   }
 
-  Future<void> markMessageAsRead(
-      {required String senderId,
-      required String userId,
-      required dynamic messageId}) async {
+  Future<void> markReadMessage(
+      {required String senderId, required dynamic messageId}) async {
     final userUtil = ref.watch(userUtilsProvider);
     String clientId = await userUtil.getUserId();
 
-    if (clientId != senderId && messages.first.status == "sent") {
-      String data = jsonEncode(
-          {"topic": "statusMessage", "id": messageId, "status": "read"});
-      await chatUseCase.postMarkReadMessage(MarkReadMessageRequest(
-        conversationId: conversationData?.conversation?.id,
-      ));
+    if (clientId != senderId && messages.first.status == "sent" ||
+        messages.first.status == "delivered") {
+      String data = jsonEncode({
+        "topic": "statusMessage",
+        "id": messageId,
+        "updatedStatus": "read",
+        "conversationId": conversationData?.conversation?.id.toString() ?? "",
+        "senderId": senderId
+      });
       await chatUseCase
           .publishMessage(
               conversationId:
@@ -173,13 +173,16 @@ class ChatController extends ChangeNotifier {
               data: data)
           .then((val) async {});
     }
-  }
-
-  Future<void> markReadMessage() async {
-    await chatUseCase.postMarkReadMessage(MarkReadMessageRequest(
+    chatUseCase.postMarkReadMessage(MarkReadMessageRequest(
       conversationId: conversationData?.conversation?.id,
     ));
   }
+
+  // Future<void> markReadMessage() async {
+  //   await chatUseCase.postMarkReadMessage(MarkReadMessageRequest(
+  //     conversationId: conversationData?.conversation?.id,
+  //   ));
+  // }
 
   StreamSubscription<ably.PresenceMessage>? presenceSubscription;
 
@@ -298,10 +301,10 @@ class ChatController extends ChangeNotifier {
     await getConversation(userId);
     await initializeAbly();
 
-    if (messages.isNotEmpty && messages[0].status == "sent") {
-      await markMessageAsRead(
+    if (messages.isNotEmpty && messages[0].status == "sent" ||
+        messages[0].status == "delivered") {
+      await markReadMessage(
           senderId: messages.first.senderId.toString(),
-          userId: userId,
           messageId: messages.first.id);
     }
     // listenPresence(userId);

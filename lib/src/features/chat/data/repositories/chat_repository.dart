@@ -105,6 +105,11 @@ class ChatRepository {
     return await api.postMarkReadMessage(body: body);
   }
 
+  Future<void> postMarkDeliveredMessage(MarkReadMessageRequest body) async {
+    final api = ref.watch(apiServiceProvider);
+    return await api.postMarkDeliveredMessage(body: body);
+  }
+
   Future<AllConversation> getAllConversation() async {
     final api = ref.watch(apiServiceProvider);
     return await api.getAllConversation();

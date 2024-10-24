@@ -147,6 +147,12 @@ Widget statusText(String status) {
     "read": "Đã xem",
     "delivered": "Đã nhận"
   };
+
+  Map<String, dynamic> statusIcon = {
+    "sent": PhosphorIconsRegular.checks,
+    "delivered": PhosphorIconsRegular.checks,
+    "read": PhosphorIconsRegular.eye,
+  };
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
     decoration: BoxDecoration(
@@ -162,18 +168,10 @@ Widget statusText(String status) {
         const SizedBox(
           width: 2,
         ),
-        Visibility(
-          visible: status == "sent",
-          replacement: PhosphorIcon(
-            PhosphorIconsRegular.eye,
-            color: Colors.white,
-            size: 15,
-          ),
-          child: PhosphorIcon(
-            PhosphorIconsRegular.checks,
-            color: Colors.white,
-            size: 15,
-          ),
+        PhosphorIcon(
+          statusIcon[status],
+          color: Colors.white,
+          size: 15,
         ),
       ],
     ),

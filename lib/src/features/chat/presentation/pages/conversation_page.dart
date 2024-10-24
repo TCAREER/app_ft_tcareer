@@ -29,6 +29,7 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
       final controller = ref.read(conversationControllerProvider);
       await controller.getFriends();
       await controller.getAllConversation();
+      await controller.onInit();
     });
 
     // WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -152,15 +153,39 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
                             NetworkImage(conversation.userAvatar ?? ""),
                       ),
                       // Chấm tròn cắt vào avatar
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: StreamBuilder<Map<dynamic, dynamic>>(
-                          stream: controller.listenUsersStatus(
-                              conversation.userId.toString()),
-                          builder: (context, snapshot) {
-                            return Visibility(
-                              visible: snapshot.data?['status'] == "online",
+                      StreamBuilder<Map<dynamic, dynamic>>(
+                        stream: controller
+                            .listenUsersStatus(conversation.userId.toString()),
+                        builder: (context, snapshot) {
+                          return Visibility(
+                            visible: snapshot.data?['status'] == "online",
+                            replacement: Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 3, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  borderRadius: BorderRadius.circular(10),
+                                  // border: Border.all(
+                                  //   color: Colors.white,
+                                  //   width: 2,
+                                  // ),
+                                ),
+                                child: Text(
+                                  AppUtils.formatTimeStatusOnline(
+                                      snapshot.data?['updatedAt'] != null
+                                          ? (snapshot.data?['updatedAt'])
+                                          : ""),
+                                  style: const TextStyle(
+                                      fontSize: 8, color: Colors.green),
+                                ),
+                              ),
+                            ),
+                            child: Positioned(
+                              bottom: 0,
+                              right: 0,
                               child: Container(
                                 width: 12, // Độ rộng của chấm tròn
                                 height: 12, // Chiều cao của chấm tròn
@@ -174,9 +199,9 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
                                   ),
                                 ),
                               ),
-                            );
-                          },
-                        ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
