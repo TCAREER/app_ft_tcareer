@@ -88,6 +88,8 @@ class ChatUseCase {
               handleChannelStateChange}) async =>
       await chatRepository.listenAblyConnected(
           handleChannelStateChange: handleChannelStateChange);
+
+  Future getFriendInChat() async => await chatRepository.getFriendInChat();
 }
 
 final chatUseCaseProvider = Provider<ChatUseCase>((ref) {

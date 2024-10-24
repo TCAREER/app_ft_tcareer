@@ -136,6 +136,11 @@ class ChatRepository {
     return await ablyService.listenAblyConnected(
         handleChannelStateChange: handleChannelStateChange);
   }
+
+  Future getFriendInChat() async {
+    final api = ref.watch(apiServiceProvider);
+    return await api.getFriendInChat();
+  }
 }
 
 final chatRepositoryProvider =

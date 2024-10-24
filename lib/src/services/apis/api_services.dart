@@ -176,4 +176,7 @@ abstract class ApiServices {
 
   @GET('api/auth/friends/{userId}/view')
   Future getFriends({@Path('userId') required String userId});
+
+  @GET('api/auth/friends/view')
+  Future getFriendInChat();
 }

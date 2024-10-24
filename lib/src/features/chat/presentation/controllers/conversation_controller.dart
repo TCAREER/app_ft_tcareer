@@ -181,18 +181,15 @@ class ConversationController extends ChangeNotifier {
 
   List<Data> friends = [];
   Future<void> getFriends() async {
-    final userUseCase = ref.watch(userUseCaseProvider);
-    final userUtil = ref.watch(userUtilsProvider);
-    String clientId = await userUtil.getUserId();
     friends.clear();
     notifyListeners();
-    final data = await userUseCase.getFriends(clientId);
+    final data = await chatUseCase.getFriendInChat();
     List<dynamic> followerJson = data['data'];
-    await mapFollowerFromJson(followerJson);
+    await mapFriendsFromJson(followerJson);
     notifyListeners();
   }
 
-  Future<void> mapFollowerFromJson(List<dynamic> followerJson) async {
+  Future<void> mapFriendsFromJson(List<dynamic> followerJson) async {
     friends = followerJson
         .whereType<Map<String, dynamic>>()
         .map((item) => Data.fromJson(item))
